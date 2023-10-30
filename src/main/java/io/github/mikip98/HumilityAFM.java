@@ -13,7 +13,6 @@ import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.*;
@@ -59,18 +58,14 @@ public class HumilityAFM implements ModInitializer {
 		final Block[] cabinetBlockVariants = CabinetBlockHelper.cabinetBlockVariants;
 		Block[] blocks = new Block[cabinetBlockVariants.length + 1];
 		blocks[0] = CABINET_BLOCK;
-		for (int i = 0; i < cabinetBlockVariants.length; i++) {
-			blocks[i + 1] = cabinetBlockVariants[i];
-		}
+        System.arraycopy(cabinetBlockVariants, 0, blocks, 1, cabinetBlockVariants.length);
 		return blocks;
 	}
 	private Block[] getIlluminatedCabinetBlockVariantsToRegisterBlockEntity() {
 		final Block[] illuminatedCabinetBlockVariants = CabinetBlockHelper.illuminatedCabinetBlockVariants;
 		Block[] blocks = new Block[illuminatedCabinetBlockVariants.length + 1];
 		blocks[0] = ILLUMINATED_CABINET_BLOCK;
-		for (int i = 0; i < illuminatedCabinetBlockVariants.length; i++) {
-			blocks[i + 1] = illuminatedCabinetBlockVariants[i];
-		}
+        System.arraycopy(illuminatedCabinetBlockVariants, 0, blocks, 1, illuminatedCabinetBlockVariants.length);
 		return blocks;
 	}
 
@@ -143,19 +138,7 @@ public class HumilityAFM implements ModInitializer {
 
 
 		// ............ MAKE THINGS FLAMMABLE ............
-		//Making cabinet flammable
-		//(3 x 20 + 60) / 5  TODO: Make those a config option
-		//(60 + 60) / 5 = 24 -> flammability
-		//(15 + 30) / 5 = 9 -> fire spreading speed
-		short burnTime = 24;
-		short spreadSpeed = 9;
-
-		for (Block cabinetBlockVariant : CabinetBlockHelper.cabinetBlockVariants) {
-			FlammableBlockRegistry.getDefaultInstance().add(cabinetBlockVariant, burnTime, spreadSpeed);
-		}
-		for (Block illuminatedCabinetBlockVariant : CabinetBlockHelper.illuminatedCabinetBlockVariants) {
-			FlammableBlockRegistry.getDefaultInstance().add(illuminatedCabinetBlockVariant, burnTime, spreadSpeed);
-		}
+		// No test blocks are currently flammable
 
 
 		// ............ BLOCK ENTITIES ............

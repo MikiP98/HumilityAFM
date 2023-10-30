@@ -5,6 +5,7 @@ import io.github.mikip98.content.blocks.cabinet.IlluminatedCabinetBlock;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -79,9 +80,6 @@ public class CabinetBlockHelper {
         for (Item cabinetBlockItemVariant : cabinetBlockItemVariants) {
             Registry.register(Registries.ITEM, new Identifier(MOD_ID, "cabinet_block_" + cabinetBlockVariantsNames[i]), cabinetBlockItemVariant);
             ItemGroupEvents.modifyEntriesEvent(ItemGroups.COLORED_BLOCKS).register(content -> content.add(cabinetBlockItemVariant));
-//            ItemGroupEvents.modifyEntriesEvent(HumilityAFM.HUMILITY_AFM_ITEM_GROUP).register(content -> { // HUMILITY_AFM_ITEM_GROUP
-//                content.add(cabinetBlockItemVariant);
-//            });
             ++i;
         }
 
@@ -96,6 +94,20 @@ public class CabinetBlockHelper {
             Registry.register(Registries.ITEM, new Identifier(MOD_ID, "illuminated_cabinet_block_" + cabinetBlockVariantsNames[i]), illuminatedCabinetBlockItemVariant);
             ItemGroupEvents.modifyEntriesEvent(ItemGroups.COLORED_BLOCKS).register(content -> content.add(illuminatedCabinetBlockItemVariant));
             ++i;
+        }
+
+        // Making cabinets flammable
+        // (3 x 20 + 60) / 5  TODO: Make those a config option
+        // (60 + 60) / 5 = 24 -> flammability
+        // (15 + 30) / 5 = 9 -> fire spreading speed
+        short burnTime = 24;
+        short spreadSpeed = 9;
+
+        for (Block cabinetBlockVariant : cabinetBlockVariants) {
+            FlammableBlockRegistry.getDefaultInstance().add(cabinetBlockVariant, burnTime, spreadSpeed);
+        }
+        for (Block illuminatedCabinetBlockVariant : illuminatedCabinetBlockVariants) {
+            FlammableBlockRegistry.getDefaultInstance().add(illuminatedCabinetBlockVariant, burnTime, spreadSpeed);
         }
     }
 }
