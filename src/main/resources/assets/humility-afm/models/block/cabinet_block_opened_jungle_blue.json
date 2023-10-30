@@ -1,0 +1,6 @@
+{
+    "parent": "humility-afm:block/cabinet_block_opened_jungle",
+    "textures": {
+        "1": "minecraft:block/blue_wool"
+    }
+}

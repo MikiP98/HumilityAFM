@@ -1,0 +1,11 @@
+{
+    "type": "crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "humility-afm:outer_stairs_polished_blackstone_brick"
+        }
+    ],
+    "result": {
+        "item": "minecraft:polished_blackstone_brick_stairs"
+    }
+}

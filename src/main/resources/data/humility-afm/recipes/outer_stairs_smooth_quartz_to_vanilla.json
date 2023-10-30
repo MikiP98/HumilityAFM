@@ -1,0 +1,11 @@
+{
+    "type": "crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "humility-afm:outer_stairs_smooth_quartz"
+        }
+    ],
+    "result": {
+        "item": "minecraft:smooth_quartz_stairs"
+    }
+}

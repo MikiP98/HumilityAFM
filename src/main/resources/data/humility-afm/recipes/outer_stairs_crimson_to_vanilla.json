@@ -1,0 +1,11 @@
+{
+    "type": "crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "humility-afm:outer_stairs_crimson"
+        }
+    ],
+    "result": {
+        "item": "minecraft:crimson_stairs"
+    }
+}

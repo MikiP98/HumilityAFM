@@ -1,0 +1,11 @@
+{
+    "type": "crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "humility-afm:outer_stairs_dark_prismarine"
+        }
+    ],
+    "result": {
+        "item": "minecraft:dark_prismarine_stairs"
+    }
+}

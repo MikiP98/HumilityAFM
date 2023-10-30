@@ -1,0 +1,11 @@
+{
+    "type": "crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "humility-afm:outer_stairs_jungle"
+        }
+    ],
+    "result": {
+        "item": "minecraft:jungle_stairs"
+    }
+}

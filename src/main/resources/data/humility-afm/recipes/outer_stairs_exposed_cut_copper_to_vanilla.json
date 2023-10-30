@@ -1,0 +1,11 @@
+{
+    "type": "crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "humility-afm:outer_stairs_exposed_cut_copper"
+        }
+    ],
+    "result": {
+        "item": "minecraft:exposed_cut_copper_stairs"
+    }
+}

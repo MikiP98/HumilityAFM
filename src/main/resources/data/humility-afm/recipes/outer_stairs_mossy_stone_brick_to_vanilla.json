@@ -1,0 +1,11 @@
+{
+    "type": "crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "humility-afm:outer_stairs_mossy_stone_brick"
+        }
+    ],
+    "result": {
+        "item": "minecraft:mossy_stone_brick_stairs"
+    }
+}

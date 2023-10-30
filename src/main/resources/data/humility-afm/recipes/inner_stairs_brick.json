@@ -1,0 +1,11 @@
+{
+    "type": "crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "minecraft:brick_stairs"
+        }
+    ],
+    "result": {
+        "item": "humility-afm:inner_stairs_brick"
+    }
+}

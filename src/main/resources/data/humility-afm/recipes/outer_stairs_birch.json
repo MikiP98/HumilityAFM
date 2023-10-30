@@ -1,0 +1,11 @@
+{
+    "type": "crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "humility-afm:inner_stairs_birch"
+        }
+    ],
+    "result": {
+        "item": "humility-afm:outer_stairs_birch"
+    }
+}

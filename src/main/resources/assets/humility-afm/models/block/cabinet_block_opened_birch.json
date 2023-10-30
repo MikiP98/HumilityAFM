@@ -1,0 +1,7 @@
+{
+    "parent": "humility-afm:block/cabinet_block_opened",
+    "textures": {
+        "2": "minecraft:block/birch_planks",
+        "particle": "minecraft:block/birch_planks"
+    }
+}

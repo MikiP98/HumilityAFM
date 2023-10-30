@@ -1,0 +1,11 @@
+{
+    "type": "crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "humility-afm:outer_stairs_andesite"
+        }
+    ],
+    "result": {
+        "item": "minecraft:andesite_stairs"
+    }
+}

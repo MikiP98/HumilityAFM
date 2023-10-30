@@ -1,0 +1,11 @@
+{
+    "type": "crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "humility-afm:outer_stairs_mud_bricks"
+        }
+    ],
+    "result": {
+        "item": "minecraft:mud_brick_stairs"
+    }
+}

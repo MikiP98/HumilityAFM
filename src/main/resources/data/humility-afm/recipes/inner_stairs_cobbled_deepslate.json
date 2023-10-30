@@ -1,0 +1,11 @@
+{
+    "type": "crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "minecraft:cobbled_deepslate_stairs"
+        }
+    ],
+    "result": {
+        "item": "humility-afm:inner_stairs_cobbled_deepslate"
+    }
+}

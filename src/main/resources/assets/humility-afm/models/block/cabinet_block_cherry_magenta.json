@@ -1,0 +1,6 @@
+{
+    "parent": "humility-afm:block/cabinet_block_cherry",
+    "textures": {
+        "1": "minecraft:block/magenta_wool"
+    }
+}

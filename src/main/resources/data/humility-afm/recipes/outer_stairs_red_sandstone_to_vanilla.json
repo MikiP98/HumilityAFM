@@ -1,0 +1,11 @@
+{
+    "type": "crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "humility-afm:outer_stairs_red_sandstone"
+        }
+    ],
+    "result": {
+        "item": "minecraft:red_sandstone_stairs"
+    }
+}

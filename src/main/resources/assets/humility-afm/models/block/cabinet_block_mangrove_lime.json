@@ -1,0 +1,6 @@
+{
+    "parent": "humility-afm:block/cabinet_block_mangrove",
+    "textures": {
+        "1": "minecraft:block/lime_wool"
+    }
+}

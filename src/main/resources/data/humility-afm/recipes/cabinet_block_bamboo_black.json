@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " G ",
+        "SWS",
+        " S "
+    ],
+    "key": {
+        "G": {
+            "item": "minecraft:glass_pane"
+        },
+        "S": {
+            "item": "minecraft:bamboo_slab"
+        },
+        "W": {
+            "item": "minecraft:black_carpet",
+            "data": 0
+        }
+    },
+    "result": {
+        "item": "humility-afm:cabinet_block_bamboo_black"
+    }
+}

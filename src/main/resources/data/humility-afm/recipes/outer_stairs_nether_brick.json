@@ -1,0 +1,11 @@
+{
+    "type": "crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "humility-afm:inner_stairs_nether_brick"
+        }
+    ],
+    "result": {
+        "item": "humility-afm:outer_stairs_nether_brick"
+    }
+}

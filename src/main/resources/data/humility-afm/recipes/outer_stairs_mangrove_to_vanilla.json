@@ -1,0 +1,11 @@
+{
+    "type": "crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "humility-afm:outer_stairs_mangrove"
+        }
+    ],
+    "result": {
+        "item": "minecraft:mangrove_stairs"
+    }
+}

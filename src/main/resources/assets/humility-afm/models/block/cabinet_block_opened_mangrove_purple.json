@@ -1,0 +1,6 @@
+{
+    "parent": "humility-afm:block/cabinet_block_opened_mangrove",
+    "textures": {
+        "1": "minecraft:block/purple_wool"
+    }
+}

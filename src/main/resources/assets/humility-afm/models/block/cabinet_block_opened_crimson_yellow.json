@@ -1,0 +1,6 @@
+{
+    "parent": "humility-afm:block/cabinet_block_opened_crimson",
+    "textures": {
+        "1": "minecraft:block/yellow_wool"
+    }
+}

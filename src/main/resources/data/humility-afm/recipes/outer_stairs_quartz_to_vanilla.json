@@ -1,0 +1,11 @@
+{
+    "type": "crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "humility-afm:outer_stairs_quartz"
+        }
+    ],
+    "result": {
+        "item": "minecraft:quartz_stairs"
+    }
+}
