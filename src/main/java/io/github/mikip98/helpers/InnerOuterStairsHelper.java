@@ -58,7 +58,6 @@ public class InnerOuterStairsHelper {
         outerStairsBlockItemVariants = new Item[stairsBlockVariantsCount];
 
         short id = 0;
-        String StairsBlockVariantName;
         // Generate wood stairs block variants
         // Generate mud bricks stairs block variant
         // And so on...
@@ -66,149 +65,39 @@ public class InnerOuterStairsHelper {
         // Generate wood stairs block variants
         FabricBlockSettings WoodStairsBlockSettings = FabricBlockSettings.create().strength(WoodStrength).requiresTool().sounds(BlockSoundGroup.WOOD);
         id = createStairsBlockVariants(MainHelper.getWoodTypes(), WoodStairsBlockSettings, id);
-//        for (String woodType : MainHelper.getWoodTypes()) {
-//            StairsBlockVariantName = woodType;
-//            innerOuterStairsBlockVariantsNames[id] = StairsBlockVariantName;
-//            //LOGGER.info("Creating inner stairs block variant: " + innerOuterStairsBlockVariantsNames[i]);
-//
-//            // Create inner stairs block variant
-//            innerStairsBlockVariants[id] = new InnerStairs(WoodStairsBlockSettings);
-//            // Create inner stairs block variant item
-//            innerStairsBlockItemVariants[id] = new BlockItem(innerStairsBlockVariants[id], new FabricItemSettings());
-//
-//            // Create outer stairs block variant
-//            outerStairsBlockVariants[id] = new OuterStairs(WoodStairsBlockSettings);
-//            // Create outer stairs block variant item
-//            outerStairsBlockItemVariants[id] = new BlockItem(outerStairsBlockVariants[id], new FabricItemSettings());
-//            ++id;
-//        }
 
         // Generate mud bricks stairs block variant
-        StairsBlockVariantName = mudBricksVariant;
-        innerOuterStairsBlockVariantsNames[id] = StairsBlockVariantName;
-        //LOGGER.info("Creating inner stairs block variant: " + innerOuterStairsBlockVariantsNames[i]);
-
-        // Create inner stairs block variant
-        innerStairsBlockVariants[id] = new InnerStairs(FabricBlockSettings.create().strength(MudBricksStrength).requiresTool());
-        // Create inner stairs block variant item
-        innerStairsBlockItemVariants[id] = new BlockItem(innerStairsBlockVariants[id], new FabricItemSettings());
-
-        // Create outer stairs block variant
-        outerStairsBlockVariants[id] = new OuterStairs(FabricBlockSettings.create().strength(MudBricksStrength).requiresTool());
-        // Create outer stairs block variant item
-        outerStairsBlockItemVariants[id] = new BlockItem(outerStairsBlockVariants[id], new FabricItemSettings());
-        ++id;
+        FabricBlockSettings MudBricksStairsBlockSettings = FabricBlockSettings.create().strength(MudBricksStrength).requiresTool();
+        id = createStairsBlockVariant(mudBricksVariant, MudBricksStairsBlockSettings, id);
 
         // Generate sandstone and quarts stairs block variants
-        for (String sandStoneANDQuartsVariant : sandStoneANDQuartsVariants) {
-            StairsBlockVariantName = sandStoneANDQuartsVariant;
-            innerOuterStairsBlockVariantsNames[id] = StairsBlockVariantName;
-            //LOGGER.info("Creating inner stairs block variant: " + innerOuterStairsBlockVariantsNames[i]);
-
-            // Create inner stairs block variant
-            innerStairsBlockVariants[id] = new InnerStairs(FabricBlockSettings.create().strength(SandStoneANDQuartsStrength).requiresTool());
-            // Create inner stairs block variant item
-            innerStairsBlockItemVariants[id] = new BlockItem(innerStairsBlockVariants[id], new FabricItemSettings());
-
-            // Create outer stairs block variant
-            outerStairsBlockVariants[id] = new OuterStairs(FabricBlockSettings.create().strength(SandStoneANDQuartsStrength).requiresTool());
-            // Create outer stairs block variant item
-            outerStairsBlockItemVariants[id] = new BlockItem(outerStairsBlockVariants[id], new FabricItemSettings());
-            ++id;
-        }
+        FabricBlockSettings SandStoneANDQuartsStairsBlockSettings = FabricBlockSettings.create().strength(SandStoneANDQuartsStrength).requiresTool();
+        id = createStairsBlockVariants(sandStoneANDQuartsVariants, SandStoneANDQuartsStairsBlockSettings, id);
 
         // Generate stony1 stairs block variants
-        for (String stony1Variant : stony1Variants) {
-            StairsBlockVariantName = stony1Variant;
-            innerOuterStairsBlockVariantsNames[id] = StairsBlockVariantName;
-            //LOGGER.info("Creating inner stairs block variant: " + innerOuterStairsBlockVariantsNames[i]);
-
-            // Create inner stairs block variant
-            innerStairsBlockVariants[id] = new InnerStairs(FabricBlockSettings.create().strength(Stony1Strength).requiresTool());
-            // Create inner stairs block variant item
-            innerStairsBlockItemVariants[id] = new BlockItem(innerStairsBlockVariants[id], new FabricItemSettings());
-
-            // Create outer stairs block variant
-            outerStairsBlockVariants[id] = new OuterStairs(FabricBlockSettings.create().strength(Stony1Strength).requiresTool());
-            // Create outer stairs block variant item
-            outerStairsBlockItemVariants[id] = new BlockItem(outerStairsBlockVariants[id], new FabricItemSettings());
-            ++id;
-        }
+        FabricBlockSettings Stony1StairsBlockSettings = FabricBlockSettings.create().strength(Stony1Strength).requiresTool();
+        id = createStairsBlockVariants(stony1Variants, Stony1StairsBlockSettings, id);
 
         // Generate stony2 stairs block variants
-        for (String stony2Variant : stony2Variants) {
-            StairsBlockVariantName = stony2Variant;
-            innerOuterStairsBlockVariantsNames[id] = StairsBlockVariantName;
-            //LOGGER.info("Creating inner stairs block variant: " + innerOuterStairsBlockVariantsNames[i]);
-
-            // Create inner stairs block variant
-            innerStairsBlockVariants[id] = new InnerStairs(FabricBlockSettings.create().strength(Stony2Strength).requiresTool());
-            // Create inner stairs block variant item
-            innerStairsBlockItemVariants[id] = new BlockItem(innerStairsBlockVariants[id], new FabricItemSettings());
-
-            // Create outer stairs block variant
-            outerStairsBlockVariants[id] = new OuterStairs(FabricBlockSettings.create().strength(Stony2Strength).requiresTool());
-            // Create outer stairs block variant item
-            outerStairsBlockItemVariants[id] = new BlockItem(outerStairsBlockVariants[id], new FabricItemSettings());
-            ++id;
-        }
+        FabricBlockSettings Stony2StairsBlockSettings = FabricBlockSettings.create().strength(Stony2Strength).requiresTool();
+        id = createStairsBlockVariants(stony2Variants, Stony2StairsBlockSettings, id);
 
         // Generate end stone stairs block variant
-        StairsBlockVariantName = endStoneVariant;
-        innerOuterStairsBlockVariantsNames[id] = StairsBlockVariantName;
-        //LOGGER.info("Creating inner stairs block variant: " + innerOuterStairsBlockVariantsNames[i]);
-
-        // Create inner stairs block variant
-        innerStairsBlockVariants[id] = new InnerStairs(FabricBlockSettings.create().strength(EndStoneStrength).requiresTool());
-        // Create inner stairs block variant item
-        innerStairsBlockItemVariants[id] = new BlockItem(innerStairsBlockVariants[id], new FabricItemSettings());
-
-        // Create outer stairs block variant
-        outerStairsBlockVariants[id] = new OuterStairs(FabricBlockSettings.create().strength(EndStoneStrength).requiresTool());
-        // Create outer stairs block variant item
-        outerStairsBlockItemVariants[id] = new BlockItem(outerStairsBlockVariants[id], new FabricItemSettings());
-        ++id;
+        FabricBlockSettings EndStoneStairsBlockSettings = FabricBlockSettings.create().strength(EndStoneStrength).requiresTool();
+        id = createStairsBlockVariant(endStoneVariant, EndStoneStairsBlockSettings, id);
 
         // Generate cut copper stairs block variants
-        for (String cutCopperVariant : cutCopperVariants) {
-            StairsBlockVariantName = cutCopperVariant;
-            innerOuterStairsBlockVariantsNames[id] = StairsBlockVariantName;
-            //LOGGER.info("Creating inner stairs block variant: " + innerOuterStairsBlockVariantsNames[i]);
-
-            // Create inner stairs block variant
-            innerStairsBlockVariants[id] = new InnerStairs(FabricBlockSettings.create().strength(CopperStrength).requiresTool().sounds(BlockSoundGroup.COPPER));
-            // Create inner stairs block variant item
-            innerStairsBlockItemVariants[id] = new BlockItem(innerStairsBlockVariants[id], new FabricItemSettings());
-
-            // Create outer stairs block variant
-            outerStairsBlockVariants[id] = new OuterStairs(FabricBlockSettings.create().strength(CopperStrength).requiresTool().sounds(BlockSoundGroup.COPPER));
-            // Create outer stairs block variant item
-            outerStairsBlockItemVariants[id] = new BlockItem(outerStairsBlockVariants[id], new FabricItemSettings());
-            ++id;
-        }
+        FabricBlockSettings CutCopperStairsBlockSettings = FabricBlockSettings.create().strength(CopperStrength).requiresTool().sounds(BlockSoundGroup.COPPER);
+        id = createStairsBlockVariants(cutCopperVariants, CutCopperStairsBlockSettings, id);
 
         // Generate deep slate stairs block variants
-        for (String deepSlateVariant : deepSlateVariants) {
-            StairsBlockVariantName = deepSlateVariant;
-            innerOuterStairsBlockVariantsNames[id] = StairsBlockVariantName;
-            //LOGGER.info("Creating inner stairs block variant: " + innerOuterStairsBlockVariantsNames[i]);
-
-            // Create inner stairs block variant
-            innerStairsBlockVariants[id] = new InnerStairs(FabricBlockSettings.create().strength(DeepSlateStrength).requiresTool().sounds(BlockSoundGroup.DEEPSLATE));
-            // Create inner stairs block variant item
-            innerStairsBlockItemVariants[id] = new BlockItem(innerStairsBlockVariants[id], new FabricItemSettings());
-
-            // Create outer stairs block variant
-            outerStairsBlockVariants[id] = new OuterStairs(FabricBlockSettings.create().strength(DeepSlateStrength).requiresTool().sounds(BlockSoundGroup.DEEPSLATE));
-            // Create outer stairs block variant item
-            outerStairsBlockItemVariants[id] = new BlockItem(outerStairsBlockVariants[id], new FabricItemSettings());
-            ++id;
-        }
+        FabricBlockSettings DeepSlateStairsBlockSettings = FabricBlockSettings.create().strength(DeepSlateStrength).requiresTool().sounds(BlockSoundGroup.DEEPSLATE);
+        createStairsBlockVariants(deepSlateVariants, DeepSlateStairsBlockSettings, id);
     }
 
     // Generate stairs block variants function
     private static short createStairsBlockVariants(String[] stairsVariants, FabricBlockSettings variantSettings, short id) {
-        // Generate stairs block variantsate deep slate stairs block variants
+        // Generate stairs block variants
         for (String stairsVariant : stairsVariants) {
             innerOuterStairsBlockVariantsNames[id] = stairsVariant;
             //LOGGER.info("Creating inner stairs block variant: " + innerOuterStairsBlockVariantsNames[i]);
@@ -224,6 +113,23 @@ public class InnerOuterStairsHelper {
             outerStairsBlockItemVariants[id] = new BlockItem(outerStairsBlockVariants[id], new FabricItemSettings());
             ++id;
         }
+        return id;
+    }
+    private static short createStairsBlockVariant(String stairsVariant, FabricBlockSettings variantSettings, short id) {
+        // Generate stairs block variant
+        innerOuterStairsBlockVariantsNames[id] = stairsVariant;
+        //LOGGER.info("Creating inner stairs block variant: " + innerOuterStairsBlockVariantsNames[i]);
+
+        // Create inner stairs block variant
+        innerStairsBlockVariants[id] = new InnerStairs(variantSettings);
+        // Create inner stairs block variant item
+        innerStairsBlockItemVariants[id] = new BlockItem(innerStairsBlockVariants[id], new FabricItemSettings());
+
+        // Create outer stairs block variant
+        outerStairsBlockVariants[id] = new OuterStairs(variantSettings);
+        // Create outer stairs block variant item
+        outerStairsBlockItemVariants[id] = new BlockItem(outerStairsBlockVariants[id], new FabricItemSettings());
+        ++id;
         return id;
     }
 
