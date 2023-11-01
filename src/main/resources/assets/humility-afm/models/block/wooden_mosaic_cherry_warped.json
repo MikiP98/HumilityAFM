@@ -1,0 +1,7 @@
+{
+    "parent": "humility-afm:block/wooden_mosaic",
+    "textures": {
+        "1": "minecraft:block/cherry_planks",
+        "2": "minecraft:block/warped_planks"
+    }
+}

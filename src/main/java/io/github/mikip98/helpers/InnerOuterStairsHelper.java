@@ -129,8 +129,7 @@ public class InnerOuterStairsHelper {
         outerStairsBlockVariants[id] = new OuterStairs(variantSettings);
         // Create outer stairs block variant item
         outerStairsBlockItemVariants[id] = new BlockItem(outerStairsBlockVariants[id], new FabricItemSettings());
-        ++id;
-        return id;
+        return ++id;
     }
 
 

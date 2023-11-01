@@ -7,6 +7,7 @@ import io.github.mikip98.content.blocks.cabinet.CabinetBlock;
 import io.github.mikip98.content.blocks.cabinet.IlluminatedCabinetBlock;
 import io.github.mikip98.helpers.CabinetBlockHelper;
 import io.github.mikip98.helpers.InnerOuterStairsHelper;
+import io.github.mikip98.helpers.WoodenMosaicHelper;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -18,6 +19,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
@@ -53,6 +55,12 @@ public class HumilityAFM implements ModInitializer {
 	public static final Item OUTER_STAIRS_ITEM = new BlockItem(OUTER_STAIRS, new FabricItemSettings());
 	public static final Item INNER_STAIRS_ITEM = new BlockItem(INNER_STAIRS, new FabricItemSettings());
 
+	// Wooden mosaic
+	private static final float WoodenMosaicStrength = 3.0f * 1.5f;
+	private static final FabricBlockSettings WoodenMosaicSettings = FabricBlockSettings.create().strength(WoodenMosaicStrength).requiresTool().sounds(BlockSoundGroup.WOOD);
+	public static final Block WOODEN_MOSAIC = new Block(WoodenMosaicSettings);
+	public static final Item WOODEN_MOSAIC_ITEM = new BlockItem(WOODEN_MOSAIC, new FabricItemSettings());
+
 
 	private Block[] getCabinetBlockVariantsToRegisterBlockEntity() {
 		final Block[] cabinetBlockVariants = CabinetBlockHelper.cabinetBlockVariants;
@@ -81,6 +89,7 @@ public class HumilityAFM implements ModInitializer {
 
 		CabinetBlockHelper.init();
 		InnerOuterStairsHelper.init();
+		WoodenMosaicHelper.init();
 
 
 		// ------------------------------------ REGISTRATION ------------------------------------
@@ -99,6 +108,7 @@ public class HumilityAFM implements ModInitializer {
 				})
 				.build();
 		Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "humility_afm_group"), CABINETS_ITEM_GROUP);
+
 		// Register InnerOuterStairs item group
 		final ItemGroup INNER_OUTER_STAIRS_ITEM_GROUP = FabricItemGroup.builder()
 				.icon(() -> new ItemStack(HumilityAFM.OUTER_STAIRS))
@@ -114,20 +124,38 @@ public class HumilityAFM implements ModInitializer {
 				.build();
 		Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "inner_outer_stairs_group"), INNER_OUTER_STAIRS_ITEM_GROUP);
 
+		// Register WoodenMosaic item group
+		final ItemGroup WOODEN_MOSAIC_ITEM_GROUP = FabricItemGroup.builder()
+				.icon(() -> new ItemStack(WoodenMosaicHelper.woodenMosaicVariants[0]))
+				.displayName(Text.translatable("itemGroup.woodenMosaic"))
+				.entries((displayContext, entries) -> {
+//					entries.add(new ItemStack(WOODEN_MOSAIC));
+					for (int i = 0; i < WoodenMosaicHelper.woodenMosaicVariants.length; i++) {
+						LOGGER.info("Adding wooden mosaic variant to item group: " + WoodenMosaicHelper.woodenMosaicVariants[i]);
+						entries.add(new ItemStack(WoodenMosaicHelper.woodenMosaicVariants[i])); // TODO: Fix this
+					}
+				})
+				.build();
+		Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "wooden_mosaic_group"), WOODEN_MOSAIC_ITEM_GROUP);
+
 		// ............ TEST BLOCKS & ITEMS ............
-		//Register cabinet
+		// Register cabinet
 		Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "cabinet_block"), CABINET_BLOCK);
 		Registry.register(Registries.ITEM, new Identifier(MOD_ID, "cabinet_block"), CABINET_BLOCK_ITEM);
-		//Register illuminated cabinet
+		// Register illuminated cabinet
 		Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "illuminated_cabinet_block"), ILLUMINATED_CABINET_BLOCK);
 		Registry.register(Registries.ITEM, new Identifier(MOD_ID, "illuminated_cabinet_block"), new BlockItem(ILLUMINATED_CABINET_BLOCK, new FabricItemSettings()));
-		//Register always corner stair
+		// Register always corner stair
 		Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "outer_stairs"), OUTER_STAIRS);
 		Registry.register(Registries.ITEM, new Identifier(MOD_ID, "outer_stairs"), OUTER_STAIRS_ITEM);
-		//Register always full stair
+		// Register always full stair
 		Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "inner_stairs"), INNER_STAIRS);
 		Registry.register(Registries.ITEM, new Identifier(MOD_ID, "inner_stairs"), INNER_STAIRS_ITEM);
-		//Register candlestick
+		// Register wooden mosaic
+		Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "wooden_mosaic"), WOODEN_MOSAIC);
+		Registry.register(Registries.ITEM, new Identifier(MOD_ID, "wooden_mosaic"), WOODEN_MOSAIC_ITEM);
+
+		// Register candlestick
 
 
 		// ............ FINAL BLOCKS & ITEMS ............
@@ -135,6 +163,8 @@ public class HumilityAFM implements ModInitializer {
 		CabinetBlockHelper.registerCabinetBlockVariants();
 		// Register innerOuter stairs variants
 		InnerOuterStairsHelper.registerInnerOuterStairsVariants();
+		// Register wooden mosaic variants
+		WoodenMosaicHelper.registerWoodenMosaicVariants();
 
 
 		// ............ MAKE THINGS FLAMMABLE ............
