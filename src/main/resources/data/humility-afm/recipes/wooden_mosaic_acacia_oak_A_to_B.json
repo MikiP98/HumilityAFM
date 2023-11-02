@@ -1,0 +1,11 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "humility-afm:wooden_mosaic_oak_acacia"
+        }
+    ],
+    "result": {
+        "item": "humility-afm:wooden_mosaic_acacia_oak"
+    }
+}

@@ -1,0 +1,11 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "humility-afm:wooden_mosaic_mangrove_warped"
+        }
+    ],
+    "result": {
+        "item": "humility-afm:wooden_mosaic_warped_mangrove"
+    }
+}

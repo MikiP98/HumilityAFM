@@ -1,0 +1,11 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "humility-afm:wooden_mosaic_birch_cherry"
+        }
+    ],
+    "result": {
+        "item": "humility-afm:wooden_mosaic_cherry_birch"
+    }
+}

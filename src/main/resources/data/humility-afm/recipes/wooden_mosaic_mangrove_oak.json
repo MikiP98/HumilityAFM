@@ -1,0 +1,18 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "AB",
+        "BA"
+    ],
+    "key": {
+        "A": {
+            "item": "minecraft:mangrove_planks"
+        },
+        "B": {
+            "item": "minecraft:oak_planks"
+        }
+    },
+    "result": {
+        "item": "humility-afm:wooden_mosaic_mangrove_oak"
+    }
+}

@@ -85,7 +85,7 @@ public class HumilityAFM implements ModInitializer {
 		// Proceed with mild caution.
 
 		// ------------------------------------ INITIALIZATION ------------------------------------
-		LOGGER.info(MOD_NAME + " has been initialized!");
+		LOGGER.info(MOD_NAME + " is initializing!");
 
 		CabinetBlockHelper.init();
 		InnerOuterStairsHelper.init();

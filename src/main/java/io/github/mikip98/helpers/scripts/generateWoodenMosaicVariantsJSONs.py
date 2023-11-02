@@ -48,6 +48,49 @@ def generateWoodenMosaicVariantsJSONs():
             with open("src/main/resources/assets/humility-afm/blockstates/" + fileName, "w") as file:
                 file.write(JSON)
 
+            # Generate recipes jsons
+            JSON = """{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "AB",
+        "BA"
+    ],
+    "key": {
+        "A": {
+            "item": "minecraft:""" + woodType + """_planks"
+        },
+        "B": {
+            "item": "minecraft:""" + woodType2 + """_planks"
+        }
+    },
+    "result": {
+        "item": "humility-afm:wooden_mosaic_""" + woodType + "_" + woodType2 + """"
+    }
+}"""
+
+            # Write recipe json to file
+            fileName = "wooden_mosaic_" + woodType + "_" + woodType2 + ".json"
+            with open("src/main/resources/data/humility-afm/recipes/" + fileName, "w") as file:
+                file.write(JSON)
+
+            # Generate AB -> BA recipe json
+            JSON = """{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "humility-afm:wooden_mosaic_""" + woodType + "_" + woodType2 + """"
+        }
+    ],
+    "result": {
+        "item": "humility-afm:wooden_mosaic_""" + woodType2 + "_" + woodType + """"
+    }
+}"""
+
+            # Write recipe json to file
+            fileName = "wooden_mosaic_" + woodType2 + "_" + woodType + "_A_to_B.json"
+            with open("src/main/resources/data/humility-afm/recipes/" + fileName, "w") as file:
+                file.write(JSON)
+
 
 def generateWoodenMosaicVariantsNames():
     names = []

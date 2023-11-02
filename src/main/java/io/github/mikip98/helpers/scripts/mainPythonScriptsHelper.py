@@ -56,9 +56,11 @@ def generateTranslationJSON():
     from generateCabinetBlockVariantsJSONs import generateCabinetBlockVariantsNames
     from generateInnerOuterStairsVariantsJSONs import generateInnerOuterStairsVariantsAllNames
     from generateWoodenMosaicVariantsJSONs import generateWoodenMosaicVariantsNames
+    from translationHelper import translateWord
 
     itemGroups = ["cabinets_group", "inner_outer_stairs_group", "wooden_mosaics_group"]
 
+    # Generate en_us.json
     JSON = """{
     "itemGroup.cabinets": "Cabinets",
     "itemGroup.innerOuterStairs": "Inner and Outer Stairs",
@@ -114,6 +116,22 @@ def generateTranslationJSON():
 
     with open("src/main/resources/assets/humility-afm/lang/en_us.json", "w") as file:
         file.write(JSON)
+
+    # Generate pl_pl.json
+    JSON = """{
+    "itemGroup.cabinets": "Gabloty",
+    "itemGroup.innerOuterStairs": "Schody wewnętrzne i zewnętrzne",
+    "itemGroup.woodenMosaics": "Drewniane Mozaiki","""
+
+    JSON += translate_pl_pl(generateCabinetBlockVariantsNames(), generateInnerOuterStairsVariantsAllNames(), generateWoodenMosaicVariantsNames())
+
+    JSON = JSON[:-1]
+    JSON += """
+}"""
+
+    with open("src/main/resources/assets/humility-afm/lang/pl_pl.json", "w") as file:
+        file.write(JSON)
+
 
 if __name__ == "__main__":
     # print("Generating mineable axe.json...")

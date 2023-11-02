@@ -1,0 +1,18 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "AB",
+        "BA"
+    ],
+    "key": {
+        "A": {
+            "item": "minecraft:spruce_planks"
+        },
+        "B": {
+            "item": "minecraft:warped_planks"
+        }
+    },
+    "result": {
+        "item": "humility-afm:wooden_mosaic_spruce_warped"
+    }
+}

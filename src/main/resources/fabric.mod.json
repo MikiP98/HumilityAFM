@@ -3,13 +3,13 @@
 	"id": "humility-afm",
 	"version": "${version}",
 	"name": "Humility AFM",
-	"description": "Another furniture mod adding multiple not overly complex furniture pieces.",
+	"description": "Another furniture mod adding multiple, not overly complex, furniture pieces.",
 	"authors": [
 		"Mikołaj Pokora"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/MikiP98/HumilityAFM"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/humility-afm/icon.png",
