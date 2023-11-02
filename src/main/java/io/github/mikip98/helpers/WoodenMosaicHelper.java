@@ -18,7 +18,7 @@ public class WoodenMosaicHelper {
     }
 
     private static final float WoodenMosaicStrength = 3.0f * 1.5f;
-    private static final FabricBlockSettings WoodenMosaicSettings = FabricBlockSettings.create().strength(WoodenMosaicStrength).requiresTool().nonOpaque().sounds(BlockSoundGroup.WOOD);
+    private static final FabricBlockSettings WoodenMosaicSettings = FabricBlockSettings.create().strength(WoodenMosaicStrength).requiresTool().sounds(BlockSoundGroup.WOOD);
 
     public static String[] woodenMosaicVariantsNames;
 

@@ -304,5 +304,16 @@ def generateCabinetBlockVariantsJSONs(override = False):
     print("Generated cabinet block variants JSONs!")
 
 
-print("Generating cabinet block variants JSONs...")
-generateCabinetBlockVariantsJSONs()
+def generateInnerOuterStairsVariantsWoodNames():
+    return woodVariants
+
+def generateInnerOuterStairsVariantsStoneNames():
+    return [mudBricksVariant] + sandStoneANDQuartsVariants + stony1Variants + stony2Variants + [endStoneVariant] + cutCopperVariants + deepSlateVariants
+
+def generateInnerOuterStairsVariantsAllNames():
+    return AllVariants
+
+
+if __name__ == "__main__":
+    print("Generating cabinet block variants JSONs...")
+    generateCabinetBlockVariantsJSONs()

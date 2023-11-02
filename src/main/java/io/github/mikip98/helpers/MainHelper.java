@@ -9,7 +9,7 @@ public class MainHelper {
         throw new IllegalStateException("Utility class, do not instantiate!\nUse static methods and variables instead!");
     }
 
-    public static final String[] vanillaWoodTypes = {"oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "crimson", "warped", "bamboo"};
+    public static final String[] vanillaWoodTypes = {"oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "bamboo", "crimson", "warped"};
     public static final String[] vanillaWoolTypes = {"white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray", "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black"};
 
     //@Getter

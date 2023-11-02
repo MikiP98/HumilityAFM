@@ -340,5 +340,12 @@ def createMineableAxeJSON():
     with open("src/main/resources/data/minecraft/tags/blocks/mineable/axe.json", "w") as file:
         file.write(JSON)
 
-generateCabinetBlockVariantsJSONs()
-createMinablesJSONs()
+
+def generateCabinetBlockVariantsNames():
+    generateCabinetBlockVariants()
+    return cabinetBlockVariantsNames
+
+
+if __name__ == "__main__":
+    generateCabinetBlockVariantsJSONs()
+    createMinablesJSONs()

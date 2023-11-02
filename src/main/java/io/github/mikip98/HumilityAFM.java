@@ -107,7 +107,7 @@ public class HumilityAFM implements ModInitializer {
 					}
 				})
 				.build();
-		Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "humility_afm_group"), CABINETS_ITEM_GROUP);
+		Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "cabinets_group"), CABINETS_ITEM_GROUP);
 
 		// Register InnerOuterStairs item group
 		final ItemGroup INNER_OUTER_STAIRS_ITEM_GROUP = FabricItemGroup.builder()
@@ -127,7 +127,7 @@ public class HumilityAFM implements ModInitializer {
 		// Register WoodenMosaic item group
 		final ItemGroup WOODEN_MOSAIC_ITEM_GROUP = FabricItemGroup.builder()
 				.icon(() -> new ItemStack(WoodenMosaicHelper.woodenMosaicVariants[0]))
-				.displayName(Text.translatable("itemGroup.woodenMosaic"))
+				.displayName(Text.translatable("itemGroup.woodenMosaics"))
 				.entries((displayContext, entries) -> {
 //					entries.add(new ItemStack(WOODEN_MOSAIC));
 					for (int i = 0; i < WoodenMosaicHelper.woodenMosaicVariants.length; i++) {
@@ -136,7 +136,7 @@ public class HumilityAFM implements ModInitializer {
 					}
 				})
 				.build();
-		Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "wooden_mosaic_group"), WOODEN_MOSAIC_ITEM_GROUP);
+		Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "wooden_mosaics_group"), WOODEN_MOSAIC_ITEM_GROUP);
 
 		// ............ TEST BLOCKS & ITEMS ............
 		// Register cabinet
@@ -154,7 +154,6 @@ public class HumilityAFM implements ModInitializer {
 		// Register wooden mosaic
 		Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "wooden_mosaic"), WOODEN_MOSAIC);
 		Registry.register(Registries.ITEM, new Identifier(MOD_ID, "wooden_mosaic"), WOODEN_MOSAIC_ITEM);
-
 		// Register candlestick
 
 

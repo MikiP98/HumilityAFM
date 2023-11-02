@@ -49,4 +49,14 @@ def generateWoodenMosaicVariantsJSONs():
                 file.write(JSON)
 
 
+def generateWoodenMosaicVariantsNames():
+    names = []
+    for woodType in woodTypes:
+        for woodType2 in woodTypes:
+            if woodType == woodType2:
+                continue
+            names.append(woodType + "_" + woodType2)
+    return names
+
+
 generateWoodenMosaicVariantsJSONs()
