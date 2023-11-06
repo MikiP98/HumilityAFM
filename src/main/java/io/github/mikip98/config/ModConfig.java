@@ -5,5 +5,6 @@ public class ModConfig {
 
     public static int cabinetBlockBurnTime = 24;
     public static int cabinetBlockFireSpread = 9;
+    public static float mosaicsAndTilesStrengthMultiplayer = 1.5f;
 }
 

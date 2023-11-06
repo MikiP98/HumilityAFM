@@ -2,7 +2,8 @@
 	"credit": "Made with Blockbench",
 	"textures": {
 		"0": "block/blue_terracotta",
-		"particle": "block/blue_terracotta"
+		"particle": "block/blue_terracotta",
+		"emissive": "block/blue_terracotta"
 	},
 	"elements": [
 		{

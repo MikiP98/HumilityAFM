@@ -1,6 +1,7 @@
 package io.github.mikip98.helpers;
 
 import io.github.mikip98.HumilityAFM;
+import io.github.mikip98.config.ModConfig;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
@@ -16,7 +17,7 @@ public class TerracottaTilesHelper {
     }
 
     public static String[] terracottaTypes = {"white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray", "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black"};
-    private static final float TerracottaTilesStrength = 1.25f * 1.5f;
+    private static final float TerracottaTilesStrength = 1.25f * ModConfig.mosaicsAndTilesStrengthMultiplayer; //1.5f
     private static final FabricBlockSettings TerracottaTilesSettings = FabricBlockSettings.create().strength(TerracottaTilesStrength).requiresTool();
 
     public static String[] terracottaTilesVariantsNames;

@@ -1,5 +1,6 @@
 package io.github.mikip98.helpers;
 
+import io.github.mikip98.config.ModConfig;
 import io.github.mikip98.content.blocks.cabinet.CabinetBlock;
 import io.github.mikip98.content.blocks.cabinet.IlluminatedCabinetBlock;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -102,6 +103,8 @@ public class CabinetBlockHelper {
         // (15 + 30) / 5 = 9 -> fire spreading speed
         short burnTime = 24;
         short spreadSpeed = 9;
+        burnTime = (short) ModConfig.cabinetBlockBurnTime;
+        spreadSpeed = (short) ModConfig.cabinetBlockFireSpread;
 
         for (Block cabinetBlockVariant : cabinetBlockVariants) {
             FlammableBlockRegistry.getDefaultInstance().add(cabinetBlockVariant, burnTime, spreadSpeed);

@@ -1,6 +1,7 @@
 package io.github.mikip98.helpers;
 
 import io.github.mikip98.HumilityAFM;
+import io.github.mikip98.config.ModConfig;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
@@ -17,7 +18,7 @@ public class WoodenMosaicHelper {
         throw new IllegalStateException("Utility class, do not instantiate!\nUse \"init()\" and \"registerWoodenMosaicVariants()\" instead!");
     }
 
-    private static final float WoodenMosaicStrength = 3.0f * 1.5f;
+    private static final float WoodenMosaicStrength = 3.0f * ModConfig.mosaicsAndTilesStrengthMultiplayer; //1.5f
     private static final FabricBlockSettings WoodenMosaicSettings = FabricBlockSettings.create().strength(WoodenMosaicStrength).requiresTool().sounds(BlockSoundGroup.WOOD);
 
     public static String[] woodenMosaicVariantsNames;

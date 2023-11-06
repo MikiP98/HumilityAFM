@@ -53,17 +53,24 @@ public class LEDBlock extends HorizontalFacingBlock implements Waterloggable {
                 case NORTH:
                     return VoxelShapes.cuboid(0f, 0.9375f, 0.9375f, 1f, 1f, 1f);
                 case SOUTH:
+                    return VoxelShapes.cuboid(0f, 0.9375f, 0f, 1f, 1f, 0.0625f);
                 case EAST:
+                    return VoxelShapes.cuboid(0f, 0.9375f, 0f, 0.0625f, 1f, 1f);
                 case WEST:
+                    return VoxelShapes.cuboid(0.9375f, 0.9375f, 0f, 1f, 1f, 1f);
                 default:
                     return VoxelShapes.cuboid(0f, 0f, 0f, 1f, 0.5f, 1.0f);
             }
         }
         switch(dir) {
             case NORTH:
+                return VoxelShapes.cuboid(0f, 0f, 0.9375f, 1f, 0.0625f, 1f);
             case SOUTH:
+                return VoxelShapes.cuboid(0f, 0f, 0f, 1f, 0.0625f, 0.0625f);
             case EAST:
+                return VoxelShapes.cuboid(0f, 0f, 0f, 0.0625f, 0.0625f, 1f);
             case WEST:
+                return VoxelShapes.cuboid(0.9375f, 0f, 0f, 1f, 0.0625f, 1f);
             default:
                 return VoxelShapes.cuboid(0f, 0f, 0f, 1f, 0.5f, 1.0f);
         }

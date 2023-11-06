@@ -46,6 +46,14 @@ public class ModConfigScreen {
                 })
                 .build()
         );
+        customizationCategory.addEntry(ConfigEntryBuilder.create()
+                .startFloatField(Text.literal("Mosaics and Tiles Strength Multiplayer"), ModConfig.mosaicsAndTilesStrengthMultiplayer)
+                .setDefaultValue(1.5f)
+                .setSaveConsumer(value -> {
+                    ModConfig.mosaicsAndTilesStrengthMultiplayer = value;
+                })
+                .build()
+        );
 
         return builder.build();
     }

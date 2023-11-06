@@ -48,7 +48,7 @@ public class LEDHelper {
     public static void registerLEDBlockVariants() {
         short i = 0;
         for (String color : colors) {
-            String LEDBlockVariantName = color + "_led";
+            String LEDBlockVariantName = "led_" + color;
             //LOGGER.info("Registering LED block variant: " + LEDBlockVariantsNames[i]);
             // Register LED block variant
             Registry.register(Registries.BLOCK, new Identifier(MOD_ID, LEDBlockVariantName), LEDBlockVariants[i]);
