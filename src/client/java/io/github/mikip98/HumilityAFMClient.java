@@ -1,11 +1,9 @@
 package io.github.mikip98;
 
-import io.github.mikip98.content.blockentities.cabinetBlock.IlluminatedCabinetBlockEntity;
 import io.github.mikip98.content.blockentities.cabinetBlock.IlluminatedCabinetBlockEntityRenderer;
 import io.github.mikip98.helpers.CabinetBlockHelper;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import io.github.mikip98.content.blockentities.cabinetBlock.CabinetBlockEntityRenderer;
 import net.minecraft.block.Block;
 import net.minecraft.client.render.RenderLayer;

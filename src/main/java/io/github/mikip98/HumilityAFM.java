@@ -1,13 +1,14 @@
 package io.github.mikip98;
 
+import io.github.mikip98.config.ConfigToJSON;
+import io.github.mikip98.config.ModConfig;
 import io.github.mikip98.content.blockentities.cabinetBlock.IlluminatedCabinetBlockEntity;
+import io.github.mikip98.content.blocks.LEDBlock;
 import io.github.mikip98.content.blocks.stairs.InnerStairs;
 import io.github.mikip98.content.blocks.stairs.OuterStairs;
 import io.github.mikip98.content.blocks.cabinet.CabinetBlock;
 import io.github.mikip98.content.blocks.cabinet.IlluminatedCabinetBlock;
-import io.github.mikip98.helpers.CabinetBlockHelper;
-import io.github.mikip98.helpers.InnerOuterStairsHelper;
-import io.github.mikip98.helpers.WoodenMosaicHelper;
+import io.github.mikip98.helpers.*;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -61,6 +62,10 @@ public class HumilityAFM implements ModInitializer {
 	public static final Block WOODEN_MOSAIC = new Block(WoodenMosaicSettings);
 	public static final Item WOODEN_MOSAIC_ITEM = new BlockItem(WOODEN_MOSAIC, new FabricItemSettings());
 
+	// LED
+	public static Block LED_BLOCK;
+	public static Item LED_ITEM;
+
 
 	private Block[] getCabinetBlockVariantsToRegisterBlockEntity() {
 		final Block[] cabinetBlockVariants = CabinetBlockHelper.cabinetBlockVariants;
@@ -87,9 +92,15 @@ public class HumilityAFM implements ModInitializer {
 		// ------------------------------------ INITIALIZATION ------------------------------------
 		LOGGER.info(MOD_NAME + " is initializing!");
 
+		ConfigToJSON.loadConfigFromFile();
+
 		CabinetBlockHelper.init();
 		InnerOuterStairsHelper.init();
 		WoodenMosaicHelper.init();
+		TerracottaTilesHelper.init();
+		if (ModConfig.enableLEDs) {
+			LEDHelper.init();
+		}
 
 
 		// ------------------------------------ REGISTRATION ------------------------------------
@@ -154,7 +165,15 @@ public class HumilityAFM implements ModInitializer {
 		// Register wooden mosaic
 		Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "wooden_mosaic"), WOODEN_MOSAIC);
 		Registry.register(Registries.ITEM, new Identifier(MOD_ID, "wooden_mosaic"), WOODEN_MOSAIC_ITEM);
-		// Register candlestick
+		// Register candlestick TODO: Finish this
+		// Register LED
+		if (ModConfig.enableLEDs) {
+			LED_BLOCK = new LEDBlock(FabricBlockSettings.create().strength(0.5f).nonOpaque().sounds(BlockSoundGroup.GLASS).luminance(10));
+			Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "led"), LED_BLOCK);
+
+			LED_ITEM = new BlockItem(LED_BLOCK, new FabricItemSettings());
+			Registry.register(Registries.ITEM, new Identifier(MOD_ID, "led"), LED_ITEM);
+		}
 
 
 		// ............ FINAL BLOCKS & ITEMS ............
@@ -164,6 +183,12 @@ public class HumilityAFM implements ModInitializer {
 		InnerOuterStairsHelper.registerInnerOuterStairsVariants();
 		// Register wooden mosaic variants
 		WoodenMosaicHelper.registerWoodenMosaicVariants();
+		// Register terracotta tiles variants
+		TerracottaTilesHelper.registerTerracottaTilesVariants();
+		// Register LED block variants
+		if (ModConfig.enableLEDs) {
+			LEDHelper.registerLEDBlockVariants();
+		}
 
 
 		// ............ MAKE THINGS FLAMMABLE ............
