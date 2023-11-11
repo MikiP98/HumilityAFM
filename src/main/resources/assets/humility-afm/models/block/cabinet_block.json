@@ -180,5 +180,6 @@
 			"rotation": [180, 0, 0],
 			"translation": [0, 0, -7.25]
 		}
-	}
+	},
+	"gui_light": "front"
 }

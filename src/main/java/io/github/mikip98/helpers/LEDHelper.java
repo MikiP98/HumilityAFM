@@ -26,7 +26,7 @@ public class LEDHelper {
 
     public static void init() {
         // Create LED block variants
-        Block LEDFictionalBlock = new Block(FabricBlockSettings.create().strength(0.5f).luminance(8));
+        Block LEDFictionalBlock = new Block(FabricBlockSettings.create().strength(0.5f).sounds(BlockSoundGroup.GLASS).luminance(15));
         Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "led_fictional_block"), LEDFictionalBlock);
 
         short LEDBlockVariantsCount = (short) (MainHelper.getWoolTypes().length);
@@ -36,7 +36,7 @@ public class LEDHelper {
         LEDBlockVariants = new Block[LEDBlockVariantsCount];
         LEDBlockItemVariants = new Item[LEDBlockVariantsCount];
 
-        FabricBlockSettings LEDBlockSettings = FabricBlockSettings.create().strength(0.5f).sounds(BlockSoundGroup.GLASS).luminance(8);
+        FabricBlockSettings LEDBlockSettings = FabricBlockSettings.create().strength(0.5f).sounds(BlockSoundGroup.GLASS).luminance(15);
 
         short i = 0;
         for (String color : colors) {
