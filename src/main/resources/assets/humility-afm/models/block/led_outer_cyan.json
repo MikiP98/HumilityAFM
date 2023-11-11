@@ -1,0 +1,7 @@
+{
+    "parent": "humility-afm:block/led_outer",
+    "textures": {
+        "0": "block/cyan_terracotta",
+        "particle": "block/cyan_terracotta"
+    }
+}

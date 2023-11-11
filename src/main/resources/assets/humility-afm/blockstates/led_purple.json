@@ -3,45 +3,46 @@
         "facing=east,half=bottom,shape=inner_left": {
             "model": "humility-afm:block/led_inner_purple",
             "x": 180,
-            "y": 270,
             "uvlock": true
         },
         "facing=east,half=bottom,shape=inner_right": {
             "model": "humility-afm:block/led_inner_purple",
-            "x": 180
+            "x": 180,
+            "y": 90,
+            "uvlock": true
         },
         "facing=east,half=bottom,shape=outer_left": {
             "model": "humility-afm:block/led_outer_purple",
             "x": 180,
-            "y": 270,
             "uvlock": true
         },
         "facing=east,half=bottom,shape=outer_right": {
             "model": "humility-afm:block/led_outer_purple",
-            "x": 180
+            "x": 180,
+            "y": 90,
+            "uvlock": true
         },
         "facing=east,half=bottom,shape=straight": {
             "model": "humility-afm:block/led_purple",
             "x": 180,
-            "y": 90
+            "y": 90,
+            "uvlock": true
         },
         "facing=east,half=top,shape=inner_left": {
             "model": "humility-afm:block/led_inner_purple",
+            "y": 270,
             "uvlock": true
         },
         "facing=east,half=top,shape=inner_right": {
-            "model": "humility-afm:block/led_inner_purple",
-            "y": 90,
-            "uvlock": true
+            "model": "humility-afm:block/led_inner_purple"
         },
         "facing=east,half=top,shape=outer_left": {
             "model": "humility-afm:block/led_outer_purple",
+            "y": 270,
             "uvlock": true
         },
         "facing=east,half=top,shape=outer_right": {
-            "model": "humility-afm:block/led_outer_purple",
-            "y": 90,
-            "uvlock": true
+            "model": "humility-afm:block/led_outer_purple"
         },
         "facing=east,half=top,shape=straight": {
             "model": "humility-afm:block/led_purple",
@@ -51,25 +52,23 @@
         "facing=north,half=bottom,shape=inner_left": {
             "model": "humility-afm:block/led_inner_purple",
             "x": 180,
-            "y": 180,
+            "y": 270,
             "uvlock": true
         },
         "facing=north,half=bottom,shape=inner_right": {
             "model": "humility-afm:block/led_inner_purple",
             "x": 180,
-            "y": 270,
             "uvlock": true
         },
         "facing=north,half=bottom,shape=outer_left": {
             "model": "humility-afm:block/led_outer_purple",
             "x": 180,
-            "y": 180,
+            "y": 270,
             "uvlock": true
         },
         "facing=north,half=bottom,shape=outer_right": {
             "model": "humility-afm:block/led_outer_purple",
             "x": 180,
-            "y": 270,
             "uvlock": true
         },
         "facing=north,half=bottom,shape=straight": {
@@ -79,20 +78,22 @@
         },
         "facing=north,half=top,shape=inner_left": {
             "model": "humility-afm:block/led_inner_purple",
-            "y": 270,
+            "y": 180,
             "uvlock": true
         },
         "facing=north,half=top,shape=inner_right": {
             "model": "humility-afm:block/led_inner_purple",
+            "y": 270,
             "uvlock": true
         },
         "facing=north,half=top,shape=outer_left": {
             "model": "humility-afm:block/led_outer_purple",
-            "y": 270,
+            "y": 180,
             "uvlock": true
         },
         "facing=north,half=top,shape=outer_right": {
             "model": "humility-afm:block/led_outer_purple",
+            "y": 270,
             "uvlock": true
         },
         "facing=north,half=top,shape=straight": {
@@ -102,22 +103,26 @@
         },
         "facing=south,half=bottom,shape=inner_left": {
             "model": "humility-afm:block/led_inner_purple",
-            "x": 180
-        },
-        "facing=south,half=bottom,shape=inner_right": {
-            "model": "humility-afm:block/led_inner_purple",
             "x": 180,
             "y": 90,
             "uvlock": true
         },
+        "facing=south,half=bottom,shape=inner_right": {
+            "model": "humility-afm:block/led_inner_purple",
+            "x": 180,
+            "y": 180,
+            "uvlock": true
+        },
         "facing=south,half=bottom,shape=outer_left": {
             "model": "humility-afm:block/led_outer_purple",
-            "x": 180
+            "x": 180,
+            "y": 90,
+            "uvlock": true
         },
         "facing=south,half=bottom,shape=outer_right": {
             "model": "humility-afm:block/led_outer_purple",
             "x": 180,
-            "y": 90,
+            "y": 180,
             "uvlock": true
         },
         "facing=south,half=bottom,shape=straight": {
@@ -127,77 +132,72 @@
             "uvlock": true
         },
         "facing=south,half=top,shape=inner_left": {
-            "model": "humility-afm:block/led_inner_purple",
-            "y": 90,
-            "uvlock": true
+            "model": "humility-afm:block/led_inner_purple"
         },
         "facing=south,half=top,shape=inner_right": {
             "model": "humility-afm:block/led_inner_purple",
-            "y": 180,
+            "y": 90,
             "uvlock": true
         },
         "facing=south,half=top,shape=outer_left": {
+            "model": "humility-afm:block/led_outer_purple"
+        },
+        "facing=south,half=top,shape=outer_right": {
             "model": "humility-afm:block/led_outer_purple",
             "y": 90,
             "uvlock": true
         },
-        "facing=south,half=top,shape=outer_right": {
-            "model": "humility-afm:block/led_outer_purple",
-            "y": 180,
-            "uvlock": true
-        },
         "facing=south,half=top,shape=straight": {
-            "model": "humility-afm:block/led_purple",
-            "uvlock": true
+            "model": "humility-afm:block/led_purple"
         },
         "facing=west,half=bottom,shape=inner_left": {
             "model": "humility-afm:block/led_inner_purple",
             "x": 180,
-            "y": 90,
+            "y": 180,
             "uvlock": true
         },
         "facing=west,half=bottom,shape=inner_right": {
             "model": "humility-afm:block/led_inner_purple",
             "x": 180,
-            "y": 180,
+            "y": 270,
             "uvlock": true
         },
         "facing=west,half=bottom,shape=outer_left": {
             "model": "humility-afm:block/led_outer_purple",
             "x": 180,
-            "y": 90,
+            "y": 180,
             "uvlock": true
         },
         "facing=west,half=bottom,shape=outer_right": {
             "model": "humility-afm:block/led_outer_purple",
             "x": 180,
-            "y": 180,
+            "y": 270,
             "uvlock": true
         },
         "facing=west,half=bottom,shape=straight": {
             "model": "humility-afm:block/led_purple",
             "x": 180,
-            "y": 90,
+            "y": 270,
             "uvlock": true
         },
         "facing=west,half=top,shape=inner_left": {
             "model": "humility-afm:block/led_inner_purple",
-            "y": 180,
+            "y": 90,
             "uvlock": true
         },
         "facing=west,half=top,shape=inner_right": {
             "model": "humility-afm:block/led_inner_purple",
-            "y": 270,
+            "y": 180,
             "uvlock": true
         },
         "facing=west,half=top,shape=outer_left": {
             "model": "humility-afm:block/led_outer_purple",
-            "y": 180,
+            "y": 90,
             "uvlock": true
         },
         "facing=west,half=top,shape=outer_right": {
             "model": "humility-afm:block/led_outer_purple",
-            "y": 270,
+            "y": 180,
             "uvlock": true
         },
         "facing=west,half=top,shape=straight": {
