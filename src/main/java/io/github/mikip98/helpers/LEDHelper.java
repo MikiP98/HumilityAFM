@@ -1,6 +1,8 @@
 package io.github.mikip98.helpers;
 
+import io.github.mikip98.HumilityAFM;
 import io.github.mikip98.content.blocks.LEDBlock;
+import io.github.mikip98.content.blocks.LEDStripBlock;
 import io.github.mikip98.helpers.MainHelper;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -9,6 +11,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 
 import static io.github.mikip98.HumilityAFM.MOD_ID;
@@ -23,6 +26,9 @@ public class LEDHelper {
 
     public static void init() {
         // Create LED block variants
+        Block LEDFictionalBlock = new Block(FabricBlockSettings.create().strength(0.5f).luminance(8));
+        Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "led_fictional_block"), LEDFictionalBlock);
+
         short LEDBlockVariantsCount = (short) (MainHelper.getWoolTypes().length);
 
         LEDBlockVariantsNames = new String[LEDBlockVariantsCount];
@@ -30,14 +36,14 @@ public class LEDHelper {
         LEDBlockVariants = new Block[LEDBlockVariantsCount];
         LEDBlockItemVariants = new Item[LEDBlockVariantsCount];
 
-        FabricBlockSettings LEDBlockSettings = FabricBlockSettings.create().strength(0.5f).nonOpaque();
+        FabricBlockSettings LEDBlockSettings = FabricBlockSettings.create().strength(0.5f).sounds(BlockSoundGroup.GLASS).luminance(8);
 
         short i = 0;
         for (String color : colors) {
             LEDBlockVariantsNames[i] = color;
             //LOGGER.info("Creating LED block variant: " + LEDBlockVariantsNames[i]);
             // Create LED block variant
-            LEDBlockVariants[i] = new LEDBlock(LEDBlockSettings);
+            LEDBlockVariants[i] = new LEDStripBlock(LEDFictionalBlock.getDefaultState(), LEDBlockSettings);
             // Create LED block variant item
             LEDBlockItemVariants[i] = new BlockItem(LEDBlockVariants[i], new FabricItemSettings());
 

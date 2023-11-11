@@ -2,6 +2,7 @@ package io.github.mikip98;
 
 import io.github.mikip98.config.ConfigToJSON;
 import io.github.mikip98.config.ModConfig;
+import io.github.mikip98.content.blockentities.LEDBlockEntity;
 import io.github.mikip98.content.blockentities.cabinetBlock.IlluminatedCabinetBlockEntity;
 import io.github.mikip98.content.blocks.LEDBlock;
 import io.github.mikip98.content.blocks.stairs.InnerStairs;
@@ -47,6 +48,9 @@ public class HumilityAFM implements ModInitializer {
 	//Cabinet block entity
 	public static BlockEntityType<CabinetBlockEntity> CABINET_BLOCK_ENTITY;
 	public static BlockEntityType<IlluminatedCabinetBlockEntity> ILLUMINATED_CABINET_BLOCK_ENTITY;
+
+	// LED block entity
+	public static BlockEntityType<LEDBlockEntity> LED_BLOCK_ENTITY;
 
 	// Stairs
 	private static final float WoodenStairsBlockStrength = 2.0f;
@@ -140,7 +144,6 @@ public class HumilityAFM implements ModInitializer {
 				.icon(() -> new ItemStack(WoodenMosaicHelper.woodenMosaicVariants[0]))
 				.displayName(Text.translatable("itemGroup.woodenMosaics"))
 				.entries((displayContext, entries) -> {
-//					entries.add(new ItemStack(WOODEN_MOSAIC));
 					for (int i = 0; i < WoodenMosaicHelper.woodenMosaicVariants.length; i++) {
 						LOGGER.info("Adding wooden mosaic variant to item group: " + WoodenMosaicHelper.woodenMosaicVariants[i]);
 						entries.add(new ItemStack(WoodenMosaicHelper.woodenMosaicVariants[i])); // TODO: Fix this
@@ -148,6 +151,34 @@ public class HumilityAFM implements ModInitializer {
 				})
 				.build();
 		Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "wooden_mosaics_group"), WOODEN_MOSAIC_ITEM_GROUP);
+
+		// Register TerracottaTiles item group
+		final ItemGroup TERRACOTTA_TILES_ITEM_GROUP = FabricItemGroup.builder()
+				.icon(() -> new ItemStack(TerracottaTilesHelper.terracottaTilesVariants[0]))
+				.displayName(Text.translatable("itemGroup.terracottaTiles"))
+				.entries((displayContext, entries) -> {
+					for (int i = 0; i < TerracottaTilesHelper.terracottaTilesVariants.length; i++) {
+						LOGGER.info("Adding terracotta tiles variant to item group: " + TerracottaTilesHelper.terracottaTilesVariants[i]);
+						entries.add(new ItemStack(TerracottaTilesHelper.terracottaTilesVariants[i]));
+					}
+				})
+				.build();
+		Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "terracotta_tiles_group"), TERRACOTTA_TILES_ITEM_GROUP);
+
+		// Register LED item group
+		if (ModConfig.enableLEDs) {
+			final ItemGroup LED_ITEM_GROUP = FabricItemGroup.builder()
+					.icon(() -> new ItemStack(LEDHelper.LEDBlockVariants[0]))
+					.displayName(Text.translatable("itemGroup.leds"))
+					.entries((displayContext, entries) -> {
+						for (int i = 0; i < LEDHelper.LEDBlockVariants.length; i++) {
+							LOGGER.info("Adding LED variant to item group: " + LEDHelper.LEDBlockVariants[i]);
+							entries.add(new ItemStack(LEDHelper.LEDBlockVariants[i]));
+						}
+					})
+					.build();
+			Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "leds_group"), LED_ITEM_GROUP);
+		}
 
 		// ............ TEST BLOCKS & ITEMS ............
 		// Register cabinet
@@ -210,5 +241,14 @@ public class HumilityAFM implements ModInitializer {
 				new Identifier(MOD_ID, "illuminated_cabinet_block_entity"),
 				FabricBlockEntityTypeBuilder.create(IlluminatedCabinetBlockEntity::new, getIlluminatedCabinetBlockVariantsToRegisterBlockEntity()).build()
 		);
+
+		//Register LED block entity
+		if (ModConfig.enableLEDs) {
+			LED_BLOCK_ENTITY = Registry.register(
+					Registries.BLOCK_ENTITY_TYPE,
+					new Identifier(MOD_ID, "led_block_entity"),
+					FabricBlockEntityTypeBuilder.create(LEDBlockEntity::new, LEDHelper.LEDBlockVariants).build()
+			);
+		}
 	}
 }

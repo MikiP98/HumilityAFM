@@ -1,10 +1,12 @@
 package io.github.mikip98;
 
+import io.github.mikip98.config.ModConfig;
 import io.github.mikip98.content.blockentities.cabinetBlock.IlluminatedCabinetBlockEntityRenderer;
 import io.github.mikip98.helpers.CabinetBlockHelper;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import io.github.mikip98.content.blockentities.cabinetBlock.CabinetBlockEntityRenderer;
+import io.github.mikip98.content.blockentities.LEDBlockEntityRenderer;
 import net.minecraft.block.Block;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
@@ -26,6 +28,11 @@ public class HumilityAFMClient implements ClientModInitializer {
 		}
 		for (Block illuminatedCabinetBlockVariant : CabinetBlockHelper.illuminatedCabinetBlockVariants) {
 			BlockRenderLayerMap.INSTANCE.putBlock(illuminatedCabinetBlockVariant, RenderLayer.getCutout());
+		}
+
+		// LED block variants
+		if (ModConfig.enableLEDs) {
+			BlockEntityRendererFactories.register(HumilityAFM.LED_BLOCK_ENTITY, LEDBlockEntityRenderer::new);
 		}
 	}
 }
