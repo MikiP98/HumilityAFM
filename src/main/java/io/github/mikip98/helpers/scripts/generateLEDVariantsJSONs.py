@@ -4,6 +4,43 @@ def generateLEDVariantsJSONs():
     print("Generating LED variants JSONs...")
     for color in colors:
         print(f"Generating LED variants JSON for {color}...")
+
+        # Generate the powder item model
+        JSON = """{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "humility-afm:item/led_powder_""" + color + """"
+    }
+}"""
+        # Write the powder item model to the file
+        with open(f"src/main/resources/assets/humility-afm/models/item/led_powder_{color}.json", "w") as f:
+            f.write(JSON)
+
+        # Generate the powder item recipe
+        JSON = """{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "minecraft:glowstone_dust"
+        },
+        {
+            "item": "minecraft:redstone",
+            "data": 0
+        },
+        {
+            "item": "minecraft:""" + color + """_dye",
+            "data": 0
+        }
+    ],
+    "result": {
+        "item": "humility-afm:led_powder_""" + color + """",
+        "count": 1
+    }
+}"""
+        # Write the powder item recipe to the file
+        with open(f"src/main/resources/data/humility-afm/recipes/led_powder_{color}.json", "w") as f:
+            f.write(JSON)
+        
         # Generate the model
         JSON = """{
     "parent": "humility-afm:block/led",
@@ -260,6 +297,57 @@ def generateLEDVariantsJSONs():
 }"""
         # Write the blockstate to the file
         with open(f"src/main/resources/assets/humility-afm/blockstates/led_{color}.json", "w") as f:
+            f.write(JSON)
+
+        # Generate the recipe
+        JSON = """{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "QQQ",
+        "PPP",
+        "GGG"
+    ],
+    "key": {
+        "Q": {
+            "item": "minecraft:quartz"
+        },
+        "P": {
+            "item": "humility-afm:led_powder_""" + color + """"
+        },
+        "G": {
+            "item": "minecraft:glass_pane"
+        }
+    },
+    "result": {
+        "item": "humility-afm:led_""" + color + """"
+    }
+}"""
+        # Write the recipe to the file
+        with open(f"src/main/resources/data/humility-afm/recipes/led_{color}.json", "w") as f:
+            f.write(JSON)
+
+        # Generate the loot table
+        JSON = """{
+    "type": "minecraft:block",
+    "pools": [
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "humility-afm:led_""" + color + """"
+                }
+            ],
+            "conditions": [
+                {
+                    "condition": "minecraft:survives_explosion"
+                }
+            ]
+        }
+    ]
+}"""
+        # Write the loot table to the file
+        with open(f"src/main/resources/data/humility-afm/loot_tables/blocks/led_{color}.json", "w") as f:
             f.write(JSON)
 
 

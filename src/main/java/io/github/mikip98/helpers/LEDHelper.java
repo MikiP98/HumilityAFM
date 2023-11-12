@@ -19,8 +19,7 @@ import static io.github.mikip98.HumilityAFM.MOD_ID;
 public class LEDHelper {
     static String[] colors = MainHelper.getWoolTypes();
 
-    public static String[] LEDBlockVariantsNames;
-
+    public static Item[] LEDPowderVariants;
     public static Block[] LEDBlockVariants;
     public static Item[] LEDBlockItemVariants;
 
@@ -31,7 +30,7 @@ public class LEDHelper {
 
         short LEDBlockVariantsCount = (short) (MainHelper.getWoolTypes().length);
 
-        LEDBlockVariantsNames = new String[LEDBlockVariantsCount];
+        LEDPowderVariants = new Item[LEDBlockVariantsCount];
 
         LEDBlockVariants = new Block[LEDBlockVariantsCount];
         LEDBlockItemVariants = new Item[LEDBlockVariantsCount];
@@ -40,8 +39,9 @@ public class LEDHelper {
 
         short i = 0;
         for (String color : colors) {
-            LEDBlockVariantsNames[i] = color;
-            //LOGGER.info("Creating LED block variant: " + LEDBlockVariantsNames[i]);
+            // Create LED powder variant
+            LEDPowderVariants[i] = new Item(new FabricItemSettings());
+
             // Create LED block variant
             LEDBlockVariants[i] = new LEDStripBlock(LEDFictionalBlock.getDefaultState(), LEDBlockSettings);
             // Create LED block variant item
@@ -54,6 +54,10 @@ public class LEDHelper {
     public static void registerLEDBlockVariants() {
         short i = 0;
         for (String color : colors) {
+            String LEDPowderVariantName = "led_powder_" + color;
+            // Register LED powder variant
+            Registry.register(Registries.ITEM, new Identifier(MOD_ID, LEDPowderVariantName), LEDPowderVariants[i]);
+
             String LEDBlockVariantName = "led_" + color;
             //LOGGER.info("Registering LED block variant: " + LEDBlockVariantsNames[i]);
             // Register LED block variant

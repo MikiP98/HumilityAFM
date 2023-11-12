@@ -1,0 +1,6 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "humility-afm:item/led_powder_purple"
+    }
+}
