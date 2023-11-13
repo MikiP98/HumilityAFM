@@ -35,20 +35,4 @@ public class LEDBlockEntityRenderer implements BlockEntityRenderer<LEDBlockEntit
         // Pop the matrix stack to avoid issues with subsequent rendering
         matrices.pop();
     }
-
-    // Helper method to calculate combined light with brightness adjustment
-    private int calculateCombinedLight(int light, float brightness) {
-//        return 0xF000F0;  // Max block light (15) and max skylight (15) - ChatGPT
-//        return 0xFF0000;  // Max block light (15) and max skylight (15) - GitHub Copilot
-
-        // Return adjusted brightness values
-        int blockLight = light & 0xFF;
-        int skyLight = (light >> 16) & 0xFF;
-
-        // Adjust the brightness here, you may need to fine-tune the formula based on your needs
-        blockLight = (int)(blockLight * brightness);
-        skyLight = (int)(skyLight * brightness);
-
-        return blockLight | (skyLight << 16);
-    }
 }

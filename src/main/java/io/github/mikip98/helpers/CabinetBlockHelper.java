@@ -25,7 +25,7 @@ public class CabinetBlockHelper {
 
     private static final float CabinetBlockStrength = 2.0f;
     private static final FabricBlockSettings CabinetBlockSettings = FabricBlockSettings.create().strength(CabinetBlockStrength).requiresTool().nonOpaque().sounds(BlockSoundGroup.WOOD);
-    private static final FabricBlockSettings IlluminatedCabinetBlockSettings = FabricBlockSettings.create().strength(CabinetBlockStrength).requiresTool().nonOpaque().sounds(BlockSoundGroup.WOOD).luminance(3);
+    private static final FabricBlockSettings IlluminatedCabinetBlockSettings = FabricBlockSettings.create().strength(CabinetBlockStrength).requiresTool().nonOpaque().sounds(BlockSoundGroup.WOOD).luminance(2);
 
     public static String[] cabinetBlockVariantsNames;
 
