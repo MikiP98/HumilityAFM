@@ -1,6 +1,5 @@
 package io.github.mikip98.content.blockentities.cabinetBlock;
 
-import io.github.mikip98.content.blocks.LEDStripBlock;
 import io.github.mikip98.content.blocks.cabinet.CabinetBlock;
 import io.github.mikip98.content.blocks.cabinet.IlluminatedCabinetBlock;
 import io.github.mikip98.helpers.BlockEntityRendererHelper;
@@ -8,28 +7,23 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.joml.Quaternionf;
-
-import java.util.Objects;
 
 import static io.github.mikip98.HumilityAFM.LOGGER;
 
 @Environment(EnvType.CLIENT)
 public class IlluminatedCabinetBlockEntityRenderer implements BlockEntityRenderer<IlluminatedCabinetBlockEntity> {
 
+    @SuppressWarnings("unused")
     public IlluminatedCabinetBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {}
 
     @Override
@@ -142,9 +136,11 @@ public class IlluminatedCabinetBlockEntityRenderer implements BlockEntityRendere
         matrices.scale(scale, scale, scale);
 
         // Render the LED strip block
+        int outsideLight = BlockEntityRendererHelper.multiplyLight(light, 1.1f);
+        outsideLight = BlockEntityRendererHelper.addLight(outsideLight, 1);
+
         MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(
-                blockState, matrices, vertexConsumers,
-                BlockEntityRendererHelper.calculateCombinedLight(light, 1.5f), overlay); // 0xF000F0
+                blockState, matrices, vertexConsumers, outsideLight, overlay); // 0xF000F0
 
         matrices.pop();
         matrices.push();
@@ -156,9 +152,11 @@ public class IlluminatedCabinetBlockEntityRenderer implements BlockEntityRendere
         matrices.scale(scale, scale, scale);
 
         // Render the LED strip block
+        int insideLight = BlockEntityRendererHelper.multiplyLight(light, 1.15f);
+        insideLight = BlockEntityRendererHelper.addLight(insideLight, 3);
+
         MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(
-                blockState, matrices, vertexConsumers,
-                BlockEntityRendererHelper.calculateCombinedLight(light, 2f), overlay); // 0xF000F0
+                blockState, matrices, vertexConsumers, insideLight, overlay); // 0xF000F0
 
         matrices.pop();
     }
