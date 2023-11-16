@@ -7,7 +7,7 @@ This is a simple small mod that add some simple decorative blocks such as cabine
 It specializes in procedurally generating variants of the same block so that you can always find the look you were searching for.
 <br>
 <br>
-### Features
+### Features:
 Cabinets! <br>
 Make your treasures pop! <br>
 Match the wood to your build and wool interior to your item! <br>
