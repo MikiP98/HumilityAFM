@@ -1,11 +1,15 @@
 package io.github.mikip98.content.blockentities.cabinetBlock;
 
+import io.github.mikip98.content.blocks.LEDStripBlock;
 import io.github.mikip98.content.blocks.cabinet.CabinetBlock;
+import io.github.mikip98.content.blocks.cabinet.IlluminatedCabinetBlock;
 import io.github.mikip98.helpers.BlockEntityRendererHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
@@ -14,6 +18,9 @@ import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
 import org.joml.Quaternionf;
 
 import java.util.Objects;
@@ -29,6 +36,23 @@ public class IlluminatedCabinetBlockEntityRenderer implements BlockEntityRendere
     public void render(IlluminatedCabinetBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         matrices.push();
 
+        World world = blockEntity.getWorld();
+        BlockPos pos = blockEntity.getPos();
+
+        if (world == null || pos == null) {
+            // If the world or position is null, return early
+            matrices.pop();
+            return;
+        }
+
+        BlockState blockState = world.getBlockState(pos);
+
+        if (blockState == null || !(blockState.getBlock() instanceof IlluminatedCabinetBlock)) {
+            // If the block state is null or not an instance of LEDStripBlock, return early
+            matrices.pop();
+            return;
+        }
+
         final ItemStack stack = blockEntity.getStack(0);
 
         float scaleY = 0.375f;
@@ -39,29 +63,24 @@ public class IlluminatedCabinetBlockEntityRenderer implements BlockEntityRendere
 //        if (stack.getItem() instanceof BlockItem) {
 //            scaleY = 0.3125f;
 //        }
-        try {
-            switch (blockEntity.getWorld().getBlockState(blockEntity.getPos()).get(CabinetBlock.FACING)) {
-                case NORTH -> {
-                    matrices.translate(0.5, scaleY, 0.9);
+        switch (blockState.get(CabinetBlock.FACING)) {
+            case NORTH -> {
+                matrices.translate(0.5, scaleY, 0.9);
 
-                    rotation = new Quaternionf().rotationYXZ((float) Math.toRadians(180), 0.0f, 0.0f); // Create a rotation quaternion for a 180-degree rotation around the Y-axis
-                    matrices.multiply(rotation);
-                }
-                case SOUTH -> matrices.translate(0.5, scaleY, 0.1);
-                case EAST -> {
-                    matrices.translate(0.1, scaleY, 0.5);
-                    rotation = new Quaternionf().rotationYXZ((float) Math.toRadians(90), 0.0f, 0.0f);
-                    matrices.multiply(rotation);
-                }
-                case WEST -> {
-                    matrices.translate(0.9, scaleY, 0.5);
-                    rotation = new Quaternionf().rotationYXZ((float) Math.toRadians(270), 0.0f, 0.0f);
-                    matrices.multiply(rotation);
-                }
+                rotation = new Quaternionf().rotationYXZ((float) Math.toRadians(180), 0.0f, 0.0f); // Create a rotation quaternion for a 180-degree rotation around the Y-axis
+                matrices.multiply(rotation);
             }
-        } catch (Exception e) {
-            matrices.translate(0.5, scaleY, 0.1);
-            LOGGER.error("Error rendering illuminated cabinet block entity");
+            case SOUTH -> matrices.translate(0.5, scaleY, 0.1);
+            case EAST -> {
+                matrices.translate(0.1, scaleY, 0.5);
+                rotation = new Quaternionf().rotationYXZ((float) Math.toRadians(90), 0.0f, 0.0f);
+                matrices.multiply(rotation);
+            }
+            case WEST -> {
+                matrices.translate(0.9, scaleY, 0.5);
+                rotation = new Quaternionf().rotationYXZ((float) Math.toRadians(270), 0.0f, 0.0f);
+                matrices.multiply(rotation);
+            }
         }
 
         //Actually render the item
@@ -70,19 +89,77 @@ public class IlluminatedCabinetBlockEntityRenderer implements BlockEntityRendere
         MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformationMode.GROUND, false, matrices, vertexConsumers, 255, overlay, model);
         //15728640 + 255 = fully lit
 
+        matrices.pop(); // Pop before rendering the block
+        matrices.push(); // Push again to render the block
 
-        matrices.translate(blockEntity.getPos().getX(), blockEntity.getPos().getY(), blockEntity.getPos().getZ());
+        float blockSize = 0.875f;
+//        byte posisionConstant = 8;
+        float posisionConstant = 1.15f;
 
-        // Get the block state from the world, you might need to replace it based on your block entity logic
-        BlockState blockState = Objects.requireNonNull(blockEntity.getWorld()).getBlockState(blockEntity.getPos());
+        float blockSizeX = blockSize;
+        float blockSizeY = blockSize;
+        float blockSizeZ = blockSize;
+        float posisionConstantX = posisionConstant;
+        float posisionConstantY = posisionConstant;
+        float posisionConstantZ = posisionConstant;
+
+        float scale = 1.005f;
+
+//        switch (blockState.get(CabinetBlock.FACING)) {
+//            case NORTH -> {
+//                blockSizeZ = 0.25f;
+//                posisionConstantZ = posisionConstant;
+//            }
+//            case SOUTH -> {
+//                blockSizeZ = 0.25f;
+//            }
+//            case EAST -> {
+//                blockSizeX = 0.25f;
+//            }
+//            case WEST -> {
+//                blockSizeX = 0.25f;
+//                posisionConstantX = posisionConstant;
+//            }
+//        }
+        blockSizeX = 0.25f;
+        switch (blockState.get(CabinetBlock.FACING)) {
+            case NORTH -> {
+                posisionConstantX = 4f;
+                posisionConstantZ = 2f;
+            }
+            case SOUTH -> {
+                posisionConstantX = 4f;
+                posisionConstantZ = 0.3f;
+            }
+            case WEST -> {
+                posisionConstantX = 7f;
+            }
+        }
+
+//        matrices.scale(1, 1, 1);
+        matrices.translate(-blockSizeX/2*(scale-1)*posisionConstantX, -blockSizeY/2*(scale-1)*posisionConstantY, -blockSizeZ/2*(scale-1)*posisionConstantZ);
+
+        matrices.scale(scale, scale, scale);
 
         // Render the LED strip block
         MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(
                 blockState, matrices, vertexConsumers,
-                BlockEntityRendererHelper.calculateCombinedLight(light, 1.1f), overlay);
+                BlockEntityRendererHelper.calculateCombinedLight(light, 1.5f), overlay); // 0xF000F0
 
+        matrices.pop();
+        matrices.push();
 
-        // Mandatory call after GL calls
+        scale = 0.992f;
+
+        matrices.translate(-blockSizeX/2*(scale-1)*posisionConstantX, -blockSizeY/2*(scale-1)*posisionConstantY, -blockSizeZ/2*(scale-1)*posisionConstantZ);
+
+        matrices.scale(scale, scale, scale);
+
+        // Render the LED strip block
+        MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(
+                blockState, matrices, vertexConsumers,
+                BlockEntityRendererHelper.calculateCombinedLight(light, 2f), overlay); // 0xF000F0
+
         matrices.pop();
     }
 }

@@ -145,7 +145,7 @@ public class HumilityAFM implements ModInitializer {
 				.displayName(Text.translatable("itemGroup.woodenMosaics"))
 				.entries((displayContext, entries) -> {
 					for (int i = 0; i < WoodenMosaicHelper.woodenMosaicVariants.length; i++) {
-						LOGGER.info("Adding wooden mosaic variant to item group: " + WoodenMosaicHelper.woodenMosaicVariants[i]);
+//						LOGGER.info("Adding wooden mosaic variant to item group: " + WoodenMosaicHelper.woodenMosaicVariants[i]);
 						entries.add(new ItemStack(WoodenMosaicHelper.woodenMosaicVariants[i])); // TODO: Fix this
 					}
 				})
@@ -158,7 +158,7 @@ public class HumilityAFM implements ModInitializer {
 				.displayName(Text.translatable("itemGroup.terracottaTiles"))
 				.entries((displayContext, entries) -> {
 					for (int i = 0; i < TerracottaTilesHelper.terracottaTilesVariants.length; i++) {
-						LOGGER.info("Adding terracotta tiles variant to item group: " + TerracottaTilesHelper.terracottaTilesVariants[i]);
+//						LOGGER.info("Adding terracotta tiles variant to item group: " + TerracottaTilesHelper.terracottaTilesVariants[i]);
 						entries.add(new ItemStack(TerracottaTilesHelper.terracottaTilesVariants[i]));
 					}
 				})
@@ -172,7 +172,7 @@ public class HumilityAFM implements ModInitializer {
 					.displayName(Text.translatable("itemGroup.leds"))
 					.entries((displayContext, entries) -> {
 						for (int i = 0; i < LEDHelper.LEDBlockVariants.length; i++) {
-							LOGGER.info("Adding LED variant to item group: " + LEDHelper.LEDBlockVariants[i]);
+//							LOGGER.info("Adding LED variant to item group: " + LEDHelper.LEDBlockVariants[i]);
 							entries.add(new ItemStack(LEDHelper.LEDBlockVariants[i]));
 						}
 					})

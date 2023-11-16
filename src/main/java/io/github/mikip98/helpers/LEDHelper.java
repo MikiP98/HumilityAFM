@@ -35,7 +35,7 @@ public class LEDHelper {
         LEDBlockVariants = new Block[LEDBlockVariantsCount];
         LEDBlockItemVariants = new Item[LEDBlockVariantsCount];
 
-        FabricBlockSettings LEDBlockSettings = FabricBlockSettings.create().strength(0.5f).sounds(BlockSoundGroup.GLASS).luminance(15);
+        FabricBlockSettings LEDBlockSettings = FabricBlockSettings.create().strength(0.5f).sounds(BlockSoundGroup.GLASS).luminance(9);
 
         short i = 0;
         for (String color : colors) {
