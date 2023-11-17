@@ -1,4 +1,4 @@
-package io.github.mikip98.content.blocks;
+package io.github.mikip98.content.blocks.leds;
 
 import io.github.mikip98.content.blockentities.LEDBlockEntity;
 import net.minecraft.block.BlockEntityProvider;
@@ -16,7 +16,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
-public class LEDStripBlock extends StairsBlock implements BlockEntityProvider {
+public class LEDStripBlock extends StairsBlock {
     public LEDStripBlock(BlockState baseBlockState, Settings settings) {
         super(baseBlockState, settings);
     }
@@ -193,11 +193,5 @@ public class LEDStripBlock extends StairsBlock implements BlockEntityProvider {
             }
         }
         return shape;
-    }
-
-    @Nullable
-    @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new LEDBlockEntity(pos, state);
     }
 }

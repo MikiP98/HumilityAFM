@@ -1,9 +1,8 @@
 package io.github.mikip98.helpers;
 
-import io.github.mikip98.HumilityAFM;
-import io.github.mikip98.content.blocks.LEDBlock;
-import io.github.mikip98.content.blocks.LEDStripBlock;
-import io.github.mikip98.helpers.MainHelper;
+import io.github.mikip98.config.ModConfig;
+import io.github.mikip98.content.blocks.leds.LEDStripBlock;
+import io.github.mikip98.content.blocks.leds.LEDStripBlockWE;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
@@ -43,7 +42,12 @@ public class LEDHelper {
             LEDPowderVariants[i] = new Item(new FabricItemSettings());
 
             // Create LED block variant
-            LEDBlockVariants[i] = new LEDStripBlock(LEDFictionalBlock.getDefaultState(), LEDBlockSettings);
+            if (!ModConfig.enableLEDsBrightening || ModConfig.shimmerDetected) {
+                LEDBlockVariants[i] = new LEDStripBlock(LEDFictionalBlock.getDefaultState(), LEDBlockSettings);
+            } else {
+                LEDBlockVariants[i] = new LEDStripBlockWE(LEDFictionalBlock.getDefaultState(), LEDBlockSettings);
+            }
+
             // Create LED block variant item
             LEDBlockItemVariants[i] = new BlockItem(LEDBlockVariants[i], new FabricItemSettings());
 

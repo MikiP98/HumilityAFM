@@ -1,6 +1,6 @@
 package io.github.mikip98.content.blockentities;
 
-import io.github.mikip98.content.blocks.LEDStripBlock;
+import io.github.mikip98.content.blocks.leds.LEDStripBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.StairsBlock;

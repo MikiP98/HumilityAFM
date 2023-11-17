@@ -1,10 +1,10 @@
 package io.github.mikip98;
 
-import io.github.mikip98.config.ConfigToJSON;
+import io.github.mikip98.config.ConfigJSON;
 import io.github.mikip98.config.ModConfig;
 import io.github.mikip98.content.blockentities.LEDBlockEntity;
 import io.github.mikip98.content.blockentities.cabinetBlock.IlluminatedCabinetBlockEntity;
-import io.github.mikip98.content.blocks.LEDBlock;
+import io.github.mikip98.content.blocks.leds.LEDBlock;
 import io.github.mikip98.content.blocks.stairs.InnerStairs;
 import io.github.mikip98.content.blocks.stairs.OuterStairs;
 import io.github.mikip98.content.blocks.cabinet.CabinetBlock;
@@ -16,6 +16,7 @@ import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.*;
@@ -27,6 +28,11 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import io.github.mikip98.content.blockentities.cabinetBlock.CabinetBlockEntity;
+
+import java.io.File;
+import java.nio.file.Path;
+
+import static net.fabricmc.loader.api.FabricLoader.getInstance;
 
 public class HumilityAFM implements ModInitializer {
 	// This logger is used to write text to the console and the log file.
@@ -96,7 +102,9 @@ public class HumilityAFM implements ModInitializer {
 		// ------------------------------------ INITIALIZATION ------------------------------------
 		LOGGER.info(MOD_NAME + " is initializing!");
 
-		ConfigToJSON.loadConfigFromFile();
+		ConfigJSON.loadConfigFromFile();
+		ConfigJSON.checkShimmerSupportConfig();
+		checkForSupportedMods();
 
 		CabinetBlockHelper.init();
 		InnerOuterStairsHelper.init();
@@ -180,6 +188,21 @@ public class HumilityAFM implements ModInitializer {
 			Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "leds_group"), LED_ITEM_GROUP);
 		}
 
+		// Register Miscellaneous (Humility Misc) item group
+		if (ModConfig.enableLEDs) {
+			final ItemGroup HUMILITY_MISCELLANEOUS_GROUP = FabricItemGroup.builder()
+					.icon(() -> new ItemStack(LEDHelper.LEDPowderVariants[0]))
+					.displayName(Text.translatable("itemGroup.humilityMisc"))
+					.entries((displayContext, entries) -> {
+						for (int i = 0; i < LEDHelper.LEDPowderVariants.length; i++) {
+							entries.add(new ItemStack(LEDHelper.LEDPowderVariants[i]));
+						}
+					})
+					.build();
+			Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "humility_misc_group"), HUMILITY_MISCELLANEOUS_GROUP);
+		}
+
+
 		// ............ TEST BLOCKS & ITEMS ............
 		// Register cabinet
 		Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "cabinet_block"), CABINET_BLOCK);
@@ -249,6 +272,36 @@ public class HumilityAFM implements ModInitializer {
 					new Identifier(MOD_ID, "led_block_entity"),
 					FabricBlockEntityTypeBuilder.create(LEDBlockEntity::new, LEDHelper.LEDBlockVariants).build()
 			);
+		}
+	}
+
+	private static void checkForSupportedMods() {
+		checkIfShimmerModIsPresent();
+		checkForBetterNether();
+	}
+
+	private static void checkForBetterNether() {
+		// TODO: Check if Better Nether is present, and if so, add its wood types to the list
+	}
+
+	private static void checkIfShimmerModIsPresent() {
+		if (getInstance().isModLoaded("shimmer")) {
+			ModConfig.shimmerDetected = true;
+			LOGGER.info("Shimmer mod detected! Disabling LEDs brightening.");
+		} else {
+			// Go through all mods in the mods folder and check if any of them are Shimmer
+			Path gameDirPath = FabricLoader.getInstance().getGameDir();
+			File modsFolder = new File(gameDirPath + "/mods");
+			File[] mods = modsFolder.listFiles();
+			if (mods != null) {
+				for (File mod : mods) {
+					if (mod.getName().startsWith("Shimmer")) {
+						ModConfig.shimmerDetected = true;
+						LOGGER.info("Shimmer mod detected! Disabling LEDs brightening.");
+						break;
+					}
+				}
+			}
 		}
 	}
 }

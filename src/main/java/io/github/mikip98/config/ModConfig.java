@@ -2,7 +2,8 @@ package io.github.mikip98.config;
 
 import io.github.mikip98.helpers.Color;
 
-import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.Map;
 
 public class ModConfig {
     public static boolean enableLEDs = false;
@@ -16,6 +17,8 @@ public class ModConfig {
     public static int cabinetBlockFireSpread = 9;
     public static float mosaicsAndTilesStrengthMultiplayer = 1.5f;
 
-    public static Dictionary<String, Color> customColorReferences = null;
+    public static Map<String, Color> customColorReferences = new Hashtable<>();
+
+    public static boolean shimmerDetected = false;
 }
 

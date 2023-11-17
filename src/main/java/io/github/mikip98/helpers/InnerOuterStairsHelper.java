@@ -137,7 +137,7 @@ public class InnerOuterStairsHelper {
         //Register stairs variants
         short i = 0;
         for (Block innerStairsBlockVariant : innerStairsBlockVariants) {
-            LOGGER.info("Registering inner stairs block variant: " + innerOuterStairsBlockVariantsNames[i]);
+//            LOGGER.info("Registering inner stairs block variant: " + innerOuterStairsBlockVariantsNames[i]);
             Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "inner_stairs_" + innerOuterStairsBlockVariantsNames[i]), innerStairsBlockVariant);
             ++i;
         }

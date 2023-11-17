@@ -1,4 +1,4 @@
-package io.github.mikip98.content.blocks;
+package io.github.mikip98.content.blocks.leds;
 
 import io.github.mikip98.content.blockentities.LEDBlockEntity;
 import net.minecraft.block.*;

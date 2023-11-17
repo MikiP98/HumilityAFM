@@ -56,80 +56,35 @@ def generateTranslationJSON():
     from generateCabinetBlockVariantsJSONs import generateCabinetBlockVariantsNames
     from generateInnerOuterStairsVariantsJSONs import generateInnerOuterStairsVariantsAllNames
     from generateWoodenMosaicVariantsJSONs import generateWoodenMosaicVariantsNames
-    from translationHelper import translateWord
+    import translationHelper
 
     itemGroups = ["cabinets_group", "inner_outer_stairs_group", "wooden_mosaics_group"]
 
     # Generate en_us.json
-    JSON = """{
-    "itemGroup.cabinets": "Cabinets",
-    "itemGroup.innerOuterStairs": "Inner and Outer Stairs",
-    "itemGroup.woodenMosaics": "Wooden Mosaics","""
+    print("Generating en_us.json...")
 
-    for cabinet in generateCabinetBlockVariantsNames():
-        # print(cabinet)
-        wood, wool = cabinet.split("_", 1)
-        wood = wood[0].upper() + wood[1:]
-        wool = wool[0].upper() + wool[1:]
-
-        # Double word wood check
-        if wood == "Dark":
-            wood_2, wool = wool.split("_", 1)
-            wood = wood + " " + wood_2
-            wool = wool[0].upper() + wool[1:]
-
-        # Double word wool check
-        # print(wool[:4])
-        if wool[:5] == "Light":
-            wool_2 = wool[6:]
-            # print(wool_2)
-            wool_2 = wool_2[0].upper() + wool_2[1:]
-            wool = wool[:5] + " " + wool_2
-
-        JSON += """
-    "block.humility-afm.cabinet_block_""" + cabinet + "\": \"" + wood + " " + wool + """ Cabinet",
-    "block.humility-afm.illuminated_cabinet_block_""" + cabinet + "\": \"" + wood + " " + wool + " Illuminated Cabinet\","
-
-    for stairs in generateInnerOuterStairsVariantsAllNames():
-        # print(stairs)
-        words = stairs.split("_")
-        name = ""
-        for word in words:
-            name += word[0].upper() + word[1:] + " "
-        name = name[:-1]
-        JSON += """
-    "block.humility-afm.inner_stairs_""" + stairs + "\": \"" + name + """ Inner Stairs",
-    "block.humility-afm.outer_stairs_""" + stairs + "\": \"" + name + " Outer Stairs\","
-
-    for mosaic in generateWoodenMosaicVariantsNames():
-        words = mosaic.split("_")
-        name = ""
-        for word in words:
-            name += word[0].upper() + word[1:] + " "
-        name = name[:-1]
-        JSON += """
-    "block.humility-afm.wooden_mosaic_""" + mosaic + "\": \"" + name + " Wooden Mosaic\","
-
-    JSON = JSON[:-1]
-    JSON += """
-}"""
+    JSON = translationHelper.translate_en_us(generateCabinetBlockVariantsNames(), generateInnerOuterStairsVariantsAllNames(), generateWoodenMosaicVariantsNames())
+    orginal_JSON = JSON
 
     with open("src/main/resources/assets/humility-afm/lang/en_us.json", "w") as file:
+        print("Saving en_us.json...")
+        file.write(JSON)
+
+    # Generate en_gb.json
+    print("Generating en_gb.json...")
+
+    JSON = translationHelper.translate_en_gb(orginal_JSON)
+
+    with open("src/main/resources/assets/humility-afm/lang/en_gb.json", "w") as file:
+        print("Saving en_gb.json...")
         file.write(JSON)
 
     # Generate pl_pl.json
-    JSON = """{
-    "itemGroup.cabinets": "Gabloty",
-    "itemGroup.innerOuterStairs": "Schody wewnętrzne i zewnętrzne",
-    "itemGroup.woodenMosaics": "Drewniane Mozaiki","""
-
-    JSON += translate_pl_pl(generateCabinetBlockVariantsNames(), generateInnerOuterStairsVariantsAllNames(), generateWoodenMosaicVariantsNames())
-
-    JSON = JSON[:-1]
-    JSON += """
-}"""
+    print("Generating pl_pl.json...")
+    JSON = translationHelper.translate_pl_pl(generateCabinetBlockVariantsNames(), generateInnerOuterStairsVariantsAllNames(), generateWoodenMosaicVariantsNames())
 
     with open("src/main/resources/assets/humility-afm/lang/pl_pl.json", "w") as file:
+        print("Saving pl_pl.json...")
         file.write(JSON)
 
 
