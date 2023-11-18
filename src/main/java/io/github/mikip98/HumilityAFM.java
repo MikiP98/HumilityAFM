@@ -281,7 +281,24 @@ public class HumilityAFM implements ModInitializer {
 	}
 
 	private static void checkForBetterNether() {
-		// TODO: Check if Better Nether is present, and if so, add its wood types to the list
+		if (getInstance().isModLoaded("betternether")) {
+			ModConfig.betterNetherDetected = true;
+			LOGGER.info("Better Nether mod detected! Enabling Better Nether support.");
+		} else {
+			// Go through all mods in the mods folder and check if any of them are Better Nether
+			Path gameDirPath = FabricLoader.getInstance().getGameDir();
+			File modsFolder = new File(gameDirPath + "/mods");
+			File[] mods = modsFolder.listFiles();
+			if (mods != null) {
+				for (File mod : mods) {
+					if (mod.getName().startsWith("betternether")) {
+						ModConfig.betterNetherDetected = true;
+						LOGGER.info("Better Nether mod detected! Enabling Better Nether support.");
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	private static void checkIfShimmerModIsPresent() {

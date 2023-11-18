@@ -1,0 +1,6 @@
+{
+    "parent": "humility-afm:block/cabinet_block_opened_nether_sakura",
+    "textures": {
+        "1": "minecraft:block/yellow_wool"
+    }
+}

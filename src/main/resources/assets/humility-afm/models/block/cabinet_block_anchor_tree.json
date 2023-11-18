@@ -1,0 +1,7 @@
+{
+    "parent": "humility-afm:block/cabinet_block",
+    "textures": {
+        "2": "betternether:block/anchor_tree_planks",
+        "particle": "betternether:block/anchor_tree_planks"
+    }
+}

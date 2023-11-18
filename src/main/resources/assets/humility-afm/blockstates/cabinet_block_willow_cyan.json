@@ -1,0 +1,60 @@
+{
+    "multipart": [
+        {
+            "when": { "AND": [
+                {"facing": "north" },
+                {"open": true }
+            ]},
+            "apply": { "model": "humility-afm:block/cabinet_block_opened_willow_cyan", "y": 180 }
+        },
+        {
+            "when": { "AND": [
+                {"facing": "north" },
+                {"open": false }
+            ]},
+            "apply": { "model": "humility-afm:block/cabinet_block_willow_cyan", "y": 180 }
+        },
+        {
+            "when": { "AND": [
+                {"facing": "east" },
+                {"open": true }
+            ]},
+            "apply": { "model": "humility-afm:block/cabinet_block_opened_willow_cyan", "y": 270 }
+        },
+        {
+            "when": { "AND": [
+                {"facing": "east" },
+                {"open": false }
+            ]},
+            "apply": { "model": "humility-afm:block/cabinet_block_willow_cyan", "y": 270 }
+        },
+        {
+            "when": { "AND": [
+                {"facing": "south" },
+                {"open": true }
+            ]},
+            "apply": { "model": "humility-afm:block/cabinet_block_opened_willow_cyan" }
+        },
+        {
+            "when": { "AND": [
+                {"facing": "south" },
+                {"open": false }
+            ]},
+            "apply": { "model": "humility-afm:block/cabinet_block_willow_cyan" }
+        },
+        {
+            "when": { "AND": [
+                {"facing": "west" },
+                {"open": true }
+            ]},
+            "apply": { "model": "humility-afm:block/cabinet_block_opened_willow_cyan", "y": 90 }
+        },
+        {
+            "when": { "AND": [
+                {"facing": "west" },
+                {"open": false }
+            ]},
+            "apply": { "model": "humility-afm:block/cabinet_block_willow_cyan", "y": 90 }
+        }
+    ]
+}

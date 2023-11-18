@@ -16,7 +16,7 @@ import net.minecraft.util.Identifier;
 import static io.github.mikip98.HumilityAFM.MOD_ID;
 
 public class LEDHelper {
-    static String[] colors = MainHelper.getWoolTypes();
+    static String[] colors = MainHelper.vanillaWoolTypes;
 
     public static Item[] LEDPowderVariants;
     public static Block[] LEDBlockVariants;
@@ -27,7 +27,7 @@ public class LEDHelper {
         Block LEDFictionalBlock = new Block(FabricBlockSettings.create().strength(0.5f).sounds(BlockSoundGroup.GLASS).luminance(15));
         Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "led_fictional_block"), LEDFictionalBlock);
 
-        short LEDBlockVariantsCount = (short) (MainHelper.getWoolTypes().length);
+        short LEDBlockVariantsCount = (short) (colors.length);
 
         LEDPowderVariants = new Item[LEDBlockVariantsCount];
 
@@ -37,7 +37,7 @@ public class LEDHelper {
         FabricBlockSettings LEDBlockSettings = FabricBlockSettings.create().strength(0.5f).sounds(BlockSoundGroup.GLASS).luminance(9);
 
         short i = 0;
-        for (String color : colors) {
+        for (String ignored : colors) {
             // Create LED powder variant
             LEDPowderVariants[i] = new Item(new FabricItemSettings());
 

@@ -11,7 +11,6 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
-import org.apache.commons.compress.compressors.lz77support.LZ77Compressor;
 
 import static io.github.mikip98.HumilityAFM.LOGGER;
 import static io.github.mikip98.HumilityAFM.MOD_ID;
@@ -47,7 +46,7 @@ public class InnerOuterStairsHelper {
 
     public static void init() {
         //Create stairs variants
-        short stairsBlockVariantsCount = (short) (MainHelper.getWoodTypes().length + 1 + sandStoneANDQuartsVariants.length + stony1Variants.length + stony2Variants.length + 1 + cutCopperVariants.length + deepSlateVariants.length);
+        short stairsBlockVariantsCount = (short) (MainHelper.vanillaWoodTypes.length + 1 + sandStoneANDQuartsVariants.length + stony1Variants.length + stony2Variants.length + 1 + cutCopperVariants.length + deepSlateVariants.length);
 
         innerOuterStairsBlockVariantsNames = new String[stairsBlockVariantsCount];
 
@@ -64,7 +63,7 @@ public class InnerOuterStairsHelper {
 
         // Generate wood stairs block variants
         FabricBlockSettings WoodStairsBlockSettings = FabricBlockSettings.create().strength(WoodStrength).requiresTool().sounds(BlockSoundGroup.WOOD);
-        id = createStairsBlockVariants(MainHelper.getWoodTypes(), WoodStairsBlockSettings, id);
+        id = createStairsBlockVariants(MainHelper.vanillaWoodTypes, WoodStairsBlockSettings, id);
 
         // Generate mud bricks stairs block variant
         FabricBlockSettings MudBricksStairsBlockSettings = FabricBlockSettings.create().strength(MudBricksStrength).requiresTool();

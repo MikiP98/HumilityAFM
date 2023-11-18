@@ -1,0 +1,14 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "minecraft:glow_ink_sac"
+        },
+        {
+            "item": "humility-afm:cabinet_block_anchor_tree_orange"
+        }
+    ],
+    "result": {
+        "item": "humility-afm:illuminated_cabinet_block_anchor_tree_orange"
+    }
+}

@@ -23,7 +23,6 @@ public class ConfigJSON {
         JsonObject configJson = new JsonObject();
         configJson.addProperty("enableLEDs", ModConfig.enableLEDs);
         configJson.addProperty("enableLEDsBrightening", ModConfig.enableLEDsBrightening);
-        configJson.addProperty("enableIlluminatedCabinetBlockBrightening", ModConfig.enableIlluminatedCabinetBlockBrightening);
         configJson.addProperty("forceCabinetBlockResourcePackCompatibility", ModConfig.forceCabinetBlockResourcePackCompatibility);
         configJson.addProperty("LEDColoredLightStrength", ModConfig.LEDColoredLightStrength);
         configJson.addProperty("LEDColoredLightRadius", ModConfig.LEDColoredLightRadius);
@@ -67,15 +66,11 @@ public class ConfigJSON {
                         needsUpdating = true;
                     }
                     try {
-                        ModConfig.enableIlluminatedCabinetBlockBrightening = configJson.get("enableIlluminatedCabinetBlockBrightening").getAsBoolean();
-                    } catch (Exception e) {
-                        needsUpdating = true;
-                    }
-                    try {
                         ModConfig.forceCabinetBlockResourcePackCompatibility = configJson.get("forceCabinetBlockResourcePackCompatibility").getAsBoolean();
                     } catch (Exception e) {
                         needsUpdating = true;
                     }
+
                     try {
                         ModConfig.LEDColoredLightStrength = configJson.get("LEDColoredLightStrength").getAsShort();
                     } catch (Exception e) {
@@ -86,7 +81,6 @@ public class ConfigJSON {
                     } catch (Exception e) {
                         needsUpdating = true;
                     }
-
                     try {
                         ModConfig.cabinetBlockBurnTime = configJson.get("cabinetBlockBurnTime").getAsInt();
                     } catch (Exception e) {

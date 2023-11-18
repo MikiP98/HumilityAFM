@@ -118,4 +118,17 @@ def translate_pl_pl(cabinets, stairs, mosaics):
     JSON = JSON[:-1]
     JSON += """
 }"""
+    return replace_polish_letters(JSON)
+
+def replace_polish_letters(JSON):
+    JSON = (JSON.replace("ą", "\\u0105")
+            .replace("ć", "\\u0107").replace("ę", "\\u0119")
+            .replace("ł", "\\u0142").replace("ń", "\\u0144")
+            .replace("ó", "\\u00f3").replace("ś", "\\u015b")
+            .replace("ź", "\\u017a").replace("ż", "\\u017c"))
+    JSON = (JSON.replace("Ą", "\\u0104")
+            .replace("Ć", "\\u0106").replace("Ę", "\\u0118")
+            .replace("Ł", "\\u0141").replace("Ń", "\\u0143")
+            .replace("Ó", "\\u00d3").replace("Ś", "\\u015a")
+            .replace("Ź", "\\u0179").replace("Ż", "\\u017b"))
     return JSON

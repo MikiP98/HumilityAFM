@@ -20,6 +20,7 @@ public class ModConfigScreen {
         rootCategory.addEntry(ConfigEntryBuilder.create()
                 .startBooleanToggle(Text.literal("Enable LEDs"), ModConfig.enableLEDs)
                 .setDefaultValue(false)
+                .setTooltip(Text.of("Enables LEDs"))
                 .setSaveConsumer(value -> {
                     // Save the value to your mod's configuration
                     ModConfig.enableLEDs = value;
@@ -29,46 +30,42 @@ public class ModConfigScreen {
         rootCategory.addEntry(ConfigEntryBuilder.create()
                 .startBooleanToggle(Text.literal("Enable LEDs Brightening"), ModConfig.enableLEDsBrightening)
                 .setDefaultValue(true)
+                .setTooltip(Text.of("Enables LEDs Brightening, better looking, small performance impact.\n(Auto disabled when Shimmer is installed)"))
                 .setSaveConsumer(value -> {
                     ModConfig.enableLEDsBrightening = value;
                 })
                 .build()
         );
         rootCategory.addEntry(ConfigEntryBuilder.create()
-                .startBooleanToggle(Text.literal("Enable Illuminated Cabinet Block Brightening"), ModConfig.enableIlluminatedCabinetBlockBrightening)
-                .setDefaultValue(true)
-                .setSaveConsumer(value -> {
-                    ModConfig.enableIlluminatedCabinetBlockBrightening = value;
-                })
-                .build()
-        );
-        rootCategory.addEntry(ConfigEntryBuilder.create()
                 .startBooleanToggle(Text.literal("Force Cabinet Block Resource Pack Compatibility"), ModConfig.forceCabinetBlockResourcePackCompatibility)
                 .setDefaultValue(false)
+                .setTooltip(Text.of("Forces the Cabinet Block to be compatible with resource packs (the glass front),\nsmall performance and memory impact."))
                 .setSaveConsumer(value -> {
                     ModConfig.forceCabinetBlockResourcePackCompatibility = value;
-                })
-                .build()
-        );
-        rootCategory.addEntry(ConfigEntryBuilder.create()
-                .startIntSlider(Text.literal("LED Colored Light Strength"), ModConfig.LEDColoredLightStrength, 0, 255)
-                .setDefaultValue(85)
-                .setSaveConsumer(value -> {
-                    ModConfig.LEDColoredLightStrength = value.shortValue();
-                })
-                .build()
-        );
-        rootCategory.addEntry(ConfigEntryBuilder.create()
-                .startIntSlider(Text.literal("LED Colored Light Radius"), ModConfig.LEDColoredLightRadius, 0, 63)
-                .setDefaultValue(9)
-                .setSaveConsumer(value -> {
-                    ModConfig.LEDColoredLightRadius = value.shortValue();
                 })
                 .build()
         );
 
         ConfigCategory customizationCategory = builder.getOrCreateCategory(Text.literal("Blocks Customization"));
 
+        customizationCategory.addEntry(ConfigEntryBuilder.create()
+                .startIntSlider(Text.literal("LED Colored Light Strength"), ModConfig.LEDColoredLightStrength, 0, 255)
+                .setDefaultValue(85)
+                .setTooltip(Text.of("The strength of the LED Colored Light.\n(Requires Shimmer to be installed)"))
+                .setSaveConsumer(value -> {
+                    ModConfig.LEDColoredLightStrength = value.shortValue();
+                })
+                .build()
+        );
+        customizationCategory.addEntry(ConfigEntryBuilder.create()
+                .startIntSlider(Text.literal("LED Colored Light Radius"), ModConfig.LEDColoredLightRadius, 0, 63)
+                .setDefaultValue(9)
+                .setTooltip(Text.of("The radius of the LED Colored Light.\n(Requires Shimmer to be installed)"))
+                .setSaveConsumer(value -> {
+                    ModConfig.LEDColoredLightRadius = value.shortValue();
+                })
+                .build()
+        );
         customizationCategory.addEntry(ConfigEntryBuilder.create()
                 .startIntSlider(Text.literal("Cabinet Block Burn Time"), ModConfig.cabinetBlockBurnTime, 0, 64)
                 .setDefaultValue(24)

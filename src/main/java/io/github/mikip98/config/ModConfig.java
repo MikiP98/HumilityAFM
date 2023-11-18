@@ -8,11 +8,10 @@ import java.util.Map;
 public class ModConfig {
     public static boolean enableLEDs = false;
     public static boolean enableLEDsBrightening = true;
-    public static boolean enableIlluminatedCabinetBlockBrightening = true;
     public static boolean forceCabinetBlockResourcePackCompatibility = false;
+
     public static short LEDColoredLightStrength = 170;
     public static short LEDColoredLightRadius = 8;
-
     public static int cabinetBlockBurnTime = 24;
     public static int cabinetBlockFireSpread = 9;
     public static float mosaicsAndTilesStrengthMultiplayer = 1.5f;
@@ -20,5 +19,6 @@ public class ModConfig {
     public static Map<String, Color> customColorReferences = new Hashtable<>();
 
     public static boolean shimmerDetected = false;
+    public static boolean betterNetherDetected = false;
 }
 

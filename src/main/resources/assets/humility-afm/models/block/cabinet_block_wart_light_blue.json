@@ -1,0 +1,6 @@
+{
+    "parent": "humility-afm:block/cabinet_block_wart",
+    "textures": {
+        "1": "minecraft:block/light_blue_wool"
+    }
+}

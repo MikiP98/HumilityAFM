@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " G ",
+        "SWS",
+        " S "
+    ],
+    "key": {
+        "G": {
+            "item": "minecraft:glass_pane"
+        },
+        "S": {
+            "item": "betternether:anchor_tree_slab"
+        },
+        "W": {
+            "item": "minecraft:green_carpet",
+            "data": 0
+        }
+    },
+    "result": {
+        "item": "humility-afm:cabinet_block_anchor_tree_green"
+    }
+}

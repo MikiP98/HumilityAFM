@@ -38,7 +38,10 @@ public class CabinetBlockHelper {
 
     public static void init() {
         //Create cabinet variants
-        short cabinetBlockVariantsCount = (short) (MainHelper.getWoodTypes().length * MainHelper.getWoolTypes().length);
+        short cabinetBlockVariantsCount = (short) (MainHelper.vanillaWoodTypes.length * MainHelper.vanillaWoolTypes.length);
+        if (ModConfig.betterNetherDetected) {
+            cabinetBlockVariantsCount += (short) (MainHelper.betterNetherWoodTypes.length * MainHelper.vanillaWoolTypes.length);
+        }
 
         cabinetBlockVariantsNames = new String[cabinetBlockVariantsCount];
 
@@ -49,8 +52,8 @@ public class CabinetBlockHelper {
         illuminatedCabinetBlockItemVariants = new Item[cabinetBlockVariantsCount];
 
         short i = 0;
-        for (String woodType : MainHelper.getWoodTypes()) {
-            for (String woolType : MainHelper.getWoolTypes()) {
+        for (String woodType : MainHelper.vanillaWoodTypes) {
+            for (String woolType : MainHelper.vanillaWoolTypes) {
                 String cabinetBlockVariantName = woodType + "_" + woolType;
                 cabinetBlockVariantsNames[i] = cabinetBlockVariantName;
                 //LOGGER.info("Creating cabinet block variant: " + cabinetBlockVariantsNames[i]);
@@ -65,6 +68,26 @@ public class CabinetBlockHelper {
                 illuminatedCabinetBlockItemVariants[i] = new BlockItem(illuminatedCabinetBlockVariants[i], new FabricItemSettings());
 
                 ++i;
+            }
+        }
+        if (ModConfig.betterNetherDetected) {
+            for (String woodType : MainHelper.betterNetherWoodTypes) {
+                for (String woolType : MainHelper.vanillaWoolTypes) {
+                    String cabinetBlockVariantName = woodType + "_" + woolType;
+                    cabinetBlockVariantsNames[i] = cabinetBlockVariantName;
+                    //LOGGER.info("Creating cabinet block variant: " + cabinetBlockVariantsNames[i]);
+                    // Create cabinet block variant
+                    cabinetBlockVariants[i] = new CabinetBlock(CabinetBlockSettings);
+                    // Create cabinet block variant item
+                    cabinetBlockItemVariants[i] = new BlockItem(cabinetBlockVariants[i], new FabricItemSettings());
+
+                    // Create illuminated cabinet block variant
+                    illuminatedCabinetBlockVariants[i] = new IlluminatedCabinetBlock(IlluminatedCabinetBlockSettings);
+                    // Create illuminated cabinet block variant item
+                    illuminatedCabinetBlockItemVariants[i] = new BlockItem(illuminatedCabinetBlockVariants[i], new FabricItemSettings());
+
+                    ++i;
+                }
             }
         }
     }
@@ -101,8 +124,8 @@ public class CabinetBlockHelper {
         // (3 x 20 + 60) / 5  TODO: Make those a config option
         // (60 + 60) / 5 = 24 -> flammability
         // (15 + 30) / 5 = 9 -> fire spreading speed
-        short burnTime = 24;
-        short spreadSpeed = 9;
+        short burnTime;
+        short spreadSpeed;
         burnTime = (short) ModConfig.cabinetBlockBurnTime;
         spreadSpeed = (short) ModConfig.cabinetBlockFireSpread;
 

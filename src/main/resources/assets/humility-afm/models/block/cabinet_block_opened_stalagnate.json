@@ -1,0 +1,7 @@
+{
+    "parent": "humility-afm:block/cabinet_block_opened",
+    "textures": {
+        "2": "betternether:block/stalagnate_planks",
+        "particle": "betternether:block/stalagnate_planks"
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " G ",
+        "SWS",
+        " S "
+    ],
+    "key": {
+        "G": {
+            "item": "minecraft:glass_pane"
+        },
+        "S": {
+            "item": "betternether:nether_mushroom_slab"
+        },
+        "W": {
+            "item": "minecraft:light_blue_carpet",
+            "data": 0
+        }
+    },
+    "result": {
+        "item": "humility-afm:cabinet_block_nether_mushroom_light_blue"
+    }
+}
