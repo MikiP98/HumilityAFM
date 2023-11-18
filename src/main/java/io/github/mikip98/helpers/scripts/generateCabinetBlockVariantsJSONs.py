@@ -7,14 +7,18 @@ vanilla_wool_types = ["white", "orange", "magenta", "light_blue", "yellow", "lim
 
 better_nether_wood_types = ["stalagnate", "willow", "wart", "mushroom_fir", "mushroom", "anchor_tree", "nether_sakura"]
 
-cabinetBlockVariantsNames = numpy.empty(len(vanilla_wood_types)*len(vanilla_wool_types) + len(better_nether_wood_types)*len(vanilla_wool_types), dtype='U19')
+cabinetBlockVariantsNames = numpy.empty(len(vanilla_wood_types)*len(vanilla_wool_types) + len(better_nether_wood_types)*len(vanilla_wool_types), dtype='U32')
 
 print("Generating cabinet block variants JSONs...")
 
 def generateCabinetBlockVariants():
     i = 0
-    for woodType in woodTypes:
-        for woolType in woolTypes:
+    for woodType in vanilla_wood_types:
+        for woolType in vanilla_wool_types:
+            cabinetBlockVariantsNames[i] = (woodType + "_" + woolType)
+            i += 1
+    for woodType in better_nether_wood_types:
+        for woolType in vanilla_wool_types:
             cabinetBlockVariantsNames[i] = (woodType + "_" + woolType)
             i += 1
 

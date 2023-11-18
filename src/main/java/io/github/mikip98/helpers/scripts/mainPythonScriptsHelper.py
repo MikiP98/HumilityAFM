@@ -56,14 +56,20 @@ def generateTranslationJSON():
     from generateCabinetBlockVariantsJSONs import generateCabinetBlockVariantsNames
     from generateInnerOuterStairsVariantsJSONs import generateInnerOuterStairsVariantsAllNames
     from generateWoodenMosaicVariantsJSONs import generateWoodenMosaicVariantsNames
+    from generateLEDVariantsJSONs import generateLEDVariantsNames
     import translationHelper
+
+    cabinets = generateCabinetBlockVariantsNames()
+    stairs = generateInnerOuterStairsVariantsAllNames()
+    mosaics = generateWoodenMosaicVariantsNames()
+    LEDs = generateLEDVariantsNames()
 
     itemGroups = ["cabinets_group", "inner_outer_stairs_group", "wooden_mosaics_group"]
 
     # Generate en_us.json
     print("Generating en_us.json...")
 
-    JSON = translationHelper.translate_en_us(generateCabinetBlockVariantsNames(), generateInnerOuterStairsVariantsAllNames(), generateWoodenMosaicVariantsNames())
+    JSON = translationHelper.translate_en_us(cabinets, stairs, mosaics, LEDs)
     orginal_JSON = JSON
 
     with open("src/main/resources/assets/humility-afm/lang/en_us.json", "w") as file:
@@ -81,7 +87,7 @@ def generateTranslationJSON():
 
     # Generate pl_pl.json
     print("Generating pl_pl.json...")
-    JSON = translationHelper.translate_pl_pl(generateCabinetBlockVariantsNames(), generateInnerOuterStairsVariantsAllNames(), generateWoodenMosaicVariantsNames())
+    JSON = translationHelper.translate_pl_pl(cabinets, stairs, mosaics, LEDs)
 
     with open("src/main/resources/assets/humility-afm/lang/pl_pl.json", "w") as file:
         print("Saving pl_pl.json...")
@@ -92,6 +98,7 @@ if __name__ == "__main__":
     # print("Generating mineable axe.json...")
     # generateAxeMineableJSON()
     # print("Done!")
+
     # print("Generating mineable pickaxe.json...")
     # generatePickaxeMineableJSON()
     # print("Done!")

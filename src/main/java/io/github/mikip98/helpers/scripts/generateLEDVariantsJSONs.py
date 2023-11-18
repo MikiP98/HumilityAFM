@@ -1,5 +1,8 @@
 colors = ["red", "orange", "yellow", "lime", "green", "cyan", "light_blue", "blue", "purple", "magenta", "pink", "brown", "black", "gray", "light_gray", "white"]
 
+def generateLEDVariantsNames():
+    return colors
+
 def generateLEDVariantsJSONs():
     print("Generating LED variants JSONs...")
     for color in colors:

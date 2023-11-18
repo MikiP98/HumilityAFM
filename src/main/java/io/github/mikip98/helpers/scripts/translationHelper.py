@@ -1,36 +1,28 @@
-def translate_en_us(cabinets, stairs, mosaics):
+def translate_en_us(cabinets, stairs, mosaics, LEDs):
     JSON = """{
     "itemGroup.cabinets": "Cabinets",
     "itemGroup.innerOuterStairs": "Inner and Outer Stairs",
     "itemGroup.woodenMosaics": "Wooden Mosaics",
     "itemGroup.terracottaTiles": "Terracotta Tiles",
     "itemGroup.leds": "LEDs",
-    "itemGroup.humilityMisc": "Miscellaneous-Humility",
+    "itemGroup.humilityMisc": "Miscellaneous (Humility)",
     """
 
     for cabinet in cabinets:
-        # print(cabinet)
-        wood, wool = cabinet.split("_", 1)
-        wood = wood[0].upper() + wood[1:]
-        wool = wool[0].upper() + wool[1:]
+        words = cabinet.split("_")
 
-        # Double word wood check
-        if wood == "Dark":
-            wood_2, wool = wool.split("_", 1)
-            wood = wood + " " + wood_2
-            wool = wool[0].upper() + wool[1:]
+        # set first letter of each word to uppercase
+        for i in range(len(words)):
+            words[i] = words[i][0].upper() + words[i][1:]
 
-        # Double word wool check
-        # print(wool[:4])
-        if wool[:5] == "Light":
-            wool_2 = wool[6:]
-            # print(wool_2)
-            wool_2 = wool_2[0].upper() + wool_2[1:]
-            wool = wool[:5] + " " + wool_2
+        # merge words back together
+        name = ""
+        for word in words:
+            name += word + " "
 
         JSON += """
-    "block.humility-afm.cabinet_block_""" + cabinet + "\": \"" + wood + " " + wool + """ Cabinet",
-    "block.humility-afm.illuminated_cabinet_block_""" + cabinet + "\": \"" + wood + " " + wool + " Illuminated Cabinet\","
+    "block.humility-afm.cabinet_block_""" + cabinet + "\": \"" + name + """Cabinet",
+    "block.humility-afm.illuminated_cabinet_block_""" + cabinet + "\": \"" + name + "Illuminated Cabinet\","
 
     for stairs in stairs:
         # print(stairs)
@@ -38,19 +30,26 @@ def translate_en_us(cabinets, stairs, mosaics):
         name = ""
         for word in words:
             name += word[0].upper() + word[1:] + " "
-        name = name[:-1]
         JSON += """
-    "block.humility-afm.inner_stairs_""" + stairs + "\": \"" + name + """ Inner Stairs",
-    "block.humility-afm.outer_stairs_""" + stairs + "\": \"" + name + " Outer Stairs\","
+    "block.humility-afm.inner_stairs_""" + stairs + "\": \"" + name + """Inner Stairs",
+    "block.humility-afm.outer_stairs_""" + stairs + "\": \"" + name + "Outer Stairs\","
 
     for mosaic in mosaics:
         words = mosaic.split("_")
         name = ""
         for word in words:
             name += word[0].upper() + word[1:] + " "
-        name = name[:-1]
         JSON += """
-    "block.humility-afm.wooden_mosaic_""" + mosaic + "\": \"" + name + " Wooden Mosaic\","
+    "block.humility-afm.wooden_mosaic_""" + mosaic + "\": \"" + name + "Wooden Mosaic\","
+
+    for LED in LEDs:
+        words = LED.split("_")
+        name = ""
+        for word in words:
+            name += word[0].upper() + word[1:] + " "
+        JSON += """
+    "block.humility-afm.led_""" + LED + "\": \"" + name + """LED\",
+    "item.humility-afm.led_powder_""" + LED + "\": \"" + name + "LED Powder\","
 
     JSON = JSON[:-1]
     JSON += """
@@ -61,7 +60,7 @@ def translate_en_us(cabinets, stairs, mosaics):
 def translate_en_gb(json_text):
     return json_text.replace("Gray", "Grey")
 
-def translate_pl_pl(cabinets, stairs, mosaics):
+def translate_pl_pl(cabinets, stairs, mosaics, LEDs):
     JSON = """
 {
     "itemGroup.cabinets": "Gabloty",
@@ -69,31 +68,24 @@ def translate_pl_pl(cabinets, stairs, mosaics):
     "itemGroup.woodenMosaics": "Drewniane Mozaiki",
     "itemGroup.terracottaTiles": "Płytki z terakoty",
     "itemGroup.leds": "LEDy",
-    "itemGroup.humilityMisc": "Różne-Humility",
+    "itemGroup.humilityMisc": "Różne (Humility)",
     """
 
     for cabinet in cabinets:
-        wood, wool = cabinet.split("_", 1)
-        wood = wood[0].upper() + wood[1:]
-        wool = wool[0].upper() + wool[1:]
+        words = cabinet.split("_")
 
-        # Double word wood check
-        if wood == "Dark":
-            wood_2, wool = wool.split("_", 1)
-            wood = wood + " " + wood_2
-            wool = wool[0].upper() + wool[1:]
+        # set first letter of each word to uppercase
+        for i in range(len(words)):
+            words[i] = words[i][0].upper() + words[i][1:]
 
-        # Double word wool check
-        # print(wool[:4])
-        if wool[:5] == "Light":
-            wool_2 = wool[6:]
-            # print(wool_2)
-            wool_2 = wool_2[0].upper() + wool_2[1:]
-            wool = wool[:5] + " " + wool_2
+        # merge words back together
+        name = ""
+        for word in words:
+            name += word + " "
 
         JSON += """
-    "block.humility-afm.cabinet_block_""" + cabinet + "\": \"" + wood + " " + wool + """ Cabinet",
-    "block.humility-afm.illuminated_cabinet_block_""" + cabinet + "\": \"" + wood + " " + wool + " Illuminated Cabinet\","
+    "block.humility-afm.cabinet_block_""" + cabinet + "\": \"" + name + """Cabinet",
+    "block.humility-afm.illuminated_cabinet_block_""" + cabinet + "\": \"" + name + "Illuminated Cabinet\","
 
     for stairs in stairs:
         # print(stairs)
@@ -101,19 +93,26 @@ def translate_pl_pl(cabinets, stairs, mosaics):
         name = ""
         for word in words:
             name += word[0].upper() + word[1:] + " "
-        name = name[:-1]
         JSON += """
-    "block.humility-afm.inner_stairs_""" + stairs + "\": \"" + name + """ Inner Stairs",
-    "block.humility-afm.outer_stairs_""" + stairs + "\": \"" + name + " Outer Stairs\","
+    "block.humility-afm.inner_stairs_""" + stairs + "\": \"" + name + """Inner Stairs",
+    "block.humility-afm.outer_stairs_""" + stairs + "\": \"" + name + "Outer Stairs\","
 
     for mosaic in mosaics:
         words = mosaic.split("_")
         name = ""
         for word in words:
             name += word[0].upper() + word[1:] + " "
-        name = name[:-1]
         JSON += """
-    "block.humility-afm.wooden_mosaic_""" + mosaic + "\": \"" + name + " Wooden Mosaic\","
+    "block.humility-afm.wooden_mosaic_""" + mosaic + "\": \"" + name + "Wooden Mosaic\","
+
+    for LED in LEDs:
+        words = LED.split("_")
+        name = ""
+        for word in words:
+            name += word[0].upper() + word[1:] + " "
+        JSON += """
+    "block.humility-afm.led_""" + LED + "\": \"" + name + """LED\",
+    "item.humility-afm.led_powder_""" + LED + "\": \"" + name + "LED Powder\","
 
     JSON = JSON[:-1]
     JSON += """
