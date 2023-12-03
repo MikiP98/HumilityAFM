@@ -23,7 +23,6 @@ public class ConfigJSON {
         JsonObject configJson = new JsonObject();
         configJson.addProperty("enableLEDs", ModConfig.enableLEDs);
         configJson.addProperty("enableLEDsBrightening", ModConfig.enableLEDsBrightening);
-        configJson.addProperty("forceCabinetBlockResourcePackCompatibility", ModConfig.forceCabinetBlockResourcePackCompatibility);
         configJson.addProperty("LEDColoredLightStrength", ModConfig.LEDColoredLightStrength);
         configJson.addProperty("LEDColoredLightRadius", ModConfig.LEDColoredLightRadius);
 
@@ -62,11 +61,6 @@ public class ConfigJSON {
                     }
                     try {
                         ModConfig.enableLEDsBrightening = configJson.get("enableLEDsBrightening").getAsBoolean();
-                    } catch (Exception e) {
-                        needsUpdating = true;
-                    }
-                    try {
-                        ModConfig.forceCabinetBlockResourcePackCompatibility = configJson.get("forceCabinetBlockResourcePackCompatibility").getAsBoolean();
                     } catch (Exception e) {
                         needsUpdating = true;
                     }
@@ -142,16 +136,16 @@ public class ConfigJSON {
                         
                         \t\t},
                         \t\t"light_gray" : {
-                            \t\t"r": 200,
-                            \t\t"g": 200,
-                            \t\t"b": 200,
+                            \t\t"r": 180,
+                            \t\t"g": 180,
+                            \t\t"b": 180,
                             \t\t"a":\s""" + ModConfig.LEDColoredLightStrength + """
                         
                     \t\t},
                         \t"gray" : {
-                            \t"r": 100,
-                            \t"g": 100,
-                            \t"b": 100,
+                            \t"r": 90,
+                            \t"g": 90,
+                            \t"b": 90,
                             \t"a":\s""" + ModConfig.LEDColoredLightStrength + """
                         
                     \t\t},
@@ -191,7 +185,7 @@ public class ConfigJSON {
                         
                     \t\t},
                         \t"lime" : {
-                            \t"r": 0,
+                            \t"r": 192,
                             \t"g": 255,
                             \t"b": 0,
                             \t"a":\s""" + ModConfig.LEDColoredLightStrength + """
@@ -199,7 +193,7 @@ public class ConfigJSON {
                     \t\t},
                         \t"green" : {
                             \t"r": 0,
-                            \t"g": 128,
+                            \t"g": 255,
                             \t"b": 0,
                             \t"a":\s""" + ModConfig.LEDColoredLightStrength + """
                         
@@ -212,8 +206,8 @@ public class ConfigJSON {
                         
                     \t\t},
                         \t"light_blue" : {
-                            \t"r": 0,
-                            \t"g": 0,
+                            \t"r": 30,
+                            \t"g": 144,
                             \t"b": 255,
                             \t"a":\s""" + ModConfig.LEDColoredLightStrength + """
                         
@@ -221,7 +215,7 @@ public class ConfigJSON {
                         \t"blue" : {
                             \t"r": 0,
                             \t"g": 0,
-                            \t"b": 128,
+                            \t"b": 255,
                             \t"a":\s""" + ModConfig.LEDColoredLightStrength + """
                         
                     \t\t},

@@ -7,14 +7,15 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import io.github.mikip98.content.blockentities.cabinetBlock.CabinetBlockEntityRenderer;
 import io.github.mikip98.content.blockentities.LEDBlockEntityRenderer;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
+import net.minecraft.util.Identifier;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Path;
+import static io.github.mikip98.HumilityAFM.MOD_ID;
 
 public class HumilityAFMClient implements ClientModInitializer {
 	@Override
@@ -39,5 +40,14 @@ public class HumilityAFMClient implements ClientModInitializer {
 		if (ModConfig.enableLEDs) {
 			BlockEntityRendererFactories.register(HumilityAFM.LED_BLOCK_ENTITY, LEDBlockEntityRenderer::new);
 		}
+
+
+		FabricLoader.getInstance().getModContainer(MOD_ID).ifPresent(container -> {
+			ResourceManagerHelper.registerBuiltinResourcePack(asId("CabinetVanillaResourcepacksCompatibility"), container, ResourcePackActivationType.NORMAL);
+		});
+	}
+
+	public static Identifier asId(String path) {
+		return new Identifier(MOD_ID, path);
 	}
 }

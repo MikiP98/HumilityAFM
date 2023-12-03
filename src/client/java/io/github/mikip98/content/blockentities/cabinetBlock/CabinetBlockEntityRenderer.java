@@ -33,6 +33,8 @@ public class CabinetBlockEntityRenderer implements BlockEntityRenderer<CabinetBl
 
     @Override
     public void render(CabinetBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+        // Check if block entity is null
+
         matrices.push();
 
         final ItemStack stack = blockEntity.getStack(0);

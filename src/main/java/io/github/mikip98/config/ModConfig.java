@@ -8,7 +8,7 @@ import java.util.Map;
 public class ModConfig {
     public static boolean enableLEDs = false;
     public static boolean enableLEDsBrightening = true;
-    public static boolean forceCabinetBlockResourcePackCompatibility = false;
+    public static boolean enableVanillaColoredLights = false;
 
     public static short LEDColoredLightStrength = 170;
     public static short LEDColoredLightRadius = 8;

@@ -1,5 +1,6 @@
 package io.github.mikip98.helpers;
 
+import io.github.mikip98.config.ModConfig;
 import io.github.mikip98.content.blocks.stairs.InnerStairs;
 import io.github.mikip98.content.blocks.stairs.OuterStairs;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -36,6 +37,9 @@ public class InnerOuterStairsHelper {
     private static final float DeepSlateStrength = 3.5f;
     private static final String[] deepSlateVariants = {"cobbled_deepslate", "polished_deepslate", "deepslate_brick", "deepslate_tile"};
 
+    private static final float BetterNetherWoodStrength = WoodStrength;
+    private static final String[] betterNetherWoodTypes = MainHelper.betterNetherWoodTypes;
+
     public static String[] innerOuterStairsBlockVariantsNames;
 
     public static Block[] innerStairsBlockVariants;
@@ -47,6 +51,9 @@ public class InnerOuterStairsHelper {
     public static void init() {
         //Create stairs variants
         short stairsBlockVariantsCount = (short) (MainHelper.vanillaWoodTypes.length + 1 + sandStoneANDQuartsVariants.length + stony1Variants.length + stony2Variants.length + 1 + cutCopperVariants.length + deepSlateVariants.length);
+        if (ModConfig.betterNetherDetected) {
+            stairsBlockVariantsCount += (short) betterNetherWoodTypes.length;
+        }
 
         innerOuterStairsBlockVariantsNames = new String[stairsBlockVariantsCount];
 
@@ -91,7 +98,13 @@ public class InnerOuterStairsHelper {
 
         // Generate deep slate stairs block variants
         FabricBlockSettings DeepSlateStairsBlockSettings = FabricBlockSettings.create().strength(DeepSlateStrength).requiresTool().sounds(BlockSoundGroup.DEEPSLATE);
-        createStairsBlockVariants(deepSlateVariants, DeepSlateStairsBlockSettings, id);
+        id = createStairsBlockVariants(deepSlateVariants, DeepSlateStairsBlockSettings, id);
+
+        // Generate Better Nether wood stairs block variants
+        if (ModConfig.betterNetherDetected) {
+            FabricBlockSettings BetterNetherWoodStairsBlockSettings = FabricBlockSettings.create().strength(BetterNetherWoodStrength).requiresTool().sounds(BlockSoundGroup.WOOD);
+            createStairsBlockVariants(betterNetherWoodTypes, BetterNetherWoodStairsBlockSettings, id);
+        }
     }
 
     // Generate stairs block variants function

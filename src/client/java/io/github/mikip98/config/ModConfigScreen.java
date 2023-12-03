@@ -20,7 +20,6 @@ public class ModConfigScreen {
         rootCategory.addEntry(ConfigEntryBuilder.create()
                 .startBooleanToggle(Text.literal("Enable LEDs"), ModConfig.enableLEDs)
                 .setDefaultValue(false)
-                .setTooltip(Text.of("Enables LEDs"))
                 .setSaveConsumer(value -> {
                     // Save the value to your mod's configuration
                     ModConfig.enableLEDs = value;
@@ -33,15 +32,6 @@ public class ModConfigScreen {
                 .setTooltip(Text.of("Enables LEDs Brightening, better looking, small performance impact.\n(Auto disabled when Shimmer is installed)"))
                 .setSaveConsumer(value -> {
                     ModConfig.enableLEDsBrightening = value;
-                })
-                .build()
-        );
-        rootCategory.addEntry(ConfigEntryBuilder.create()
-                .startBooleanToggle(Text.literal("Force Cabinet Block Resource Pack Compatibility"), ModConfig.forceCabinetBlockResourcePackCompatibility)
-                .setDefaultValue(false)
-                .setTooltip(Text.of("Forces the Cabinet Block to be compatible with resource packs (the glass front),\nsmall performance and memory impact."))
-                .setSaveConsumer(value -> {
-                    ModConfig.forceCabinetBlockResourcePackCompatibility = value;
                 })
                 .build()
         );
