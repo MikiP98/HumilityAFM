@@ -43,7 +43,7 @@ public class HumilityAFMClient implements ClientModInitializer {
 
 
 		FabricLoader.getInstance().getModContainer(MOD_ID).ifPresent(container -> {
-			ResourceManagerHelper.registerBuiltinResourcePack(asId("CabinetVanillaResourcepacksCompatibility"), container, ResourcePackActivationType.NORMAL);
+			ResourceManagerHelper.registerBuiltinResourcePack(asId("cabinet_vanilla_resourcepacks_compatibility"), container, ResourcePackActivationType.NORMAL);
 		});
 	}
 
