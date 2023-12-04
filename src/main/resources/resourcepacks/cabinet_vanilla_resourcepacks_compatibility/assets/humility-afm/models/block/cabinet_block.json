@@ -1,5 +1,5 @@
 {
-	"credit": "Made with Blockbench",
+	"credit": "Made with Blockbench by Mikolaj Pokora",
 	"textures": {
 		"1": "block/black_wool",
 		"2": "block/oak_planks",
@@ -75,20 +75,6 @@
 				"west": {"uv": [16, 0, 13, 1], "texture": "#2"},
 				"up": {"uv": [14, 5, 2, 1], "texture": "#2"},
 				"down": {"uv": [14, 6, 2, 10], "texture": "#2"}
-			}
-		},
-		{
-			"name": "door",
-			"from": [2, 2, 3],
-			"to": [14, 14, 4],
-			"rotation": {"angle": 0, "axis": "y", "origin": [15, 8, 3]},
-			"faces": {
-				"north": {"uv": [14, 2, 2, 14], "texture": "#3"},
-				"east": {"uv": [14, 2, 15, 14], "texture": "#2"},
-				"south": {"uv": [2, 2, 14, 14], "texture": "#4"},
-				"west": {"uv": [1, 2, 2, 14], "texture": "#2"},
-				"up": {"uv": [2, 2, 14, 1], "texture": "#2"},
-				"down": {"uv": [14, 14, 2, 15], "texture": "#2"}
 			}
 		},
 		{
