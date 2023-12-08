@@ -18,6 +18,16 @@ public class ModConfigScreen {
         ConfigCategory rootCategory = builder.getOrCreateCategory(Text.literal("General Settings"));
 
         rootCategory.addEntry(ConfigEntryBuilder.create()
+                .startBooleanToggle(Text.literal("Transparent Cabinet Blocks"), ModConfig.TransparentCabinetBlocks)
+                .setDefaultValue(true)
+                .setTooltip(Text.of("Makes the cabinet blocks transparent.\n(Don't use with vanilla compat rp! It will look weird!)"))
+                .setSaveConsumer(value -> {
+                    // Save the value to your mod's configuration
+                    ModConfig.TransparentCabinetBlocks = value;
+                })
+                .build()
+        );
+        rootCategory.addEntry(ConfigEntryBuilder.create()
                 .startBooleanToggle(Text.literal("Enable LEDs"), ModConfig.enableLEDs)
                 .setDefaultValue(false)
                 .setSaveConsumer(value -> {

@@ -21,11 +21,12 @@ public class ConfigJSON {
 
         // Create a JSON object to store the configuration
         JsonObject configJson = new JsonObject();
+        configJson.addProperty("TransparentCabinetBlocks", ModConfig.TransparentCabinetBlocks);
         configJson.addProperty("enableLEDs", ModConfig.enableLEDs);
         configJson.addProperty("enableLEDsBrightening", ModConfig.enableLEDsBrightening);
+
         configJson.addProperty("LEDColoredLightStrength", ModConfig.LEDColoredLightStrength);
         configJson.addProperty("LEDColoredLightRadius", ModConfig.LEDColoredLightRadius);
-
         configJson.addProperty("cabinetBlockBurnTime", ModConfig.cabinetBlockBurnTime);
         configJson.addProperty("cabinetBlockFireSpread", ModConfig.cabinetBlockFireSpread);
         configJson.addProperty("mosaicsAndTilesStrengthMultiplayer", ModConfig.mosaicsAndTilesStrengthMultiplayer);
@@ -54,6 +55,11 @@ public class ConfigJSON {
                 boolean needsUpdating = false;
                 if (configJson != null) {
                     // Load the static fields from the JSON object
+                    try {
+                        ModConfig.TransparentCabinetBlocks = configJson.get("TransparentCabinetBlocks").getAsBoolean();
+                    } catch (Exception e) {
+                        needsUpdating = true;
+                    }
                     try {
                         ModConfig.enableLEDs = configJson.get("enableLEDs").getAsBoolean();
                     } catch (Exception e) {

@@ -22,18 +22,19 @@ public class HumilityAFMClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
 
-		BlockRenderLayerMap.INSTANCE.putBlock(HumilityAFM.CABINET_BLOCK, RenderLayer.getCutout());
-		// Replace `RenderLayer.getCutout()` with `RenderLayer.getTranslucent()` if you have a translucent texture.
-		BlockRenderLayerMap.INSTANCE.putBlock(HumilityAFM.ILLUMINATED_CABINET_BLOCK, RenderLayer.getCutout());
-
 		BlockEntityRendererFactories.register(HumilityAFM.CABINET_BLOCK_ENTITY, CabinetBlockEntityRenderer::new);
 		BlockEntityRendererFactories.register(HumilityAFM.ILLUMINATED_CABINET_BLOCK_ENTITY, IlluminatedCabinetBlockEntityRenderer::new);
 
+		RenderLayer renderLayer = ModConfig.TransparentCabinetBlocks ? RenderLayer.getTranslucent() : RenderLayer.getCutout();
+
+		BlockRenderLayerMap.INSTANCE.putBlock(HumilityAFM.CABINET_BLOCK, renderLayer);
+		BlockRenderLayerMap.INSTANCE.putBlock(HumilityAFM.ILLUMINATED_CABINET_BLOCK, renderLayer);
+
 		for (Block cabinetBlockVariant : CabinetBlockHelper.cabinetBlockVariants) {
-			BlockRenderLayerMap.INSTANCE.putBlock(cabinetBlockVariant, RenderLayer.getCutout());
+			BlockRenderLayerMap.INSTANCE.putBlock(cabinetBlockVariant, renderLayer);
 		}
 		for (Block illuminatedCabinetBlockVariant : CabinetBlockHelper.illuminatedCabinetBlockVariants) {
-			BlockRenderLayerMap.INSTANCE.putBlock(illuminatedCabinetBlockVariant, RenderLayer.getCutout());
+			BlockRenderLayerMap.INSTANCE.putBlock(illuminatedCabinetBlockVariant, renderLayer);
 		}
 
 		// LED block variants
@@ -43,7 +44,10 @@ public class HumilityAFMClient implements ClientModInitializer {
 
 
 		FabricLoader.getInstance().getModContainer(MOD_ID).ifPresent(container -> {
-			ResourceManagerHelper.registerBuiltinResourcePack(asId("cabinet_vanilla_resourcepacks_compatibility"), container, ResourcePackActivationType.NORMAL);
+			ResourceManagerHelper.registerBuiltinResourcePack(asId("3d_cabinet"), container, ResourcePackActivationType.NORMAL);
+			ResourceManagerHelper.registerBuiltinResourcePack(asId("3d_cabinet_plus_vanilla_rp_compat"), container, ResourcePackActivationType.NORMAL);
+			ResourceManagerHelper.registerBuiltinResourcePack(asId("cabinet_vanilla_rp_compat"), container, ResourcePackActivationType.NORMAL);
+			ResourceManagerHelper.registerBuiltinResourcePack(asId("low_quality_cabinet"), container, ResourcePackActivationType.NORMAL);
 		});
 	}
 

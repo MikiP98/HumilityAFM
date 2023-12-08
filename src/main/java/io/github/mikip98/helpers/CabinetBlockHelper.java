@@ -24,8 +24,6 @@ public class CabinetBlockHelper {
     }
 
     private static final float CabinetBlockStrength = 2.0f;
-    private static final FabricBlockSettings CabinetBlockSettings = FabricBlockSettings.create().strength(CabinetBlockStrength).requiresTool().nonOpaque().sounds(BlockSoundGroup.WOOD);
-    private static final FabricBlockSettings IlluminatedCabinetBlockSettings = FabricBlockSettings.create().strength(CabinetBlockStrength).requiresTool().nonOpaque().sounds(BlockSoundGroup.WOOD).luminance(2);
 
     public static String[] cabinetBlockVariantsNames;
 
@@ -37,6 +35,9 @@ public class CabinetBlockHelper {
 
 
     public static void init() {
+        final FabricBlockSettings CabinetBlockSettings = FabricBlockSettings.create().strength(CabinetBlockStrength).requiresTool().nonOpaque().sounds(BlockSoundGroup.WOOD);
+        final FabricBlockSettings IlluminatedCabinetBlockSettings = FabricBlockSettings.create().strength(CabinetBlockStrength).requiresTool().nonOpaque().sounds(BlockSoundGroup.WOOD).luminance(2);
+
         //Create cabinet variants
         short cabinetBlockVariantsCount = (short) (MainHelper.vanillaWoodTypes.length * MainHelper.vanillaWoolTypes.length);
         if (ModConfig.betterNetherDetected) {

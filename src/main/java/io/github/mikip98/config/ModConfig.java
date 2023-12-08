@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 public class ModConfig {
+    public static boolean TransparentCabinetBlocks = true;
     public static boolean enableLEDs = false;
     public static boolean enableLEDsBrightening = true;
     public static boolean enableVanillaColoredLights = false;
