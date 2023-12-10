@@ -1,4 +1,5 @@
 {
+	"credit": "Made with Blockbench by Mikolaj Pokora",
 	"parent": "humility-afm:block/cabinet_block",
 	"elements": [
 		{
@@ -72,13 +73,25 @@
 			}
 		},
 		{
-			"name": "door",
-			"from": [15, 2, 4],
+			"name": "door_outside",
+			"from": [16, 2, 4],
 			"to": [16, 14, 16],
 			"rotation": {"angle": 45, "axis": "y", "origin": [15, 8, 3]},
 			"faces": {
 				"north": {"uv": [14, 2, 15, 14], "texture": "#2"},
 				"east": {"uv": [2, 2, 14, 14], "texture": "#3"},
+				"south": {"uv": [1, 2, 2, 14], "texture": "#2"},
+				"up": {"uv": [2, 2, 14, 1], "rotation": 270, "texture": "#2"},
+				"down": {"uv": [14, 14, 2, 15], "rotation": 90, "texture": "#2"}
+			}
+		},
+		{
+			"name": "door_inside",
+			"from": [15, 2, 4],
+			"to": [15, 14, 16],
+			"rotation": {"angle": 45, "axis": "y", "origin": [15, 8, 3]},
+			"faces": {
+				"north": {"uv": [14, 2, 15, 14], "texture": "#2"},
 				"south": {"uv": [1, 2, 2, 14], "texture": "#2"},
 				"west": {"uv": [14, 2, 2, 14], "texture": "#3"},
 				"up": {"uv": [2, 2, 14, 1], "rotation": 270, "texture": "#2"},

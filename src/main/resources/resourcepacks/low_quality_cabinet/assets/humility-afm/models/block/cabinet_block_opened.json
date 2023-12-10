@@ -1,4 +1,5 @@
 {
+	"credit": "Made with Blockbench by Mikolaj Pokora",
 	"parent": "humility-afm:block/cabinet_block",
 	"elements": [
 		{
