@@ -48,7 +48,7 @@ def generateLEDVariantsJSONs():
         JSON = """{
     "parent": "humility-afm:block/led",
     "textures": {
-        "0": "block/""" + color + """_terracotta",
+        "0": "block/""" + color + """_concrete",
         "particle": "block/""" + color + """_terracotta"
     }
 }"""
@@ -60,7 +60,7 @@ def generateLEDVariantsJSONs():
         JSON = """{
     "parent": "humility-afm:block/led_inner",
     "textures": {
-        "0": "block/""" + color + """_terracotta",
+        "0": "block/""" + color + """_concrete",
         "particle": "block/""" + color + """_terracotta"
     }
 }"""
@@ -72,7 +72,7 @@ def generateLEDVariantsJSONs():
         JSON = """{
     "parent": "humility-afm:block/led_outer",
     "textures": {
-        "0": "block/""" + color + """_terracotta",
+        "0": "block/""" + color + """_concrete",
         "particle": "block/""" + color + """_terracotta"
     }
 }"""
