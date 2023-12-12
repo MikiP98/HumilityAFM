@@ -177,7 +177,7 @@ public class ConfigJSON {
                     
             "LightBlock": [
         """;
-        
+
         for (Color color : colors) {
             if (color.name.equals("pink")) {
                 JSON += """
