@@ -1,5 +1,6 @@
 package io.github.mikip98.config;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.fabricmc.loader.api.FabricLoader;
 import com.google.gson.Gson;
@@ -8,6 +9,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.function.Function;
 
 import static com.mojang.text2speech.Narrator.LOGGER;
 
@@ -55,64 +58,38 @@ public class ConfigJSON {
                 boolean needsUpdating = false;
                 if (configJson != null) {
                     // Load the static fields from the JSON object
-                    try {
-                        ModConfig.TransparentCabinetBlocks = configJson.get("TransparentCabinetBlocks").getAsBoolean();
-                    } catch (Exception e) {
-                        needsUpdating = true;
-                    }
-                    try {
-                        ModConfig.enableLEDs = configJson.get("enableLEDs").getAsBoolean();
-                    } catch (Exception e) {
-                        needsUpdating = true;
-                    }
-                    try {
-                        ModConfig.enableLEDsBrightening = configJson.get("enableLEDsBrightening").getAsBoolean();
-                    } catch (Exception e) {
-                        needsUpdating = true;
-                    }
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, ModConfig.class.getField("TransparentCabinetBlocks"));
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, ModConfig.class.getField("enableLEDs"));
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, ModConfig.class.getField("enableLEDsBrightening"));
 
-                    try {
-                        ModConfig.LEDColoredLightStrength = configJson.get("LEDColoredLightStrength").getAsShort();
-                    } catch (Exception e) {
-                        needsUpdating = true;
-                    }
-                    try {
-                        ModConfig.LEDColoredLightRadius = configJson.get("LEDColoredLightRadius").getAsShort();
-                    } catch (Exception e) {
-                        needsUpdating = true;
-                    }
-                    try {
-                        ModConfig.cabinetBlockBurnTime = configJson.get("cabinetBlockBurnTime").getAsInt();
-                    } catch (Exception e) {
-                        needsUpdating = true;
-                    }
-                    try {
-                        ModConfig.cabinetBlockFireSpread = configJson.get("cabinetBlockFireSpread").getAsInt();
-                    } catch (Exception e) {
-                        needsUpdating = true;
-                    }
-                    try {
-                        ModConfig.mosaicsAndTilesStrengthMultiplayer = configJson.get("mosaicsAndTilesStrengthMultiplayer").getAsFloat();
-                    } catch (Exception e) {
-                        needsUpdating = true;
-                    }
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, ModConfig.class.getField("LEDColoredLightStrength"));
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, ModConfig.class.getField("LEDColoredLightRadius"));
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsInt, ModConfig.class.getField("cabinetBlockBurnTime"));
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsInt, ModConfig.class.getField("cabinetBlockFireSpread"));
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsFloat, ModConfig.class.getField("mosaicsAndTilesStrengthMultiplayer"));
 
-//                    try {
-//                        ModConfig.customColorReferences = configJson.get("customColorReferences").getAsMap();
-//                    } catch (Exception e) {
-//                        needsUpdating = true;
-//                    }
+//                    needsUpdating |= tryLoad(configJson, JsonElement::getAsMap, ModConfig.class.getField("customColorReferences"));
                 }
                 if (needsUpdating) {
-                    saveConfigToFile();
+                    saveConfigToFile();  // Update the config file to include new values
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (NoSuchFieldException e) {
+                throw new RuntimeException(e);
             }
         } else {
-            // Create the config file
-            saveConfigToFile();
+            saveConfigToFile();  // Create the config file
         }
+    }
+    private static <T> boolean tryLoad(JsonObject configJson, Function<JsonElement, T> getter, Field field) {
+        try {
+            T value = getter.apply(configJson.get(field.getName()));
+            field.set(ModConfig.class, value);
+        } catch (Exception e) {
+            return true;
+        }
+        return false;
     }
 
     // Create the shimmer support configuration file if it does not exist
