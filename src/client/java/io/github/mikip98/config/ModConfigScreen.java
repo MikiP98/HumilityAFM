@@ -40,9 +40,14 @@ public class ModConfigScreen {
                 .startBooleanToggle(Text.literal("Enable LEDs Brightening"), ModConfig.enableLEDsBrightening)
                 .setDefaultValue(true)
                 .setTooltip(Text.of("Enables LEDs Brightening, better looking, small performance impact.\n(Auto disabled when Shimmer is installed)"))
-                .setSaveConsumer(value -> {
-                    ModConfig.enableLEDsBrightening = value;
-                })
+                .setSaveConsumer(value -> ModConfig.enableLEDsBrightening = value)
+                .build()
+        );
+        rootCategory.addEntry(ConfigEntryBuilder.create()
+                .startBooleanToggle(Text.literal("Enable LED Radius Color Compensation"), ModConfig.enableLEDRadiusColorCompensation)
+                .setDefaultValue(true)
+                .setTooltip(Text.of("Enables LED Radius Color Compensation\nTries to increase brightness without losing out on saturation\n(Requires Shimmer to be installed)"))
+                .setSaveConsumer(value -> ModConfig.enableLEDRadiusColorCompensation = value)
                 .build()
         );
 
@@ -52,42 +57,39 @@ public class ModConfigScreen {
                 .startIntSlider(Text.literal("LED Colored Light Strength"), ModConfig.LEDColoredLightStrength, 0, 255)
                 .setDefaultValue(85)
                 .setTooltip(Text.of("The strength of the LED Colored Light.\n(Requires Shimmer to be installed)"))
-                .setSaveConsumer(value -> {
-                    ModConfig.LEDColoredLightStrength = value.shortValue();
-                })
+                .setSaveConsumer(value -> ModConfig.LEDColoredLightStrength = value.shortValue())
                 .build()
         );
         customizationCategory.addEntry(ConfigEntryBuilder.create()
                 .startIntSlider(Text.literal("LED Colored Light Radius"), ModConfig.LEDColoredLightRadius, 0, 63)
                 .setDefaultValue(9)
                 .setTooltip(Text.of("The radius of the LED Colored Light.\n(Requires Shimmer to be installed)"))
-                .setSaveConsumer(value -> {
-                    ModConfig.LEDColoredLightRadius = value.shortValue();
-                })
+                .setSaveConsumer(value -> ModConfig.LEDColoredLightRadius = value.shortValue())
+                .build()
+        );
+        customizationCategory.addEntry(ConfigEntryBuilder.create()
+                .startIntSlider(Text.literal("LED Radius Color Compensation Bias"), ModConfig.LEDRadiusColorCompensationBias, -1, 1)
+                .setDefaultValue(0)
+                .setTooltip(Text.of("The bias of the LED Radius Color Compensation.\n(Requires Shimmer to be installed)"))
+                .setSaveConsumer(value -> ModConfig.LEDRadiusColorCompensationBias = value.shortValue())
                 .build()
         );
         customizationCategory.addEntry(ConfigEntryBuilder.create()
                 .startIntSlider(Text.literal("Cabinet Block Burn Time"), ModConfig.cabinetBlockBurnTime, 0, 64)
                 .setDefaultValue(24)
-                .setSaveConsumer(value -> {
-                    ModConfig.cabinetBlockBurnTime = value;
-                })
+                .setSaveConsumer(value -> ModConfig.cabinetBlockBurnTime = value)
                 .build()
         );
         customizationCategory.addEntry(ConfigEntryBuilder.create()
                 .startIntSlider(Text.literal("Cabinet Block Fire Spread"), ModConfig.cabinetBlockFireSpread, 0, 64)
                 .setDefaultValue(9)
-                .setSaveConsumer(value -> {
-                    ModConfig.cabinetBlockFireSpread = value;
-                })
+                .setSaveConsumer(value -> ModConfig.cabinetBlockFireSpread = value)
                 .build()
         );
         customizationCategory.addEntry(ConfigEntryBuilder.create()
                 .startFloatField(Text.literal("Mosaics and Tiles Strength Multiplayer"), ModConfig.mosaicsAndTilesStrengthMultiplayer)
                 .setDefaultValue(1.5f)
-                .setSaveConsumer(value -> {
-                    ModConfig.mosaicsAndTilesStrengthMultiplayer = value;
-                })
+                .setSaveConsumer(value -> ModConfig.mosaicsAndTilesStrengthMultiplayer = value)
                 .build()
         );
 

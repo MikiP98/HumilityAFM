@@ -2,17 +2,20 @@ package io.github.mikip98.config;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import io.github.mikip98.helpers.Color;
 import net.fabricmc.loader.api.FabricLoader;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.function.Function;
 
-import static com.mojang.text2speech.Narrator.LOGGER;
+import static io.github.mikip98.HumilityAFM.LOGGER;
 
 public class ConfigJSON {
 
@@ -27,9 +30,11 @@ public class ConfigJSON {
         configJson.addProperty("TransparentCabinetBlocks", ModConfig.TransparentCabinetBlocks);
         configJson.addProperty("enableLEDs", ModConfig.enableLEDs);
         configJson.addProperty("enableLEDsBrightening", ModConfig.enableLEDsBrightening);
+        configJson.addProperty("enableLEDRadiusColorCompensation", ModConfig.enableLEDRadiusColorCompensation);
 
         configJson.addProperty("LEDColoredLightStrength", ModConfig.LEDColoredLightStrength);
         configJson.addProperty("LEDColoredLightRadius", ModConfig.LEDColoredLightRadius);
+        configJson.addProperty("LEDRadiusColorCompensationBias", ModConfig.LEDRadiusColorCompensationBias);
         configJson.addProperty("cabinetBlockBurnTime", ModConfig.cabinetBlockBurnTime);
         configJson.addProperty("cabinetBlockFireSpread", ModConfig.cabinetBlockFireSpread);
         configJson.addProperty("mosaicsAndTilesStrengthMultiplayer", ModConfig.mosaicsAndTilesStrengthMultiplayer);
@@ -61,9 +66,11 @@ public class ConfigJSON {
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, ModConfig.class.getField("TransparentCabinetBlocks"));
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, ModConfig.class.getField("enableLEDs"));
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, ModConfig.class.getField("enableLEDsBrightening"));
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, ModConfig.class.getField("enableLEDRadiusColorCompensation"));
 
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, ModConfig.class.getField("LEDColoredLightStrength"));
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, ModConfig.class.getField("LEDColoredLightRadius"));
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, ModConfig.class.getField("LEDRadiusColorCompensationBias"));
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsInt, ModConfig.class.getField("cabinetBlockBurnTime"));
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsInt, ModConfig.class.getField("cabinetBlockFireSpread"));
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsFloat, ModConfig.class.getField("mosaicsAndTilesStrengthMultiplayer"));
@@ -107,149 +114,90 @@ public class ConfigJSON {
         File configDir = FabricLoader.getInstance().getConfigDir().toFile();
         File configFile = new File(configDir, "shimmer/humility.json");
 
+        ArrayList<Color> colors = new ArrayList<>();
+        colors.add(new Color("white", 255, 255,255));
+        colors.add(new Color("light_gray", 180, 180, 180));
+        colors.add(new Color("gray", 90, 90, 90));
+        colors.add(new Color("black", 0, 0, 0));
+        colors.add(new Color("brown", 139, 69, 19));
+        colors.add(new Color("red", 255, 0, 0));
+        colors.add(new Color("orange", 255, 165, 0));
+        colors.add(new Color("yellow", 255, 255, 0));
+        colors.add(new Color("lime", 192, 255, 0));
+        colors.add(new Color("green", 0, 255, 0));
+        colors.add(new Color("cyan", 0, 255, 255));
+        colors.add(new Color("light_blue", 30, 144, 255));
+        colors.add(new Color("blue", 0, 0, 255));
+        colors.add(new Color("purple", 128, 0, 128));
+        colors.add(new Color("magenta", 255, 0, 255));
+        colors.add(new Color("pink", 255, 192, 203));
+//        LOGGER.info("Colors: ");
+//        for (Color color : colors) {
+//            LOGGER.info(color.toString());
+//        }
+
         // Create the config file
         String JSON = """
                 {
                     "ColorReference": {
-                        "white" : {
-                            "r": 255,
-                            "g": 255,
-                            "b": 255,
-                            "a":\s""" + ModConfig.LEDColoredLightStrength + """
-                        
+                    """;
+        for (Color color : colors) {
+            if (color.name.equals("pink")) {
+                JSON += """
+                        \t\t\"""" + color.name + """ 
+                        " : {
+                        \t\t\t"r":\s""" + color.r + """
+                        ,
+                        \t\t\t"g":\s""" + color.g + """
+                        ,
+                        \t\t\t"b":\s""" + color.b + """
+                        ,
+                        \t\t\t"a":\s""" + ModConfig.LEDColoredLightStrength + """
+                            
+                        \t\t}
+                        """;
+            } else {
+                JSON += """
+                        \t\t\"""" + color.name + """ 
+                        " : {
+                        \t\t\t"r":\s""" + color.r + """
+                        ,
+                        \t\t\t"g":\s""" + color.g + """
+                        ,
+                        \t\t\t"b":\s""" + color.b + """
+                        ,
+                        \t\t\t"a":\s""" + ModConfig.LEDColoredLightStrength + """
+                            
                         \t\t},
-                        \t\t"light_gray" : {
-                            \t\t"r": 180,
-                            \t\t"g": 180,
-                            \t\t"b": 180,
-                            \t\t"a":\s""" + ModConfig.LEDColoredLightStrength + """
-                        
-                    \t\t},
-                        \t"gray" : {
-                            \t"r": 90,
-                            \t"g": 90,
-                            \t"b": 90,
-                            \t"a":\s""" + ModConfig.LEDColoredLightStrength + """
-                        
-                    \t\t},
-                        \t"black" : {
-                            \t"r": 0,
-                            \t"g": 0,
-                            \t"b": 0,
-                            \t"a":\s""" + ModConfig.LEDColoredLightStrength + """
-                        
-                    \t\t},
-                        \t"brown" : {
-                            \t"r": 139,
-                            \t"g": 69,
-                            \t"b": 19,
-                            \t"a":\s""" + ModConfig.LEDColoredLightStrength + """
-                        
-                    \t\t},
-                        \t"red" : {
-                            \t"r": 255,
-                            \t"g": 0,
-                            \t"b": 0,
-                            \t"a":\s""" + ModConfig.LEDColoredLightStrength + """
-                        
-                    \t\t},
-                        \t"orange" : {
-                            \t"r": 255,
-                            \t"g": 165,
-                            \t"b": 0,
-                            \t"a":\s""" + ModConfig.LEDColoredLightStrength + """
-                        
-                    \t\t},
-                        \t"yellow" : {
-                            \t"r": 255,
-                            \t"g": 255,
-                            \t"b": 0,
-                            \t"a":\s""" + ModConfig.LEDColoredLightStrength + """
-                        
-                    \t\t},
-                        \t"lime" : {
-                            \t"r": 192,
-                            \t"g": 255,
-                            \t"b": 0,
-                            \t"a":\s""" + ModConfig.LEDColoredLightStrength + """
-                        
-                    \t\t},
-                        \t"green" : {
-                            \t"r": 0,
-                            \t"g": 255,
-                            \t"b": 0,
-                            \t"a":\s""" + ModConfig.LEDColoredLightStrength + """
-                        
-                    \t\t},
-                        \t"cyan" : {
-                            \t"r": 0,
-                            \t"g": 255,
-                            \t"b": 255,
-                            \t"a":\s""" + ModConfig.LEDColoredLightStrength + """
-                        
-                    \t\t},
-                        \t"light_blue" : {
-                            \t"r": 30,
-                            \t"g": 144,
-                            \t"b": 255,
-                            \t"a":\s""" + ModConfig.LEDColoredLightStrength + """
-                        
-                    \t\t},
-                        \t"blue" : {
-                            \t"r": 0,
-                            \t"g": 0,
-                            \t"b": 255,
-                            \t"a":\s""" + ModConfig.LEDColoredLightStrength + """
-                        
-                    \t\t},
-                        \t"purple" : {
-                            \t"r": 128,
-                            \t"g": 0,
-                            \t"b": 128,
-                            \t"a":\s""" + ModConfig.LEDColoredLightStrength + """
-                        
-                    \t\t},
-                        \t"magenta" : {
-                            \t"r": 255,
-                            \t"g": 0,
-                            \t"b": 255,
-                            \t"a":\s""" + ModConfig.LEDColoredLightStrength + """
-                        
-                    \t\t},
-                        \t"pink" : {
-                            \t"r": 255,
-                            \t"g": 192,
-                            \t"b": 203,
-                            \t"a":\s""" + ModConfig.LEDColoredLightStrength + """
-                        
-                }
+                        """;
+            }
+        }
+        JSON += """
             },
                     
             "LightBlock": [
         """;
-
-        String[] colors = {"white", "light_gray", "gray", "black", "brown", "red", "orange", "yellow", "lime", "green", "cyan", "light_blue", "blue", "purple", "magenta", "pink"};
-
-        for (String color : colors) {
-            if (color.equals("pink")) {
+        
+        for (Color color : colors) {
+            if (color.name.equals("pink")) {
                 JSON += """
             \t\t{
-                \t\t"block": "humility-afm:led_""" + color + """
+                \t\t"block": "humility-afm:led_""" + color.name + """
                 ",
-                \t\t\t"color": "#""" + color + """
+                \t\t\t"color": "#""" + color.name + """
                 ",
-                \t\t\t"radius":\s""" + ModConfig.LEDColoredLightRadius + """
+                \t\t\t"radius":\s""" + (ModConfig.LEDColoredLightRadius + bias(color)) + """
     
             \t\t}
                 """;
             } else {
                 JSON += """
                         \t\t{
-                            \t\t"block": "humility-afm:led_""" + color + """
+                            \t\t"block": "humility-afm:led_""" + color.name + """
                         ",
-                        \t\t\t"color": "#""" + color + """
+                        \t\t\t"color": "#""" + color.name + """
                         ",
-                        \t\t\t"radius":\s""" + ModConfig.LEDColoredLightRadius + """
+                        \t\t\t"radius":\s""" + (ModConfig.LEDColoredLightRadius + bias(color)) + """
                         
                         },
                 """;
@@ -265,5 +213,16 @@ public class ConfigJSON {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    private static short bias(Color color) {
+        if (ModConfig.enableLEDRadiusColorCompensation) {
+            short sum = (short) (color.r + color.g + color.b);
+            if (sum <= 255) {
+                return 1;
+            } else if (sum > 510) {
+                return -1;
+            }
+        }
+        return 0;
     }
 }
