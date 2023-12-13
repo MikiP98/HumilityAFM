@@ -13,10 +13,7 @@ public class Color {
         this.b = b;
     }
     public Color(String name, int r, int g, int b) {
-        this.name = name;
-        this.r = (short) r;
-        this.g = (short) g;
-        this.b = (short) b;
+        this(name, (short) r, (short) g, (short) b);
     }
 
     @Override

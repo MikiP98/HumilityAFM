@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.function.Function;
 
@@ -39,7 +38,7 @@ public class ConfigJSON {
         configJson.addProperty("cabinetBlockFireSpread", ModConfig.cabinetBlockFireSpread);
         configJson.addProperty("mosaicsAndTilesStrengthMultiplayer", ModConfig.mosaicsAndTilesStrengthMultiplayer);
 
-        configJson.addProperty("customColorReferences", ModConfig.customColorReferences.toString());
+        // configJson.addProperty("customColorReferences", ModConfig.customColorReferences.toString());
 
         // Save the JSON object to a file
         try (FileWriter writer = new FileWriter(configFile)) {
@@ -63,36 +62,34 @@ public class ConfigJSON {
                 boolean needsUpdating = false;
                 if (configJson != null) {
                     // Load the static fields from the JSON object
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, ModConfig.class.getField("TransparentCabinetBlocks"));
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, ModConfig.class.getField("enableLEDs"));
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, ModConfig.class.getField("enableLEDsBrightening"));
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, ModConfig.class.getField("enableLEDRadiusColorCompensation"));
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "TransparentCabinetBlocks");
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableLEDs");
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableLEDsBrightening");
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableLEDRadiusColorCompensation");
 
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, ModConfig.class.getField("LEDColoredLightStrength"));
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, ModConfig.class.getField("LEDColoredLightRadius"));
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, ModConfig.class.getField("LEDRadiusColorCompensationBias"));
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsInt, ModConfig.class.getField("cabinetBlockBurnTime"));
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsInt, ModConfig.class.getField("cabinetBlockFireSpread"));
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsFloat, ModConfig.class.getField("mosaicsAndTilesStrengthMultiplayer"));
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, "LEDColoredLightStrength");
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, "LEDColoredLightRadius");
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, "LEDRadiusColorCompensationBias");
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsInt, "cabinetBlockBurnTime");
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsInt, "cabinetBlockFireSpread");
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsFloat, "mosaicsAndTilesStrengthMultiplayer");
 
-//                    needsUpdating |= tryLoad(configJson, JsonElement::getAsMap, ModConfig.class.getField("customColorReferences"));
+//                    needsUpdating |= tryLoad(configJson, JsonElement::getAsMap, "customColorReferences");
                 }
                 if (needsUpdating) {
                     saveConfigToFile();  // Update the config file to include new values
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-            } catch (NoSuchFieldException e) {
-                throw new RuntimeException(e);
             }
         } else {
             saveConfigToFile();  // Create the config file
         }
     }
-    private static <T> boolean tryLoad(JsonObject configJson, Function<JsonElement, T> getter, Field field) {
+    private static <T> boolean tryLoad(JsonObject configJson, Function<JsonElement, T> getter, String fieldName) {
         try {
-            T value = getter.apply(configJson.get(field.getName()));
-            field.set(ModConfig.class, value);
+            T value = getter.apply(configJson.get(fieldName));
+            ModConfig.class.getField(fieldName).set(ModConfig.class, value);
         } catch (Exception e) {
             return true;
         }
