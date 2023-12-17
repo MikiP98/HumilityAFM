@@ -1,15 +1,7 @@
 package io.github.mikip98.helpers;
 
-import io.github.mikip98.content.blocks.cabinet.IlluminatedCabinetBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
-import static io.github.mikip98.HumilityAFM.LOGGER;
-
 public class BlockEntityRendererHelper {
-    int maxLight = 0xF000F0;  // Max block light (15) and max skylight (15)
+    // Max block light (15) and max skylight (15)
 
     // Helper method to calculate combined light with brightness adjustment
     public static int multiplyLight(int light, float brightness) {
@@ -28,10 +20,7 @@ public class BlockEntityRendererHelper {
         light1 = Math.min(15, light1);
         light2 = Math.min(15, light2);
 
-        int combinedLight = ((light1 & 0b1111) << 20) | ((light2 & 0b1111) << 4);
-//        LOGGER.info("Combined light: " + combinedLight);
-
-        return combinedLight;
+        return ((light1 & 0b1111) << 20) | ((light2 & 0b1111) << 4);
     }
 
     // method to add fixed light amount to the block light
@@ -51,22 +40,4 @@ public class BlockEntityRendererHelper {
 
         return ((light1 & 0b1111) << 20) | ((light2 & 0b1111) << 4);
     }
-
-
-    // Helper method to check if the block entity is valiable for rendering
-    public static boolean entityDestroyed(BlockEntity entity) {
-        World world = entity.getWorld();
-        BlockPos pos = entity.getPos();
-
-        if (world == null || pos == null) {
-            // If the world or position is null, return early
-            return true;
-        }
-
-        BlockState blockState = world.getBlockState(pos);
-
-        // If the block state is null or not an instance of LEDStripBlock, return early
-        return blockState == null || !(blockState.getBlock() instanceof IlluminatedCabinetBlock);
-    }
-
 }

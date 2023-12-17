@@ -1,4 +1,4 @@
-def translate_en_us(cabinets, stairs, mosaics, LEDs):
+def translate_en_us(cabinets, stairs, mosaics, LEDs, torches):
     JSON = """{
     "itemGroup.cabinets": "Cabinets",
     "itemGroup.innerOuterStairs": "Inner and Outer Stairs",
@@ -51,6 +51,14 @@ def translate_en_us(cabinets, stairs, mosaics, LEDs):
     "block.humility-afm.led_""" + LED + "\": \"" + name + """LED\",
     "item.humility-afm.led_powder_""" + LED + "\": \"" + name + "LED Powder\","
 
+    for torch in torches:
+        words = torch.split("_")
+        name = ""
+        for word in words:
+            name += word[0].upper() + word[1:] + " "
+        JSON += """
+    "block.humility-afm.jack_o_lantern_""" + torch + "\": \"" + name + "Jack o'Lantern\","
+
     JSON = JSON[:-1]
     JSON += """
 }"""
@@ -60,7 +68,7 @@ def translate_en_us(cabinets, stairs, mosaics, LEDs):
 def translate_en_gb(json_text):
     return json_text.replace("Gray", "Grey")
 
-def translate_pl_pl(cabinets, stairs, mosaics, LEDs):
+def translate_pl_pl(cabinets, stairs, mosaics, LEDs, torches):
     JSON = """
 {
     "itemGroup.cabinets": "Gabloty",
@@ -84,8 +92,8 @@ def translate_pl_pl(cabinets, stairs, mosaics, LEDs):
             name += word + " "
 
         JSON += """
-    "block.humility-afm.cabinet_block_""" + cabinet + "\": \"" + name + """Cabinet",
-    "block.humility-afm.illuminated_cabinet_block_""" + cabinet + "\": \"" + name + "Illuminated Cabinet\","
+    "block.humility-afm.cabinet_block_""" + cabinet + "\": \"" + name + """Gablota",
+    "block.humility-afm.illuminated_cabinet_block_""" + cabinet + "\": \"" + name + "Podświetlona Gablota\","
 
     for stairs in stairs:
         # print(stairs)
@@ -94,8 +102,8 @@ def translate_pl_pl(cabinets, stairs, mosaics, LEDs):
         for word in words:
             name += word[0].upper() + word[1:] + " "
         JSON += """
-    "block.humility-afm.inner_stairs_""" + stairs + "\": \"" + name + """Inner Stairs",
-    "block.humility-afm.outer_stairs_""" + stairs + "\": \"" + name + "Outer Stairs\","
+    "block.humility-afm.inner_stairs_""" + stairs + "\": \"" + name + """Wewnętrzne Schody",
+    "block.humility-afm.outer_stairs_""" + stairs + "\": \"" + name + "Zewnętrzne Schody\","
 
     for mosaic in mosaics:
         words = mosaic.split("_")
@@ -103,7 +111,7 @@ def translate_pl_pl(cabinets, stairs, mosaics, LEDs):
         for word in words:
             name += word[0].upper() + word[1:] + " "
         JSON += """
-    "block.humility-afm.wooden_mosaic_""" + mosaic + "\": \"" + name + "Wooden Mosaic\","
+    "block.humility-afm.wooden_mosaic_""" + mosaic + "\": \"" + name + "Drewniana Mozajka\","
 
     for LED in LEDs:
         words = LED.split("_")
@@ -112,7 +120,15 @@ def translate_pl_pl(cabinets, stairs, mosaics, LEDs):
             name += word[0].upper() + word[1:] + " "
         JSON += """
     "block.humility-afm.led_""" + LED + "\": \"" + name + """LED\",
-    "item.humility-afm.led_powder_""" + LED + "\": \"" + name + "LED Powder\","
+    "item.humility-afm.led_powder_""" + LED + "\": \"" + name + "Proszek LED\","
+
+    for torch in torches:
+        words = torch.split("_")
+        name = ""
+        for word in words:
+            name += word[0].upper() + word[1:] + " "
+        JSON += """
+    "block.humility-afm.jack_o_lantern_""" + torch + "\": \"" + name + "Jack o'Lantern\","
 
     JSON = JSON[:-1]
     JSON += """

@@ -819,5 +819,7 @@
     "block.humility-afm.led_light_gray": "Light Grey LED",
     "item.humility-afm.led_powder_light_gray": "Light Grey LED Powder",
     "block.humility-afm.led_white": "White LED",
-    "item.humility-afm.led_powder_white": "White LED Powder"
+    "item.humility-afm.led_powder_white": "White LED Powder",
+    "block.humility-afm.jack_o_lantern_redstone": "Redstone Jack o'Lantern",
+    "block.humility-afm.jack_o_lantern_soul": "Soul Jack o'Lantern"
 }

@@ -39,17 +39,11 @@ public class LEDBlockEntityRenderer implements BlockEntityRenderer<LEDBlockEntit
             return;
         }
 
-        // If skylight or block light is greater than 8, return early
-//        if (Objects.requireNonNull(entity.getWorld()).getLightLevel(entity.getPos()) > 8) {
-//            // Pop the matrix stack to avoid issues with subsequent rendering
-//            matrices.pop();
-//            return;
-//        }
-
         final float blockSize = 0.0625f;
         final byte posisionConstant = 31;
 
         float blockSizeX = blockSize;
+        @SuppressWarnings("unused")
         float blockSizeY = blockSize;
         float blockSizeZ = blockSize;
         byte posisionConstantX = 1;

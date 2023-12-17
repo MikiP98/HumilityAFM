@@ -1,0 +1,19 @@
+{
+    "variants": {
+        "facing=east": {
+            "model": "humility-afm:block/jack_o_lantern_redstone",
+            "y": 90
+        },
+        "facing=north": {
+            "model": "humility-afm:block/jack_o_lantern_redstone"
+        },
+        "facing=south": {
+            "model": "humility-afm:block/jack_o_lantern_redstone",
+            "y": 180
+        },
+        "facing=west": {
+            "model": "humility-afm:block/jack_o_lantern_redstone",
+            "y": 270
+        }
+    }
+}
