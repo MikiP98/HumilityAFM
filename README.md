@@ -11,33 +11,39 @@ It specializes in procedurally generating variants of the same block so that you
 Cabinets! <br>
 Make your treasures pop! <br>
 Match the wood to your build and wool interior to your item! <br>
-<img width="70%" alt="Cabinet Block Image" src="https://cdn.modrinth.com/data/RoBSx69i/images/6c6be08f82249beb49aad2ea2bf9b6f41cbf5e82.png">
+<img width="75%" alt="Cabinet Block Image" src="https://cdn.modrinth.com/data/RoBSx69i/images/6c6be08f82249beb49aad2ea2bf9b6f41cbf5e82.png">
 <br>
 Need something brighter? Illuminated Cabinet comes for rescue! <br>
 [Illuminated Cabinet Block Image] <br>
 <br>
 Wooden Mosaics! <br>
 Mix 2 different wood types to find your look! <br>
-<img width="70%" alt="Wooden Mosaic Image" src="https://cdn.modrinth.com/data/RoBSx69i/images/aa4b885e5d8f0efa85813671d841fad77358e0fb.png">
+<img width="75%" alt="Wooden Mosaic Image" src="https://cdn.modrinth.com/data/RoBSx69i/images/aa4b885e5d8f0efa85813671d841fad77358e0fb.png">
 <br>
 <br>
-Terracotta tiles! <br>
+Terracotta Tiles! <br>
 It’s like wooden mosaic but flatter. <br>
-[Terracotta Tile Image] <br>
+<img width="75%" alt="Terracotta Tiles Image" src="https://cdn.modrinth.com/data/RoBSx69i/images/f4d165ecabe01bfba994ecbe28b813b1971d9e68.png">
+<br>
+<br>
+Forced Corner Stairs variants<br>
+Make the vanillest armchairs, sofas, tables and more! <br>
+<img width="75%" alt="Forced Corner Stairs Image" src="https://cdn.modrinth.com/data/RoBSx69i/images/819ebd4a9abf9eacd4c85205768f6d454e538b7e.png">
+<br>
 <br>
 LEDs! (needs to be enabled in the config) <br>
 Lighten up your builds with unobtrusive light source <br>
-<img width="70%" alt="LED Image" src="https://cdn.modrinth.com/data/RoBSx69i/images/e489ba0d65132aa05c279cf5ef3f3577a41f4bc7.png">
+<img width="75%" alt="LED Image" src="https://cdn.modrinth.com/data/RoBSx69i/images/e489ba0d65132aa05c279cf5ef3f3577a41f4bc7.png">
 <br>
 LEDs also support Shimmers coloured lights! <br>
-<img width="70%" alt="LED coloured light Image" src="https://cdn.modrinth.com/data/RoBSx69i/images/7ff0a81c3e24eb38e83edf01f2c21e24a6b911e9.png">
+<img width="75%" alt="LED coloured light Image" src="https://cdn.modrinth.com/data/RoBSx69i/images/7ff0a81c3e24eb38e83edf01f2c21e24a6b911e9.png">
 <br>
 <br>
 This mod is highly customisable through its config!
 <br>
 <br>
 ### FAQ: <br>
-<b>q:</b> Why don’t I see LED in my game? <br>
+<b>q:</b> Why don’t I see LEDs in my game? <br>
 <b>a:</b> You need to enable them in config and restart the game. I thought they aren't vanilla enough to include them by default. <br>
 <br>
 <b>q:</b> Why don’t my LEDs emit coloured light? <br>
@@ -46,7 +52,7 @@ This mod is highly customisable through its config!
 <b>q:</b> Why is inside of Cabinets transparent?<br>
 <b>a:</b> Sodium has issues with rendering transparency. Installing other mods, like NVIDIUM, may help fix the problem. If that doesn't help, you can disable partial Cabinet transparency in the configuration (you will still be able to see items inside).<br>
 <br>
-<b>q:</b> Why when I look at a Cabinet edges became transparent?<br>
+<b>q:</b> Why when I look at a Cabinet, edges become transparent?<br>
 <b>a:</b> I have no idea...<br>
 <br>
 <br>
