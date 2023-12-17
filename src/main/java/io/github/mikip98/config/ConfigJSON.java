@@ -91,10 +91,37 @@ public class ConfigJSON {
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsInt, "cabinetBlockFireSpread");
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsFloat, "mosaicsAndTilesStrengthMultiplayer");
 
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsJsonArray, "LEDColors");
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsJsonObject, "pumpkinColors");
+//                    needsUpdating |= tryLoad(configJson, JsonElement::getAsJsonArray, "LEDColors");
+                    try {
+                        JsonArray LEDColors = configJson.getAsJsonArray("LEDColors");
+                        for (int i = 0; i < LEDColors.size(); i++) {
+                            JsonObject colorJson = LEDColors.get(i).getAsJsonObject();
+                            Color color = ModConfig.LEDColors.get(i);
+                            color.r = colorJson.get("r").getAsShort();
+                            color.g = colorJson.get("g").getAsShort();
+                            color.b = colorJson.get("b").getAsShort();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        needsUpdating = true;
+                    }
+//                    needsUpdating |= tryLoad(configJson, JsonElement::getAsJsonObject, "pumpkinColors");
+                    try {
+                        JsonObject pumpkinColors = configJson.getAsJsonObject("pumpkinColors");
+                        for (Map.Entry<String, JsonElement> entry : pumpkinColors.entrySet()) {
+                            JsonObject colorJson = entry.getValue().getAsJsonObject();
+                            Color color = ModConfig.pumpkinColors.get(entry.getKey());
+                            color.r = colorJson.get("r").getAsShort();
+                            color.g = colorJson.get("g").getAsShort();
+                            color.b = colorJson.get("b").getAsShort();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        needsUpdating = true;
+                    }
                 }
                 if (needsUpdating) {
+                    LOGGER.info("Updating config file to include new values");
                     saveConfigToFile();  // Update the config file to include new values
                 }
             } catch (IOException e) {
@@ -109,6 +136,7 @@ public class ConfigJSON {
             T value = getter.apply(configJson.get(fieldName));
             ModConfig.class.getField(fieldName).set(ModConfig.class, value);
         } catch (Exception e) {
+            e.printStackTrace();
             return true;
         }
         return false;
@@ -223,7 +251,7 @@ public class ConfigJSON {
         String JSON = """
                 {
                 \t"ColorReference": {
-                    \t\"""" + colors.get("red").name + """
+                \t\t\"""" + colors.get("red").name + """
                     " : {
                     \t\t\t"r":\s""" + colors.get("red").r + """
                     ,
