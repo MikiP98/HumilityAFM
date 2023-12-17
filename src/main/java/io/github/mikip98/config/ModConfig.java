@@ -21,7 +21,6 @@ public class ModConfig {
     public static int cabinetBlockFireSpread = 9;
     public static float mosaicsAndTilesStrengthMultiplayer = 1.5f;
 
-//    public static Map<String, Color> customColorReferences = new Hashtable<>();
     public static ArrayList<Color> LEDColors = new ArrayList<>();
     static {
         LEDColors.add(new Color("white", 255, 255,255));
@@ -41,7 +40,6 @@ public class ModConfig {
         LEDColors.add(new Color("magenta", 255, 0, 255));
         LEDColors.add(new Color("pink", 255, 192, 203));
     }
-
     public static Map<String, Color> pumpkinColors = new HashMap<>();
     static {
         pumpkinColors.put("red", new Color("red", 255, 0, 0));

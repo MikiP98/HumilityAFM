@@ -1,10 +1,15 @@
 package io.github.mikip98.config;
 
+import io.github.mikip98.helpers.Color;
+import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ModConfigScreen {
     public static Screen createScreen(Screen parentScreen) {
@@ -92,6 +97,58 @@ public class ModConfigScreen {
                 .setSaveConsumer(value -> ModConfig.mosaicsAndTilesStrengthMultiplayer = value)
                 .build()
         );
+
+        ConfigCategory ledColorsCategory = builder.getOrCreateCategory(Text.literal("LED Colors"));
+
+        for (Color color : ModConfig.LEDColors) {
+            List<AbstractConfigListEntry> entries = new ArrayList<>();
+            entries.add(ConfigEntryBuilder.create()
+                    .startIntSlider(Text.literal("Red"), color.r, 0, 255)
+                    .setDefaultValue(color.getDefaultR())
+                    .setSaveConsumer(value -> color.r = value.shortValue())
+                    .build()
+            );
+            entries.add(ConfigEntryBuilder.create()
+                    .startIntSlider(Text.literal("Green"), color.g, 0, 255)
+                    .setDefaultValue(color.getDefaultG())
+                    .setSaveConsumer(value -> color.g = value.shortValue())
+                    .build()
+            );
+            entries.add(ConfigEntryBuilder.create()
+                    .startIntSlider(Text.literal("Blue"), color.b, 0, 255)
+                    .setDefaultValue(color.getDefaultB())
+                    .setSaveConsumer(value -> color.b = value.shortValue())
+                    .build()
+            );
+            ledColorsCategory.addEntry(ConfigEntryBuilder.create()
+                    .startSubCategory(Text.of(color.name), entries).build());
+        }
+
+        ConfigCategory pumpkinColorsCategory = builder.getOrCreateCategory(Text.literal("Pumpkin Colors"));
+
+        for (Color color : ModConfig.pumpkinColors.values()) {
+            List<AbstractConfigListEntry> entries = new ArrayList<>();
+            entries.add(ConfigEntryBuilder.create()
+                    .startIntSlider(Text.literal("Red"), color.r, 0, 255)
+                    .setDefaultValue(color.getDefaultR())
+                    .setSaveConsumer(value -> color.r = value.shortValue())
+                    .build()
+            );
+            entries.add(ConfigEntryBuilder.create()
+                    .startIntSlider(Text.literal("Green"), color.g, 0, 255)
+                    .setDefaultValue(color.getDefaultG())
+                    .setSaveConsumer(value -> color.g = value.shortValue())
+                    .build()
+            );
+            entries.add(ConfigEntryBuilder.create()
+                    .startIntSlider(Text.literal("Blue"), color.b, 0, 255)
+                    .setDefaultValue(color.getDefaultB())
+                    .setSaveConsumer(value -> color.b = value.shortValue())
+                    .build()
+            );
+            pumpkinColorsCategory.addEntry(ConfigEntryBuilder.create()
+                    .startSubCategory(Text.of(color.name), entries).build());
+        }
 
         return builder.build();
     }

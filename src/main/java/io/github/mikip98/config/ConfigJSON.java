@@ -1,11 +1,8 @@
 package io.github.mikip98.config;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import io.github.mikip98.helpers.Color;
 import net.fabricmc.loader.api.FabricLoader;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.io.File;
 import java.io.FileReader;
@@ -38,8 +35,26 @@ public class ConfigJSON {
         configJson.addProperty("cabinetBlockFireSpread", ModConfig.cabinetBlockFireSpread);
         configJson.addProperty("mosaicsAndTilesStrengthMultiplayer", ModConfig.mosaicsAndTilesStrengthMultiplayer);
 
-        configJson.addProperty("customColorReferences", ModConfig.LEDColors.toString());
-        configJson.addProperty("customColorReferences", ModConfig.pumpkinColors.toString());
+        JsonArray LEDColors = new JsonArray();
+        for (Color color : ModConfig.LEDColors) {
+            JsonObject colorJson = new JsonObject();
+            colorJson.addProperty("name", color.name);
+            colorJson.addProperty("r", color.r);
+            colorJson.addProperty("g", color.g);
+            colorJson.addProperty("b", color.b);
+            LEDColors.add(colorJson);
+        }
+        configJson.add("LEDColors", LEDColors);
+
+        JsonObject pumpkinColors = new JsonObject();
+        for (Map.Entry<String, Color> entry : ModConfig.pumpkinColors.entrySet()) {
+            JsonObject colorJson = new JsonObject();
+            colorJson.addProperty("r", entry.getValue().r);
+            colorJson.addProperty("g", entry.getValue().g);
+            colorJson.addProperty("b", entry.getValue().b);
+            pumpkinColors.add(entry.getKey(), colorJson);
+        }
+        configJson.add("pumpkinColors", pumpkinColors);
 
         // Save the JSON object to a file
         try (FileWriter writer = new FileWriter(configFile)) {
@@ -76,7 +91,8 @@ public class ConfigJSON {
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsInt, "cabinetBlockFireSpread");
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsFloat, "mosaicsAndTilesStrengthMultiplayer");
 
-//                    needsUpdating |= tryLoad(configJson, JsonElement::getAsMap, "customColorReferences");
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsJsonArray, "LEDColors");
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsJsonObject, "pumpkinColors");
                 }
                 if (needsUpdating) {
                     saveConfigToFile();  // Update the config file to include new values
@@ -156,38 +172,38 @@ public class ConfigJSON {
             }
         }
         JSON += """
-        /t},
+        \t},
         
-        /t"LightBlock": [
+        \t"LightBlock": [
         """;
 
         for (Color color : ModConfig.LEDColors) {
             if (color.name.equals("pink")) {
                 JSON += """
                         \t\t{
-                            \t\t"block": "humility-afm:led_""" + color.name + """
-                        ",
-                        \t\t\t"color": "#""" + color.name + """
-                        ",
-                        \t\t\t"radius":\s""" + (ModConfig.LEDColoredLightRadius + bias(color)) + """
-                                
-                        /t/t}
-                        """;
-            } else {
-                JSON += """
-                        \t\t{
-                            \t\t"block": "humility-afm:led_""" + color.name + """
+                        \t\t\t"block": "humility-afm:led_""" + color.name + """
                         ",
                         \t\t\t"color": "#""" + color.name + """
                         ",
                         \t\t\t"radius":\s""" + (ModConfig.LEDColoredLightRadius + bias(color)) + """
                         
-                        /t/t},
+                        \t\t}
+                        """;
+            } else {
+                JSON += """
+                        \t\t{
+                        \t\t\t"block": "humility-afm:led_""" + color.name + """
+                        ",
+                        \t\t\t"color": "#""" + color.name + """
+                        ",
+                        \t\t\t"radius":\s""" + (ModConfig.LEDColoredLightRadius + bias(color)) + """
+                        
+                        \t\t},
                         """;
             }
         }
         JSON +="""
-    /t]
+    \t]
     }
         """;
         try (FileWriter writer = new FileWriter(configFile)) {
