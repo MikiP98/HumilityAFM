@@ -39,8 +39,16 @@ LEDs also support Shimmers coloured lights! <br>
 <img width="75%" alt="LED coloured light Image" src="https://cdn.modrinth.com/data/RoBSx69i/images/7ff0a81c3e24eb38e83edf01f2c21e24a6b911e9.png">
 <br>
 <br>
+Soul and Redstone Jack o'Lanterns! (With shimmer support!)<br>
+<img width="75%" alt="Soul and Redstone Pumpkins" src="https://cdn.modrinth.com/data/RoBSx69i/images/b0c38755d1e578ac181a0e7fa7e862bafa89781c.png">
+<br>
+<br>
 This mod is highly customisable through its config!
 <br>
+<br>
+### Roadmap: <br>
+- Make Redstone Jack o'Lanterns to turn off when powered <br>
+- Gold and copper candlesticks <br>
 <br>
 ### FAQ: <br>
 <b>q:</b> Why don’t I see LEDs in my game? <br>
