@@ -2,7 +2,7 @@
 ## Humility - Another Furniture Mod
 
 ### Description
-This is a simple and small mod that adds some simple decorative blocks such as cabinets (which are fancier types of item frames) as well as some vanilla block variations.
+This is a simple small mod that add some simple decorative blocks such as cabinets which are fancier types of item frames, as well as adding some vanilla block variations.
 <br>
 It specializes in procedurally generating variants of the same block so that you can always find the look you were searching for.
 <br>
@@ -47,12 +47,12 @@ This mod is highly customisable through its config!
 <b>a:</b> You need to enable them in config and restart the game. I thought they aren't vanilla enough to include them by default. <br>
 <br>
 <b>q:</b> Why don’t my LEDs emit coloured light? <br>
-<b>a:</b> You need to install the "Shimmer" mod alongside this one to get the coloured lights. If you already installed it and LEDs still don't emit coloured light, there is probably some incompatibility. Try disabling the "NVIDIUM" mod and it should start working again.<br>
+<b>a:</b> You need to install "Shimmer" mod alongside this one to get the coloured lights. If you already installed it and LEDs still don't emit coloured light, there is probably some incompatibility. Try disabling "NVIDIUM" mod and it should start working again.<br>
 <br>
-<b>q:</b> Why is the inside of Cabinets transparent?<br>
-<b>a:</b> Sodium has issues with rendering transparency. Installing other mods, like NVIDIUM, may help fix the problem. If that doesn't help, you can disable partial Cabinet transparency in the configuration (you will still be able to see the items inside).<br>
+<b>q:</b> Why is inside of Cabinets transparent?<br>
+<b>a:</b> Sodium has issues with rendering transparency. Installing other mods, like NVIDIUM, may help fix the problem. If that doesn't help, you can disable partial Cabinet transparency in the configuration (you will still be able to see items inside).<br>
 <br>
-<b>q:</b> Why do the edges become transparent when I look at a Cabinet?<br>
+<b>q:</b> Why when I look at a Cabinet, edges become transparent?<br>
 <b>a:</b> I have no idea...<br>
 <br>
 <br>
