@@ -50,7 +50,7 @@ This mod is highly customisable through its config!
 - Make Redstone Jack o'Lanterns to turn off when powered <br>
 - Gold and copper candlesticks <br>
 <br>
-### FAQ: <br>
+ FAQ: <br>
 <b>q:</b> Why don’t I see LEDs in my game? <br>
 <b>a:</b> You need to enable them in config and restart the game. I thought they aren't vanilla enough to include them by default. <br>
 <br>
