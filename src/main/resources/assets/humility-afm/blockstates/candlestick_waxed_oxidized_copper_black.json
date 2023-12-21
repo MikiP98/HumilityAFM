@@ -1,0 +1,21 @@
+
+{
+    "multipart": [
+        {
+            "when": {"facing": "north" },
+            "apply": { "model": "humility-afm:block/candlestick_waxed_oxidized_copper_black", "y": 180 }
+        },
+        {
+            "when": {"facing": "east" },
+            "apply": { "model": "humility-afm:block/candlestick_waxed_oxidized_copper_black", "y": 270 }
+        },
+        {
+            "when": {"facing": "south" },
+            "apply": { "model": "humility-afm:block/candlestick_waxed_oxidized_copper_black" }
+        },
+        {
+            "when": {"facing": "west" },
+            "apply": { "model": "humility-afm:block/candlestick_waxed_oxidized_copper_black", "y": 90 }
+        }
+    ]
+}

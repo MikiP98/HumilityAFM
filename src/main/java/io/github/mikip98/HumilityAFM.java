@@ -4,6 +4,7 @@ import io.github.mikip98.config.ConfigJSON;
 import io.github.mikip98.config.ModConfig;
 import io.github.mikip98.content.blockentities.LEDBlockEntity;
 import io.github.mikip98.content.blockentities.cabinetBlock.IlluminatedCabinetBlockEntity;
+import io.github.mikip98.content.blocks.JustHorizontalFacingBlock;
 import io.github.mikip98.content.blocks.leds.LEDBlock;
 import io.github.mikip98.content.blocks.stairs.InnerStairs;
 import io.github.mikip98.content.blocks.stairs.OuterStairs;
@@ -40,7 +41,8 @@ public class HumilityAFM implements ModInitializer {
 	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final String MOD_ID = "humility-afm";
 	public static final String MOD_NAME = "Humility AFM";
-    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	public static final String MOD_CAMEL = "HumilityAFM";
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_CAMEL);
 
 
 	//Cabinet block
@@ -76,9 +78,9 @@ public class HumilityAFM implements ModInitializer {
 	public static Block LED_BLOCK;
 	public static Item LED_ITEM;
 
-	// Red and blue pumpkins
-//	public static final Block RED_PUMPKIN = new Block(FabricBlockSettings.copy(net.minecraft.block.Blocks.PUMPKIN));
-//	public static final Block BLUE_PUMPKIN = new Block(FabricBlockSettings.copy(net.minecraft.block.Blocks.PUMPKIN));
+	// Candlestick
+//	public static Block CANDLESTICK = new JustHorizontalFacingBlock(FabricBlockSettings.create().strength(0.5f).nonOpaque());
+//	public static Item CANDLESTICK_ITEM = new BlockItem(CANDLESTICK, new FabricItemSettings());
 
 	private Block[] getCabinetBlockVariantsToRegisterBlockEntity() {
 		final Block[] cabinetBlockVariants = CabinetBlockHelper.cabinetBlockVariants;
@@ -117,6 +119,7 @@ public class HumilityAFM implements ModInitializer {
 			LEDHelper.init();
 		}
 		PumpkinHelper.init();
+		CandlestickHelper.init();
 
 
 		// ------------------------------------ REGISTRATION ------------------------------------
@@ -201,6 +204,9 @@ public class HumilityAFM implements ModInitializer {
 						for (int i = 0; i < LEDHelper.LEDPowderVariants.length; i++) {
 							entries.add(new ItemStack(LEDHelper.LEDPowderVariants[i]));
 						}
+						for (int i = 0; i < PumpkinHelper.PumpkinsVariants.length; i++) {
+							entries.add(new ItemStack(PumpkinHelper.PumpkinsVariants[i]));
+						}
 					})
 					.build();
 			Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "humility_misc_group"), HUMILITY_MISCELLANEOUS_GROUP);
@@ -223,7 +229,6 @@ public class HumilityAFM implements ModInitializer {
 		// Register wooden mosaic
 		Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "wooden_mosaic"), WOODEN_MOSAIC);
 		Registry.register(Registries.ITEM, new Identifier(MOD_ID, "wooden_mosaic"), WOODEN_MOSAIC_ITEM);
-		// Register candlestick TODO: Finish this
 		// Register LED
 		if (ModConfig.enableLEDs) {
 			LED_BLOCK = new LEDBlock(FabricBlockSettings.create().strength(0.5f).nonOpaque().sounds(BlockSoundGroup.GLASS).luminance(10));
@@ -232,6 +237,9 @@ public class HumilityAFM implements ModInitializer {
 			LED_ITEM = new BlockItem(LED_BLOCK, new FabricItemSettings());
 			Registry.register(Registries.ITEM, new Identifier(MOD_ID, "led"), LED_ITEM);
 		}
+		// Register candlesticks
+//		Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "candlestick_gold"), CANDLESTICK);
+//		Registry.register(Registries.ITEM, new Identifier(MOD_ID, "candlestick_gold"), CANDLESTICK_ITEM);
 
 
 		// ............ FINAL BLOCKS & ITEMS ............
@@ -249,6 +257,8 @@ public class HumilityAFM implements ModInitializer {
 		}
 		// Register red and blue pumpkins
 		PumpkinHelper.registerPumpkins();
+		// Register candlestick variants
+		CandlestickHelper.registerCandlestickVariants();
 
 
 		// ............ MAKE THINGS FLAMMABLE ............

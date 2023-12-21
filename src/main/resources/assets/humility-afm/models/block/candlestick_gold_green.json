@@ -1,0 +1,9 @@
+
+{
+    "parent": "block/candlestick_candle",
+    "textures": {
+        "0": "block/gold_block",
+        "1": "block/green_wool",
+        "particle": "block/gold_block"
+    }
+}
