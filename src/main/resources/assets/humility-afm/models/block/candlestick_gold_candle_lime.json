@@ -1,0 +1,9 @@
+
+{
+    "parent": "humility-afm:block/candlestick_candle",
+    "textures": {
+        "0": "block/gold_block",
+        "1": "block/lime_wool",
+        "particle": "block/gold_block"
+    }
+}

@@ -1,0 +1,21 @@
+
+{
+    "multipart": [
+        {
+            "when": {"facing": "north" },
+            "apply": { "model": "humility-afm:block/candlestick_weathered_copper_candle_magenta", "y": 180 }
+        },
+        {
+            "when": {"facing": "east" },
+            "apply": { "model": "humility-afm:block/candlestick_weathered_copper_candle_magenta", "y": 270 }
+        },
+        {
+            "when": {"facing": "south" },
+            "apply": { "model": "humility-afm:block/candlestick_weathered_copper_candle_magenta" }
+        },
+        {
+            "when": {"facing": "west" },
+            "apply": { "model": "humility-afm:block/candlestick_weathered_copper_candle_magenta", "y": 90 }
+        }
+    ]
+}

@@ -1,8 +1,0 @@
-
-{
-    "parent": "block/candlestick",
-    "textures": {
-        "0": "block/exposed_copper_block",
-        "particle": "block/exposed_copper_block"
-    }
-}

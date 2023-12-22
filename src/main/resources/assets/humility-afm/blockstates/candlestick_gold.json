@@ -1,20 +1,21 @@
+
 {
-  "multipart": [
-    {
-      "when": {"facing": "north" },
-      "apply": { "model": "humility-afm:block/candlestick_gold", "y": 180 }
-    },
-    {
-      "when": {"facing": "east" },
-      "apply": { "model": "humility-afm:block/candlestick_gold", "y": 270 }
-    },
-    {
-      "when": {"facing": "south" },
-      "apply": { "model": "humility-afm:block/candlestick_gold" }
-    },
-    {
-      "when": {"facing": "west" },
-      "apply": { "model": "humility-afm:block/candlestick_gold", "y": 90 }
-    }
-  ]
+    "multipart": [
+        {
+            "when": {"facing": "north" },
+            "apply": { "model": "humility-afm:block/candlestick_gold", "y": 180 }
+        },
+        {
+            "when": {"facing": "east" },
+            "apply": { "model": "humility-afm:block/candlestick_gold", "y": 270 }
+        },
+        {
+            "when": {"facing": "south" },
+            "apply": { "model": "humility-afm:block/candlestick_gold" }
+        },
+        {
+            "when": {"facing": "west" },
+            "apply": { "model": "humility-afm:block/candlestick_gold", "y": 90 }
+        }
+    ]
 }

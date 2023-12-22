@@ -1,9 +1,0 @@
-
-{
-    "parent": "block/candlestick_candle",
-    "textures": {
-        "0": "block/waxed_copper_block",
-        "1": "block/brown_wool",
-        "particle": "block/waxed_copper_block"
-    }
-}
