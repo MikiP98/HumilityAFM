@@ -1,6 +1,7 @@
 package io.github.mikip98.helpers;
 
-import io.github.mikip98.content.blocks.CandleStick;
+import io.github.mikip98.content.blocks.candlestick.Candlestick;
+import io.github.mikip98.content.blocks.candlestick.CandlestickWithCandle;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
@@ -9,6 +10,8 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
+
+import java.util.Map;
 
 import static io.github.mikip98.HumilityAFM.MOD_ID;
 
@@ -22,6 +25,7 @@ public class CandlestickHelper {
     public static String[] candlestickVariantsNames;
 
     public static Block[] candlestickVariants;
+    public static Map<String, Block> candlestickVariantsMap = new java.util.HashMap<>();
     public static Item[] candlestickItemVariants;
 
     public static void init() {
@@ -43,7 +47,7 @@ public class CandlestickHelper {
             candlestickVariantsNames[i] = candlestickVariantName;
             //LOGGER.info("Creating candlestick variant: " + candlestickVariantsNames[i]);
 
-            candlestickVariants[i] = new CandleStick(CandlestickSettings);
+            candlestickVariants[i] = new Candlestick(CandlestickSettings);
             candlestickItemVariants[i] = new BlockItem(candlestickVariants[i], new Item.Settings());
 
             i++;
@@ -52,8 +56,10 @@ public class CandlestickHelper {
             candlestickVariantsNames[i] = candlestickVariantName;
             //LOGGER.info("Creating candlestick variant: " + candlestickVariantsNames[i]);
 
-            candlestickVariants[i] = new CandleStick(CandlestickSettings);
+            candlestickVariants[i] = new CandlestickWithCandle(CandlestickSettings);
             candlestickItemVariants[i] = new BlockItem(candlestickVariants[i], new Item.Settings());
+
+            candlestickVariantsMap.put(metal + "_candle", candlestickVariants[i]);
 
             i++;
             for (String color : MainHelper.vanillaWoolTypes) {
@@ -61,8 +67,10 @@ public class CandlestickHelper {
                 candlestickVariantsNames[i] = candlestickVariantName;
                 //LOGGER.info("Creating candlestick variant: " + candlestickVariantsNames[i]);
 
-                candlestickVariants[i] = new CandleStick(CandlestickSettings);
+                candlestickVariants[i] = new CandlestickWithCandle(CandlestickSettings);
                 candlestickItemVariants[i] = new BlockItem(candlestickVariants[i], new Item.Settings());
+
+                candlestickVariantsMap.put(metal + "_" + color + "_candle", candlestickVariants[i]);
 
                 i++;
             }

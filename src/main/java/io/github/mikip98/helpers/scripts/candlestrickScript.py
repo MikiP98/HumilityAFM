@@ -60,13 +60,25 @@ def generateJSONs():
         with open("src/main/resources/assets/humility-afm/models/block/candlestick_" + metalType + ".json", "w") as file:
             file.write(JSON)
 
+        JSON = """
+{
+    "parent": "humility-afm:block/candlestick_candle",
+    "textures": {
+        "0": "block/""" + metalType + is_block + """",
+        "2": "block/candle",
+        "particle": "block/""" + metalType + is_block + """"
+    }
+}"""
+        with open("src/main/resources/assets/humility-afm/models/block/candlestick_" + metalType + "_candle.json", "w") as file:
+            file.write(JSON)
+
         for woolType in vanilla_wool_types:
             JSON = """
 {
     "parent": "humility-afm:block/candlestick_candle",
     "textures": {
         "0": "block/""" + metalType + is_block + """",
-        "1": "block/""" + woolType + """_wool",
+        "2": "block/""" + woolType + """_candle",
         "particle": "block/""" + metalType + is_block + """"
     }
 }"""

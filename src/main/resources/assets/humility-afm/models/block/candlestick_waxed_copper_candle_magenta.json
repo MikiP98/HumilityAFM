@@ -3,7 +3,7 @@
     "parent": "humility-afm:block/candlestick_candle",
     "textures": {
         "0": "block/waxed_copper",
-        "1": "block/magenta_wool",
+        "2": "block/magenta_candle",
         "particle": "block/waxed_copper"
     }
 }
