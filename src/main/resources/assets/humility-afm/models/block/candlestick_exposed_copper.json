@@ -2,7 +2,7 @@
 {
     "parent": "humility-afm:block/candlestick",
     "textures": {
-        "0": "block/exposed_copper_block",
-        "particle": "block/exposed_copper_block"
+        "0": "block/exposed_copper",
+        "particle": "block/exposed_copper"
     }
 }

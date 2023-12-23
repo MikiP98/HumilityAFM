@@ -46,12 +46,15 @@ def generateJSONs():
     # Generate candlestick models
     from generateCabinetBlockVariantsJSONs import vanilla_wool_types
     for metalType in metalTypes:
+        is_block = ""
+        if metalType == "gold" or metalType == "copper":
+            is_block = "_block"
         JSON = """
 {
     "parent": "humility-afm:block/candlestick",
     "textures": {
-        "0": "block/""" + metalType + """_block",
-        "particle": "block/""" + metalType + """_block"
+        "0": "block/""" + metalType + is_block + """",
+        "particle": "block/""" + metalType + is_block + """"
     }
 }"""
         with open("src/main/resources/assets/humility-afm/models/block/candlestick_" + metalType + ".json", "w") as file:
@@ -62,9 +65,9 @@ def generateJSONs():
 {
     "parent": "humility-afm:block/candlestick_candle",
     "textures": {
-        "0": "block/""" + metalType + """_block",
+        "0": "block/""" + metalType + is_block + """",
         "1": "block/""" + woolType + """_wool",
-        "particle": "block/""" + metalType + """_block"
+        "particle": "block/""" + metalType + is_block + """"
     }
 }"""
             with open("src/main/resources/assets/humility-afm/models/block/candlestick_" + metalType + "_candle_" + woolType + ".json", "w") as file:

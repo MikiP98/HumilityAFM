@@ -2,8 +2,8 @@
 {
     "parent": "humility-afm:block/candlestick_candle",
     "textures": {
-        "0": "block/waxed_weathered_copper_block",
+        "0": "block/waxed_weathered_copper",
         "1": "block/black_wool",
-        "particle": "block/waxed_weathered_copper_block"
+        "particle": "block/waxed_weathered_copper"
     }
 }
