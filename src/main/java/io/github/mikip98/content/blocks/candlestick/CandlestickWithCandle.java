@@ -24,10 +24,10 @@ import net.minecraft.world.World;
 public class CandlestickWithCandle extends Candlestick{
     public static final BooleanProperty LIT = Properties.LIT;
 
-    private boolean calculatedOffset = false;
-    private double offsetX = 0.5;
-    private final double offsetY = 0.85;
-    private double offsetZ = 0.5;
+//    private boolean calculatedOffset = false;
+//    private double offsetX = 0.5;
+//    private final double offsetY = 0.85;
+//    private double offsetZ = 0.5;
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
@@ -87,6 +87,9 @@ public class CandlestickWithCandle extends Candlestick{
                 case WEST:
                     x += 0.65;
                     break;
+                default:
+                    x += 0.5;
+                    z += 0.5;
             }
             world.addParticle(ParticleTypes.FLAME, x, y, z, 0.0D, 0.01D, 0.0D);
         }
