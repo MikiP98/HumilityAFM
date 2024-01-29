@@ -127,9 +127,10 @@ public class ConfigJSON {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
-            saveConfigToFile();  // Create the config file
         }
+//        else {
+//            saveConfigToFile();  // Create the config file
+//        }
     }
     private static <T> boolean tryLoad(JsonObject configJson, Function<JsonElement, T> getter, String fieldName) {
         try {

@@ -44,7 +44,7 @@
 		"cloth-config2": "*"
 	},
 	"suggests": {
-		"another-mod": "*"
+		"shimmer": "*"
 	},
 	"configScreen": "io.github.mikip98.config.ModConfigScreen"
 }
