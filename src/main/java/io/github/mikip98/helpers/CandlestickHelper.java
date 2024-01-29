@@ -32,6 +32,15 @@ public class CandlestickHelper {
         final String[] metals = {"gold", "copper", "weathered_copper", "exposed_copper", "oxidized_copper", "waxed_copper", "waxed_weathered_copper", "waxed_exposed_copper", "waxed_oxidized_copper"};
 
         final FabricBlockSettings CandlestickSettings = FabricBlockSettings.create().strength(CandlestickStrength).requiresTool().nonOpaque().sounds(BlockSoundGroup.COPPER);
+        final Block.Settings CandlestickWithCandleSettings = CandlestickSettings.luminance(state -> {
+                    if (state.getProperties().contains(CandlestickWithCandle.LIT)) {
+                        if (state.get(CandlestickWithCandle.LIT)) {
+                            return 5;
+                        }
+                    }
+                    return 0;
+                }
+        );
 
         //Create candlestick variants
         short candlestickVariantsCount = (short) (metals.length * (MainHelper.vanillaWoolTypes.length + 2));
@@ -56,7 +65,7 @@ public class CandlestickHelper {
             candlestickVariantsNames[i] = candlestickVariantName;
             //LOGGER.info("Creating candlestick variant: " + candlestickVariantsNames[i]);
 
-            candlestickVariants[i] = new CandlestickWithCandle(CandlestickSettings);
+            candlestickVariants[i] = new CandlestickWithCandle(CandlestickWithCandleSettings);
             candlestickItemVariants[i] = new BlockItem(candlestickVariants[i], new Item.Settings());
 
             candlestickVariantsMap.put(metal + "_candle", candlestickVariants[i]);
@@ -67,7 +76,7 @@ public class CandlestickHelper {
                 candlestickVariantsNames[i] = candlestickVariantName;
                 //LOGGER.info("Creating candlestick variant: " + candlestickVariantsNames[i]);
 
-                candlestickVariants[i] = new CandlestickWithCandle(CandlestickSettings);
+                candlestickVariants[i] = new CandlestickWithCandle(CandlestickWithCandleSettings);
                 candlestickItemVariants[i] = new BlockItem(candlestickVariants[i], new Item.Settings());
 
                 candlestickVariantsMap.put(metal + "_" + color + "_candle", candlestickVariants[i]);

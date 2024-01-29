@@ -37,6 +37,7 @@ public class CandlestickWithCandle extends Candlestick{
 
     public CandlestickWithCandle(Settings settings) {
         super(settings);
+//        settings.luminance(state -> state.get(LIT) ? 5 : 0);
         setDefaultState(getStateManager().getDefaultState()
                 .with(LIT, false)
                 .with(Properties.HORIZONTAL_FACING, Direction.SOUTH));
