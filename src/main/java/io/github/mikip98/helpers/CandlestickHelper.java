@@ -28,14 +28,16 @@ public class CandlestickHelper {
     public static Map<String, Block> candlestickVariantsMap = new java.util.HashMap<>();
     public static Item[] candlestickItemVariants;
 
+    public static final String[] metals = {"gold", "copper", "weathered_copper", "exposed_copper", "oxidized_copper", "waxed_copper", "waxed_weathered_copper", "waxed_exposed_copper", "waxed_oxidized_copper"};
+
     public static void init() {
-        final String[] metals = {"gold", "copper", "weathered_copper", "exposed_copper", "oxidized_copper", "waxed_copper", "waxed_weathered_copper", "waxed_exposed_copper", "waxed_oxidized_copper"};
+//        final String[] metals = {"gold", "copper", "weathered_copper", "exposed_copper", "oxidized_copper", "waxed_copper", "waxed_weathered_copper", "waxed_exposed_copper", "waxed_oxidized_copper"};
 
         final FabricBlockSettings CandlestickSettings = FabricBlockSettings.create().strength(CandlestickStrength).requiresTool().nonOpaque().sounds(BlockSoundGroup.COPPER);
         final Block.Settings CandlestickWithCandleSettings = CandlestickSettings.luminance(state -> {
                     if (state.getProperties().contains(CandlestickWithCandle.LIT)) {
                         if (state.get(CandlestickWithCandle.LIT)) {
-                            return 5;
+                            return 4;
                         }
                     }
                     return 0;
@@ -58,6 +60,8 @@ public class CandlestickHelper {
 
             candlestickVariants[i] = new Candlestick(CandlestickSettings);
             candlestickItemVariants[i] = new BlockItem(candlestickVariants[i], new Item.Settings());
+
+            candlestickVariantsMap.put(metal, candlestickVariants[i]);
 
             i++;
 

@@ -9,8 +9,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -26,6 +27,8 @@ import net.minecraft.world.World;
 import static io.github.mikip98.HumilityAFM.LOGGER;
 
 public class Candlestick extends HorizontalFacingBlock {
+//    private static final String[] candlesCache = {"candle", "white_candle", "orange_candle", "magenta_candle", "light_blue_candle", "yellow_candle", "lime_candle", "pink_candle", "gray_candle", "light_gray_candle", "cyan_candle", "purple_candle", "blue_candle", "brown_candle", "green_candle", "red_candle", "black_candle"};
+
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(Properties.HORIZONTAL_FACING);
@@ -47,17 +50,19 @@ public class Candlestick extends HorizontalFacingBlock {
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         ItemStack heldItem = player.getStackInHand(hand);
+        LOGGER.info(heldItem.getItem().getTranslationKey());
 
-        if (heldItem.getItem() == Items.CANDLE) {
+        final String[] parts = heldItem.getItem().getTranslationKey().split("\\.");
+        if (parts[2].endsWith("candle") && parts[1].equals("minecraft")) {
             // Replace the candlestick block with the version with the candle
-            String candle = "candle";
             String[] translationWords = state.getBlock().getTranslationKey().split("\\.")[2].split("_");
             String metal = translationWords[1];
             if (translationWords.length == 3) {
                 metal += "_" + translationWords[2];
             }
-            BlockState newState = CandlestickHelper.candlestickVariantsMap.get(metal + "_" + candle).getDefaultState().with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING));
+            BlockState newState = CandlestickHelper.candlestickVariantsMap.get(metal + "_" + parts[2]).getDefaultState().with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING));
             world.setBlockState(pos, newState);
+            world.playSoundAtBlockCenter(pos, SoundEvents.BLOCK_CANDLE_PLACE, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
 
             // Decrement candle amount in player's inventory
             if (!player.isCreative()) {
@@ -66,217 +71,7 @@ public class Candlestick extends HorizontalFacingBlock {
 
             // Return success to indicate the interaction was successful
             return ActionResult.SUCCESS;
-        } else if (heldItem.getItem() == Items.WHITE_CANDLE) {
-            // Replace the candlestick block with the version with the candle
-            String candle = "white_candle";
-            String[] translationWords = state.getBlock().getTranslationKey().split("\\.")[2].split("_");
-            String metal = translationWords[1];
-            if (translationWords.length == 3) {
-                metal += "_" + translationWords[2];
-            }
-            BlockState newState = CandlestickHelper.candlestickVariantsMap.get(metal + "_" + candle).getDefaultState().with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING));
-            world.setBlockState(pos, newState);
-
-            // Return success to indicate the interaction was successful
-            return ActionResult.SUCCESS;
-        } else if (heldItem.getItem() == Items.ORANGE_CANDLE) {
-            // Replace the candlestick block with the version with the candle
-            String candle = "orange_candle";
-            String[] translationWords = state.getBlock().getTranslationKey().split("\\.")[2].split("_");
-            String metal = translationWords[1];
-            if (translationWords.length == 3) {
-                metal += "_" + translationWords[2];
-            }
-            BlockState newState = CandlestickHelper.candlestickVariantsMap.get(metal + "_" + candle).getDefaultState().with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING));
-            world.setBlockState(pos, newState);
-
-            // Return success to indicate the interaction was successful
-            return ActionResult.SUCCESS;
-        } else if (heldItem.getItem() == Items.MAGENTA_CANDLE) {
-            // Replace the candlestick block with the version with the candle
-            String candle = "magenta_candle";
-            String[] translationWords = state.getBlock().getTranslationKey().split("\\.")[2].split("_");
-            String metal = translationWords[1];
-            if (translationWords.length == 3) {
-                metal += "_" + translationWords[2];
-            }
-            BlockState newState = CandlestickHelper.candlestickVariantsMap.get(metal + "_" + candle).getDefaultState().with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING));
-            world.setBlockState(pos, newState);
-
-            // Return success to indicate the interaction was successful
-            return ActionResult.SUCCESS;
-        } else if (heldItem.getItem() == Items.LIGHT_BLUE_CANDLE) {
-            // Replace the candlestick block with the version with the candle
-            String candle = "light_blue_candle";
-            String[] translationWords = state.getBlock().getTranslationKey().split("\\.")[2].split("_");
-            String metal = translationWords[1];
-            if (translationWords.length == 3) {
-                metal += "_" + translationWords[2];
-            }
-            BlockState newState = CandlestickHelper.candlestickVariantsMap.get(metal + "_" + candle).getDefaultState().with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING));
-            world.setBlockState(pos, newState);
-
-            // Return success to indicate the interaction was successful
-            return ActionResult.SUCCESS;
-        } else if (heldItem.getItem() == Items.YELLOW_CANDLE) {
-            // Replace the candlestick block with the version with the candle
-            String candle = "yellow_candle";
-            String[] translationWords = state.getBlock().getTranslationKey().split("\\.")[2].split("_");
-            String metal = translationWords[1];
-            if (translationWords.length == 3) {
-                metal += "_" + translationWords[2];
-            }
-            BlockState newState = CandlestickHelper.candlestickVariantsMap.get(metal + "_" + candle).getDefaultState().with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING));
-            world.setBlockState(pos, newState);
-
-            // Return success to indicate the interaction was successful
-            return ActionResult.SUCCESS;
-        } else if (heldItem.getItem() == Items.LIME_CANDLE) {
-            // Replace the candlestick block with the version with the candle
-            String candle = "lime_candle";
-            String[] translationWords = state.getBlock().getTranslationKey().split("\\.")[2].split("_");
-            String metal = translationWords[1];
-            if (translationWords.length == 3) {
-                metal += "_" + translationWords[2];
-            }
-            BlockState newState = CandlestickHelper.candlestickVariantsMap.get(metal + "_" + candle).getDefaultState().with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING));
-            world.setBlockState(pos, newState);
-
-            // Return success to indicate the interaction was successful
-            return ActionResult.SUCCESS;
-        } else if (heldItem.getItem() == Items.PINK_CANDLE) {
-            // Replace the candlestick block with the version with the candle
-            String candle = "pink_candle";
-            String[] translationWords = state.getBlock().getTranslationKey().split("\\.")[2].split("_");
-            String metal = translationWords[1];
-            if (translationWords.length == 3) {
-                metal += "_" + translationWords[2];
-            }
-            BlockState newState = CandlestickHelper.candlestickVariantsMap.get(metal + "_" + candle).getDefaultState().with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING));
-            world.setBlockState(pos, newState);
-
-            // Return success to indicate the interaction was successful
-            return ActionResult.SUCCESS;
-        } else if (heldItem.getItem() == Items.GRAY_CANDLE) {
-            // Replace the candlestick block with the version with the candle
-            String candle = "gray_candle";
-            String[] translationWords = state.getBlock().getTranslationKey().split("\\.")[2].split("_");
-            String metal = translationWords[1];
-            if (translationWords.length == 3) {
-                metal += "_" + translationWords[2];
-            }
-            BlockState newState = CandlestickHelper.candlestickVariantsMap.get(metal + "_" + candle).getDefaultState().with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING));
-            world.setBlockState(pos, newState);
-
-            // Return success to indicate the interaction was successful
-            return ActionResult.SUCCESS;
-        } else if (heldItem.getItem() == Items.LIGHT_GRAY_CANDLE) {
-            // Replace the candlestick block with the version with the candle
-            String candle = "light_gray_candle";
-            String[] translationWords = state.getBlock().getTranslationKey().split("\\.")[2].split("_");
-            String metal = translationWords[1];
-            if (translationWords.length == 3) {
-                metal += "_" + translationWords[2];
-            }
-            BlockState newState = CandlestickHelper.candlestickVariantsMap.get(metal + "_" + candle).getDefaultState().with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING));
-            world.setBlockState(pos, newState);
-
-            // Return success to indicate the interaction was successful
-            return ActionResult.SUCCESS;
-        } else if (heldItem.getItem() == Items.CYAN_CANDLE) {
-            // Replace the candlestick block with the version with the candle
-            String candle = "cyan_candle";
-            String[] translationWords = state.getBlock().getTranslationKey().split("\\.")[2].split("_");
-            String metal = translationWords[1];
-            if (translationWords.length == 3) {
-                metal += "_" + translationWords[2];
-            }
-            BlockState newState = CandlestickHelper.candlestickVariantsMap.get(metal + "_" + candle).getDefaultState().with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING));
-            world.setBlockState(pos, newState);
-
-            // Return success to indicate the interaction was successful
-            return ActionResult.SUCCESS;
-        } else if (heldItem.getItem() == Items.PURPLE_CANDLE) {
-            // Replace the candlestick block with the version with the candle
-            String candle = "purple_candle";
-            String[] translationWords = state.getBlock().getTranslationKey().split("\\.")[2].split("_");
-            String metal = translationWords[1];
-            if (translationWords.length == 3) {
-                metal += "_" + translationWords[2];
-            }
-            BlockState newState = CandlestickHelper.candlestickVariantsMap.get(metal + "_" + candle).getDefaultState().with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING));
-            world.setBlockState(pos, newState);
-
-            // Return success to indicate the interaction was successful
-            return ActionResult.SUCCESS;
-        } else if (heldItem.getItem() == Items.BLUE_CANDLE) {
-            // Replace the candlestick block with the version with the candle
-            String candle = "blue_candle";
-            String[] translationWords = state.getBlock().getTranslationKey().split("\\.")[2].split("_");
-            String metal = translationWords[1];
-            if (translationWords.length == 3) {
-                metal += "_" + translationWords[2];
-            }
-            BlockState newState = CandlestickHelper.candlestickVariantsMap.get(metal + "_" + candle).getDefaultState().with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING));
-            world.setBlockState(pos, newState);
-
-            // Return success to indicate the interaction was successful
-            return ActionResult.SUCCESS;
-        } else if (heldItem.getItem() == Items.BROWN_CANDLE) {
-            // Replace the candlestick block with the version with the candle
-            String candle = "brown_candle";
-            String[] translationWords = state.getBlock().getTranslationKey().split("\\.")[2].split("_");
-            String metal = translationWords[1];
-            if (translationWords.length == 3) {
-                metal += "_" + translationWords[2];
-            }
-            BlockState newState = CandlestickHelper.candlestickVariantsMap.get(metal + "_" + candle).getDefaultState().with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING));
-            world.setBlockState(pos, newState);
-
-            // Return success to indicate the interaction was successful
-            return ActionResult.SUCCESS;
-        } else if (heldItem.getItem() == Items.GREEN_CANDLE) {
-            // Replace the candlestick block with the version with the candle
-            String candle = "green_candle";
-            String[] translationWords = state.getBlock().getTranslationKey().split("\\.")[2].split("_");
-            String metal = translationWords[1];
-            if (translationWords.length == 3) {
-                metal += "_" + translationWords[2];
-            }
-            BlockState newState = CandlestickHelper.candlestickVariantsMap.get(metal + "_" + candle).getDefaultState().with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING));
-            world.setBlockState(pos, newState);
-
-            // Return success to indicate the interaction was successful
-            return ActionResult.SUCCESS;
-        } else if (heldItem.getItem() == Items.RED_CANDLE) {
-            // Replace the candlestick block with the version with the candle
-            String candle = "red_candle";
-            String[] translationWords = state.getBlock().getTranslationKey().split("\\.")[2].split("_");
-            String metal = translationWords[1];
-            if (translationWords.length == 3) {
-                metal += "_" + translationWords[2];
-            }
-            BlockState newState = CandlestickHelper.candlestickVariantsMap.get(metal + "_" + candle).getDefaultState().with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING));
-            world.setBlockState(pos, newState);
-
-            // Return success to indicate the interaction was successful
-            return ActionResult.SUCCESS;
-        } else if (heldItem.getItem() == Items.BLACK_CANDLE) {
-            // Replace the candlestick block with the version with the candle
-            String candle = "black_candle";
-            String[] translationWords = state.getBlock().getTranslationKey().split("\\.")[2].split("_");
-            String metal = translationWords[1];
-            if (translationWords.length == 3) {
-                metal += "_" + translationWords[2];
-            }
-            BlockState newState = CandlestickHelper.candlestickVariantsMap.get(metal + "_" + candle).getDefaultState().with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING));
-            world.setBlockState(pos, newState);
-
-            // Return success to indicate the interaction was successful
-            return ActionResult.SUCCESS;
         }
-
-        // If the conditions are not met, return pass to allow other interactions
         return ActionResult.PASS;
     }
 
@@ -320,16 +115,4 @@ public class Candlestick extends HorizontalFacingBlock {
                 return Block.createCuboidShape(5, 0, 11, 11, 16, 16);
         }
     }
-
-//    @Override
-//    public void Tick(BlockState state, World world, BlockPos pos, Random random) {
-//        if (state.get(LIT)) {
-//            world.setBlockState(pos, state.with(LIT, false));
-//        }
-//    }
-
-//    @Override
-//    public boolean randomDisplayTick(BlockState state) {
-//        return true;
-//    }
 }
