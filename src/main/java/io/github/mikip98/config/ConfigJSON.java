@@ -27,6 +27,7 @@ public class ConfigJSON {
         configJson.addProperty("enableLEDs", ModConfig.enableLEDs);
         configJson.addProperty("enableLEDsBrightening", ModConfig.enableLEDsBrightening);
         configJson.addProperty("enableLEDRadiusColorCompensation", ModConfig.enableLEDRadiusColorCompensation);
+        configJson.addProperty("enableCandlesticks", ModConfig.enableCandlesticks);
 
         configJson.addProperty("LEDColoredLightStrength", ModConfig.LEDColoredLightStrength);
         configJson.addProperty("LEDColoredLightRadius", ModConfig.LEDColoredLightRadius);
@@ -83,6 +84,7 @@ public class ConfigJSON {
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableLEDs");
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableLEDsBrightening");
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableLEDRadiusColorCompensation");
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableCandlesticks");
 
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, "LEDColoredLightStrength");
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, "LEDColoredLightRadius");

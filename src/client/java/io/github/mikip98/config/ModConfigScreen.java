@@ -55,6 +55,12 @@ public class ModConfigScreen {
                 .setSaveConsumer(value -> ModConfig.enableLEDRadiusColorCompensation = value)
                 .build()
         );
+        rootCategory.addEntry(ConfigEntryBuilder.create()
+                .startBooleanToggle(Text.literal("Enable Candlesticks"), ModConfig.enableCandlesticks)
+                .setDefaultValue(false)
+                .setSaveConsumer(value -> ModConfig.enableCandlesticks = value)
+                .build()
+        );
 
         ConfigCategory customizationCategory = builder.getOrCreateCategory(Text.literal("Blocks Customization"));
 

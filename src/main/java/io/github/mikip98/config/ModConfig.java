@@ -12,7 +12,7 @@ public class ModConfig {
     public static boolean enableLEDs = false;
     public static boolean enableLEDsBrightening = true;
     public static boolean enableLEDRadiusColorCompensation = true;
-    public static boolean enableVanillaColoredLights = false;
+    public static boolean enableCandlesticks = false;
 
     public static short LEDColoredLightStrength = 85;
     public static short LEDColoredLightRadius = 9;

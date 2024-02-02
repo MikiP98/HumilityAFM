@@ -50,7 +50,7 @@ public class Candlestick extends HorizontalFacingBlock {
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         ItemStack heldItem = player.getStackInHand(hand);
-        LOGGER.info(heldItem.getItem().getTranslationKey());
+//        LOGGER.info(heldItem.getItem().getTranslationKey());
 
         final String[] parts = heldItem.getItem().getTranslationKey().split("\\.");
         if (parts[2].endsWith("candle") && parts[1].equals("minecraft")) {

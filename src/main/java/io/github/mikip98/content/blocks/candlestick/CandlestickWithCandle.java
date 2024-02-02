@@ -55,6 +55,8 @@ public class CandlestickWithCandle extends Candlestick{
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (player.getStackInHand(hand).getItem() == Items.FLINT_AND_STEEL) {
             world.setBlockState(pos, state.with(LIT, true));
+            world.playSoundAtBlockCenter(pos, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
+            // TODO: Consume the flint and steel (decrease the durability by 1)
             return ActionResult.SUCCESS;
         } else if (player.getStackInHand(hand).isEmpty() && player.isSneaking()) {
             if (state.get(LIT)) {
@@ -64,6 +66,11 @@ public class CandlestickWithCandle extends Candlestick{
             String[] translationWords = state.getBlock().getTranslationKey().split("\\.")[2].split("_");
             // E.G oxidized_copper_light_blue_candlestick -> oxidized_copper
             String metal = translationWords[1];
+//            for (int i = 1; i < translationWords.length - 1; i++) {
+//                metal += "_" + translationWords[i];
+//                if (Arrays.stream(CandlestickHelper.metals).toList().contains(translationWords[i]))
+//                    break;
+//            }
             if (translationWords.length > 3) {
                 if (!Arrays.stream(CandlestickHelper.metals).toList().contains(metal)) {
                     for (int i = 2; i < translationWords.length - 1; i++) {
@@ -74,9 +81,14 @@ public class CandlestickWithCandle extends Candlestick{
                 }
             }
 //            LOGGER.info("metal: " + metal);
+            // TODO: Give back the candle item to the player
+            //  (if the player has enough space in the inventory, else drop it on the ground)
             BlockState newState = CandlestickHelper.candlestickVariantsMap.get(metal).getDefaultState().with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING));
             world.setBlockState(pos, newState);
-            world.playSoundAtBlockCenter(pos, SoundEvents.BLOCK_BUBBLE_COLUMN_BUBBLE_POP, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
+            if (world.random.nextInt(99) == 0) world.playSoundAtBlockCenter(pos, SoundEvents.BLOCK_BUBBLE_COLUMN_BUBBLE_POP, SoundCategory.BLOCKS, 12.0f, 0.5f, true);
+            else world.playSoundAtBlockCenter(pos, SoundEvents.ENTITY_ITEM_FRAME_REMOVE_ITEM, SoundCategory.BLOCKS, 0.95f, 1.0f, true);
+            return ActionResult.SUCCESS;
+
         } else if (state.get(LIT)) {
             if (!(player.getStackInHand(hand).getItem() instanceof BlockItem)) {
                 world.setBlockState(pos, state.with(LIT, false));

@@ -115,11 +115,9 @@ public class HumilityAFM implements ModInitializer {
 		InnerOuterStairsHelper.init();
 		WoodenMosaicHelper.init();
 		TerracottaTilesHelper.init();
-		if (ModConfig.enableLEDs) {
-			LEDHelper.init();
-		}
+		if (ModConfig.enableLEDs) LEDHelper.init();
 		PumpkinHelper.init();
-		CandlestickHelper.init();
+		if (ModConfig.enableCandlesticks) CandlestickHelper.init();
 
 
 		// ------------------------------------ REGISTRATION ------------------------------------
@@ -252,13 +250,11 @@ public class HumilityAFM implements ModInitializer {
 		// Register terracotta tiles variants
 		TerracottaTilesHelper.registerTerracottaTilesVariants();
 		// Register LED block variants
-		if (ModConfig.enableLEDs) {
-			LEDHelper.registerLEDBlockVariants();
-		}
+		if (ModConfig.enableLEDs) LEDHelper.registerLEDBlockVariants();
 		// Register red and blue pumpkins
 		PumpkinHelper.registerPumpkins();
 		// Register candlestick variants
-		CandlestickHelper.registerCandlestickVariants();
+		if (ModConfig.enableCandlesticks) CandlestickHelper.registerCandlestickVariants();
 
 
 		// ............ MAKE THINGS FLAMMABLE ............
