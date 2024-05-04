@@ -5,8 +5,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CandleBlock;
 import net.minecraft.block.ShapeContext;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
@@ -51,6 +53,29 @@ public class CandlestickWithCandle extends Candlestick{
                 .with(Properties.HORIZONTAL_FACING, Direction.SOUTH));
     }
 
+    private ItemStack candleFromString(String candle_name) {
+        return switch (candle_name) {
+            case "candle" -> new ItemStack(Items.CANDLE);
+            case "white" -> new ItemStack(Items.WHITE_CANDLE);
+            case "orange" -> new ItemStack(Items.ORANGE_CANDLE);
+            case "magenta" -> new ItemStack(Items.MAGENTA_CANDLE);
+            case "light_blue" -> new ItemStack(Items.LIGHT_BLUE_CANDLE);
+            case "yellow" -> new ItemStack(Items.YELLOW_CANDLE);
+            case "lime" -> new ItemStack(Items.LIME_CANDLE);
+            case "pink" -> new ItemStack(Items.PINK_CANDLE);
+            case "gray" -> new ItemStack(Items.GRAY_CANDLE);
+            case "light_gray" -> new ItemStack(Items.LIGHT_GRAY_CANDLE);
+            case "cyan" -> new ItemStack(Items.CYAN_CANDLE);
+            case "purple" -> new ItemStack(Items.PURPLE_CANDLE);
+            case "blue" -> new ItemStack(Items.BLUE_CANDLE);
+            case "brown" -> new ItemStack(Items.BROWN_CANDLE);
+            case "green" -> new ItemStack(Items.GREEN_CANDLE);
+            case "red" -> new ItemStack(Items.RED_CANDLE);
+            case "black" -> new ItemStack(Items.BLACK_CANDLE);
+            default -> throw new IllegalStateException("Unexpected value: " + candle_name + ", for candle name");
+        };
+    }
+
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (player.getStackInHand(hand).getItem() == Items.FLINT_AND_STEEL) {
@@ -81,8 +106,22 @@ public class CandlestickWithCandle extends Candlestick{
                 }
             }
 //            LOGGER.info("metal: " + metal);
-            // TODO: Give back the candle item to the player
-            //  (if the player has enough space in the inventory, else drop it on the ground)
+            // Give back the candle item to the player
+            // (if the player has enough space in the inventory, else drop it on the ground)
+//            LOGGER.info("translationWords: " + Arrays.toString(translationWords));
+            String candle_name = translationWords[translationWords.length - 2];
+            if (candle_name.equals("light") || candle_name.equals("dark")) {
+                candle_name += "_" + translationWords[translationWords.length - 1];
+            } else {
+                candle_name = translationWords[translationWords.length - 1];
+            }
+//            LOGGER.info("candle_name: " + candle_name);
+            ItemStack candleItemStack = candleFromString(candle_name);
+            if (!player.getInventory().insertStack(candleItemStack)) {
+                world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), candleItemStack));
+            }
+
+            // Remove candle from candlestick
             BlockState newState = CandlestickHelper.candlestickVariantsMap.get(metal).getDefaultState().with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING));
             world.setBlockState(pos, newState);
             if (world.random.nextInt(99) == 0) world.playSoundAtBlockCenter(pos, SoundEvents.BLOCK_BUBBLE_COLUMN_BUBBLE_POP, SoundCategory.BLOCKS, 12.0f, 0.5f, true);

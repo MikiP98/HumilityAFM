@@ -1,6 +1,6 @@
 metalTypes = {"gold", "copper", "exposed_copper", "weathered_copper", "oxidized_copper", "waxed_copper", "waxed_exposed_copper", "waxed_weathered_copper", "waxed_oxidized_copper"}
 
-def generateNames():
+def generateNames() -> list[str]:
     from generateCabinetBlockVariantsJSONs import vanilla_wool_types
     cabinetBlockVariantsNames = []
     for metalType in metalTypes:
@@ -13,30 +13,56 @@ def generateNames():
 
 def generateJSONs():
     # Generate candlestick blockstates
-    placableNames = generateNames()
+    placableNames: str = generateNames()
     for name in placableNames:
-        JSON = """
-{
-    "multipart": [
-        {
-            "when": {"facing": "north" },
-            "apply": { "model": "humility-afm:block/""" + name + """", "y": 180 }
-        },
-        {
-            "when": {"facing": "east" },
-            "apply": { "model": "humility-afm:block/""" + name + """", "y": 270 }
-        },
-        {
-            "when": {"facing": "south" },
-            "apply": { "model": "humility-afm:block/""" + name + """" }
-        },
-        {
-            "when": {"facing": "west" },
-            "apply": { "model": "humility-afm:block/""" + name + """", "y": 90 }
+#         JSON = """
+# {
+#     "multipart": [
+#         {
+#             "when": {"facing": "north" },
+#             "apply": { "model": "humility-afm:block/""" + name + """", "y": 180 }
+#         },
+#         {
+#             "when": {"facing": "east" },
+#             "apply": { "model": "humility-afm:block/""" + name + """", "y": 270 }
+#         },
+#         {
+#             "when": {"facing": "south" },
+#             "apply": { "model": "humility-afm:block/""" + name + """" }
+#         },
+#         {
+#             "when": {"facing": "west" },
+#             "apply": { "model": "humility-afm:block/""" + name + """", "y": 90 }
+#         }
+#     ]
+# }"""
+        words = frozenset(name.split("_"))
+        if "candle" in words:
+            JSON = """
+    {
+        "variants": {
+            "facing=north,lit=false": { "model": "humility-afm:block/""" + name + """", "y": 180 },
+            "facing=east,lit=false": { "model": "humility-afm:block/""" + name + """", "y": 270 },
+            "facing=south,lit=false": { "model": "humility-afm:block/""" + name + """" },
+            "facing=west,lit=false": { "model": "humility-afm:block/""" + name + """", "y": 90 },
+            
+            "facing=north,lit=true": { "model": "humility-afm:block/""" + name + """_lit", "y": 180 },
+            "facing=east,lit=true": { "model": "humility-afm:block/""" + name + """_lit", "y": 270 },
+            "facing=south,lit=true": { "model": "humility-afm:block/""" + name + """_lit" },
+            "facing=west,lit=true": { "model": "humility-afm:block/""" + name + """_lit", "y": 90 }
         }
-    ]
-}"""
-        # import os
+    }"""
+        else:
+            JSON = """
+    {
+        "variants": {
+            "facing=north": { "model": "humility-afm:block/""" + name + """", "y": 180 },
+            "facing=east": { "model": "humility-afm:block/""" + name + """", "y": 270 },
+            "facing=south": { "model": "humility-afm:block/""" + name + """" },
+            "facing=west": { "model": "humility-afm:block/""" + name + """", "y": 90 }
+        }
+    }"""
+
         # directory = "src/main/resources/assets/humility-afm/blockstates/"
         # os.makedirs(directory, exist_ok=True)
         print("src/main/resources/assets/humility-afm/blockstates/" + name + ".json")
@@ -72,6 +98,18 @@ def generateJSONs():
         with open("src/main/resources/assets/humility-afm/models/block/candlestick_" + metalType + "_candle.json", "w") as file:
             file.write(JSON)
 
+        JSON = """
+{
+    "parent": "humility-afm:block/candlestick_candle",
+    "textures": {
+        "0": "block/""" + metalType + is_block + """",
+        "2": "block/candle_lit",
+        "particle": "block/""" + metalType + is_block + """"
+    }
+}"""
+        with open("src/main/resources/assets/humility-afm/models/block/candlestick_" + metalType + "_candle_lit.json", "w") as file:
+            file.write(JSON)
+
         for woolType in vanilla_wool_types:
             JSON = """
 {
@@ -83,6 +121,19 @@ def generateJSONs():
     }
 }"""
             with open("src/main/resources/assets/humility-afm/models/block/candlestick_" + metalType + "_candle_" + woolType + ".json", "w") as file:
+                file.write(JSON)
+
+        for woolType in vanilla_wool_types:
+            JSON = """
+{
+    "parent": "humility-afm:block/candlestick_candle",
+    "textures": {
+        "0": "block/""" + metalType + is_block + """",
+        "2": "block/""" + woolType + """_candle_lit",
+        "particle": "block/""" + metalType + is_block + """"
+    }
+}"""
+            with open("src/main/resources/assets/humility-afm/models/block/candlestick_" + metalType + "_candle_" + woolType + "_lit.json", "w") as file:
                 file.write(JSON)
 
     # Generate candlestick item models

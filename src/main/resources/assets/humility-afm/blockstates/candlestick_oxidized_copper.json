@@ -1,21 +1,9 @@
 
-{
-    "multipart": [
-        {
-            "when": {"facing": "north" },
-            "apply": { "model": "humility-afm:block/candlestick_oxidized_copper", "y": 180 }
-        },
-        {
-            "when": {"facing": "east" },
-            "apply": { "model": "humility-afm:block/candlestick_oxidized_copper", "y": 270 }
-        },
-        {
-            "when": {"facing": "south" },
-            "apply": { "model": "humility-afm:block/candlestick_oxidized_copper" }
-        },
-        {
-            "when": {"facing": "west" },
-            "apply": { "model": "humility-afm:block/candlestick_oxidized_copper", "y": 90 }
+    {
+        "variants": {
+            "facing=north": { "model": "humility-afm:block/candlestick_oxidized_copper", "y": 180 },
+            "facing=east": { "model": "humility-afm:block/candlestick_oxidized_copper", "y": 270 },
+            "facing=south": { "model": "humility-afm:block/candlestick_oxidized_copper" },
+            "facing=west": { "model": "humility-afm:block/candlestick_oxidized_copper", "y": 90 }
         }
-    ]
-}
+    }
