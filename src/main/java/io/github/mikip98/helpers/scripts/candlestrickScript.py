@@ -13,29 +13,8 @@ def generateNames() -> list[str]:
 
 def generateJSONs():
     # Generate candlestick blockstates
-    placableNames: str = generateNames()
+    placableNames: list[str] = generateNames()
     for name in placableNames:
-#         JSON = """
-# {
-#     "multipart": [
-#         {
-#             "when": {"facing": "north" },
-#             "apply": { "model": "humility-afm:block/""" + name + """", "y": 180 }
-#         },
-#         {
-#             "when": {"facing": "east" },
-#             "apply": { "model": "humility-afm:block/""" + name + """", "y": 270 }
-#         },
-#         {
-#             "when": {"facing": "south" },
-#             "apply": { "model": "humility-afm:block/""" + name + """" }
-#         },
-#         {
-#             "when": {"facing": "west" },
-#             "apply": { "model": "humility-afm:block/""" + name + """", "y": 90 }
-#         }
-#     ]
-# }"""
         words = frozenset(name.split("_"))
         if "candle" in words:
             JSON = """
@@ -73,14 +52,15 @@ def generateJSONs():
     from generateCabinetBlockVariantsJSONs import vanilla_wool_types
     for metalType in metalTypes:
         is_block = ""
-        if metalType == "gold" or metalType == "copper":
+        if metalType == "gold" or metalType == "copper" or metalType == "waxed_copper":
             is_block = "_block"
+        metal_texture = metalType.replace("waxed_", "")
         JSON = """
 {
     "parent": "humility-afm:block/candlestick",
     "textures": {
-        "0": "block/""" + metalType + is_block + """",
-        "particle": "block/""" + metalType + is_block + """"
+        "0": "block/""" + metal_texture + is_block + """",
+        "particle": "block/""" + metal_texture + is_block + """"
     }
 }"""
         with open("src/main/resources/assets/humility-afm/models/block/candlestick_" + metalType + ".json", "w") as file:
@@ -90,9 +70,9 @@ def generateJSONs():
 {
     "parent": "humility-afm:block/candlestick_candle",
     "textures": {
-        "0": "block/""" + metalType + is_block + """",
+        "0": "block/""" + metal_texture + is_block + """",
         "2": "block/candle",
-        "particle": "block/""" + metalType + is_block + """"
+        "particle": "block/""" + metal_texture + is_block + """"
     }
 }"""
         with open("src/main/resources/assets/humility-afm/models/block/candlestick_" + metalType + "_candle.json", "w") as file:
@@ -102,9 +82,9 @@ def generateJSONs():
 {
     "parent": "humility-afm:block/candlestick_candle",
     "textures": {
-        "0": "block/""" + metalType + is_block + """",
+        "0": "block/""" + metal_texture + is_block + """",
         "2": "block/candle_lit",
-        "particle": "block/""" + metalType + is_block + """"
+        "particle": "block/""" + metal_texture + is_block + """"
     }
 }"""
         with open("src/main/resources/assets/humility-afm/models/block/candlestick_" + metalType + "_candle_lit.json", "w") as file:
@@ -115,9 +95,9 @@ def generateJSONs():
 {
     "parent": "humility-afm:block/candlestick_candle",
     "textures": {
-        "0": "block/""" + metalType + is_block + """",
+        "0": "block/""" + metal_texture + is_block + """",
         "2": "block/""" + woolType + """_candle",
-        "particle": "block/""" + metalType + is_block + """"
+        "particle": "block/""" + metal_texture + is_block + """"
     }
 }"""
             with open("src/main/resources/assets/humility-afm/models/block/candlestick_" + metalType + "_candle_" + woolType + ".json", "w") as file:
@@ -128,9 +108,9 @@ def generateJSONs():
 {
     "parent": "humility-afm:block/candlestick_candle",
     "textures": {
-        "0": "block/""" + metalType + is_block + """",
+        "0": "block/""" + metal_texture + is_block + """",
         "2": "block/""" + woolType + """_candle_lit",
-        "particle": "block/""" + metalType + is_block + """"
+        "particle": "block/""" + metal_texture + is_block + """"
     }
 }"""
             with open("src/main/resources/assets/humility-afm/models/block/candlestick_" + metalType + "_candle_" + woolType + "_lit.json", "w") as file:

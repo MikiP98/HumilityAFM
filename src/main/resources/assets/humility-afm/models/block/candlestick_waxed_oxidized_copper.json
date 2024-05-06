@@ -2,7 +2,7 @@
 {
     "parent": "humility-afm:block/candlestick",
     "textures": {
-        "0": "block/waxed_oxidized_copper",
-        "particle": "block/waxed_oxidized_copper"
+        "0": "block/oxidized_copper",
+        "particle": "block/oxidized_copper"
     }
 }

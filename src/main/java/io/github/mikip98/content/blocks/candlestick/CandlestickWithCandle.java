@@ -3,7 +3,6 @@ package io.github.mikip98.content.blocks.candlestick;
 import io.github.mikip98.helpers.CandlestickHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.CandleBlock;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -78,11 +77,92 @@ public class CandlestickWithCandle extends Candlestick{
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (player.getStackInHand(hand).getItem() == Items.FLINT_AND_STEEL) {
+        // If player has wax (honeycomb) in hand, use it and replace the candlestick with the waxed version
+        if (player.getStackInHand(hand).getItem() == Items.HONEYCOMB) {
+            String[] translationWords = state.getBlock().getTranslationKey().split("\\.")[2].split("_");
+            if (!translationWords[1].equals("gold") && !translationWords[1].equals("waxed")) {
+
+//                LOGGER.info("translationWords: " + Arrays.toString(translationWords));
+                StringBuilder newName = new StringBuilder("waxed");
+                for (int i = 1; i < translationWords.length; i++) {
+                    if (translationWords[i].equals("candle"))
+                        continue;
+                    newName.append("_");
+                    newName.append(translationWords[i]);
+                }
+                newName.append("_candle");
+//                LOGGER.info("newName: " + newName);
+//                LOGGER.info("candlestickVariantsMap: " + CandlestickHelper.candlestickVariantsMap.toString());
+                emmitWaxOnParticles(state, world, pos);
+                world.playSoundAtBlockCenter(pos, SoundEvents.ITEM_HONEYCOMB_WAX_ON, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
+                BlockState newState = CandlestickHelper.candlestickVariantsMap.get(newName.toString()).getDefaultState().with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING)).with(LIT, state.get(LIT));
+                world.setBlockState(pos, newState);
+                return ActionResult.SUCCESS;
+            }
+        // If player is holding an axe
+        } else if (player.getStackInHand(hand).getItem() instanceof net.minecraft.item.AxeItem) {
+            String[] translationWords = state.getBlock().getTranslationKey().split("\\.")[2].split("_");
+            // check if candlestick is waxed
+            if (translationWords[1].equals("waxed")) {
+                StringBuilder newName = new StringBuilder(translationWords[2]);
+                for (int i = 3; i < translationWords.length; i++) {
+                    if (translationWords[i].equals("candle"))
+                        continue;
+                    newName.append("_");
+                    newName.append(translationWords[i]);
+                }
+                newName.append("_candle");
+                // Remove the wax from the candlestick
+                BlockState newState = CandlestickHelper.candlestickVariantsMap.get(newName.toString()).getDefaultState().with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING)).with(LIT, state.get(LIT));
+                world.setBlockState(pos, newState);
+                emmitWaxOffParticles(state, world, pos);
+                world.playSoundAtBlockCenter(pos, SoundEvents.ITEM_AXE_WAX_OFF, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
+                world.playSoundAtBlockCenter(pos, SoundEvents.BLOCK_GRINDSTONE_USE, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
+                return ActionResult.SUCCESS;
+            // else if not copper is in an oxidation state, go 1 stage back
+            } else {
+                LOGGER.info("translationWords: " + Arrays.toString(translationWords));
+                StringBuilder metal = new StringBuilder(translationWords[1]);
+                int metalEndIndex = 2;
+                for (int i = 2; i < translationWords.length; i++) {
+                    if (translationWords[i].equals("candle")) {
+                        metalEndIndex = i;
+                        break;
+                        }
+                    metal.append("_");
+                    metal.append(translationWords[i]);
+                }
+                String metalS = metal.toString();
+                LOGGER.info("metalS: " + metalS);
+
+                if (!(metalS.equals("copper") || metalS.equals("gold"))) {
+                    String newMetal = derusting(metalS);
+
+                    for (int i = metalEndIndex + 1; i < translationWords.length; i++) {
+                        newMetal += "_";
+                        newMetal += translationWords[i];
+                    }
+                    newMetal += "_candle";
+                    LOGGER.info("newMetal: " + newMetal);
+
+                    BlockState newState = CandlestickHelper.candlestickVariantsMap.get(newMetal).getDefaultState().with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING)).with(LIT, state.get(LIT));
+                    world.setBlockState(pos, newState);
+                    emmitWaxingParticles(state, world, pos, ParticleTypes.SCRAPE);
+                    world.playSoundAtBlockCenter(pos, SoundEvents.ITEM_AXE_WAX_OFF, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
+                    world.playSoundAtBlockCenter(pos, SoundEvents.BLOCK_GRINDSTONE_USE, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
+
+                    return ActionResult.SUCCESS;
+                }
+            }
+
+        } else if (player.getStackInHand(hand).getItem() == Items.FLINT_AND_STEEL) {
             world.setBlockState(pos, state.with(LIT, true));
             world.playSoundAtBlockCenter(pos, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
-            // TODO: Consume the flint and steel (decrease the durability by 1)
+            randomDisplayTick(state, world, pos, world.random); // Emit particles
+            // Consume the flint and steel (decrease the durability by 1)
+            player.getStackInHand(hand).damage(1, player, (p) -> p.sendToolBreakStatus(hand));
             return ActionResult.SUCCESS;
+
         } else if (player.getStackInHand(hand).isEmpty() && player.isSneaking()) {
             if (state.get(LIT)) {
                 world.playSoundAtBlockCenter(pos, SoundEvents.BLOCK_CANDLE_EXTINGUISH, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
@@ -127,8 +207,8 @@ public class CandlestickWithCandle extends Candlestick{
             if (world.random.nextInt(99) == 0) world.playSoundAtBlockCenter(pos, SoundEvents.BLOCK_BUBBLE_COLUMN_BUBBLE_POP, SoundCategory.BLOCKS, 12.0f, 0.5f, true);
             else world.playSoundAtBlockCenter(pos, SoundEvents.ENTITY_ITEM_FRAME_REMOVE_ITEM, SoundCategory.BLOCKS, 0.95f, 1.0f, true);
             return ActionResult.SUCCESS;
-
-        } else if (state.get(LIT)) {
+        }
+        if (state.get(LIT)) {
             if (!(player.getStackInHand(hand).getItem() instanceof BlockItem)) {
                 world.setBlockState(pos, state.with(LIT, false));
                 world.playSoundAtBlockCenter(pos, SoundEvents.BLOCK_CANDLE_EXTINGUISH, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
@@ -140,7 +220,6 @@ public class CandlestickWithCandle extends Candlestick{
 
     @Override
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-        super.randomDisplayTick(state, world, pos, random);
         // Check if the block is lit (property LIT is true)
         if (state.get(LIT)) {
             double x = pos.getX();// + this.offsetX;
@@ -187,6 +266,32 @@ public class CandlestickWithCandle extends Candlestick{
                 world.playSound(x, y, z, SoundEvents.BLOCK_CANDLE_AMBIENT, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
             }
         }
+        if (world.random.nextInt(29999) == 0) {
+            // Rust the copper
+            String[] translationWords = state.getBlock().getTranslationKey().split("\\.")[2].split("_");
+            String metal = translationWords[1];
+            if (!metal.equals("waxed")) {
+                int metalEndIndex = 2;
+                for (int i = 2; i < translationWords.length - 1; i++) {
+                    if (translationWords[i].equals("candle")) {
+                        metalEndIndex = i;
+                        break;
+                    }
+                    metal += "_" + translationWords[i];
+                }
+                if (!(metal.equals("oxidized_copper") || metal.equals("gold"))) {
+                    String newMetal = rust(metal);
+                    for (int i = metalEndIndex + 1; i < translationWords.length - 1; i++) {
+                        newMetal += "_" + translationWords[i];
+                    }
+                    newMetal += "_candle";
+                    BlockState newState = CandlestickHelper.candlestickVariantsMap.get(newMetal).getDefaultState().with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING)).with(LIT, state.get(LIT));
+                    world.setBlockState(pos, newState);
+                    return;
+                }
+            }
+        }
+        super.randomDisplayTick(state, world, pos, random);
     }
 
     @Override
