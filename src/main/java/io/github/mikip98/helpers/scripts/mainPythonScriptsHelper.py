@@ -1,56 +1,59 @@
-woodTypes = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "bamboo", "crimson", "warped"]
+import utils
+
+
+woodTypes = [
+    "oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "bamboo", "crimson", "warped"
+]
 
 
 def generateAxeMineableJSON():
-    from generateCabinetBlockVariantsJSONs import generateCabinetBlockVariantsNames
+    from generateCabinetBlockVariantsJSONs import generateVanillaCabinetBlockVariants
     from generateInnerOuterStairsVariantsJSONs import generateInnerOuterStairsVariantsWoodNames
     from generateWoodenMosaicVariantsJSONs import generateWoodenMosaicVariantsNames
 
-    JSON = """{
-    "replace": false,
-    "values": ["""
+    values = []
 
-    for cabinet in generateCabinetBlockVariantsNames():
-        JSON += """
-        "humility-afm:cabinet_block_""" + cabinet + """", 
-        "humility-afm:illuminated_cabinet_block_""" + cabinet + """", """
+    for cabinet in generateVanillaCabinetBlockVariants():
+        values.append(f"humility-afm:cabinet_block_{cabinet}")
+        values.append(f"humility-afm:illuminated_cabinet_block_{cabinet}")
 
     for stairs in generateInnerOuterStairsVariantsWoodNames():
-        JSON += """
-        "humility-afm:inner_stairs_""" + stairs + """", 
-        "humility-afm:outer_stairs_""" + stairs + """", """
+        values.append(f"humility-afm:inner_stairs_{stairs}")
+        values.append(f"humility-afm:outer_stairs_{stairs}")
 
     for mosaic in generateWoodenMosaicVariantsNames():
-        JSON += """
-        "humility-afm:wooden_mosaic_""" + mosaic + """", """
+        values.append(f"humility-afm:wooden_mosaic_{mosaic}")
 
-    JSON = JSON[:-2]
-    JSON += """
-    ]
-}"""
+    json = {
+        "replace": False,
+        "values": values
+    }
+    utils.save_json(json, "data/minecraft/tags/blocks/mineable/axe.json")
 
-    with open("src/main/resources/data/minecraft/tags/blocks/mineable/axe.json", "w") as file:
-        file.write(JSON)
 
 def generatePickaxeMineableJSON():
     from generateInnerOuterStairsVariantsJSONs import generateInnerOuterStairsVariantsStoneNames
+    from candlestrickScript import generateNames as generateCandlestickNames
+    from generateTerracottaTilesVariantsJSONs import generateTerracottaTilesVariantsNames
 
-    JSON = """{
-    "replace": false,
-    "values": ["""
+    values = []
 
     for stairs in generateInnerOuterStairsVariantsStoneNames():
-        JSON += """
-        "humility-afm:inner_stairs_""" + stairs + """",
-        "humility-afm:outer_stairs_""" + stairs + """", """
+        values.append(f"humility-afm:inner_stairs_{stairs}")
+        values.append(f"humility-afm:outer_stairs_{stairs}")
 
-    JSON = JSON[:-2]
-    JSON += """
-    ]
-}"""
+    for terracotta_tile in generateTerracottaTilesVariantsNames():
+        values.append(f"humility-afm:{terracotta_tile}")
 
-    with open("src/main/resources/data/minecraft/tags/blocks/mineable/pickaxe.json", "w") as file:
-        file.write(JSON)
+    for candlestick in generateCandlestickNames():
+        values.append(f"humility-afm:{candlestick}")
+
+    json = {
+        "replace": False,
+        "values": values
+    }
+    utils.save_json(json, "data/minecraft/tags/blocks/mineable/pickaxe.json")
+
 
 def generateTranslationJSON():
     from generateCabinetBlockVariantsJSONs import generateCabinetBlockVariantsNames
@@ -64,8 +67,6 @@ def generateTranslationJSON():
     stairs = generateInnerOuterStairsVariantsAllNames()
     mosaics = generateWoodenMosaicVariantsNames()
     LEDs = generateLEDVariantsNames()
-
-    itemGroups = ["cabinets_group", "inner_outer_stairs_group", "wooden_mosaics_group"]
 
     # Generate en_us.json
     print("Generating en_us.json...")
@@ -104,6 +105,7 @@ if __name__ == "__main__":
     # generatePickaxeMineableJSON()
     # print("Done!")
 
-    print("Generating translation json...")
-    generateTranslationJSON()
-    print("Done!")
+    # print("Generating translation json...")
+    # generateTranslationJSON()
+    # print("Done!")
+    ...

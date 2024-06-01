@@ -1,4 +1,11 @@
-terracottaTypes = ["white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray", "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black"]
+import utils
+
+
+terracottaTypes = [
+    "white", "orange", "magenta", "light_blue", "yellow", "lime", "pink",
+    "gray", "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black"
+]
+
 
 def generateWoodenMosaicVariantsJSONs():
     for terracottaType in terracottaTypes:
@@ -8,97 +15,85 @@ def generateWoodenMosaicVariantsJSONs():
 
             print("Generating terracotta tiles jsons for " + terracottaType + " and " + terracottaType2 + "...")
 
+            blockName = f"terracotta_tiles_{terracottaType}_{terracottaType2}"
+
             # Generate model json
-            JSON = """{
-    "parent": "humility-afm:block/wooden_mosaic",
-    "textures": {
-        "1": "minecraft:block/""" + terracottaType + """_terracotta",
-        "2": "minecraft:block/""" + terracottaType2 + """_terracotta"
-    }
-}"""
+            json = {
+                "parent": "humility-afm:block/wooden_mosaic",
+                "textures": {
+                    "1": f"minecraft:block/{terracottaType}_terracotta",
+                    "2": f"minecraft:block/{terracottaType2}_terracotta"
+                }
+            }
 
             # Write model json to file
-            fileName = "terracotta_tiles_" + terracottaType + "_" + terracottaType2 + ".json"
-            with open("src/main/resources/assets/humility-afm/models/block/" + fileName, "w") as file:
-                file.write(JSON)
-            # file = open("src/main/resources/assets/humility-afm/models/block/" + fileName, "w")
-            # file.write(JSON)
-            # file.close()
+            utils.save_json(json, f"assets/humility-afm/models/block/{blockName}.json")
 
             # Generate item model json
-            JSON = """{
-    "parent": "humility-afm:block/""" + fileName[:-5] + """"
-}"""
+            json = {
+                "parent": f"humility-afm:block/{blockName}"
+            }
 
             # Write item model json to file
-            with open("src/main/resources/assets/humility-afm/models/item/" + fileName, "w") as file:
-                file.write(JSON)
+            utils.save_json(json, f"assets/humility-afm/models/item/{blockName}.json")
 
             # Generate blockstate json
-            JSON = """{
-    "variants": {
-        "": {
-            "model": "humility-afm:block/""" + fileName[:-5] + """"
-        }
-    }
-}"""
+            json = {
+                "variants": {
+                    "": {
+                        "model": f"humility-afm:block/{blockName}"
+                    }
+                }
+            }
 
             # Write blockstate json to file
-            with open("src/main/resources/assets/humility-afm/blockstates/" + fileName, "w") as file:
-                file.write(JSON)
+            utils.save_json(json, f"assets/humility-afm/blockstates/{blockName}.json")
 
             # Generate recipes jsons
-            JSON = """{
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "AB",
-        "BA"
-    ],
-    "key": {
-        "A": {
-            "item": "minecraft:""" + terracottaType + """_terracotta"
-        },
-        "B": {
-            "item": "minecraft:""" + terracottaType2 + """_terracotta"
-        }
-    },
-    "result": {
-        "item": "humility-afm:""" + fileName[:-5] + """"
-    }
-}"""
+            pattern = [
+                "AB",
+                "BA"
+            ]
+            key = {
+                "A": {
+                    "item": f"minecraft:{terracottaType}_terracotta"
+                },
+                "B": {
+                    "item": f"minecraft:{terracottaType2}_terracotta"
+                }
+            }
+            result = {
+                "item": f"humility-afm:{blockName}"
+            }
+            json = utils.generate_shaped_recipe(result, pattern, key)
 
             # Write recipe json to file
-            with open("src/main/resources/data/humility-afm/recipes/" + fileName, "w") as file:
-                file.write(JSON)
+            utils.save_json(json, f"data/humility-afm/recipes/{blockName}.json")
 
             # Generate AB -> BA recipe json
-            JSON = """{
-    "type": "minecraft:crafting_shapeless",
-    "ingredients": [
-        {
-            "item": "humility-afm:""" + fileName[:-5] + """"
-        }
-    ],
-    "result": {
-        "item": "humility-afm:terracotta_tiles_""" + terracottaType2 + "_" + terracottaType + """"
-    }
-}"""
+            ingredient = {
+                "item": f"humility-afm:{blockName}"
+            }
+            result = {
+                "item": f"humility-afm:terracotta_tiles_{terracottaType2}_{terracottaType}"
+            }
+            json = utils.generate_shapeless_recipe(result, [ingredient])
 
             # Write recipe json to file
-            # Remove .json from fileName
-            fileName = fileName[:-5]
-            fileName += "_A_to_B.json"
-            with open("src/main/resources/data/humility-afm/recipes/" + fileName, "w") as file:
-                file.write(JSON)
+            utils.save_json(json, f"data/humility-afm/recipes/{blockName}_A_to_B.json")
+
+            # Generate loot table json
+            json = utils.generate_simple_loot_table(f"humility-afm:{blockName}")
+            utils.save_json(json, f"data/humility-afm/loot_tables/blocks/{blockName}.json")
 
 
-def generateWoodenMosaicVariantsNames():
+def generateTerracottaTilesVariantsNames():
     names = []
-    for woodType in woodTypes:
-        for woodType2 in woodTypes:
-            if woodType == woodType2:
+    for terracotta_type in terracottaTypes:
+        for terracotta_type_2 in terracottaTypes:
+            if terracotta_type == terracotta_type_2:
                 continue
-            names.append(woodType + "_" + woodType2)
+            names.append(f"terracotta_tiles_{terracotta_type}_{terracotta_type_2}")
     return names
 
 

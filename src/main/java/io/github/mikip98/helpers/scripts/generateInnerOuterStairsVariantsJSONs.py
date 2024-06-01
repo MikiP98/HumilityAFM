@@ -1,24 +1,42 @@
+import utils
+
+
 from mainPythonScriptsHelper import woodTypes
 
 
 woodVariants = woodTypes
 mudBricksVariant = "mud_bricks"
 sandStoneANDQuartsVariants = ["quartz", "sandstone", "red_sandstone"]
-stony1Variants = ["blackstone", "andesite", "polished_andesite", "diorite", "polished_diorite", "granite", "polished_granite", "polished_blackstone_brick", "prismarine", "dark_prismarine", "prismarine_bricks", "purpur", "stone", "stone_brick", "mossy_stone_brick"]
-stony2Variants = ["brick", "cobblestone", "mossy_cobblestone", "nether_brick", "red_nether_brick", "polished_blackstone", "smooth_quartz", "smooth_sandstone", "smooth_red_sandstone"]
+stony1Variants = [
+    "blackstone", "andesite", "polished_andesite", "diorite", "polished_diorite", "granite",
+    "polished_granite", "polished_blackstone_brick", "prismarine", "dark_prismarine",
+    "prismarine_bricks", "purpur", "stone", "stone_brick", "mossy_stone_brick"
+]
+stony2Variants = [
+    "brick", "cobblestone", "mossy_cobblestone", "nether_brick", "red_nether_brick",
+    "polished_blackstone", "smooth_quartz", "smooth_sandstone", "smooth_red_sandstone"
+]
 endStoneVariant = "end_stone_brick"
 cutCopperVariants = ["cut_copper", "exposed_cut_copper", "weathered_cut_copper", "oxidized_cut_copper"]
 deepSlateVariants = ["cobbled_deepslate", "polished_deepslate", "deepslate_brick", "deepslate_tile"]
 
-AllVariants = woodVariants + [mudBricksVariant] + sandStoneANDQuartsVariants + stony1Variants + stony2Variants + [endStoneVariant] + cutCopperVariants + deepSlateVariants
+AllVariants = (
+        woodVariants +
+        [mudBricksVariant] +
+        sandStoneANDQuartsVariants +
+        stony1Variants + stony2Variants +
+        [endStoneVariant] +
+        cutCopperVariants +
+        deepSlateVariants
+)
 
 
 print("AllVariants: " + str(AllVariants))
 
 
-def generateCabinetBlockVariantsJSONs(override = False):
+def generateInnerOuterStairsVariantsJSONs():
     for variant in AllVariants:
-        print("Generating cabinet block variants JSON for " + variant + "...")
+        print(f"Generating inner and outer stairs variant JSONs for {variant}...")
         innerName = "inner_stairs_" + variant
         outerName = "outer_stairs_" + variant
 
@@ -27,6 +45,7 @@ def generateCabinetBlockVariantsJSONs(override = False):
         top = variant
         side = variant
         bottom = variant
+
         def cutBrick(name):
             return name.replace("_brick", "")
 
@@ -112,208 +131,174 @@ def generateCabinetBlockVariantsJSONs(override = False):
                 bottom = bottom.replace("tile", "")
                 blockToUse = "tiles"
 
+        textures = {
+            "bottom": f"minecraft:block/{bottom}{blockToUse}",
+            "top": f"minecraft:block/{top}{blockToUse}",
+            "side": f"minecraft:block/{side}{blockToUse}"
+        }
         # Inner
-        innerModelsJSON = """{
-    "parent": "humility-afm:block/stairs_inner",
-    "textures": {
-        "bottom": "minecraft:block/""" + bottom + blockToUse + """",
-        "top": "minecraft:block/""" + top + blockToUse + """",
-        "side": "minecraft:block/""" + side + blockToUse + """"
-    }
-}"""
-        with open("src/main/resources/assets/humility-afm/models/block/" + innerName + ".json", "w") as f:
-            f.write(innerModelsJSON)
+        innerModelsJSON = {
+            "parent": "humility-afm:block/stairs_inner",
+            "textures": textures
+        }
+        utils.save_json(innerModelsJSON, f"assets/humility-afm/models/block/{innerName}.json")
 
         # Outer
-        outerModelsJSON = """{
-    "parent": "humility-afm:block/stairs_outer",
-    "textures": {
-        "bottom": "minecraft:block/""" + bottom + blockToUse + """",
-        "top": "minecraft:block/""" + top + blockToUse + """",
-        "side": "minecraft:block/""" + side + blockToUse + """"
-    }
-}"""
-        with open("src/main/resources/assets/humility-afm/models/block/" + outerName + ".json", "w") as f:
-            f.write(outerModelsJSON)
+        outerModelsJSON = {
+            "parent": "humility-afm:block/stairs_outer",
+            "textures": textures
+        }
+        utils.save_json(outerModelsJSON, f"assets/humility-afm/models/block/{outerName}.json")
 
         # Generate item models JSONs
         # Inner
-        innerItemModelsJSON = """{
-    "parent": "humility-afm:block/""" + innerName + """"
-}"""
-        with open("src/main/resources/assets/humility-afm/models/item/" + innerName + ".json", "w") as f:
-            f.write(innerItemModelsJSON)
+        innerItemModelsJSON = {
+            "parent": "humility-afm:block/" + innerName
+        }
+        utils.save_json(innerItemModelsJSON, f"assets/humility-afm/models/item/{innerName}.json")
 
         # Outer
-        outerItemModelsJSON = """{
-    "parent": "humility-afm:block/""" + outerName + """"
-}"""
-        with open("src/main/resources/assets/humility-afm/models/item/" + outerName + ".json", "w") as f:
-            f.write(outerItemModelsJSON)
+        outerItemModelsJSON = {
+            "parent": "humility-afm:block/" + outerName
+        }
+        utils.save_json(outerItemModelsJSON, f"assets/humility-afm/models/item/{outerName}.json")
 
         # Generate blockstates JSONs
+        directions = [("north", 0), ("south", 180), ("west", 270), ("east", 90)]  # Top is +90
         # Inner
-        innerBlockstatesJSON = """{
-    "variants": {
-        "facing=east,half=bottom": {
-            "model": "humility-afm:block/""" + innerName + """",
-            "y": 90,
-            "uvlock": true
-        },
-        "facing=east,half=top": {
-            "model": "humility-afm:block/""" + innerName + """",
-            "x": 180,
-            "y": 180,
-            "uvlock": true
-        },
-        "facing=north,half=bottom": {
-            "model": "humility-afm:block/""" + innerName + """"
-        },
-        "facing=north,half=top": {
-            "model": "humility-afm:block/""" + innerName + """",
-            "x": 180,
-            "y": 90,
-            "uvlock": true
-        },
-        "facing=south,half=bottom": {
-            "model": "humility-afm:block/""" + innerName + """",
-            "y": 180,
-            "uvlock": true
-        },
-        "facing=south,half=top": {
-            "model": "humility-afm:block/""" + innerName + """",
-            "x": 180,
-            "y": 270,
-            "uvlock": true
-        },
-        "facing=west,half=bottom": {
-            "model": "humility-afm:block/""" + innerName + """",
-            "y": 270,
-            "uvlock": true
-        },
-        "facing=west,half=top": {
-            "model": "humility-afm:block/""" + innerName + """",
-            "x": 180,
-            "uvlock": true
+        model = f"humility-afm:block/{innerName}"
+        variants = {}
+        for direction, y in directions:
+            variant_tj = {
+                "model": model,
+                "y": y,
+                "uvlock": True
+            }
+
+            if variant_tj["y"] == 0:
+                del variant_tj["y"]
+                del variant_tj["uvlock"]
+
+            variants[f"facing={direction},half=bottom"] = variant_tj
+
+            variant_tj = {
+                "model": model,
+                "x": 180,
+                "y": (y + 90) % 360,
+                "uvlock": True
+            }
+
+            if variant_tj["y"] == 0:
+                del variant_tj["y"]
+
+            variants[f"facing={direction},half=top"] = variant_tj
+
+        innerBlockstatesJSON = {
+            "variants": variants
         }
-    }
-}"""
-        with open("src/main/resources/assets/humility-afm/blockstates/" + innerName + ".json", "w") as f:
-            f.write(innerBlockstatesJSON)
+
+        utils.save_json(innerBlockstatesJSON, f"assets/humility-afm/blockstates/{innerName}.json")
 
         # Outer
-        outerBlockstatesJSON = """{
-    "variants": {
-        "facing=east,half=bottom": {
-            "model": "humility-afm:block/""" + outerName + """",
-            "y": 90,
-            "uvlock": true
-        },
-        "facing=east,half=top": {
-            "model": "humility-afm:block/""" + outerName + """",
-            "x": 180,
-            "y": 180,
-            "uvlock": true
-        },
-        "facing=north,half=bottom": {
-            "model": "humility-afm:block/""" + outerName + """"
-        },
-        "facing=north,half=top": {
-            "model": "humility-afm:block/""" + outerName + """",
-            "x": 180,
-            "y": 90,
-            "uvlock": true
-        },
-        "facing=south,half=bottom": {
-            "model": "humility-afm:block/""" + outerName + """",
-            "y": 180,
-            "uvlock": true
-        },
-        "facing=south,half=top": {
-            "model": "humility-afm:block/""" + outerName + """",
-            "x": 180,
-            "y": 270,
-            "uvlock": true
-        },
-        "facing=west,half=bottom": {
-            "model": "humility-afm:block/""" + outerName + """",
-            "y": 270,
-            "uvlock": true
-        },
-        "facing=west,half=top": {
-            "model": "humility-afm:block/""" + outerName + """",
-            "x": 180,
-            "uvlock": true
-        }
-    }
-}"""
-        with open("src/main/resources/assets/humility-afm/blockstates/" + outerName + ".json", "w") as f:
-            f.write(outerBlockstatesJSON)
+        model = f"humility-afm:block/{outerName}"
+        variants = {}
+        for direction, y in directions:
+            variant_tj = {
+                "model": model,
+                "y": y,
+                "uvlock": True
+            }
 
+            if variant_tj["y"] == 0:
+                del variant_tj["y"]
+                del variant_tj["uvlock"]
+
+            variants[f"facing={direction},half=bottom"] = variant_tj
+
+            variant_tj = {
+                "model": model,
+                "x": 180,
+                "y": (y + 90) % 360,
+                "uvlock": True
+            }
+
+            if variant_tj["y"] == 0:
+                del variant_tj["y"]
+
+            variants[f"facing={direction},half=top"] = variant_tj
+
+        outerBlockstatesJSON = {
+            "variants": variants
+        }
+        utils.save_json(outerBlockstatesJSON, f"assets/humility-afm/blockstates/{outerName}.json")
 
         # Create recipe JSONs
         if variant == "mud_bricks":
             variant = "mud_brick"
         elif variant == "prismarine_bricks":
             variant = "prismarine_brick"
+
         # Inner
-        innerRecipeJSON = """{
-    "type": "crafting_shapeless",
-    "ingredients": [
-        {
-            "item": "minecraft:""" + variant + """_stairs"
+        ingredient = {
+            "item": f"minecraft:{variant}_stairs"
         }
-    ],
-    "result": {
-        "item": "humility-afm:""" + innerName + """"
-    }
-}"""
-        with open("src/main/resources/data/humility-afm/recipes/" + innerName + ".json", "w") as f:
-            f.write(innerRecipeJSON)
+        result = {
+            "item": f"humility-afm:{innerName}"
+        }
+        innerRecipeJSON = utils.generate_shapeless_recipe(result, [ingredient])
+        utils.save_json(innerRecipeJSON, f"data/humility-afm/recipes/{innerName}.json")
 
         # Outer
-        outerRecipeJSON = """{
-    "type": "crafting_shapeless",
-    "ingredients": [
-        {
-            "item": "humility-afm:""" + innerName + """"
+        ingredient = {
+            "item": f"humility-afm:{innerName}"
         }
-    ],
-    "result": {
-        "item": "humility-afm:""" + outerName + """"
-    }
-}"""
-        with open("src/main/resources/data/humility-afm/recipes/" + outerName + ".json", "w") as f:
-            f.write(outerRecipeJSON)
+        result = {
+            "item": f"humility-afm:{outerName}"
+        }
+        outerRecipeJSON = utils.generate_shapeless_recipe(result, [ingredient])
+        utils.save_json(outerRecipeJSON, f"data/humility-afm/recipes/{outerName}.json")
 
         # Back to normal
-        stairsRecipeJSON = """{
-    "type": "crafting_shapeless",
-    "ingredients": [
-        {
-            "item": "humility-afm:""" + outerName + """"
+        ingredient = {
+            "item": f"humility-afm:{outerName}"
         }
-    ],
-    "result": {
-        "item": "minecraft:""" + variant + """_stairs"
-    }
-}"""
-        with open("src/main/resources/data/humility-afm/recipes/" + outerName + "_to_vanilla.json", "w") as f:
-            f.write(stairsRecipeJSON)
+        result = {
+            "item": f"minecraft:{variant}_stairs"
+        }
+        stairsRecipeJSON = utils.generate_shapeless_recipe(result, [ingredient])
+        utils.save_json(stairsRecipeJSON, f"data/humility-afm/recipes/{outerName}_to_vanilla.json")
 
-    print("Generated cabinet block variants JSONs!")
+        # Generate the loot table JSONs
+        # Inner
+        json = utils.generate_simple_loot_table(f"humility-afm:{innerName}")
+        utils.save_json(json, f"data/humility-afm/loot_tables/blocks/{innerName}.json")
+        # Outer
+        json = utils.generate_simple_loot_table(f"humility-afm:{outerName}")
+        utils.save_json(json, f"data/humility-afm/loot_tables/blocks/{outerName}.json")
+
+    print("Generated inner and outer stairs variants JSONs!")
 
 
 def generateInnerOuterStairsVariantsWoodNames():
     return woodVariants
 
+
 def generateInnerOuterStairsVariantsStoneNames():
-    return [mudBricksVariant] + sandStoneANDQuartsVariants + stony1Variants + stony2Variants + [endStoneVariant] + cutCopperVariants + deepSlateVariants
+    return (
+            [mudBricksVariant] +
+            sandStoneANDQuartsVariants +
+            stony1Variants +
+            stony2Variants +
+            [endStoneVariant] +
+            cutCopperVariants +
+            deepSlateVariants
+    )
+
 
 def generateInnerOuterStairsVariantsAllNames():
     return AllVariants
 
 
 if __name__ == "__main__":
-    print("Generating cabinet block variants JSONs...")
-    generateCabinetBlockVariantsJSONs()
+    print("Generating inner and outer stairs variants JSONs...")
+    generateInnerOuterStairsVariantsJSONs()

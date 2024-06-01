@@ -4,7 +4,6 @@ import io.github.mikip98.config.ConfigJSON;
 import io.github.mikip98.config.ModConfig;
 import io.github.mikip98.content.blockentities.LEDBlockEntity;
 import io.github.mikip98.content.blockentities.cabinetBlock.IlluminatedCabinetBlockEntity;
-import io.github.mikip98.content.blocks.JustHorizontalFacingBlock;
 import io.github.mikip98.content.blocks.leds.LEDBlock;
 import io.github.mikip98.content.blocks.stairs.InnerStairs;
 import io.github.mikip98.content.blocks.stairs.OuterStairs;
@@ -185,30 +184,41 @@ public class HumilityAFM implements ModInitializer {
 					.displayName(Text.translatable("itemGroup.leds"))
 					.entries((displayContext, entries) -> {
 						for (int i = 0; i < LEDHelper.LEDBlockVariants.length; i++) {
-//							LOGGER.info("Adding LED variant to item group: " + LEDHelper.LEDBlockVariants[i]);
 							entries.add(new ItemStack(LEDHelper.LEDBlockVariants[i]));
+						}
+						for (int i = 0; i < LEDHelper.LEDPowderVariants.length; i++) {
+							entries.add(new ItemStack(LEDHelper.LEDPowderVariants[i]));
 						}
 					})
 					.build();
 			Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "leds_group"), LED_ITEM_GROUP);
 		}
 
-		// Register Miscellaneous (Humility Misc) item group
-		if (ModConfig.enableLEDs) {
-			final ItemGroup HUMILITY_MISCELLANEOUS_GROUP = FabricItemGroup.builder()
-					.icon(() -> new ItemStack(LEDHelper.LEDPowderVariants[0]))
-					.displayName(Text.translatable("itemGroup.humilityMisc"))
+		// Register Candlestick item group
+		if (ModConfig.enableCandlesticks) {
+			final ItemGroup CANDLESTICK_ITEM_GROUP = FabricItemGroup.builder()
+					.icon(() -> new ItemStack(CandlestickHelper.candlestickVariants[0]))
+					.displayName(Text.translatable("itemGroup.candlesticks"))
 					.entries((displayContext, entries) -> {
-						for (int i = 0; i < LEDHelper.LEDPowderVariants.length; i++) {
-							entries.add(new ItemStack(LEDHelper.LEDPowderVariants[i]));
-						}
-						for (int i = 0; i < PumpkinHelper.PumpkinsVariants.length; i++) {
-							entries.add(new ItemStack(PumpkinHelper.PumpkinsVariants[i]));
+						for (int i = 0; i < CandlestickHelper.candlestickVariants.length; i++) {
+							entries.add(new ItemStack(CandlestickHelper.candlestickVariants[i]));
 						}
 					})
 					.build();
-			Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "humility_misc_group"), HUMILITY_MISCELLANEOUS_GROUP);
+			Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "candlesticks_group"), CANDLESTICK_ITEM_GROUP);
 		}
+
+		// Register Miscellaneous (Humility Misc) item group
+		final ItemGroup HUMILITY_MISCELLANEOUS_GROUP = FabricItemGroup.builder()
+				.icon(() -> new ItemStack(PumpkinHelper.PumpkinsVariants[0]))
+				.displayName(Text.translatable("itemGroup.humilityMisc"))
+				.entries((displayContext, entries) -> {
+					for (int i = 0; i < PumpkinHelper.PumpkinsVariants.length; i++) {
+						entries.add(new ItemStack(PumpkinHelper.PumpkinsVariants[i]));
+					}
+				})
+				.build();
+		Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "humility_misc_group"), HUMILITY_MISCELLANEOUS_GROUP);
 
 
 		// ............ TEST BLOCKS & ITEMS ............
@@ -286,7 +296,7 @@ public class HumilityAFM implements ModInitializer {
 		}
 	}
 
-	private static void checkForSupportedMods() {
+	public static void checkForSupportedMods() {
 		checkIfShimmerModIsPresent();
 		checkForBetterNether();
 	}

@@ -96,5 +96,22 @@
 				"down": {"uv": [0, 0, 0, 4], "texture": "#0"}
 			}
 		}
-	]
+	],
+	"gui_light": "front",
+	"display": {
+		"ground": {
+			"translation": [0, 0.4, 3.1],
+			"scale": [0.75, 0.75, 0.75]
+		},
+		"gui": {
+			"rotation": [20, -35, 0],
+			"translation": [-2.8, -1.75, 0],
+			"scale": [1.15, 1.15, 1.15]
+		},
+		"fixed": {
+			"rotation": [0, 90, 0],
+			"translation": [6, 1.75, 0.375],
+			"scale": [1.375, 1.375, 1.375]
+		}
+	}
 }

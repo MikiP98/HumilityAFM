@@ -5,6 +5,7 @@ def translate_en_us(cabinets, stairs, mosaics, LEDs, torches):
     "itemGroup.woodenMosaics": "Wooden Mosaics",
     "itemGroup.terracottaTiles": "Terracotta Tiles",
     "itemGroup.leds": "LEDs",
+    "itemGroup.candlesticks": "Candlesticks",
     "itemGroup.humilityMisc": "Miscellaneous (Humility)",
     """
 
@@ -65,8 +66,10 @@ def translate_en_us(cabinets, stairs, mosaics, LEDs, torches):
 
     return JSON
 
+
 def translate_en_gb(json_text):
     return json_text.replace("Gray", "Grey")
+
 
 def translate_pl_pl(cabinets, stairs, mosaics, LEDs, torches):
     JSON = """
@@ -75,7 +78,7 @@ def translate_pl_pl(cabinets, stairs, mosaics, LEDs, torches):
     "itemGroup.innerOuterStairs": "Schody wewnętrzne i zewnętrzne",
     "itemGroup.woodenMosaics": "Drewniane Mozaiki",
     "itemGroup.terracottaTiles": "Płytki z terakoty",
-    "itemGroup.leds": "LEDy",
+    "itemGroup.leds": "LED-y",
     "itemGroup.humilityMisc": "Różne (Humility)",
     """
 
@@ -134,6 +137,7 @@ def translate_pl_pl(cabinets, stairs, mosaics, LEDs, torches):
     JSON += """
 }"""
     return replace_polish_letters(JSON)
+
 
 def replace_polish_letters(JSON):
     JSON = (JSON.replace("ą", "\\u0105")

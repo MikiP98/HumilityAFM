@@ -1,9 +1,19 @@
-
-    {
-        "variants": {
-            "facing=north": { "model": "humility-afm:block/candlestick_gold", "y": 180 },
-            "facing=east": { "model": "humility-afm:block/candlestick_gold", "y": 270 },
-            "facing=south": { "model": "humility-afm:block/candlestick_gold" },
-            "facing=west": { "model": "humility-afm:block/candlestick_gold", "y": 90 }
+{
+    "variants": {
+        "facing=north": {
+            "model": "humility-afm:block/candlestick_gold",
+            "y": 180
+        },
+        "facing=east": {
+            "model": "humility-afm:block/candlestick_gold",
+            "y": 270
+        },
+        "facing=south": {
+            "model": "humility-afm:block/candlestick_gold"
+        },
+        "facing=west": {
+            "model": "humility-afm:block/candlestick_gold",
+            "y": 90
         }
     }
+}
