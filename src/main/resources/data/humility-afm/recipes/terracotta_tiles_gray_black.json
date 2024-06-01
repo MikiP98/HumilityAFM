@@ -1,0 +1,18 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "AB",
+        "BA"
+    ],
+    "key": {
+        "A": {
+            "item": "minecraft:gray_terracotta"
+        },
+        "B": {
+            "item": "minecraft:black_terracotta"
+        }
+    },
+    "result": {
+        "item": "humility-afm:terracotta_tiles_gray_black"
+    }
+}

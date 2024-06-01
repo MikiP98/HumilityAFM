@@ -1,0 +1,11 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "humility-afm:terracotta_tiles_light_gray_pink"
+        }
+    ],
+    "result": {
+        "item": "humility-afm:terracotta_tiles_pink_light_gray"
+    }
+}

@@ -1,0 +1,7 @@
+{
+    "parent": "humility-afm:block/wooden_mosaic",
+    "textures": {
+        "1": "minecraft:block/pink_terracotta",
+        "2": "minecraft:block/green_terracotta"
+    }
+}
