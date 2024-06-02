@@ -10,11 +10,10 @@ It specializes in procedurally generating variants of the same block so that you
 ### Features:
 Cabinets! <br>
 Make your treasures pop! <br>
-Match the wood to your build and wool interior to your item! <br>
+Match the wood to your build and wool interior to your item!  
 <img width="75%" alt="Cabinet Block Image" src="https://cdn.modrinth.com/data/RoBSx69i/images/6c6be08f82249beb49aad2ea2bf9b6f41cbf5e82.png">
 <br>
-Need something brighter? Illuminated Cabinet comes for rescue! <br>
-[Illuminated Cabinet Block Image] <br>
+Need something brighter? Illuminated Cabinet comes for rescue!  
 <br>
 **Wooden Mosaics!** <br>
 Mix 2 different wood types to find your look! <br>
