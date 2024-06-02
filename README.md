@@ -55,6 +55,7 @@ This mod is highly customisable through its config!
 - Fancy carpets
 - Server feature sync
 - Add ceiling and floor candlesticks variants
+
 <br>
 
 ### FAQ: <br>
