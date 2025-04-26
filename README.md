@@ -49,7 +49,9 @@ Lighten up your builds with unobtrusive light source <br>
 This mod is highly customisable through its config!
 <br>
 <br>
+
 ### Roadmap:
+
 - Make Redstone Jack o'Lanterns to turn off when powered
 - Fancy carpets
 - Server feature sync
@@ -66,6 +68,7 @@ This mod is highly customisable through its config!
 - Port to 1.21.5?
 - Add floor and ceiling variants of the cabinets
 - Redo the window capture screenshots or at least crop the window app bar
+- Rethink the README structure
 
 <br>
 
