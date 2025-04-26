@@ -10,11 +10,10 @@ It specializes in procedurally generating variants of the same block so that you
 ### Features:
 Cabinets! <br>
 Make your treasures pop! <br>
-Match the wood to your build and wool interior to your item! <br>
+Match the wood to your build and wool interior to your item!  
 <img width="75%" alt="Cabinet Block Image" src="https://cdn.modrinth.com/data/RoBSx69i/images/6c6be08f82249beb49aad2ea2bf9b6f41cbf5e82.png">
 <br>
-Need something brighter? Illuminated Cabinet comes for rescue! <br>
-[Illuminated Cabinet Block Image] <br>
+Need something brighter? Illuminated Cabinet comes for rescue!  
 <br>
 **Wooden Mosaics!** <br>
 Mix 2 different wood types to find your look! <br>
@@ -35,7 +34,7 @@ Make the vanillest armchairs, sofas, tables and more! <br>
 Lighten up your builds with unobtrusive light source <br>
 <img width="75%" alt="LED Image" src="https://cdn.modrinth.com/data/RoBSx69i/images/e489ba0d65132aa05c279cf5ef3f3577a41f4bc7.png">
 <br>
-**LEDs** also support **Shimmers coloured lights!** <br>
+**LEDs** also support **Bliss** shader and **Shimmer**'s mod coloured lights! <br>
 <img width="75%" alt="LED coloured light Image" src="https://cdn.modrinth.com/data/RoBSx69i/images/7ff0a81c3e24eb38e83edf01f2c21e24a6b911e9.png">
 <br>
 <br>
@@ -53,7 +52,7 @@ This mod is highly customisable through its config!
 ### Roadmap:
 - Make Redstone Jack o'Lanterns to turn off when powered
 - Fancy carpets
-- Server feature sync? <sup>*(after making them into a datapack, I can default them to enabled, it should be good enough)*</sup>
+- Server feature sync
 - Add ceiling and floor candlesticks variants
 - Make LEDs and Candlestick into integrated datapacks
 - Add thin <sup>*(Blibiocraft style)*</sup> and short cabinets?
@@ -67,6 +66,7 @@ This mod is highly customisable through its config!
 - Port to 1.21.5?
 - Add floor and ceiling variants of the cabinets
 - Redo the window capture screenshots or at least crop the window app bar
+
 <br>
 
 ### FAQ: <br>
@@ -74,7 +74,7 @@ This mod is highly customisable through its config!
 <b>a:</b> You need to enable them in config and restart the game. I thought they aren't vanilla enough to include them by default. <br>
 <br>
 <b>q:</b> Why don’t my LEDs emit coloured light? <br>
-<b>a:</b> You need to install the "Shimmer" mod alongside this one to get the coloured lights. If you already installed it and LEDs still don't emit coloured light, there is probably some incompatibility. Try disabling the "NVIDIUM" mod and it should start working again.<br>
+<b>a:</b> You need to install the custom "[Bliss](https://github.com/MikiP98/Bliss-Shader)" shader or the "[Shimmer](https://modrinth.com/mod/shimmer!)" mod alongside this one to get the coloured lights. If you already installed it and LEDs still don't emit coloured light, there is probably some incompatibility. Try disabling the "NVIDIUM" mod and it should start working again.<br>
 <br>
 <b>q:</b> Why is the inside of Cabinets transparent?<br>
 <b>a:</b> Sodium has issues with rendering transparency. Installing other mods, like NVIDIUM, may help fix the problem. If that doesn't help, you can disable partial Cabinet transparency in the configuration (you will still be able to see the items inside).<br>
