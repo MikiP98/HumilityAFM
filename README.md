@@ -86,5 +86,4 @@ This mod is highly customisable through its config!
 <b>a:</b> I have no idea...<br>
 <br>
 <br>
-Checkout my other mod:
-[HumilitySE](https://github.com/MikiP98/HumilitySE)
+Checkout my [other mods](https://modrinth.com/user/Miki-Liki) :)
