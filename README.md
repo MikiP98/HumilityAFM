@@ -69,6 +69,8 @@ This mod is highly customisable through its config!
 - Add floor and ceiling variants of the cabinets
 - Redo the window capture screenshots or at least crop the window app bar
 - Rethink the README structure
+- Add the ability to rotate items displayed in the cabinets
+- Rethink cabinet opening, item insertion and removal, and such to allow for the above
 
 <br>
 
