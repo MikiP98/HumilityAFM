@@ -53,8 +53,20 @@ This mod is highly customisable through its config!
 ### Roadmap:
 - Make Redstone Jack o'Lanterns to turn off when powered
 - Fancy carpets
-- Server feature sync
+- Server feature sync? <sup>*(after making them into a datapack, I can default them to enabled, it should be good enough)*</sup>
 - Add ceiling and floor candlesticks variants
+- Make LEDs and Candlestick into integrated datapacks
+- Add thin <sup>*(Blibiocraft style)*</sup> and short cabinets?
+- Add a feature to connect 2 neighboring Cabinets into a big one?
+- Convert all the Python code to Java Fabric Datagen
+- Restructure the code a bit *(e.g. dedicated registry files)*
+- Add `Fully resourcepack compatible!` to the `Features` section
+- Port to 1.20.4
+- Port to 1.21.1
+- Port to 1.21.4
+- Port to 1.21.5?
+- Add floor and ceiling variants of the cabinets
+- Redo the window capture screenshots or at least crop the window app bar
 <br>
 
 ### FAQ: <br>
