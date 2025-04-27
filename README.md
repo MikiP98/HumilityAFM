@@ -57,6 +57,7 @@ This mod is highly customisable through its config!
 - Server feature sync
 - Add ceiling and floor candlesticks variants
 - Make LEDs and Candlestick into integrated datapacks
+- Make BetterNether and BetterEnd support into integrated datapacks
 - Add thin <sup>*(Blibiocraft style)*</sup> and short cabinets?
 - Add a feature to connect 2 neighboring Cabinets into a big one?
 - Convert all the Python code to Java Fabric Datagen
