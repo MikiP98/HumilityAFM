@@ -49,7 +49,7 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 
-        player.playSound(SoundEvents.BLOCK_BAMBOO_BREAK, 1, 1);
+        player.playSound(SoundEvents.BLOCK_BAMBOO_BREAK, 1, 1);  // TODO: Replace with world sound
 
         if (world.getBlockState(pos).get(OPEN)){
             if (world.isClient) return ActionResult.SUCCESS;

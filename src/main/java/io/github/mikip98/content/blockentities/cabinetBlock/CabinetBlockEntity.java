@@ -34,7 +34,7 @@ public class CabinetBlockEntity extends BlockEntity implements ImplementedInvent
 
     @Override
     public DefaultedList<ItemStack> getItems() {
-        return items;
+        return this.items;
     }
 
     @Override
