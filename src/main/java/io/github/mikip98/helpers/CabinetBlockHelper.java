@@ -71,19 +71,9 @@ public class CabinetBlockHelper {
 
 
     public static void init() {
-        final FabricBlockSettings CabinetBlockSettings = FabricBlockSettings
-                .create()
-                .strength(CabinetBlockStrength)
-                .requiresTool()
-                .nonOpaque()
-                .sounds(BlockSoundGroup.WOOD);
-        final FabricBlockSettings IlluminatedCabinetBlockSettings = FabricBlockSettings
-                .create()
-                .strength(CabinetBlockStrength)
-                .requiresTool()
-                .nonOpaque()
-                .sounds(BlockSoundGroup.WOOD)
-                .luminance(2);
+        final FabricBlockSettings CabinetBlockSettings = CabinetBlock.defaultSettings;
+        final FabricBlockSettings IlluminatedCabinetBlockSettings = FabricBlockSettings.copyOf(CabinetBlock.defaultSettings).luminance(2);
+        // TODO: change the map color parameter based on the current wood type
 
         //Create cabinet variants
         short cabinetBlockVariantsCount = (short) (MainHelper.vanillaWoodTypes.length * MainHelper.vanillaWoolTypes.length);
@@ -102,20 +92,7 @@ public class CabinetBlockHelper {
         short i = 0;
         for (String woodType : MainHelper.vanillaWoodTypes) {
             for (String woolType : MainHelper.vanillaWoolTypes) {
-//                String cabinetBlockVariantName = woodType + "_" + woolType;
-//                cabinetBlockVariantsNames[i] = cabinetBlockVariantName;
-//                //LOGGER.info("Creating cabinet block variant: " + cabinetBlockVariantsNames[i]);
-//                // Create cabinet block variant
-//                cabinetBlockVariants[i] = new CabinetBlock(CabinetBlockSettings);
-//                // Create cabinet block variant item
-//                cabinetBlockItemVariants[i] = new BlockItem(cabinetBlockVariants[i], new FabricItemSettings());
-//
-//                // Create illuminated cabinet block variant
-//                illuminatedCabinetBlockVariants[i] = new IlluminatedCabinetBlock(IlluminatedCabinetBlockSettings);
-//                // Create illuminated cabinet block variant item
-//                illuminatedCabinetBlockItemVariants[i] = new BlockItem(illuminatedCabinetBlockVariants[i], new FabricItemSettings());
                 createCabinetBlockVariant(woodType, woolType, i, CabinetBlockSettings, IlluminatedCabinetBlockSettings);
-
                 ++i;
             }
         }
@@ -130,18 +107,6 @@ public class CabinetBlockHelper {
             short j = 0;
             for (String woodType : MainHelper.betterNetherWoodTypes) {
                 for (String woolType : MainHelper.vanillaWoolTypes) {
-//                    String cabinetBlockVariantName = woodType + "_" + woolType;
-//                    cabinetBlockVariantsNames[i] = cabinetBlockVariantName;
-//                    //LOGGER.info("Creating cabinet block variant: " + cabinetBlockVariantsNames[i]);
-//                    // Create cabinet block variant
-//                    cabinetBlockVariants[i] = new CabinetBlock(CabinetBlockSettings);
-//                    // Create cabinet block variant item
-//                    cabinetBlockItemVariants[i] = new BlockItem(cabinetBlockVariants[i], new FabricItemSettings());
-//
-//                    // Create illuminated cabinet block variant
-//                    illuminatedCabinetBlockVariants[i] = new IlluminatedCabinetBlock(IlluminatedCabinetBlockSettings);
-//                    // Create illuminated cabinet block variant item
-//                    illuminatedCabinetBlockItemVariants[i] = new BlockItem(illuminatedCabinetBlockVariants[i], new FabricItemSettings());
                     createCabinetBlockVariant(woodType, woolType, i, CabinetBlockSettings, IlluminatedCabinetBlockSettings);
                     putVariantInModded(i, j);
 

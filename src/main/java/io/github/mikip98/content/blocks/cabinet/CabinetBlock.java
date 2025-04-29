@@ -1,5 +1,6 @@
 package io.github.mikip98.content.blocks.cabinet;
 
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -8,6 +9,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
@@ -36,7 +38,17 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
         builder.add(WATERLOGGED);
     }
 
+    public static final FabricBlockSettings defaultSettings = FabricBlockSettings
+            .create()
+            .strength(2.0f)
+            .requiresTool()
+            .nonOpaque()
+            .sounds(BlockSoundGroup.WOOD);
 
+
+    public CabinetBlock() {
+        this(defaultSettings);
+    }
     public CabinetBlock(Settings settings) {
         super(settings);
         setDefaultState(getStateManager().getDefaultState()
