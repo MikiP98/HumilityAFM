@@ -5,13 +5,13 @@
 	"name": "Humility AFM",
 	"description": "Another furniture mod adding multiple, not overly complex, furniture pieces.",
 	"authors": [
-		"Mikołaj Pokora"
+		"Mikołaj Pokora (Miki-Liki)"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
+		"homepage": "https://modrinth.com/mod/humility-afm",
 		"sources": "https://github.com/MikiP98/HumilityAFM"
 	},
-	"license": "CC0-1.0",
+	"license": "GPLv3",
 	"icon": "assets/humility-afm/icon.png",
 	"environment": "*",
 	"entrypoints": {
@@ -28,13 +28,6 @@
 			"io.github.mikip98.HumilityAFMDataGenerator"
 		]
 	},
-	"mixins": [
-		"humility-afm.mixins.json",
-		{
-			"config": "humility-afm.client.mixins.json",
-			"environment": "client"
-		}
-	],
 	"depends": {
 		"fabricloader": ">=0.14.24",
 		"minecraft": "~1.20",
@@ -44,7 +37,7 @@
 		"cloth-config2": "*"
 	},
 	"suggests": {
-		"shimmer": "*"
+		"shimmer": ">=0.2.0"
 	},
 	"configScreen": "io.github.mikip98.config.ModConfigScreen"
 }
