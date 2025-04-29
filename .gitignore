@@ -1,3 +1,10 @@
+# Fabric Data Generation
+
+generated/
+src/main/generated/
+
+
+
 # Python
 
 __pycache__/
