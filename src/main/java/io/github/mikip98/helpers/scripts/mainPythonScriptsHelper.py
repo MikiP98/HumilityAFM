@@ -6,55 +6,6 @@ woodTypes = [
 ]
 
 
-def generateAxeMineableJSON():
-    from generateCabinetBlockVariantsJSONs import generateVanillaCabinetBlockVariants
-    from generateInnerOuterStairsVariantsJSONs import generateInnerOuterStairsVariantsWoodNames
-    from generateWoodenMosaicVariantsJSONs import generateWoodenMosaicVariantsNames
-
-    values = []
-
-    for cabinet in generateVanillaCabinetBlockVariants():
-        values.append(f"humility-afm:cabinet_block_{cabinet}")
-        values.append(f"humility-afm:illuminated_cabinet_block_{cabinet}")
-
-    for stairs in generateInnerOuterStairsVariantsWoodNames():
-        values.append(f"humility-afm:inner_stairs_{stairs}")
-        values.append(f"humility-afm:outer_stairs_{stairs}")
-
-    for mosaic in generateWoodenMosaicVariantsNames():
-        values.append(f"humility-afm:wooden_mosaic_{mosaic}")
-
-    json = {
-        "replace": False,
-        "values": values
-    }
-    utils.save_json(json, "data/minecraft/tags/blocks/mineable/axe.json")
-
-
-def generatePickaxeMineableJSON():
-    from generateInnerOuterStairsVariantsJSONs import generateInnerOuterStairsVariantsStoneNames
-    from candlestrickScript import generateNames as generateCandlestickNames
-    from generateTerracottaTilesVariantsJSONs import generateTerracottaTilesVariantsNames
-
-    values = []
-
-    for stairs in generateInnerOuterStairsVariantsStoneNames():
-        values.append(f"humility-afm:inner_stairs_{stairs}")
-        values.append(f"humility-afm:outer_stairs_{stairs}")
-
-    for terracotta_tile in generateTerracottaTilesVariantsNames():
-        values.append(f"humility-afm:{terracotta_tile}")
-
-    for candlestick in generateCandlestickNames():
-        values.append(f"humility-afm:{candlestick}")
-
-    json = {
-        "replace": False,
-        "values": values
-    }
-    utils.save_json(json, "data/minecraft/tags/blocks/mineable/pickaxe.json")
-
-
 def generateTranslationJSON():
     from generateCabinetBlockVariantsJSONs import generateCabinetBlockVariantsNames
     from generateInnerOuterStairsVariantsJSONs import generateInnerOuterStairsVariantsAllNames
@@ -97,7 +48,7 @@ def generateTranslationJSON():
 
 
 if __name__ == "__main__":
-    # print("Generating mineable axe.json...")
+    # print("Generating mineable old_axe.json...")
     # generateAxeMineableJSON()
     # print("Done!")
 
