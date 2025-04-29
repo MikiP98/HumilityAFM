@@ -10,10 +10,10 @@ import io.github.mikip98.content.blocks.stairs.OuterStairs;
 import io.github.mikip98.content.blocks.cabinet.CabinetBlock;
 import io.github.mikip98.content.blocks.cabinet.IlluminatedCabinetBlock;
 import io.github.mikip98.helpers.*;
+import io.github.mikip98.registries.ItemGroupRegistry;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.loader.api.FabricLoader;
@@ -23,7 +23,6 @@ import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +30,7 @@ import io.github.mikip98.content.blockentities.cabinetBlock.CabinetBlockEntity;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.stream.Stream;
 
 import static net.fabricmc.loader.api.FabricLoader.getInstance;
 
@@ -45,12 +45,9 @@ public class HumilityAFM implements ModInitializer {
 
 
 	//Cabinet block
-	private static final float CabinetBlockStrength = 2.0f;
-	private static final FabricBlockSettings CabinetBlockSettings = FabricBlockSettings.create().strength(CabinetBlockStrength).requiresTool().nonOpaque();
-	public static final CabinetBlock CABINET_BLOCK = new CabinetBlock(CabinetBlockSettings);
+	public static final CabinetBlock CABINET_BLOCK = new CabinetBlock();
 	public static final Item CABINET_BLOCK_ITEM = new BlockItem(CABINET_BLOCK, new FabricItemSettings());
-	private static final FabricBlockSettings IlluminatedCabinetBlockSettings = CabinetBlockSettings.luminance(2);
-	public static final IlluminatedCabinetBlock ILLUMINATED_CABINET_BLOCK = new IlluminatedCabinetBlock(IlluminatedCabinetBlockSettings);
+	public static final IlluminatedCabinetBlock ILLUMINATED_CABINET_BLOCK = new IlluminatedCabinetBlock();
 
 	//Cabinet block entity
 	public static BlockEntityType<CabinetBlockEntity> CABINET_BLOCK_ENTITY;
@@ -121,105 +118,7 @@ public class HumilityAFM implements ModInitializer {
 
 		// ------------------------------------ REGISTRATION ------------------------------------
 		// ............ ITEM GROUPS ............
-		// Register Cabinet item group
-		final ItemGroup CABINETS_ITEM_GROUP = FabricItemGroup.builder()
-				.icon(() -> new ItemStack(HumilityAFM.CABINET_BLOCK))
-				.displayName(Text.translatable("itemGroup.cabinets"))
-				.entries((displayContext, entries) -> {
-					for (int i = 0; i < CabinetBlockHelper.cabinetBlockVariants.length; i++) {
-						entries.add(new ItemStack(CabinetBlockHelper.cabinetBlockVariants[i]));
-					}
-					for (int i = 0; i < CabinetBlockHelper.illuminatedCabinetBlockVariants.length; i++) {
-						entries.add(new ItemStack(CabinetBlockHelper.illuminatedCabinetBlockVariants[i]));
-					}
-				})
-				.build();
-		Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "cabinets_group"), CABINETS_ITEM_GROUP);
-
-		// Register InnerOuterStairs item group
-		final ItemGroup INNER_OUTER_STAIRS_ITEM_GROUP = FabricItemGroup.builder()
-				.icon(() -> new ItemStack(HumilityAFM.OUTER_STAIRS))
-				.displayName(Text.translatable("itemGroup.innerOuterStairs"))
-				.entries((displayContext, entries) -> {
-					for (int i = 0; i < InnerOuterStairsHelper.innerStairsBlockVariants.length; i++) {
-						entries.add(new ItemStack(InnerOuterStairsHelper.innerStairsBlockVariants[i]));
-					}
-					for (int i = 0; i < InnerOuterStairsHelper.outerStairsBlockVariants.length; i++) {
-						entries.add(new ItemStack(InnerOuterStairsHelper.outerStairsBlockVariants[i]));
-					}
-				})
-				.build();
-		Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "inner_outer_stairs_group"), INNER_OUTER_STAIRS_ITEM_GROUP);
-
-		// Register WoodenMosaic item group
-		final ItemGroup WOODEN_MOSAIC_ITEM_GROUP = FabricItemGroup.builder()
-				.icon(() -> new ItemStack(WoodenMosaicHelper.woodenMosaicVariants[0]))
-				.displayName(Text.translatable("itemGroup.woodenMosaics"))
-				.entries((displayContext, entries) -> {
-					for (int i = 0; i < WoodenMosaicHelper.woodenMosaicVariants.length; i++) {
-//						LOGGER.info("Adding wooden mosaic variant to item group: " + WoodenMosaicHelper.woodenMosaicVariants[i]);
-						entries.add(new ItemStack(WoodenMosaicHelper.woodenMosaicVariants[i])); // TODO: Fix this
-					}
-				})
-				.build();
-		Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "wooden_mosaics_group"), WOODEN_MOSAIC_ITEM_GROUP);
-
-		// Register TerracottaTiles item group
-		final ItemGroup TERRACOTTA_TILES_ITEM_GROUP = FabricItemGroup.builder()
-				.icon(() -> new ItemStack(TerracottaTilesHelper.terracottaTilesVariants[0]))
-				.displayName(Text.translatable("itemGroup.terracottaTiles"))
-				.entries((displayContext, entries) -> {
-					for (int i = 0; i < TerracottaTilesHelper.terracottaTilesVariants.length; i++) {
-//						LOGGER.info("Adding terracotta tiles variant to item group: " + TerracottaTilesHelper.terracottaTilesVariants[i]);
-						entries.add(new ItemStack(TerracottaTilesHelper.terracottaTilesVariants[i]));
-					}
-				})
-				.build();
-		Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "terracotta_tiles_group"), TERRACOTTA_TILES_ITEM_GROUP);
-
-		// Register LED item group
-		if (ModConfig.enableLEDs) {
-			final ItemGroup LED_ITEM_GROUP = FabricItemGroup.builder()
-					.icon(() -> new ItemStack(LEDHelper.LEDBlockVariants[0]))
-					.displayName(Text.translatable("itemGroup.leds"))
-					.entries((displayContext, entries) -> {
-						for (int i = 0; i < LEDHelper.LEDBlockVariants.length; i++) {
-							entries.add(new ItemStack(LEDHelper.LEDBlockVariants[i]));
-						}
-						for (int i = 0; i < LEDHelper.LEDPowderVariants.length; i++) {
-							entries.add(new ItemStack(LEDHelper.LEDPowderVariants[i]));
-						}
-					})
-					.build();
-			Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "leds_group"), LED_ITEM_GROUP);
-		}
-
-		// Register Candlestick item group
-		if (ModConfig.enableCandlesticks) {
-			final ItemGroup CANDLESTICK_ITEM_GROUP = FabricItemGroup.builder()
-					.icon(() -> new ItemStack(CandlestickHelper.candlestickVariants[0]))
-					.displayName(Text.translatable("itemGroup.candlesticks"))
-					.entries((displayContext, entries) -> {
-						for (int i = 0; i < CandlestickHelper.candlestickVariants.length; i++) {
-							entries.add(new ItemStack(CandlestickHelper.candlestickVariants[i]));
-						}
-					})
-					.build();
-			Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "candlesticks_group"), CANDLESTICK_ITEM_GROUP);
-		}
-
-		// Register Miscellaneous (Humility Misc) item group
-		final ItemGroup HUMILITY_MISCELLANEOUS_GROUP = FabricItemGroup.builder()
-				.icon(() -> new ItemStack(PumpkinHelper.PumpkinsVariants[0]))
-				.displayName(Text.translatable("itemGroup.humilityMisc"))
-				.entries((displayContext, entries) -> {
-					for (int i = 0; i < PumpkinHelper.PumpkinsVariants.length; i++) {
-						entries.add(new ItemStack(PumpkinHelper.PumpkinsVariants[i]));
-					}
-				})
-				.build();
-		Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "humility_misc_group"), HUMILITY_MISCELLANEOUS_GROUP);
-
+		ItemGroupRegistry.registerItemGroups();
 
 		// ............ TEST BLOCKS & ITEMS ............
 		// Register cabinet
@@ -228,10 +127,10 @@ public class HumilityAFM implements ModInitializer {
 		// Register illuminated cabinet
 		Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "illuminated_cabinet_block"), ILLUMINATED_CABINET_BLOCK);
 		Registry.register(Registries.ITEM, new Identifier(MOD_ID, "illuminated_cabinet_block"), new BlockItem(ILLUMINATED_CABINET_BLOCK, new FabricItemSettings()));
-		// Register always corner stair
+		// Register always outer corner stair
 		Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "outer_stairs"), OUTER_STAIRS);
 		Registry.register(Registries.ITEM, new Identifier(MOD_ID, "outer_stairs"), OUTER_STAIRS_ITEM);
-		// Register always full stair
+		// Register always inner corner stair
 		Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "inner_stairs"), INNER_STAIRS);
 		Registry.register(Registries.ITEM, new Identifier(MOD_ID, "inner_stairs"), INNER_STAIRS_ITEM);
 		// Register wooden mosaic
@@ -245,9 +144,6 @@ public class HumilityAFM implements ModInitializer {
 			LED_ITEM = new BlockItem(LED_BLOCK, new FabricItemSettings());
 			Registry.register(Registries.ITEM, new Identifier(MOD_ID, "led"), LED_ITEM);
 		}
-		// Register candlesticks
-//		Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "candlestick_gold"), CANDLESTICK);
-//		Registry.register(Registries.ITEM, new Identifier(MOD_ID, "candlestick_gold"), CANDLESTICK_ITEM);
 
 
 		// ............ FINAL BLOCKS & ITEMS ............
@@ -302,24 +198,24 @@ public class HumilityAFM implements ModInitializer {
 	}
 
 	private static void checkForBetterNether() {
-		if (getInstance().isModLoaded("betternether")) {
-			ModConfig.betterNetherDetected = true;
-			LOGGER.info("Better Nether mod detected! Enabling Better Nether support.");
-		} else {
-			// Go through all mods in the mods folder and check if any of them are Better Nether
-			Path gameDirPath = FabricLoader.getInstance().getGameDir();
-			File modsFolder = new File(gameDirPath + "/mods");
-			File[] mods = modsFolder.listFiles();
-			if (mods != null) {
-				for (File mod : mods) {
-					if (mod.getName().startsWith("betternether")) {
-						ModConfig.betterNetherDetected = true;
-						LOGGER.info("Better Nether mod detected! Enabling Better Nether support.");
-						break;
-					}
-				}
-			}
-		}
+//		if (getInstance().isModLoaded("betternether")) {
+//			ModConfig.betterNetherDetected = true;
+//			LOGGER.info("Better Nether mod detected! Enabling Better Nether support.");
+//		} else {
+//			// Go through all mods in the mods folder and check if any of them are Better Nether
+//			Path gameDirPath = FabricLoader.getInstance().getGameDir();
+//			File modsFolder = new File(gameDirPath + "/mods");
+//			File[] mods = modsFolder.listFiles();
+//			if (mods != null) {
+//				for (File mod : mods) {
+//					if (mod.getName().startsWith("betternether")) {
+//						ModConfig.betterNetherDetected = true;
+//						LOGGER.info("Better Nether mod detected! Enabling Better Nether support.");
+//						break;
+//					}
+//				}
+//			}
+//		}
 	}
 
 	private static void checkIfShimmerModIsPresent() {
@@ -341,5 +237,13 @@ public class HumilityAFM implements ModInitializer {
 				}
 			}
 		}
+	}
+
+
+	public static Identifier getId(String name) {
+		return new Identifier(MOD_ID, name);
+	}
+	public static Identifier[] getIds(Stream<String> names) {
+		return names.map(HumilityAFM::getId).toArray(Identifier[]::new);
 	}
 }
