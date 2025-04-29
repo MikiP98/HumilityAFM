@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -240,12 +241,15 @@ public class ConfigJSON {
         try (FileWriter writer = new FileWriter(configFile)) {
             writer.write(JSON);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Error writing to file: " + e.getMessage());
         }
     }
 
     public static void saveShimmerSupportConfigOther() {
         File configDir = FabricLoader.getInstance().getConfigDir().toFile();
+        if (!Files.exists(configDir.toPath().resolve("shimmer"))) {
+            return;
+        }
         File configFile = new File(configDir, "shimmer/humility-other.json");
 
         Map<String, Color> colors = ModConfig.pumpkinColors;
