@@ -23,19 +23,19 @@ public class InnerOuterStairsHelper {
 
     private static final float WoodStrength = 2.0f;
     private static final float MudBricksStrength = 1.5f;
-    private static final String mudBricksVariant = "mud_bricks";
+    public static final String mudBricksVariant = "mud_bricks";
     private static final float SandStoneANDQuartsStrength = 0.8f;
-    private static final String[] sandStoneANDQuartsVariants = {"quartz", "sandstone", "red_sandstone"};
+    public static final String[] sandStoneANDQuartsVariants = {"quartz", "sandstone", "red_sandstone"};
     private static final float Stony1Strength = 1.5f;
-    private static final String[] stony1Variants = {"blackstone", "andesite", "polished_andesite", "diorite", "polished_diorite", "granite", "polished_granite", "polished_blackstone_brick", "prismarine", "dark_prismarine", "prismarine_bricks", "purpur", "stone", "stone_brick", "mossy_stone_brick"};
+    public static final String[] stony1Variants = {"blackstone", "andesite", "polished_andesite", "diorite", "polished_diorite", "granite", "polished_granite", "polished_blackstone_brick", "prismarine", "dark_prismarine", "prismarine_bricks", "purpur", "stone", "stone_brick", "mossy_stone_brick"};
     private static final float Stony2Strength = 2f;
-    private static final String[] stony2Variants = {"brick", "cobblestone", "mossy_cobblestone", "nether_brick", "red_nether_brick", "polished_blackstone", "smooth_quartz", "smooth_sandstone", "smooth_red_sandstone"};
+    public static final String[] stony2Variants = {"brick", "cobblestone", "mossy_cobblestone", "nether_brick", "red_nether_brick", "polished_blackstone", "smooth_quartz", "smooth_sandstone", "smooth_red_sandstone"};
     private static final float EndStoneStrength = 3f;
-    private static final String endStoneVariant = "end_stone_brick";
+    public static final String endStoneVariant = "end_stone_brick";
     private static final float CopperStrength = 3f;
-    private static final String[] cutCopperVariants = {"cut_copper", "exposed_cut_copper", "weathered_cut_copper", "oxidized_cut_copper"};
+    public static final String[] cutCopperVariants = {"cut_copper", "exposed_cut_copper", "weathered_cut_copper", "oxidized_cut_copper"};
     private static final float DeepSlateStrength = 3.5f;
-    private static final String[] deepSlateVariants = {"cobbled_deepslate", "polished_deepslate", "deepslate_brick", "deepslate_tile"};
+    public static final String[] deepSlateVariants = {"cobbled_deepslate", "polished_deepslate", "deepslate_brick", "deepslate_tile"};
 
     private static final float BetterNetherWoodStrength = WoodStrength;
     private static final String[] betterNetherWoodTypes = MainHelper.betterNetherWoodTypes;
@@ -50,7 +50,7 @@ public class InnerOuterStairsHelper {
 
     public static void init() {
         //Create stairs variants
-        short stairsBlockVariantsCount = (short) (MainHelper.vanillaWoodTypes.length + 1 + sandStoneANDQuartsVariants.length + stony1Variants.length + stony2Variants.length + 1 + cutCopperVariants.length + deepSlateVariants.length);
+        short stairsBlockVariantsCount = (short) (MainHelper.vanillaWoodTypes.length + 1 /* mud */ + sandStoneANDQuartsVariants.length + stony1Variants.length + stony2Variants.length + 1 + cutCopperVariants.length + deepSlateVariants.length);
         if (ModConfig.betterNetherDetected) {
             stairsBlockVariantsCount += (short) betterNetherWoodTypes.length;
         }
