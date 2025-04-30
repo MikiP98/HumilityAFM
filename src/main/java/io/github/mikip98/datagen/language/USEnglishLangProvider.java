@@ -1,9 +1,6 @@
 package io.github.mikip98.datagen.language;
 
-import io.github.mikip98.helpers.CabinetBlockHelper;
-import io.github.mikip98.helpers.InnerOuterStairsHelper;
-import io.github.mikip98.helpers.TerracottaTilesHelper;
-import io.github.mikip98.helpers.WoodenMosaicHelper;
+import io.github.mikip98.helpers.*;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 
@@ -42,7 +39,7 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
         ));
 
         // Blocks
-        Map<String, String> blockTranslations = new BlockHashMap<>();
+        Map<String, String> blockTranslations = new PrefixedHashMap<>("block." + MOD_ID + ".");
         // Cabinet blocks
         blockTranslations.put("cabinet_block", "Test Cabinet Block");  // Manual testing block
         blockTranslations.put("illuminated_cabinet_block", "Test Illuminated Cabinet Block");  // Manual testing block
@@ -56,25 +53,39 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
         blockTranslations.put("inner_stairs", "Test Inner Stairs");  // Manual testing block
         blockTranslations.put("outer_stairs", "Test Outer Stairs");  // Manual testing block
         blockTranslations.putAll(generateInnerOuterStairsTranslations());
+        // Miscellaneous blocks
+        blockTranslations.putAll(generateMiscTranslations());
+        // LEDs
+        blockTranslations.put("led", "Test LED");  // Manual testing block
+        blockTranslations.putAll(generateLEDTranslations());
+        // Candlesticks
+        blockTranslations.putAll(generateCandlestickTranslations());
         // Submit the block translations
         categoryTranslations.put(TranslationCategory.BLOCKS, blockTranslations);
 
+        // Items
+        Map<String, String> itemTranslations = new PrefixedHashMap<>("item." + MOD_ID + ".");
+        // LED Powders
+        itemTranslations.putAll(generateLEDPowderTranslations());
+        // Submit the item translations
+        categoryTranslations.put(TranslationCategory.ITEMS, itemTranslations);
+
         return categoryTranslations;
     }
-    @SuppressWarnings("unchecked")
-    protected static class BlockHashMap<K, V> extends HashMap<K, V>{
-        public BlockHashMap() { super(); }
-        @Override
-        public V put(K key,V value) {
-            return super.put((K) ("block." + MOD_ID + "." + key), value);
-        }
-        @Override
-        public void putAll(Map<? extends K, ? extends V> m) {
-            for (Map.Entry<? extends K, ? extends V> entry : m.entrySet()) {
-                put(entry.getKey(), entry.getValue());
-            }
-        }
-    }
+//    @SuppressWarnings("unchecked")
+//    protected static class BlockHashMap<K, V> extends HashMap<K, V>{
+//        public BlockHashMap() { super(); }
+//        @Override
+//        public V put(K key,V value) {
+//            return super.put((K) ("block." + MOD_ID + "." + key), value);
+//        }
+//        @Override
+//        public void putAll(Map<? extends K, ? extends V> m) {
+//            for (Map.Entry<? extends K, ? extends V> entry : m.entrySet()) {
+//                put(entry.getKey(), entry.getValue());
+//            }
+//        }
+//    }
 
     public static Map<String, String> generateCabinetTranslations() {
         Map<String, String> translations = new HashMap<>();
@@ -116,6 +127,46 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
             // Outer Stairs
             key = "outer_stairs_" + variant;
             value = formatName(variant) + " Outer Stairs";
+            translations.put(key, value);
+        }
+        return translations;
+    }
+
+    public static Map<String, String> generateMiscTranslations() {
+        Map<String, String> translations = new HashMap<>();
+        translations.put("jack_o_lantern_redstone", "Redstone Jack o'Lantern");
+        translations.put("jack_o_lantern_soul", "Soul Jack o'Lantern");
+        return translations;
+    }
+
+    public static Map<String, String> generateLEDTranslations() {
+        Map<String, String> translations = new HashMap<>();
+        for (String color : LEDHelper.colors) {
+            String key = "led_" + color;
+            String value = formatName(color) + " LED";
+            translations.put(key, value);
+        }
+        return translations;
+    }
+    public static Map<String, String> generateLEDPowderTranslations() {
+        Map<String, String> translations = new HashMap<>();
+        for (String color : LEDHelper.colors) {
+            String key = "led_powder_" + color;
+            String value = formatName(color) + " LED Powder";
+            translations.put(key, value);
+        }
+        return translations;
+    }
+
+    public static Map<String, String> generateCandlestickTranslations() {
+        Map<String, String> translations = new HashMap<>();
+        if (CandlestickHelper.candlestickVariantsNames == null) {
+            LOGGER.error("Unable to generate candlestick translations: candlestickVariantsNames is null");
+            return translations;
+        }
+        for (String variant : CandlestickHelper.candlestickVariantsNames) {
+            String key = "candlestick_" + variant;
+            String value = formatName(variant) + " Candlestick";
             translations.put(key, value);
         }
         return translations;

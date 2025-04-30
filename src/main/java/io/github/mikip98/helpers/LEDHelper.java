@@ -16,7 +16,7 @@ import net.minecraft.util.Identifier;
 import static io.github.mikip98.HumilityAFM.MOD_ID;
 
 public class LEDHelper {
-    static String[] colors = MainHelper.vanillaWoolTypes;
+    public static String[] colors = MainHelper.vanillaWoolTypes;
 
     public static Item[] LEDPowderVariants;
     public static Block[] LEDBlockVariants;
