@@ -31,8 +31,6 @@ public class CandlestickHelper {
     public static final String[] metals = {"gold", "copper", "weathered_copper", "exposed_copper", "oxidized_copper", "waxed_copper", "waxed_weathered_copper", "waxed_exposed_copper", "waxed_oxidized_copper"};
 
     public static void init() {
-//        final String[] metals = {"gold", "copper", "weathered_copper", "exposed_copper", "oxidized_copper", "waxed_copper", "waxed_weathered_copper", "waxed_exposed_copper", "waxed_oxidized_copper"};
-
         final FabricBlockSettings CandlestickSettings = FabricBlockSettings.create().strength(CandlestickStrength).requiresTool().nonOpaque().sounds(BlockSoundGroup.COPPER);
         final Block.Settings CandlestickWithCandleSettings = CandlestickSettings.luminance(state -> {
                     if (state.getProperties().contains(CandlestickWithCandle.LIT)) {
