@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import static io.github.mikip98.HumilityAFM.MOD_ID;
@@ -91,8 +92,8 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
         Map<String, String> translations = new HashMap<>();
         for (String variant : CabinetBlockHelper.cabinetBlockVariantsNames) {;
             String formattedName = formatName(variant);
-            translations.put("cabinet_block_" + variant, formattedName + " Cabinet");
-            translations.put("illuminated_cabinet_block_" + variant, formattedName + " Illuminated Cabinet");
+            translations.put("cabinet_block_" + variant, formattedName + " cabinet");
+            translations.put("illuminated_cabinet_block_" + variant, formattedName + " illuminated cabinet");
         }
         return translations;
     }
@@ -101,7 +102,7 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
         Map<String, String> translations = new HashMap<>();
         for (String variant : WoodenMosaicHelper.woodenMosaicVariantsNames) {
             String key = "wooden_mosaic_" + variant;
-            String value = formatName(variant) + " Wooden Mosaic";
+            String value = formatName(variant) + " wooden mosaic";
             translations.put(key, value);
         }
         return translations;
@@ -111,7 +112,7 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
         Map<String, String> translations = new HashMap<>();
         for (String variant : TerracottaTilesHelper.terracottaTilesVariantsNames) {
             String key = "terracotta_tiles_" + variant;
-            String value = formatName(variant) + " Terracotta Tiles";
+            String value = formatName(variant) + " terracotta tiles";
             translations.put(key, value);
         }
         return translations;
@@ -122,11 +123,11 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
         for (String variant : InnerOuterStairsHelper.innerOuterStairsBlockVariantsNames) {
             // Inner Stairs
             String key = "inner_stairs_" + variant;
-            String value = formatName(variant) + " Inner Stairs";
+            String value = formatName(variant) + " inner stairs";
             translations.put(key, value);
             // Outer Stairs
             key = "outer_stairs_" + variant;
-            value = formatName(variant) + " Outer Stairs";
+            value = formatName(variant) + " outer stairs";
             translations.put(key, value);
         }
         return translations;
@@ -152,7 +153,7 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
         Map<String, String> translations = new HashMap<>();
         for (String color : LEDHelper.colors) {
             String key = "led_powder_" + color;
-            String value = formatName(color) + " LED Powder";
+            String value = formatName(color) + " LED powder";
             translations.put(key, value);
         }
         return translations;
@@ -161,25 +162,36 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
     public static Map<String, String> generateCandlestickTranslations() {
         Map<String, String> translations = new HashMap<>();
         if (CandlestickHelper.candlestickVariantsNames == null) {
-            LOGGER.error("Unable to generate candlestick translations: candlestickVariantsNames is null");
-            return translations;
+            throw new IllegalStateException("Candlestick variants names are not initialized. Remember to uncomment the datagen lines in HumilityAFM.java");
         }
-        for (String variant : CandlestickHelper.candlestickVariantsNames) {
-            String key = "candlestick_" + variant;
-            String value = formatName(variant) + " Candlestick";
+        for (String metal : CandlestickHelper.metals) {
+            String key = "candlestick_" + metal;
+            String value = formatName(metal) + " candlestick";
             translations.put(key, value);
+            translations.put(key + "_candle", value + " with candle");
+
+            for (String color : MainHelper.vanillaWoolTypes) {
+                translations.put(key + "_candle_" + color, value + " with " + formatName(color).toLowerCase() + " candle");
+            }
         }
         return translations;
     }
 
     protected static String formatName(String name) {
         String[] words = name.split("_");
+        Iterator<String> it = java.util.Arrays.stream(words).iterator();
+
         StringBuilder formattedName = new StringBuilder();
-        for (String word : words) {
-            formattedName.append(Character.toUpperCase(word.charAt(0)))
-                    .append(word.substring(1).toLowerCase())
-                    .append(" ");
+        String firstWord = it.next();
+        formattedName.append(Character.toUpperCase(firstWord.charAt(0)))
+                .append(firstWord.substring(1).toLowerCase())
+                .append(" ");
+
+        for (Iterator<String> iter = it; iter.hasNext(); ) {
+            String word = iter.next();
+            formattedName.append(word.toLowerCase()).append(" ");
         }
+        LOGGER.info("Formatted name: " + formattedName.toString().trim());
         return formattedName.toString().trim();
     }
 }
