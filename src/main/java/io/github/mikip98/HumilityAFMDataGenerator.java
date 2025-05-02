@@ -2,6 +2,7 @@ package io.github.mikip98;
 
 import io.github.mikip98.datagen.BlockLootTableGenerator;
 import io.github.mikip98.datagen.BlockTagGenerator;
+import io.github.mikip98.datagen.RecipeGenerator;
 import io.github.mikip98.datagen.language.PolishLangProvider;
 import io.github.mikip98.datagen.language.UKEnglishLangProvider;
 import io.github.mikip98.datagen.language.USEnglishLangProvider;
@@ -17,6 +18,7 @@ public class HumilityAFMDataGenerator implements DataGeneratorEntrypoint {
 
 		pack.addProvider(BlockTagGenerator::new);
 		pack.addProvider(BlockLootTableGenerator::new);
+		pack.addProvider(RecipeGenerator::new);
 		// Language providers
 		pack.addProvider(PolishLangProvider::new);
 		pack.addProvider(UKEnglishLangProvider::new);
