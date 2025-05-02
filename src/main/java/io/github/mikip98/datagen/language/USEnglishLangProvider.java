@@ -191,7 +191,6 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
             String word = iter.next();
             formattedName.append(word.toLowerCase()).append(" ");
         }
-        LOGGER.info("Formatted name: " + formattedName.toString().trim());
         return formattedName.toString().trim();
     }
 }
