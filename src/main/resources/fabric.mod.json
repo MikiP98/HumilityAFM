@@ -16,16 +16,16 @@
 	"environment": "*",
 	"entrypoints": {
 		"modmenu": [
-			"io.github.mikip98.config.ModMenuIntegration"
+			"io.github.mikip98.humilityafm.config.ModMenuIntegration"
 		],
 		"main": [
-			"io.github.mikip98.HumilityAFM"
+			"io.github.mikip98.humilityafm.HumilityAFM"
 		],
 		"client": [
-            "io.github.mikip98.HumilityAFMClient"
+            "io.github.mikip98.humilityafm.HumilityAFMClient"
 		],
 		"fabric-datagen": [
-			"io.github.mikip98.HumilityAFMDataGenerator"
+			"io.github.mikip98.humilityafm.HumilityAFMDataGenerator"
 		]
 	},
 	"depends": {
@@ -39,5 +39,5 @@
 	"suggests": {
 		"shimmer": ">=0.2.0"
 	},
-	"configScreen": "io.github.mikip98.config.ModConfigScreen"
+	"configScreen": "io.github.mikip98.humilityafm.config.ModConfigScreen"
 }
