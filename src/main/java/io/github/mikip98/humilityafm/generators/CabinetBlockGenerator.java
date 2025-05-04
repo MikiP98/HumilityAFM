@@ -4,6 +4,7 @@ import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.CabinetBlock;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.IlluminatedCabinetBlock;
 import io.github.mikip98.humilityafm.helpers.MainHelper;
+import io.github.mikip98.humilityafm.util.GenerationData;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -93,39 +94,38 @@ public class CabinetBlockGenerator {
         illuminatedCabinetBlockItemVariants = new Item[cabinetBlockVariantsCount];
 
         short i = 0;
-        for (String woodType : MainHelper.vanillaWoodTypes) {
+        for (String woodType : GenerationData.vanillaWoodTypes) {
             woodTypeToStartIndex.put(woodType, i);
-            for (String woolType : MainHelper.vanillaWoolTypes) {
-                createCabinetBlockVariant(woodType, woolType, i, CabinetBlockSettings, IlluminatedCabinetBlockSettings);
+            for (String woolColor : GenerationData.vanillaColorPallet) {
+                createCabinetBlockVariant(woodType, woolColor, i, CabinetBlockSettings, IlluminatedCabinetBlockSettings);
                 ++i;
             }
         }
-        if (ModConfig.betterNetherDetected) {
-            short moddedCabinetCount = (short) (MainHelper.betterNetherWoodTypes.length * MainHelper.vanillaWoolTypes.length);
-
-            moddedCabinetBlockVariants = new Block[moddedCabinetCount];
-            moddedCabinetBlockItemVariants = new Item[moddedCabinetCount];
-            moddedIlluminatedCabinetBlockVariants = new Block[moddedCabinetCount];
-            moddedIlluminatedCabinetBlockItemVariants = new Item[moddedCabinetCount];
-
-            short j = 0;
-            for (String woodType : MainHelper.betterNetherWoodTypes) {
-                for (String woolType : MainHelper.vanillaWoolTypes) {
-                    createCabinetBlockVariant(woodType, woolType, i, CabinetBlockSettings, IlluminatedCabinetBlockSettings);
-                    putVariantInModded(i, j);
-
-                    ++i;
-                    ++j;
-                }
-            }
-        }
+//        if (ModConfig.betterNetherDetected) {
+//            short moddedCabinetCount = (short) (MainHelper.betterNetherWoodTypes.length * MainHelper.vanillaWoolTypes.length);
+//
+//            moddedCabinetBlockVariants = new Block[moddedCabinetCount];
+//            moddedCabinetBlockItemVariants = new Item[moddedCabinetCount];
+//            moddedIlluminatedCabinetBlockVariants = new Block[moddedCabinetCount];
+//            moddedIlluminatedCabinetBlockItemVariants = new Item[moddedCabinetCount];
+//
+//            short j = 0;
+//            for (String woodType : MainHelper.betterNetherWoodTypes) {
+//                for (String woolType : MainHelper.vanillaWoolTypes) {
+//                    createCabinetBlockVariant(woodType, woolType, i, CabinetBlockSettings, IlluminatedCabinetBlockSettings);
+//                    putVariantInModded(i, j);
+//
+//                    ++i;
+//                    ++j;
+//                }
+//            }
+//        }
     }
 
     public static void registerCabinetBlockVariants() {
         //Register cabinet variants
         int i = 0;
         for (Block cabinetBlockVariant : cabinetBlockVariants) {
-            //LOGGER.info("Registering cabinet block variant: " + cabinetBlockVariantsNames[i]);
             Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "cabinet_block_" + cabinetBlockVariantsNames[i]), cabinetBlockVariant);
             ++i;
         }
@@ -138,7 +138,6 @@ public class CabinetBlockGenerator {
 
         i = 0;
         for (Block illuminatedCabinetBlockVariant : illuminatedCabinetBlockVariants) {
-            //LOGGER.info("Registering illuminated cabinet block variant: " + cabinetBlockVariantsNames[i]);
             Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "illuminated_cabinet_block_" + cabinetBlockVariantsNames[i]), illuminatedCabinetBlockVariant);
             ++i;
         }
