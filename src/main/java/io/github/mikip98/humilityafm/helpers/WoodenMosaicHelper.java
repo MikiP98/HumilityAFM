@@ -2,6 +2,7 @@ package io.github.mikip98.humilityafm.helpers;
 
 import io.github.mikip98.humilityafm.HumilityAFM;
 import io.github.mikip98.humilityafm.config.ModConfig;
+import io.github.mikip98.humilityafm.util.GenerationData;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
@@ -18,15 +19,20 @@ public class WoodenMosaicHelper {
         throw new IllegalStateException("Utility class, do not instantiate!\nUse \"init()\" and \"registerWoodenMosaicVariants()\" instead!");
     }
 
-    private static final float WoodenMosaicStrength = 3.0f * ModConfig.mosaicsAndTilesStrengthMultiplayer; //1.5f
-    private static final FabricBlockSettings WoodenMosaicSettings = FabricBlockSettings.create().strength(WoodenMosaicStrength).requiresTool().sounds(BlockSoundGroup.WOOD);
-
     public static String[] woodenMosaicVariantsNames;
 
     public static Block[] woodenMosaicVariants;
     public static Item[] woodenMosaicItemVariants;
 
     public static void init() {
+        final FabricBlockSettings woodenMosaicSettings = FabricBlockSettings.create()
+                .strength(
+                        GenerationData.vanillaWoodHardness * ModConfig.mosaicsAndTilesStrengthMultiplayer,
+                        GenerationData.vanillaWoodResistance * ModConfig.mosaicsAndTilesStrengthMultiplayer
+                )
+                .sounds(BlockSoundGroup.WOOD)
+                .requiresTool();
+
         //Create wooden mosaic variants
         String[] woodTypes = MainHelper.vanillaWoodTypes;
         short woodenMosaicVariantsCount = (short) (woodTypes.length * (woodTypes.length-1));
@@ -44,9 +50,8 @@ public class WoodenMosaicHelper {
                 }
                 String woodenMosaicVariantName = woodType1 + "_" + woodType2;
                 woodenMosaicVariantsNames[i] = woodenMosaicVariantName;
-                //LOGGER.info("Creating wooden mosaic variant: " + woodenMosaicVariantsNames[i]);
                 // Create wooden mosaic variant
-                woodenMosaicVariants[i] = new Block(WoodenMosaicSettings);
+                woodenMosaicVariants[i] = new Block(woodenMosaicSettings);
                 // Create wooden mosaic variant item
                 woodenMosaicItemVariants[i] = new BlockItem(woodenMosaicVariants[i], new FabricItemSettings());
                 i++;

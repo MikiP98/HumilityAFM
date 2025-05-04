@@ -2,6 +2,7 @@ package io.github.mikip98.humilityafm.helpers;
 
 import io.github.mikip98.humilityafm.HumilityAFM;
 import io.github.mikip98.humilityafm.config.ModConfig;
+import io.github.mikip98.humilityafm.util.GenerationData;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
@@ -16,9 +17,7 @@ public class TerracottaTilesHelper {
         throw new IllegalStateException("Utility class, do not instantiate!\nUse \"init()\" and \"registerTerracottaTilesVariants()\" instead!");
     }
 
-    public static String[] terracottaTypes = {"white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray", "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black"};
-    private static final float TerracottaTilesStrength = 1.25f * ModConfig.mosaicsAndTilesStrengthMultiplayer; //1.5f
-    private static final FabricBlockSettings TerracottaTilesSettings = FabricBlockSettings.create().strength(TerracottaTilesStrength).requiresTool();
+    public static final String[] terracottaTypes = GenerationData.vanillaColorPallet;
 
     public static String[] terracottaTilesVariantsNames;
 
@@ -26,6 +25,13 @@ public class TerracottaTilesHelper {
     public static Item[] terracottaTilesItemVariants;
 
     public static void init() {
+        final FabricBlockSettings terracottaTilesSettings = FabricBlockSettings.create()
+                .strength(
+                        GenerationData.vanillaTerracottaHardness * ModConfig.mosaicsAndTilesStrengthMultiplayer,
+                        GenerationData.vanillaTerracottaResistance * ModConfig.mosaicsAndTilesStrengthMultiplayer
+                )
+                .requiresTool();
+
         //Create terracotta tiles variants
         short terracottaTilesVariantsCount = (short) (terracottaTypes.length * (terracottaTypes.length-1));
 
@@ -44,7 +50,7 @@ public class TerracottaTilesHelper {
                 terracottaTilesVariantsNames[i] = terracottaTilesVariantName;
                 //LOGGER.info("Creating terracotta tiles variant: " + terracottaTilesVariantsNames[i]);
                 // Create terracotta tiles variant
-                terracottaTilesVariants[i] = new Block(TerracottaTilesSettings);
+                terracottaTilesVariants[i] = new Block(terracottaTilesSettings);
                 // Create terracotta tiles variant item
                 terracottaTilesItemVariants[i] = new BlockItem(terracottaTilesVariants[i], new FabricItemSettings());
                 i++;
