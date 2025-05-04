@@ -30,10 +30,10 @@ public class PumpkinHelper {
     public static void init() {
         Settings PumpkinSettings = FabricBlockSettings.copy(Blocks.JACK_O_LANTERN);
         for (int i = 0; i < torches.length; i++) {
-            PumpkinsNames[i] = "jack_o_lantern_" + torches[i].type;
+            PumpkinsNames[i] = "jack_o_lantern_" + torches[i].type();
 
             int finalI = i;
-            Settings currentSettings = PumpkinSettings.luminance(value -> torches[finalI].lightLevel);
+            Settings currentSettings = PumpkinSettings.luminance(value -> torches[finalI].lightLevel());
             PumpkinsVariants[i] = new JustHorizontalFacingBlock(currentSettings);
             PumpkinsItemVariants[i] = new BlockItem(PumpkinsVariants[i], new FabricItemSettings());
         }
