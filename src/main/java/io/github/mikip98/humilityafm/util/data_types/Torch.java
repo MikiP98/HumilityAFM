@@ -1,11 +1,7 @@
 package io.github.mikip98.humilityafm.util.data_types;
 
-public class Torch {
-    public String type;
-    public byte lightLevel;
-
-    public Torch(String type, byte lightLevel) {
-        this.type = type;
-        this.lightLevel = lightLevel;
+public record Torch(String type, byte lightLevel) {
+    public static Torch of(String type, byte lightLevel) {
+        return new Torch(type, lightLevel);
     }
 }
