@@ -3,7 +3,6 @@ package io.github.mikip98.humilityafm.registries;
 import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.CabinetBlock;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.IlluminatedCabinetBlock;
-import io.github.mikip98.humilityafm.content.blocks.leds.LEDBlock;
 import io.github.mikip98.humilityafm.content.blocks.stairs.InnerStairs;
 import io.github.mikip98.humilityafm.content.blocks.stairs.OuterStairs;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -34,9 +33,6 @@ public class BlockRegistry {
     private static final FabricBlockSettings WoodenMosaicSettings = FabricBlockSettings.create().strength(WoodenMosaicStrength).requiresTool().sounds(BlockSoundGroup.WOOD);
     public static final Block WOODEN_MOSAIC = new Block(WoodenMosaicSettings);
 
-    // LEDs
-    public static Block LED_BLOCK;
-
 
     public static void register() {
         // Register Cabinets
@@ -47,11 +43,6 @@ public class BlockRegistry {
         registerWithItem(INNER_STAIRS, "inner_stairs");
         // Register Wooden Mosaic
         registerWithItem(WOODEN_MOSAIC, "wooden_mosaic");
-        // Register LED
-        if (ModConfig.enableLEDs) {
-            LED_BLOCK = new LEDBlock(FabricBlockSettings.create().strength(0.5f).nonOpaque().sounds(BlockSoundGroup.GLASS).luminance(10));
-            registerWithItem(LED_BLOCK, "led");
-        }
     }
 
 
