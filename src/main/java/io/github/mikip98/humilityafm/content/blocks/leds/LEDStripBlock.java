@@ -1,10 +1,10 @@
 package io.github.mikip98.humilityafm.content.blocks.leds;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.block.StairsBlock;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.block.*;
 import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.block.enums.StairShape;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -13,6 +13,12 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 
 public class LEDStripBlock extends StairsBlock {
+    public static final FabricBlockSettings defaultSettings = FabricBlockSettings.create().strength(0.5f).sounds(BlockSoundGroup.GLASS).luminance(9);
+
+    public LEDStripBlock() {
+        super(Blocks.GLASS.getDefaultState(), defaultSettings);
+    }
+
     public LEDStripBlock(BlockState baseBlockState, Settings settings) {
         super(baseBlockState, settings);
     }

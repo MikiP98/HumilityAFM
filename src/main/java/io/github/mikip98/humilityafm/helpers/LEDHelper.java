@@ -2,15 +2,13 @@ package io.github.mikip98.humilityafm.helpers;
 
 import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.content.blocks.leds.LEDStripBlock;
-import io.github.mikip98.humilityafm.content.blocks.leds.LEDStripBlockWE;
+import io.github.mikip98.humilityafm.content.blocks.leds.LEDStripBlockWithEntity;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.MOD_ID;
@@ -24,17 +22,12 @@ public class LEDHelper {
 
     public static void init() {
         // Create LED block variants
-        Block LEDFictionalBlock = new Block(FabricBlockSettings.create().strength(0.5f).sounds(BlockSoundGroup.GLASS).luminance(15));
-        Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "led_fictional_block"), LEDFictionalBlock);
-
         short LEDBlockVariantsCount = (short) (colors.length);
 
         LEDPowderVariants = new Item[LEDBlockVariantsCount];
 
         LEDBlockVariants = new Block[LEDBlockVariantsCount];
         LEDBlockItemVariants = new Item[LEDBlockVariantsCount];
-
-        FabricBlockSettings LEDBlockSettings = FabricBlockSettings.create().strength(0.5f).sounds(BlockSoundGroup.GLASS).luminance(9);
 
         short i = 0;
         for (String ignored : colors) {
@@ -43,9 +36,9 @@ public class LEDHelper {
 
             // Create LED block variant
             if (!ModConfig.enableLEDsBrightening || ModConfig.shimmerDetected) {
-                LEDBlockVariants[i] = new LEDStripBlock(LEDFictionalBlock.getDefaultState(), LEDBlockSettings);
+                LEDBlockVariants[i] = new LEDStripBlock();
             } else {
-                LEDBlockVariants[i] = new LEDStripBlockWE(LEDFictionalBlock.getDefaultState(), LEDBlockSettings);
+                LEDBlockVariants[i] = new LEDStripBlockWithEntity();
             }
 
             // Create LED block variant item
