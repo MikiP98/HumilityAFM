@@ -16,6 +16,8 @@ public class ModConfig {
     public static short LEDColoredLightStrength = 85;
     public static short LEDColoredLightRadius = 9;
     public static short LEDRadiusColorCompensationBias = 0;
+    // (3 x 20 + 60) / 5 = 24 -> flammability
+    // (3 x 5 + 30) / 5 = 9 -> fire spreading speed
     public static int cabinetBlockBurnTime = 24;
     public static int cabinetBlockFireSpread = 9;
     public static float mosaicsAndTilesStrengthMultiplayer = (float) (4.0 / 3.0);  // 1.333f
