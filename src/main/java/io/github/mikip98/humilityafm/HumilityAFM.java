@@ -97,12 +97,10 @@ public class HumilityAFM implements ModInitializer {
 		// ............ ITEM GROUPS ............
 		ItemGroupRegistry.registerItemGroups();
 
-		// ............ TEST BLOCKS & ITEMS ............
+		// ............ BLOCKS & BLOCK ITEMS ............
 		BlockRegistry.register();
 
 		// ............ FINAL BLOCKS & ITEMS ............
-		// Register cabinet block variants
-		CabinetBlockGenerator.registerCabinetBlockVariants();
 		// Register innerOuter stairs variants
 		InnerOuterStairsHelper.registerInnerOuterStairsVariants();
 		// Register wooden mosaic variants
@@ -115,11 +113,6 @@ public class HumilityAFM implements ModInitializer {
 		PumpkinHelper.registerPumpkins();
 		// Register candlestick variants
 		if (ModConfig.enableCandlesticks) CandlestickHelper.registerCandlestickVariants();
-
-
-		// ............ MAKE THINGS FLAMMABLE ............
-		// No test blocks are currently flammable
-
 
 		// ............ BLOCK ENTITIES ............
 		//Register cabinet block entity
