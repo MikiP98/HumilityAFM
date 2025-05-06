@@ -42,7 +42,7 @@ public class BlockRegistry {
 
 
     public static void register() {
-        // Test blocks
+        // ............ TEST BLOCKS & BLOCK ITEMS ............
         // Register Cabinets
         registerWithItem(CABINET_BLOCK, "cabinet_block");
         registerWithItem(ILLUMINATED_CABINET_BLOCK, "illuminated_cabinet_block");
@@ -52,7 +52,7 @@ public class BlockRegistry {
         // Register Wooden Mosaic
         registerWithItem(WOODEN_MOSAIC, "wooden_mosaic");
 
-        // Real blocks
+        // ............ FINAL BLOCKS & BLOCK ITEMS ............
         // Register cabinets
         CabinetBlockGenerator.cabinetBlockItemVariants = registerArrayWithItems(
                 CabinetBlockGenerator.cabinetBlockVariants,
