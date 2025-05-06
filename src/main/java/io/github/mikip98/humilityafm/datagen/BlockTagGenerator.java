@@ -4,13 +4,13 @@ import io.github.mikip98.humilityafm.content.ModBlockTags;
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
 import io.github.mikip98.humilityafm.helpers.*;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
+import io.github.mikip98.humilityafm.util.GenerationData;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.registry.RegistryWrapper;
 
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Stream;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.getIds;
 
@@ -39,19 +39,10 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
                 .add(getIds(Arrays.stream(TerracottaTilesHelper.terracottaTilesVariantsNames).map(s -> "terracotta_tiles_" + s)));
 
         // Inner & Outer Stairs Block Tags
-        String[] woodenVariants = MainHelper.vanillaWoodTypes;
-        String[] singleStonyStairVariants = new String[]{
-                InnerOuterStairsHelper.mudBricksVariant,
-                InnerOuterStairsHelper.endStoneVariant
-        };
-        String[] stonyVariants = Stream.of(
-                singleStonyStairVariants,
-                InnerOuterStairsHelper.sandStoneANDQuartsVariants,
-                InnerOuterStairsHelper.stony1Variants,
-                InnerOuterStairsHelper.stony2Variants,
-                InnerOuterStairsHelper.cutCopperVariants,
-                InnerOuterStairsHelper.deepSlateVariants
-        ).flatMap(Stream::of).toArray(String[]::new);;
+        String[] woodenVariants = GenerationData.vanillaWoodTypes;
+        String[] stonyVariants = GenerationData.vanillaStonyMaterialsPerStrength.values().stream()
+                .flatMap(Arrays::stream).toArray(String[]::new);
+
         // Inner Stairs
         getOrCreateTagBuilder(ModBlockTags.WOODEN_INNER_STAIRS)
                 .add(getIds(Arrays.stream(woodenVariants).map(s -> "inner_stairs_" + s)))

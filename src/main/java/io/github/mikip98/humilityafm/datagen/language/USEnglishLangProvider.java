@@ -3,7 +3,9 @@ package io.github.mikip98.humilityafm.datagen.language;
 import io.github.mikip98.humilityafm.datagen.language.util.PrefixedHashMap;
 import io.github.mikip98.humilityafm.datagen.language.util.TranslationCategory;
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
+import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
 import io.github.mikip98.humilityafm.helpers.*;
+import io.github.mikip98.humilityafm.util.GenerationData;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 
@@ -123,7 +125,7 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
 
     public static Map<String, String> generateInnerOuterStairsTranslations() {
         Map<String, String> translations = new HashMap<>();
-        for (String variant : InnerOuterStairsHelper.innerOuterStairsBlockVariantsNames) {
+        for (String variant : ForcedCornerStairsGenerator.innerOuterStairsBlockVariantsNames) {
             // Inner Stairs
             String key = "inner_stairs_" + variant;
             String value = formatName(variant) + " inner stairs";
@@ -173,7 +175,7 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
             translations.put(key, value);
             translations.put(key + "_candle", value + " with candle");
 
-            for (String color : MainHelper.vanillaWoolTypes) {
+            for (String color : GenerationData.vanillaColorPallet) {
                 translations.put(key + "_candle_" + color, value + " with " + formatName(color).toLowerCase() + " candle");
             }
         }

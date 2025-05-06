@@ -1,7 +1,7 @@
 package io.github.mikip98.humilityafm.datagen;
 
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
-import io.github.mikip98.humilityafm.helpers.InnerOuterStairsHelper;
+import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
 import io.github.mikip98.humilityafm.helpers.TerracottaTilesHelper;
 import io.github.mikip98.humilityafm.helpers.WoodenMosaicHelper;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
@@ -40,10 +40,10 @@ public class BlockLootTableGenerator extends FabricBlockLootTableProvider {
         // Inner & Outer Stairs
         addDrop(BlockRegistry.INNER_STAIRS);  // Manual testing block
         addDrop(BlockRegistry.OUTER_STAIRS);  // Manual testing block
-        for (Block block : InnerOuterStairsHelper.innerStairsBlockVariants) {
+        for (Block block : ForcedCornerStairsGenerator.innerStairsBlockVariants) {
             addDrop(block);
         }
-        for (Block block : InnerOuterStairsHelper.outerStairsBlockVariants) {
+        for (Block block : ForcedCornerStairsGenerator.outerStairsBlockVariants) {
             addDrop(block);
         }
     }

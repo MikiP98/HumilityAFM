@@ -5,6 +5,7 @@ import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.content.blockentities.LEDBlockEntity;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.IlluminatedCabinetBlockEntity;
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
+import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
 import io.github.mikip98.humilityafm.helpers.*;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.registries.ItemGroupRegistry;
@@ -85,7 +86,7 @@ public class HumilityAFM implements ModInitializer {
 		ModConfig.enableCandlesticks = true;
 
 		CabinetBlockGenerator.init();
-		InnerOuterStairsHelper.init();
+		ForcedCornerStairsGenerator.init();
 		WoodenMosaicHelper.init();
 		TerracottaTilesHelper.init();
 		if (ModConfig.enableLEDs) LEDHelper.init();
@@ -102,7 +103,7 @@ public class HumilityAFM implements ModInitializer {
 
 		// ............ FINAL BLOCKS & ITEMS ............
 		// Register innerOuter stairs variants
-		InnerOuterStairsHelper.registerInnerOuterStairsVariants();
+		ForcedCornerStairsGenerator.registerInnerOuterStairsVariants();
 		// Register wooden mosaic variants
 		WoodenMosaicHelper.registerWoodenMosaicVariants();
 		// Register terracotta tiles variants
