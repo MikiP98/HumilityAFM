@@ -1,11 +1,8 @@
 package io.github.mikip98.humilityafm.generators;
 
-import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.CabinetBlock;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.IlluminatedCabinetBlock;
-import io.github.mikip98.humilityafm.helpers.MainHelper;
 import io.github.mikip98.humilityafm.util.GenerationData;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
@@ -37,13 +34,12 @@ public class CabinetBlockGenerator {
 
     private static void createCabinetBlockVariant(
             String woodType, String woolType,
-            short i,
-            FabricBlockSettings CabinetBlockSettings, FabricBlockSettings IlluminatedCabinetBlockSettings
+            short i
     ) {
         String cabinetBlockVariantName = woodType + "_" + woolType;
         cabinetBlockVariantsNames[i] = cabinetBlockVariantName;
-        cabinetBlockVariants[i] = new CabinetBlock(CabinetBlockSettings);
-        illuminatedCabinetBlockVariants[i] = new IlluminatedCabinetBlock(IlluminatedCabinetBlockSettings);
+        cabinetBlockVariants[i] = new CabinetBlock();
+        illuminatedCabinetBlockVariants[i] = new IlluminatedCabinetBlock();
     }
 
 
@@ -56,15 +52,13 @@ public class CabinetBlockGenerator {
 
 
     public static void init() {
-        final FabricBlockSettings CabinetBlockSettings = CabinetBlock.defaultSettings;
-        final FabricBlockSettings IlluminatedCabinetBlockSettings = FabricBlockSettings.copyOf(CabinetBlock.defaultSettings).luminance(2);
         // TODO: change the map color parameter based on the current wood type
 
         //Create cabinet variants
-        short cabinetBlockVariantsCount = (short) (MainHelper.vanillaWoodTypes.length * MainHelper.vanillaWoolTypes.length);
-        if (ModConfig.betterNetherDetected) {
-            cabinetBlockVariantsCount += (short) (MainHelper.betterNetherWoodTypes.length * MainHelper.vanillaWoolTypes.length);
-        }
+        short cabinetBlockVariantsCount = (short) (GenerationData.vanillaWoodTypes.length * GenerationData.vanillaColorPallet.length);
+//        if (ModConfig.betterNetherDetected) {
+//            cabinetBlockVariantsCount += (short) (GenerationData.betterNetherWoodTypes.length * GenerationData.vanillaWoolTypes.length);
+//        }
 
         woodTypeToStartIndex = new HashMap<>();
         cabinetBlockVariantsNames = new String[cabinetBlockVariantsCount];
@@ -75,7 +69,7 @@ public class CabinetBlockGenerator {
         for (String woodType : GenerationData.vanillaWoodTypes) {
             woodTypeToStartIndex.put(woodType, i);
             for (String woolColor : GenerationData.vanillaColorPallet) {
-                createCabinetBlockVariant(woodType, woolColor, i, CabinetBlockSettings, IlluminatedCabinetBlockSettings);
+                createCabinetBlockVariant(woodType, woolColor, i);
                 ++i;
             }
         }

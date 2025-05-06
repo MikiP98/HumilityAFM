@@ -3,6 +3,7 @@ package io.github.mikip98.humilityafm.helpers;
 import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.content.blocks.leds.LEDStripBlock;
 import io.github.mikip98.humilityafm.content.blocks.leds.LEDStripBlockWithEntity;
+import io.github.mikip98.humilityafm.util.GenerationData;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
@@ -14,7 +15,7 @@ import net.minecraft.util.Identifier;
 import static io.github.mikip98.humilityafm.HumilityAFM.MOD_ID;
 
 public class LEDHelper {
-    public static String[] colors = MainHelper.vanillaWoolTypes;
+    public static String[] colors = GenerationData.vanillaColorPallet;
 
     public static Item[] LEDPowderVariants;
     public static Block[] LEDBlockVariants;

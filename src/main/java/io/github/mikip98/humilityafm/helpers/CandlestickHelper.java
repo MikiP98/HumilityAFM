@@ -2,6 +2,7 @@ package io.github.mikip98.humilityafm.helpers;
 
 import io.github.mikip98.humilityafm.content.blocks.candlestick.Candlestick;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.CandlestickWithCandle;
+import io.github.mikip98.humilityafm.util.GenerationData;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
@@ -43,7 +44,7 @@ public class CandlestickHelper {
         );
 
         //Create candlestick variants
-        short candlestickVariantsCount = (short) (metals.length * (MainHelper.vanillaWoolTypes.length + 2));
+        short candlestickVariantsCount = (short) (metals.length * (GenerationData.vanillaColorPallet.length + 2));
 
         candlestickVariantsNames = new String[candlestickVariantsCount];
 
@@ -73,7 +74,7 @@ public class CandlestickHelper {
             candlestickVariantsMap.put(metal + "_candle", candlestickVariants[i]);
 
             i++;
-            for (String color : MainHelper.vanillaWoolTypes) {
+            for (String color : GenerationData.vanillaColorPallet) {
                 candlestickVariantName = "candlestick_" + metal + "_candle_" + color;
                 candlestickVariantsNames[i] = candlestickVariantName;
                 //LOGGER.info("Creating candlestick variant: " + candlestickVariantsNames[i]);

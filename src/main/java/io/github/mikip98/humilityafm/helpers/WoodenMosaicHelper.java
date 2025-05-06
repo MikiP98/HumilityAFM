@@ -34,7 +34,7 @@ public class WoodenMosaicHelper {
                 .requiresTool();
 
         //Create wooden mosaic variants
-        String[] woodTypes = MainHelper.vanillaWoodTypes;
+        String[] woodTypes = GenerationData.vanillaWoodTypes;
         short woodenMosaicVariantsCount = (short) (woodTypes.length * (woodTypes.length-1));
 
         woodenMosaicVariantsNames = new String[woodenMosaicVariantsCount];

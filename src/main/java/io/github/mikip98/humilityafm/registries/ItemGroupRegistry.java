@@ -2,6 +2,7 @@ package io.github.mikip98.humilityafm.registries;
 
 import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
+import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
 import io.github.mikip98.humilityafm.helpers.*;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.item.ItemGroup;
@@ -32,11 +33,11 @@ public class ItemGroupRegistry {
             .icon(() -> new ItemStack(BlockRegistry.OUTER_STAIRS))
             .displayName(Text.translatable("itemGroup.innerOuterStairs"))
             .entries((displayContext, entries) -> {
-                for (int i = 0; i < InnerOuterStairsHelper.innerStairsBlockVariants.length; i++) {
-                    entries.add(new ItemStack(InnerOuterStairsHelper.innerStairsBlockVariants[i]));
+                for (int i = 0; i < ForcedCornerStairsGenerator.innerStairsBlockVariants.length; i++) {
+                    entries.add(new ItemStack(ForcedCornerStairsGenerator.innerStairsBlockVariants[i]));
                 }
-                for (int i = 0; i < InnerOuterStairsHelper.outerStairsBlockVariants.length; i++) {
-                    entries.add(new ItemStack(InnerOuterStairsHelper.outerStairsBlockVariants[i]));
+                for (int i = 0; i < ForcedCornerStairsGenerator.outerStairsBlockVariants.length; i++) {
+                    entries.add(new ItemStack(ForcedCornerStairsGenerator.outerStairsBlockVariants[i]));
                 }
             })
             .build();
