@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.5-SNAPSHOT'
+	id 'fabric-loom' version "${loom_version}"
 	id 'maven-publish'
 }
 
@@ -19,6 +19,24 @@ repositories {
 	
 	maven { url "https://maven.shedaniel.me/" }
 	maven { url "https://maven.terraformersmc.com/releases/" }
+
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = "https://api.modrinth.com/maven"
+			}
+		}
+		filter {
+			includeGroup "maven.modrinth"
+		}
+	}
+
+	// Required for 'polymorph'
+	maven {
+		name = 'Ladysnake Mods'
+		url = 'https://maven.ladysnake.org/releases'
+	}
 }
 
 loom {
@@ -49,13 +67,20 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 	modApi "com.terraformersmc:modmenu:${project.modmenu_version}"
+
+	modRuntimeOnly "maven.modrinth:polymorph:0.49.10+1.20.1"  // Required for Datagen to not fail
+	runtimeOnly group: 'com.electronwill.night-config', name: 'core', version: '3.7.4'  // Required for 'polymorph'
+	modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.2.3"  // Required for 'polymorph'
+	modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:5.2.3"  // Required for 'polymorph'
+	modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-block:5.2.3"  // Required for 'polymorph'
+	modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-item:5.2.3"  // Required for 'polymorph'
 }
 
 processResources {
 	inputs.property "version", project.version
 
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+		expand "version": inputs.properties.version
 	}
 }
 
@@ -74,8 +99,10 @@ java {
 }
 
 jar {
+	inputs.property "archivesName", project.base.archivesName
+
 	from("LICENSE") {
-		rename { "${it}_${project.base.archivesName.get()}"}
+		rename { "${it}_${project.base.archivesName}"}
 	}
 }
 
@@ -83,6 +110,7 @@ jar {
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
+			artifactId = project.archives_base_name
 			from components.java
 		}
 	}
