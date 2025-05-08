@@ -1,6 +1,8 @@
 package io.github.mikip98.humilityafm.datagen;
 
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
+import io.github.mikip98.humilityafm.helpers.TerracottaTilesHelper;
+import io.github.mikip98.humilityafm.helpers.WoodenMosaicHelper;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.util.GenerationData;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -49,10 +51,12 @@ public class RecipeGenerator extends FabricRecipeProvider {
 
         // ............ FINAL BLOCKS & BLOCK ITEMS ............
         generateCabinetRecipies(exporter);
+        generateWoodenMosaicRecipies(exporter);
+        generateTerracottaTileRecipies(exporter);
     }
 
     protected static void generateCabinetRecipies(Consumer<RecipeJsonProvider> exporter) {
-        short i = 0;
+        int i = 0;
         for (String woodType : GenerationData.vanillaWoodTypes) {
             Item[] currentWoodTypeCabinets = Arrays.copyOfRange(CabinetBlockGenerator.cabinetBlockItemVariants, i, i + GenerationData.vanillaColorPallet.length);
             Item[] currentWoodTypeIlluminatedCabinets = Arrays.copyOfRange(CabinetBlockGenerator.illuminatedCabinetBlockItemVariants, i, i + GenerationData.vanillaColorPallet.length);
@@ -107,6 +111,77 @@ public class RecipeGenerator extends FabricRecipeProvider {
         }
     }
 
+    protected static void generateWoodenMosaicRecipies(Consumer<RecipeJsonProvider> exporter) {
+        int i = 0;
+        for (String woodType : GenerationData.vanillaWoodTypes) {
+            Item plank = getItemFromName(woodType + "_planks");
+            for (String woodType2 : GenerationData.vanillaWoodTypes) {
+                if (woodType.equals(woodType2)) continue;
+
+                Item plank2 = getItemFromName(woodType2 + "_planks");
+
+                offerWoodenMosaicRecipe(
+                        exporter,
+                        WoodenMosaicHelper.woodenMosaicItemVariants[i],
+                        plank,
+                        plank2,
+                        "wooden_mosaics/"
+                );
+                int j = getMirrorIndex(i, GenerationData.vanillaWoodTypes.length);
+                offerChangeRecipie(
+                        exporter,
+                        WoodenMosaicHelper.woodenMosaicItemVariants[i],
+                        WoodenMosaicHelper.woodenMosaicItemVariants[j],
+                        MOD_ID + "/wooden_mosaics",
+                        "wooden_mosaics/rotation/"
+                );
+
+                ++i;
+            }
+        }
+    }
+
+    protected static void generateTerracottaTileRecipies(Consumer<RecipeJsonProvider> exporter) {
+        int i = 0;
+        for (String color : GenerationData.vanillaColorPallet) {
+            Item terracotta = getItemFromName(color + "_terracotta");
+            for (String color2 : GenerationData.vanillaColorPallet) {
+                if (color.equals(color2)) continue;
+
+                Item terracotta2 = getItemFromName(color2 + "_terracotta");
+
+                offerTerracottaTileRecipe(
+                        exporter,
+                        TerracottaTilesHelper.terracottaTilesItemVariants[i],
+                        terracotta,
+                        terracotta2,
+                        "terracotta_tiles/"
+                );
+                int j = getMirrorIndex(i, GenerationData.vanillaColorPallet.length);
+                offerChangeRecipie(
+                        exporter,
+                        TerracottaTilesHelper.terracottaTilesItemVariants[i],
+                        TerracottaTilesHelper.terracottaTilesItemVariants[j],
+                        MOD_ID + "/terracotta_tiles",
+                        "terracotta_tiles/rotation/"
+                );
+
+                ++i;
+            }
+        }
+    }
+
+    protected static int getMirrorIndex(int index, int n) {
+        int i = index / (n - 1);
+        int j_offset = index % (n - 1);
+        int j = (j_offset >= i) ? j_offset + 1 : j_offset;
+
+        int mirrorOffset = (i < j) ? i : i - 1;
+        int mirrorIndex = j * (n - 1) + mirrorOffset;
+
+        return mirrorIndex;
+    }
+
 
     protected static void offerCabinetRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible slab, ItemConvertible carpet, String path_prefix) {
         ShapedRecipeJsonBuilder
@@ -121,6 +196,35 @@ public class RecipeGenerator extends FabricRecipeProvider {
                 .criterion(hasItem(Items.GLASS_PANE), conditionsFromItem(Items.GLASS_PANE))
                 .criterion(hasItem(slab), conditionsFromItem(slab))
                 .criterion(hasItem(carpet), conditionsFromItem(carpet))
+                .offerTo(exporter, path_prefix + getRecipeName(output));
+    }
+
+    protected static void offerWoodenMosaicRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible plank1, ItemConvertible plank2, String path_prefix) {
+        offerCheckerPatternRecipe(exporter, output, plank1, plank2, MOD_ID + "/wooden_mosaics", path_prefix);
+    }
+    protected static void offerTerracottaTileRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible terracotta1, ItemConvertible terracotta2, String path_prefix) {
+        offerCheckerPatternRecipe(exporter, output, terracotta1, terracotta2, MOD_ID + "/terracotta_tiles", path_prefix);
+    }
+
+    protected static void offerCheckerPatternRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible input1, ItemConvertible input2, String group, String path_prefix) {
+        ShapedRecipeJsonBuilder
+                .create(RecipeCategory.MISC, output, 1)
+                .pattern("FS")
+                .pattern("SF")
+                .input('F', input1)
+                .input('S', input2)
+                .group(group)
+                .criterion(hasItem(input1), conditionsFromItem(input1))
+                .criterion(hasItem(input2), conditionsFromItem(input2))
+                .offerTo(exporter, path_prefix + getRecipeName(output));
+    }
+
+    protected static void offerChangeRecipie(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible input, String group, String path_prefix) {
+        ShapelessRecipeJsonBuilder
+                .create(RecipeCategory.MISC, output, 1)
+                .input(input)
+                .group(group)
+                .criterion(hasItem(input), conditionsFromItem(input))
                 .offerTo(exporter, path_prefix + getRecipeName(output));
     }
 
