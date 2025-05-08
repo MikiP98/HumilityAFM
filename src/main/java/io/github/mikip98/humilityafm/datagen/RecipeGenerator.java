@@ -1,6 +1,7 @@
 package io.github.mikip98.humilityafm.datagen;
 
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
+import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
 import io.github.mikip98.humilityafm.helpers.TerracottaTilesHelper;
 import io.github.mikip98.humilityafm.helpers.WoodenMosaicHelper;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
@@ -53,6 +54,7 @@ public class RecipeGenerator extends FabricRecipeProvider {
         generateCabinetRecipies(exporter);
         generateWoodenMosaicRecipies(exporter);
         generateTerracottaTileRecipies(exporter);
+        generateForcedCornerStairsRecipies(exporter);
     }
 
     protected static void generateCabinetRecipies(Consumer<RecipeJsonProvider> exporter) {
@@ -140,7 +142,6 @@ public class RecipeGenerator extends FabricRecipeProvider {
             }
         }
     }
-
     protected static void generateTerracottaTileRecipies(Consumer<RecipeJsonProvider> exporter) {
         int i = 0;
         for (String color : GenerationData.vanillaColorPallet) {
@@ -170,7 +171,6 @@ public class RecipeGenerator extends FabricRecipeProvider {
             }
         }
     }
-
     protected static int getMirrorIndex(int index, int n) {
         int i = index / (n - 1);
         int j_offset = index % (n - 1);
@@ -180,6 +180,18 @@ public class RecipeGenerator extends FabricRecipeProvider {
         int mirrorIndex = j * (n - 1) + mirrorOffset;
 
         return mirrorIndex;
+    }
+
+    protected static void generateForcedCornerStairsRecipies(Consumer<RecipeJsonProvider> exporter) {
+        int i = 0;
+        for (String woodType : GenerationData.vanillaWoodTypes) {
+            Item stairs = getItemFromName(woodType + "_stairs");
+            Item inner_stairs = ForcedCornerStairsGenerator.innerStairsBlockItemVariants[i];
+            Item outer_stairs = ForcedCornerStairsGenerator.outerStairsBlockItemVariants[i];
+            offerChangeRecipie(exporter, inner_stairs, stairs, MOD_ID + "/stairs", "stairs/inner/");
+            offerChangeRecipie(exporter, outer_stairs, inner_stairs, MOD_ID + "/stairs", "stairs/outer/");
+            ++i;
+        }
     }
 
 
@@ -251,7 +263,6 @@ public class RecipeGenerator extends FabricRecipeProvider {
     }
 
     protected static void offerDoubleInputShapelessRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible input1, ItemConvertible input2, @Nullable String group, int outputCount, String path_prefix) {
-        LOGGER.info("Generating recipe with id: {}", getRecipeName(output));
         ShapelessRecipeJsonBuilder
                 .create(RecipeCategory.MISC, output, outputCount)
                 .input(input1)
