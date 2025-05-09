@@ -77,6 +77,7 @@ public class ModelGenerator extends FabricModelProvider {
                 );
 
                 blockStateModelGenerator.registerParentedItemModel(CabinetBlockGenerator.cabinetBlockVariants[i], coloredCabinet);
+                blockStateModelGenerator.registerParentedItemModel(CabinetBlockGenerator.illuminatedCabinetBlockVariants[i], coloredCabinetOpen);
                 blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(CabinetBlockGenerator.cabinetBlockVariants[i], coloredCabinet, coloredCabinetOpen));
                 blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(CabinetBlockGenerator.illuminatedCabinetBlockVariants[i], coloredCabinet, coloredCabinetOpen));
                 ++i;
