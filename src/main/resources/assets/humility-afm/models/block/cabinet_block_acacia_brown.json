@@ -1,6 +1,0 @@
-{
-    "parent": "humility-afm:block/cabinet_block_acacia",
-    "textures": {
-        "1": "minecraft:block/brown_wool"
-    }
-}

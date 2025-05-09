@@ -1,6 +1,0 @@
-{
-    "parent": "humility-afm:block/cabinet_block_anchor_tree",
-    "textures": {
-        "1": "minecraft:block/blue_wool"
-    }
-}

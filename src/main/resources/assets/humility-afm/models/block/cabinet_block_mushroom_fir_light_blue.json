@@ -1,6 +1,0 @@
-{
-    "parent": "humility-afm:block/cabinet_block_mushroom_fir",
-    "textures": {
-        "1": "minecraft:block/light_blue_wool"
-    }
-}

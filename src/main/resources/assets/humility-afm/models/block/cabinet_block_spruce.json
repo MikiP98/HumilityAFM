@@ -1,7 +1,0 @@
-{
-    "parent": "humility-afm:block/cabinet_block",
-    "textures": {
-        "2": "minecraft:block/spruce_planks",
-        "particle": "minecraft:block/spruce_planks"
-    }
-}
