@@ -29,7 +29,7 @@ import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetB
 
 public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable, BlockEntityProvider {
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
-    public static final BooleanProperty OPEN = BooleanProperty.of("open");
+    public static final BooleanProperty OPEN = Properties.OPEN;
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
