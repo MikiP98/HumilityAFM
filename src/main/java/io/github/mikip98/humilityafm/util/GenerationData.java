@@ -43,6 +43,10 @@ public class GenerationData {
             BlockStrength.of(3.5F, 6.0F), new String[]{"cobbled_deepslate", "polished_deepslate", "deepslate_brick", "deepslate_tile"}
     );
 
+    // TODO: Make PumpkinHelper use this
+    public static final Map<Byte, String[]> vanillaNonRedstoneTorchesPerLuminance = Map.of( (byte) 8, new String[]{"soul"} );
+    public static final Map<Byte, String[]> vanillaRedstoneReactiveTorchesPerLuminance = Map.of( (byte) 7, new String[]{"redstone"} );
+
 
     // --------- Modded Data ---------
     /***

@@ -20,7 +20,7 @@ public class PumpkinHelper {
         throw new IllegalStateException("Utility class, do not instantiate!\nUse \"init()\" and \"registerPumpkins()\" instead!");
     }
 
-    private static final Torch[] torches = {new Torch("redstone", (byte) 7), new Torch("soul", (byte) 8)};
+    public static final Torch[] torches = {new Torch("redstone", (byte) 7), new Torch("soul", (byte) 8)};
 
     public static String[] PumpkinsNames = new String[torches.length];
 

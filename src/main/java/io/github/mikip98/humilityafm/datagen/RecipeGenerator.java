@@ -2,10 +2,12 @@ package io.github.mikip98.humilityafm.datagen;
 
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
 import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
+import io.github.mikip98.humilityafm.helpers.PumpkinHelper;
 import io.github.mikip98.humilityafm.helpers.TerracottaTilesHelper;
 import io.github.mikip98.humilityafm.helpers.WoodenMosaicHelper;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.util.GenerationData;
+import io.github.mikip98.humilityafm.util.data_types.Torch;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
@@ -55,6 +57,7 @@ public class RecipeGenerator extends FabricRecipeProvider {
         generateWoodenMosaicRecipies(exporter);
         generateTerracottaTileRecipies(exporter);
         generateForcedCornerStairsRecipies(exporter);
+        generateJackOLanternRecipies(exporter);
     }
 
     protected static void generateCabinetRecipies(Consumer<RecipeJsonProvider> exporter) {
@@ -190,6 +193,24 @@ public class RecipeGenerator extends FabricRecipeProvider {
             Item outer_stairs = ForcedCornerStairsGenerator.outerStairsBlockItemVariants[i];
             offerChangeRecipie(exporter, inner_stairs, stairs, MOD_ID + "/stairs", "stairs/inner/");
             offerChangeRecipie(exporter, outer_stairs, inner_stairs, MOD_ID + "/stairs", "stairs/outer/");
+            ++i;
+        }
+    }
+
+    protected static void generateJackOLanternRecipies(Consumer<RecipeJsonProvider> exporter) {
+        int i = 0;
+        Item carved_pumpkin = getItemFromName("carved_pumpkin");
+        for (Torch torch : PumpkinHelper.torches) {
+            Item jack_o_lantern = PumpkinHelper.PumpkinsItemVariants[i];
+            offerDoubleInputShapelessRecipe(
+                    exporter,
+                    jack_o_lantern,
+                    carved_pumpkin,
+                    getItemFromName(torch.type() + "_torch"),
+                    MOD_ID + "/jack_o_lanterns",
+                    1,
+                    "jack_o_lanterns/"
+            );
             ++i;
         }
     }
