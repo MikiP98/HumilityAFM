@@ -1,8 +1,0 @@
-{
-    "parent": "humility-afm:block/stairs_outer",
-    "textures": {
-        "bottom": "minecraft:block/granite",
-        "top": "minecraft:block/granite",
-        "side": "minecraft:block/granite"
-    }
-}

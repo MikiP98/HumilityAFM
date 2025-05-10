@@ -1,8 +1,10 @@
 package io.github.mikip98.humilityafm.util;
 
 import io.github.mikip98.humilityafm.util.data_types.BlockStrength;
+import io.github.mikip98.humilityafm.util.data_types.Pair;
 import net.minecraft.block.Blocks;
 
+import java.util.List;
 import java.util.Map;
 
 public class GenerationData {
@@ -26,21 +28,21 @@ public class GenerationData {
      * All stony vanilla materials that stairs can be made from
      * Sorted by their strength (hardness and resistance)
      */
-    public static final Map<BlockStrength, String[]> vanillaStonyMaterialsPerStrength = Map.of(
-            BlockStrength.of(0.8F), new String[]{"quartz", "sandstone", "red_sandstone"},
-            BlockStrength.of(1.5F, 3.0F), new String[]{"mud_bricks"},
-            BlockStrength.of(1.5F, 6.0F), new String[]{
+    public static final List<Pair<BlockStrength, String[]>> vanillaStonyMaterialsPerStrength = List.of(
+            Pair.of(BlockStrength.of(0.8F), new String[]{"quartz", "sandstone", "red_sandstone"}),
+            Pair.of(BlockStrength.of(1.5F, 3.0F), new String[]{"mud_bricks"}),
+            Pair.of(BlockStrength.of(1.5F, 6.0F), new String[]{
                     "blackstone", "andesite", "polished_andesite", "diorite", "polished_diorite", "granite",
                     "polished_granite", "polished_blackstone_brick", "prismarine", "dark_prismarine",
                     "prismarine_bricks", "purpur", "stone", "stone_brick", "mossy_stone_brick"
-            },
-            BlockStrength.of(2.0F, 6.0F), new String[]{
+            }),
+            Pair.of(BlockStrength.of(2.0F, 6.0F), new String[]{
                     "brick", "cobblestone", "mossy_cobblestone", "nether_brick", "red_nether_brick",
                     "polished_blackstone", "smooth_quartz", "smooth_sandstone", "smooth_red_sandstone"
-            },
-            BlockStrength.of(3.0F, 6.0F), new String[]{"cut_copper", "exposed_cut_copper", "weathered_cut_copper", "oxidized_cut_copper"},
-            BlockStrength.of(3.0F, 9.0F), new String[]{"end_stone_brick"},
-            BlockStrength.of(3.5F, 6.0F), new String[]{"cobbled_deepslate", "polished_deepslate", "deepslate_brick", "deepslate_tile"}
+            }),
+            Pair.of(BlockStrength.of(3.0F, 6.0F), new String[]{"cut_copper", "exposed_cut_copper", "weathered_cut_copper", "oxidized_cut_copper"}),
+            Pair.of(BlockStrength.of(3.0F, 9.0F), new String[]{"end_stone_brick"}),
+            Pair.of(BlockStrength.of(3.5F, 6.0F), new String[]{"cobbled_deepslate", "polished_deepslate", "deepslate_brick", "deepslate_tile"})
     );
 
     // TODO: Make PumpkinHelper use this

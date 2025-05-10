@@ -4,6 +4,7 @@ import io.github.mikip98.humilityafm.content.blocks.stairs.InnerStairs;
 import io.github.mikip98.humilityafm.content.blocks.stairs.OuterStairs;
 import io.github.mikip98.humilityafm.util.GenerationData;
 import io.github.mikip98.humilityafm.util.data_types.BlockStrength;
+import io.github.mikip98.humilityafm.util.data_types.Pair;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
@@ -32,8 +33,8 @@ public class ForcedCornerStairsGenerator {
     public static void init() {
         //Create stairs variants
         int stairsBlockVariantsCount = GenerationData.vanillaWoodTypes.length;
-        for (String[] stonyMaterial : GenerationData.vanillaStonyMaterialsPerStrength.values()) {
-            stairsBlockVariantsCount += stonyMaterial.length;
+        for (Pair<BlockStrength, String[]> entry : GenerationData.vanillaStonyMaterialsPerStrength) {
+            stairsBlockVariantsCount += entry.second().length;
         }
 //        if (ModConfig.betterNetherDetected) {
 //            stairsBlockVariantsCount += (short) betterNetherWoodTypes.length;
@@ -56,17 +57,18 @@ public class ForcedCornerStairsGenerator {
         i = createStairsBlockVariants(GenerationData.vanillaWoodTypes, WoodStairsBlockSettings, i);
 
         // Generate stony stairs block variants
-        for (BlockStrength stonyMaterial : GenerationData.vanillaStonyMaterialsPerStrength.keySet()) {
+        for (Pair<BlockStrength, String[]> entry : GenerationData.vanillaStonyMaterialsPerStrength) {
+            BlockStrength blockStrength = entry.first();
             FabricBlockSettings StonyStairsBlockSettings = FabricBlockSettings.create()
-                    .strength(stonyMaterial.hardness(), stonyMaterial.resistance())
+                    .strength(blockStrength.hardness(), blockStrength.resistance())
                     .requiresTool()
                     .sounds(BlockSoundGroup.STONE);  // TODO: Consider adding a custom sound group for stony materials
-            i = createStairsBlockVariants(GenerationData.vanillaStonyMaterialsPerStrength.get(stonyMaterial), StonyStairsBlockSettings, i);
+            i = createStairsBlockVariants(entry.second(), StonyStairsBlockSettings, i);
         }
     }
 
-    // Generate stairs block variants function
-    private static int createStairsBlockVariants(String[] stairsVariants, FabricBlockSettings variantSettings, int id) {
+
+    protected static int createStairsBlockVariants(String[] stairsVariants, FabricBlockSettings variantSettings, int id) {
         // Generate stairs block variants
         for (String stairsVariant : stairsVariants) {
             innerOuterStairsBlockVariantsNames[id] = stairsVariant;
@@ -84,22 +86,6 @@ public class ForcedCornerStairsGenerator {
             ++id;
         }
         return id;
-    }
-    private static short createStairsBlockVariant(String stairsVariant, FabricBlockSettings variantSettings, short id) {
-        // Generate stairs block variant
-        innerOuterStairsBlockVariantsNames[id] = stairsVariant;
-        //LOGGER.info("Creating inner stairs block variant: " + innerOuterStairsBlockVariantsNames[i]);
-
-        // Create inner stairs block variant
-        innerStairsBlockVariants[id] = new InnerStairs(variantSettings);
-        // Create inner stairs block variant item
-        innerStairsBlockItemVariants[id] = new BlockItem(innerStairsBlockVariants[id], new FabricItemSettings());
-
-        // Create outer stairs block variant
-        outerStairsBlockVariants[id] = new OuterStairs(variantSettings);
-        // Create outer stairs block variant item
-        outerStairsBlockItemVariants[id] = new BlockItem(outerStairsBlockVariants[id], new FabricItemSettings());
-        return ++id;
     }
 
 

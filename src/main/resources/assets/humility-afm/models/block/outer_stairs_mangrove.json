@@ -1,8 +1,0 @@
-{
-    "parent": "humility-afm:block/stairs_outer",
-    "textures": {
-        "bottom": "minecraft:block/mangrove_planks",
-        "top": "minecraft:block/mangrove_planks",
-        "side": "minecraft:block/mangrove_planks"
-    }
-}

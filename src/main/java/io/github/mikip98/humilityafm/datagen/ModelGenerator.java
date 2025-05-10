@@ -6,6 +6,8 @@ import io.github.mikip98.humilityafm.helpers.TerracottaTilesHelper;
 import io.github.mikip98.humilityafm.helpers.WoodenMosaicHelper;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.util.GenerationData;
+import io.github.mikip98.humilityafm.util.data_types.BlockStrength;
+import io.github.mikip98.humilityafm.util.data_types.Pair;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.block.Block;
@@ -102,6 +104,78 @@ public class ModelGenerator extends FabricModelProvider {
             blockStateModelGenerator.blockStateCollector.accept(getForcedCornerStairsBlockstate(ForcedCornerStairsGenerator.outerStairsBlockVariants[i], outerStairsModelId));
 
             ++i;
+        }
+        for (Pair<BlockStrength, String[]> entry : GenerationData.vanillaStonyMaterialsPerStrength) {
+            for (String material : entry.second()) {
+                String topTexture = material;
+                String sideTexture = material;
+                String bottomTexture = material;
+
+                String suffix = "";
+
+                switch (material) {
+                    case "quartz" -> suffix = "_block_side";
+                    case "sandstone", "red_sandstone" -> {
+                        topTexture += "_top";
+                        bottomTexture += "_bottom";
+                    }
+                    case "polished_blackstone_brick",
+                         "stone_brick",
+                         "mossy_stone_brick",
+                         "brick",
+                         "nether_brick",
+                         "red_nether_brick",
+                         "end_stone_brick",
+                         "deepslate_brick",
+                         "deepslate_tile" -> suffix = "s";
+                    case "purpur" -> suffix = "_block";
+                    case "smooth_quartz" -> {
+                        bottomTexture = "quartz_block_bottom";
+                        topTexture = bottomTexture;
+                        sideTexture = bottomTexture;
+                    }
+                    case "smooth_sandstone" -> {
+                        topTexture = "sandstone_top";
+                        bottomTexture = topTexture;
+                        sideTexture = topTexture;
+                    }
+                    case "smooth_red_sandstone" -> {
+                        topTexture = "red_sandstone_top";
+                        bottomTexture = topTexture;
+                        sideTexture = topTexture;
+                    }
+                }
+
+                topTexture = "block/" + topTexture + suffix;
+                sideTexture = "block/" + sideTexture + suffix;
+                bottomTexture = "block/" + bottomTexture + suffix;
+
+                final Identifier innerStairsModelId = INNER_CORNER_STAIRS_MODEL.upload(
+                        getId("block/corner_stairs/inner_stairs/inner_stairs_" + material),
+                        new TextureMap()
+                                .register(TextureKey.PARTICLE, new Identifier(topTexture))
+                                .register(TextureKey.TOP, new Identifier(topTexture))
+                                .register(TextureKey.BOTTOM, new Identifier(bottomTexture))
+                                .register(TextureKey.SIDE, new Identifier(sideTexture)),
+                        blockStateModelGenerator.modelCollector
+                );
+                final Identifier outerStairsModelId = OUTER_CORNER_STAIRS_MODEL.upload(
+                        getId("block/corner_stairs/outer_stairs/outer_stairs_" + material),
+                        new TextureMap()
+                                .register(TextureKey.PARTICLE, new Identifier(topTexture))
+                                .register(TextureKey.TOP, new Identifier(topTexture))
+                                .register(TextureKey.BOTTOM, new Identifier(bottomTexture))
+                                .register(TextureKey.SIDE, new Identifier(sideTexture)),
+                        blockStateModelGenerator.modelCollector
+                );
+
+                blockStateModelGenerator.registerParentedItemModel(ForcedCornerStairsGenerator.innerStairsBlockVariants[i], innerStairsModelId);
+                blockStateModelGenerator.registerParentedItemModel(ForcedCornerStairsGenerator.outerStairsBlockVariants[i], outerStairsModelId);
+                blockStateModelGenerator.blockStateCollector.accept(getForcedCornerStairsBlockstate(ForcedCornerStairsGenerator.innerStairsBlockVariants[i], innerStairsModelId));
+                blockStateModelGenerator.blockStateCollector.accept(getForcedCornerStairsBlockstate(ForcedCornerStairsGenerator.outerStairsBlockVariants[i], outerStairsModelId));
+
+                ++i;
+            }
         }
     }
 

@@ -5,6 +5,7 @@ import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
 import io.github.mikip98.humilityafm.helpers.*;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.util.GenerationData;
+import io.github.mikip98.humilityafm.util.data_types.Pair;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.registry.RegistryWrapper;
@@ -41,7 +42,7 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 
         // Inner & Outer Stairs Block Tags
         String[] woodenVariants = GenerationData.vanillaWoodTypes;
-        String[] stonyVariants = GenerationData.vanillaStonyMaterialsPerStrength.values().stream()
+        String[] stonyVariants = GenerationData.vanillaStonyMaterialsPerStrength.stream().map(Pair::second)
                 .flatMap(Arrays::stream).toArray(String[]::new);
 
         // Inner Stairs

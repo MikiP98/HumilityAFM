@@ -1,8 +1,0 @@
-{
-    "parent": "humility-afm:block/stairs_inner",
-    "textures": {
-        "bottom": "minecraft:block/prismarine_bricks",
-        "top": "minecraft:block/prismarine_bricks",
-        "side": "minecraft:block/prismarine_bricks"
-    }
-}
