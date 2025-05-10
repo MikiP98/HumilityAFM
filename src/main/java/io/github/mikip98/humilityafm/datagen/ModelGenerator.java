@@ -55,6 +55,11 @@ public class ModelGenerator extends FabricModelProvider {
         generateCabinetModelsAndBlockStates(blockStateModelGenerator);
         generateWoodenMosaicModelsAndBlockStates(blockStateModelGenerator);
         generateTerracottaTilesModelsAndBlockStates(blockStateModelGenerator);
+        generateForcedCornerStairsModelsAndBlockstates(blockStateModelGenerator);
+    }
+
+    protected static void generateForcedCornerStairsModelsAndBlockstates(BlockStateModelGenerator blockStateModelGenerator) {
+
     }
 
     protected static void generateWoodenMosaicModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
