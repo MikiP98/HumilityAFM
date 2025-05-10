@@ -21,6 +21,7 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 
     @Override
     protected void configure(RegistryWrapper.WrapperLookup arg) {
+        // ------------ Custom Tags ------------
         // Cabinet Block Tags
         getOrCreateTagBuilder(ModBlockTags.CABINET_BLOCKS)
                 .add(getIds(Arrays.stream(CabinetBlockGenerator.cabinetBlockVariantsNames).map(s -> "cabinet_block_" + s)))
@@ -56,7 +57,8 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
         getOrCreateTagBuilder(ModBlockTags.STONE_OUTER_STAIRS)
                 .add(getIds(Arrays.stream(stonyVariants).map(s -> "outer_stairs_" + s)));
 
-        // Vanilla Tags
+
+        // ------------ Vanilla Tags ------------
         // Axe Mineable
         getOrCreateTagBuilder(ModBlockTags.AXE_MINEABLE)
                 // Cabinets
