@@ -95,4 +95,39 @@ public abstract class AFMRecipieProvider extends FabricRecipeProvider {
                 .criterion(hasItem(input2), conditionsFromItem(input2))
                 .offerTo(exporter, path_prefix + getRecipeName(output));
     }
+    protected static void offerTripleInputShapelessRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible input1, ItemConvertible input2, ItemConvertible input3, @Nullable String group, int outputCount, String path_prefix) {
+        ShapelessRecipeJsonBuilder
+                .create(RecipeCategory.MISC, output, outputCount)
+                .input(input1)
+                .input(input2)
+                .input(input3)
+                .group(group)
+                .criterion(hasItem(input1), conditionsFromItem(input1))
+                .criterion(hasItem(input2), conditionsFromItem(input2))
+                .criterion(hasItem(input3), conditionsFromItem(input3))
+                .offerTo(exporter, path_prefix + getRecipeName(output));
+    }
+
+    protected static void offerColouredTorchRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible glowingPowder, int glowingPowderAmount, @Nullable String group, String path_prefix) {
+        ShapelessRecipeJsonBuilder
+                .create(RecipeCategory.MISC, output, 2)
+                .input(Items.STICK)
+                .input(Items.QUARTZ)
+                .input(glowingPowder, glowingPowderAmount)
+                .group(group)
+                .criterion(hasItem(Items.STICK), conditionsFromItem(Items.STICK))
+                .criterion(hasItem(Items.QUARTZ), conditionsFromItem(Items.QUARTZ))
+                .criterion(hasItem(glowingPowder), conditionsFromItem(glowingPowder))
+                .offerTo(exporter, path_prefix + getRecipeName(output));
+    }
+    protected static void offerColouredTorchUpgradeRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible weakerColouredTorch, ItemConvertible glowingPowder, int glowingPowderAmount, @Nullable String group, String path_prefix) {
+        ShapelessRecipeJsonBuilder
+                .create(RecipeCategory.MISC, output)
+                .input(weakerColouredTorch)
+                .input(glowingPowder, glowingPowderAmount)
+                .group(group)
+                .criterion(hasItem(weakerColouredTorch), conditionsFromItem(weakerColouredTorch))
+                .criterion(hasItem(glowingPowder), conditionsFromItem(glowingPowder))
+                .offerTo(exporter, path_prefix + getRecipeName(output));
+    }
 }
