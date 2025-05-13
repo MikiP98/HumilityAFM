@@ -3,12 +3,14 @@ package io.github.mikip98.humilityafm.datagen.language;
 import io.github.mikip98.humilityafm.datagen.language.util.PrefixedHashMap;
 import io.github.mikip98.humilityafm.datagen.language.util.TranslationCategory;
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
+import io.github.mikip98.humilityafm.generators.CandlestickGenerator;
 import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
 import io.github.mikip98.humilityafm.helpers.*;
 import io.github.mikip98.humilityafm.util.GenerationData;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -61,6 +63,8 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
         blockTranslations.putAll(generateInnerOuterStairsTranslations());
         // Miscellaneous blocks
         blockTranslations.putAll(generateMiscTranslations());
+        // Coloured torches
+        blockTranslations.putAll(generateColouredTorchesTranslations());  // Manual testing block
         // LEDs
         blockTranslations.put("led", "Test LED");  // Manual testing block
         blockTranslations.putAll(generateLEDTranslations());
@@ -72,7 +76,7 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
         // Items
         Map<String, String> itemTranslations = new PrefixedHashMap<>("item." + MOD_ID + ".");
         // LED Powders
-        itemTranslations.putAll(generateLEDPowderTranslations());
+        itemTranslations.putAll(generateGlowingPowderTranslations());
         // Submit the item translations
         categoryTranslations.put(TranslationCategory.ITEMS, itemTranslations);
 
@@ -145,20 +149,35 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
         return translations;
     }
 
-    public static Map<String, String> generateLEDTranslations() {
+    public static Map<String, String> generateGlowingPowderTranslations() {
         Map<String, String> translations = new HashMap<>();
-        for (String color : LEDHelper.colors) {
-            String key = "led_" + color;
-            String value = formatName(color) + " LED";
+        for (String color : GenerationData.vanillaColorPallet) {
+            String key = "glowing_powder_" + color;
+            String value = formatName(color) + " glowing powder";
             translations.put(key, value);
         }
         return translations;
     }
-    public static Map<String, String> generateLEDPowderTranslations() {
+    public static Map<String, String> generateColouredTorchesTranslations() {
         Map<String, String> translations = new HashMap<>();
-        for (String color : LEDHelper.colors) {
-            String key = "led_powder_" + color;
-            String value = formatName(color) + " LED powder";
+        for (String color : GenerationData.vanillaColorPallet) {
+            String key = "coloured_torch_" + color + "_weak";
+            String value = "Weak " + formatName(color).toLowerCase() + " torch";
+            translations.put(key, value);
+            key = "coloured_torch_" + color;
+            value = formatName(color) + " torch";
+            translations.put(key, value);
+            key = "coloured_torch_" + color + "_strong";
+            value = "Strong " + formatName(color).toLowerCase() + " torch";
+            translations.put(key, value);
+        }
+        return translations;
+    }
+    public static Map<String, String> generateLEDTranslations() {
+        Map<String, String> translations = new HashMap<>();
+        for (String color : GenerationData.vanillaColorPallet) {
+            String key = "led_" + color;
+            String value = formatName(color) + " LED";
             translations.put(key, value);
         }
         return translations;
@@ -166,19 +185,19 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
 
     public static Map<String, String> generateCandlestickTranslations() {
         Map<String, String> translations = new HashMap<>();
-        if (CandlestickHelper.candlestickVariantsNames == null) {
-            throw new IllegalStateException("Candlestick variants names are not initialized. Remember to uncomment the datagen lines in HumilityAFM.java");
-        }
-        for (String metal : CandlestickHelper.metals) {
+        for (String metal : GenerationData.vanillaCandlestickMetals) {
             String key = "candlestick_" + metal;
             String value = formatName(metal) + " candlestick";
             translations.put(key, value);
-            translations.put(key + "_candle", value + " with candle");
-
-            for (String color : GenerationData.vanillaColorPallet) {
-                translations.put(key + "_candle_" + color, value + " with " + formatName(color).toLowerCase() + " candle");
-            }
         }
+        GenerationData.vanillaRustableCandlestickMetals.forEach(
+                set -> Arrays.stream(set).forEach(
+                        metal -> translations.put(
+                                "candlestick_" + metal,
+                                formatName(metal) + " candlestick"
+                        )
+                )
+        );
         return translations;
     }
 
