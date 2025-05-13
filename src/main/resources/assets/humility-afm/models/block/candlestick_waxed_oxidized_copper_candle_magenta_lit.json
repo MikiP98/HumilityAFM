@@ -1,9 +1,0 @@
-
-{
-    "parent": "humility-afm:block/candlestick_candle",
-    "textures": {
-        "0": "block/oxidized_copper",
-        "2": "block/magenta_candle_lit",
-        "particle": "block/oxidized_copper"
-    }
-}

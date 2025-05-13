@@ -45,9 +45,16 @@ public class GenerationData {
             Pair.of(BlockStrength.of(3.5F, 6.0F), new String[]{"cobbled_deepslate", "polished_deepslate", "deepslate_brick", "deepslate_tile"})
     );
 
-    // TODO: Make PumpkinHelper use this
-    public static final Map<Byte, String[]> vanillaNonRedstoneTorchesPerLuminance = Map.of( (byte) 8, new String[]{"soul"} );
-    public static final Map<Byte, String[]> vanillaRedstoneReactiveTorchesPerLuminance = Map.of( (byte) 7, new String[]{"redstone"} );
+    /***
+     * Vanilla metals used for candlesticks that do not rust
+     */
+    public static final String[] vanillaCandlestickMetals = {"gold"};
+    /***
+     * Vanilla metals used for candlesticks that rust
+     */
+    public static final List<String[]> vanillaRustableCandlestickMetals = List.of(
+            new String[][]{{"copper", "weathered_copper", "exposed_copper", "oxidized_copper"}}
+    );
 
 
     // --------- Modded Data ---------

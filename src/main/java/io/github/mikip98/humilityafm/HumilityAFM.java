@@ -5,10 +5,13 @@ import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.content.blockentities.LEDBlockEntity;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.IlluminatedCabinetBlockEntity;
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
+import io.github.mikip98.humilityafm.generators.CandlestickGenerator;
+import io.github.mikip98.humilityafm.generators.ColouredLightsGenerator;
 import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
 import io.github.mikip98.humilityafm.helpers.*;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.registries.ItemGroupRegistry;
+import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -89,14 +92,17 @@ public class HumilityAFM implements ModInitializer {
 		ForcedCornerStairsGenerator.init();
 		WoodenMosaicHelper.init();
 		TerracottaTilesHelper.init();
-		if (ModConfig.enableLEDs) LEDHelper.init();
+		ColouredLightsGenerator.init();
 		PumpkinHelper.init();
-		if (ModConfig.enableCandlesticks) CandlestickHelper.init();
+		if (ModConfig.enableCandlesticks) CandlestickGenerator.init();
 
 
 		// ------------------------------------ REGISTRATION ------------------------------------
 		// ............ ITEM GROUPS ............
 		ItemGroupRegistry.registerItemGroups();
+
+		// ............ ITEMS ............
+		ItemRegistry.register();
 
 		// ............ BLOCKS & BLOCK ITEMS ............
 		BlockRegistry.register();
@@ -108,12 +114,8 @@ public class HumilityAFM implements ModInitializer {
 		WoodenMosaicHelper.registerWoodenMosaicVariants();
 		// Register terracotta tiles variants
 		TerracottaTilesHelper.registerTerracottaTilesVariants();
-		// Register LED block variants
-		if (ModConfig.enableLEDs) LEDHelper.registerLEDBlockVariants();
 		// Register red and blue pumpkins
 		PumpkinHelper.registerPumpkins();
-		// Register candlestick variants
-		if (ModConfig.enableCandlesticks) CandlestickHelper.registerCandlestickVariants();
 
 		// ............ BLOCK ENTITIES ............
 		//Register cabinet block entity
@@ -131,11 +133,11 @@ public class HumilityAFM implements ModInitializer {
 		);
 
 		//Register LED block entity
-		if (ModConfig.enableLEDs) {
+		if (ModConfig.enableLEDs && ModConfig.enableLEDsBrightening && !ModConfig.shimmerDetected) {
 			LED_BLOCK_ENTITY = Registry.register(
 					Registries.BLOCK_ENTITY_TYPE,
 					new Identifier(MOD_ID, "led_block_entity"),
-					FabricBlockEntityTypeBuilder.create(LEDBlockEntity::new, LEDHelper.LEDBlockVariants).build()
+					FabricBlockEntityTypeBuilder.create(LEDBlockEntity::new, ColouredLightsGenerator.LEDBlockVariants).build()
 			);
 		}
 	}

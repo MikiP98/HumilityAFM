@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench by Mikolaj Pokora",
 	"parent": "humility-afm:block/candlestick",
 	"textures": {
-		"2": "block/white_candle"
+		"2": "block/candle"
 	},
 	"elements": [
 		{

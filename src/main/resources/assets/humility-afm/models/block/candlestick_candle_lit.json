@@ -1,10 +1,9 @@
 {
 	"credit": "Made with Blockbench by Mikolaj Pokora",
+	"parent": "humility-afm:block/candlestick_candle",
 	"texture_size": [8, 8],
 	"textures": {
-		"0": "block/copper_block",
-		"2": "block/white_candle_lit",
-		"particle": "block/copper_block"
+		"2": "block/candle_lit"
 	},
 	"elements": [
 		{

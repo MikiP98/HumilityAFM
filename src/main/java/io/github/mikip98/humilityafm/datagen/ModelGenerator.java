@@ -1,23 +1,31 @@
 package io.github.mikip98.humilityafm.datagen;
 
+import io.github.mikip98.humilityafm.content.ModProperties;
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
 import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
+import io.github.mikip98.humilityafm.generators.CandlestickGenerator;
 import io.github.mikip98.humilityafm.helpers.TerracottaTilesHelper;
 import io.github.mikip98.humilityafm.helpers.WoodenMosaicHelper;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
+import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.GenerationData;
 import io.github.mikip98.humilityafm.util.data_types.BlockStrength;
+import io.github.mikip98.humilityafm.util.data_types.CandleColor;
 import io.github.mikip98.humilityafm.util.data_types.Pair;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.data.client.*;
-import net.minecraft.state.property.Properties;
+import net.minecraft.item.Item;
+import net.minecraft.state.property.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
 
@@ -43,6 +51,19 @@ public class ModelGenerator extends FabricModelProvider {
     );
     protected static final Model OUTER_CORNER_STAIRS_MODEL = new Model(
             Optional.of(getId("block/stairs_outer")),
+            Optional.empty()
+    );
+    // Candlestick Models
+    protected static final Model CANDLESTICK_MODEL = new Model(
+            Optional.of(getId("block/candlestick")),
+            Optional.empty()
+    );
+    protected static final Model CANDLESTICK_WITH_CANDLE_MODEL = new Model(
+            Optional.of(getId("block/candlestick_candle")),
+            Optional.empty()
+    );
+    protected static final Model CANDLESTICK_WITH_CANDLE_LIT_MODEL = new Model(
+            Optional.of(getId("block/candlestick_candle_lit")),
             Optional.empty()
     );
 
@@ -74,6 +95,88 @@ public class ModelGenerator extends FabricModelProvider {
         generateWoodenMosaicModelsAndBlockStates(blockStateModelGenerator);
         generateTerracottaTilesModelsAndBlockStates(blockStateModelGenerator);
         generateForcedCornerStairsModelsAndBlockstates(blockStateModelGenerator);
+        // Optional blocks
+        generateCandlestickModelsAndBlockStates(blockStateModelGenerator);
+    }
+
+    protected static void generateCandlestickModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
+        generateCandlestickMABForMetals(blockStateModelGenerator, GenerationData.vanillaCandlestickMetals, CandlestickGenerator.candlestickClassicVariants);
+        int i = 0;
+        for (String[] metals : GenerationData.vanillaRustableCandlestickMetals) {
+            generateCandlestickMABForMetals(blockStateModelGenerator, metals, CandlestickGenerator.candlestickRustableVariants.get(i));
+            ++i;
+        }
+    }
+    protected static void generateCandlestickMABForMetals(BlockStateModelGenerator blockStateModelGenerator, String[] metals, Block[] candlesticks) {
+        int i = 0;
+        Set<String> block_suffix_metals = Set.of("copper", "gold");
+        for (String metal : metals) {
+            String suffix = "";
+            if (block_suffix_metals.contains(metal)) suffix = "_block";
+
+            final Identifier candlestickModelId = CANDLESTICK_MODEL.upload(
+                    getId("block/candlestick/" + metal + "/candlestick_" + metal),
+                    new TextureMap()
+                            .register(TextureKey.PARTICLE, new Identifier("block/" + metal + suffix))
+                            .register(TextureKey.of("0"), new Identifier("block/" + metal + suffix)),
+                    blockStateModelGenerator.modelCollector
+            );
+
+            final Identifier candlestickWithCandleModelId = CANDLESTICK_WITH_CANDLE_MODEL.upload(
+                    getId("block/candlestick/" + metal + "/candlestick_" + metal + "_candle"),
+                    new TextureMap()
+                            .register(TextureKey.PARTICLE, new Identifier("block/" + metal + suffix))
+                            .register(TextureKey.of("0"), new Identifier("block/" + metal + suffix)),
+                    blockStateModelGenerator.modelCollector
+            );
+            final Identifier candlestickWithCandleLitModelId = CANDLESTICK_WITH_CANDLE_LIT_MODEL.upload(
+                    getId("block/candlestick/" + metal + "/candlestick_" + metal + "_candle_lit"),
+                    new TextureMap()
+                            .register(TextureKey.PARTICLE, new Identifier("block/" + metal + suffix))
+                            .register(TextureKey.of("0"), new Identifier("block/" + metal + suffix)),
+                    blockStateModelGenerator.modelCollector
+            );
+
+            final Model candlestickWithCandleMetalModel = new Model(
+                    Optional.of(candlestickWithCandleModelId),
+                    Optional.empty()
+            );
+            final Model candlestickWithCandleLitMetalModel = new Model(
+                    Optional.of(candlestickWithCandleLitModelId),
+                    Optional.empty()
+            );
+
+            Map<CandleColor, Identifier> candleColorModelMap = new HashMap<>();
+            Map<CandleColor, Identifier> litCandleColorModelMap = new HashMap<>();
+            for (String color : GenerationData.vanillaColorPallet) {
+                CandleColor candleColor = CandleColor.getColor(color);
+                final Identifier candlestickColoredModelId = candlestickWithCandleMetalModel.upload(
+                        getId("block/candlestick/" + metal + "/candlestick_" + metal + "_" + color),
+                        new TextureMap()
+                                .register(TextureKey.of("2"), new Identifier("block/" + color + "_candle")),
+                        blockStateModelGenerator.modelCollector
+                );
+                candleColorModelMap.put(candleColor, candlestickColoredModelId);
+                final Identifier candlestickLitColoredModelId = candlestickWithCandleLitMetalModel.upload(
+                        getId("block/candlestick/" + metal + "/candlestick_" + metal + "_" + color + "_lit"),
+                        new TextureMap()
+                                .register(TextureKey.of("2"), new Identifier("block/" + color + "_candle_lit")),
+                        blockStateModelGenerator.modelCollector
+                );
+                litCandleColorModelMap.put(candleColor, candlestickLitColoredModelId);
+            }
+
+            blockStateModelGenerator.registerParentedItemModel(candlesticks[i], candlestickModelId);
+            blockStateModelGenerator.blockStateCollector.accept(getCandlestickBlockstate(
+                    candlesticks[i],
+                    candlestickModelId,
+                    candlestickWithCandleModelId,
+                    candlestickWithCandleLitModelId,
+                    candleColorModelMap,
+                    litCandleColorModelMap
+            ));
+            ++i;
+        }
     }
 
     protected static void generateForcedCornerStairsModelsAndBlockstates(BlockStateModelGenerator blockStateModelGenerator) {
@@ -271,6 +374,240 @@ public class ModelGenerator extends FabricModelProvider {
     }
 
 
+    protected static MultipartBlockStateSupplier getCandlestickBlockstate(
+            Block block,
+            Identifier emptyModel,
+            Identifier plainCandleModel,
+            Identifier litPlainCandleModel,
+            Map<CandleColor, Identifier> colouredCandleModels,
+            Map<CandleColor, Identifier> litColouredCandleModels
+    ) {
+        DirectionProperty FACING = Properties.HORIZONTAL_FACING;
+        BooleanProperty CANDLE = ModProperties.CANDLE;
+        BooleanProperty LIT = Properties.LIT;
+        EnumProperty<CandleColor> CANDLE_COLOR = ModProperties.CANDLE_COLOR;
+
+        MultipartBlockStateSupplier multipart = MultipartBlockStateSupplier.create(block)
+                // NO CANDLE
+                .with(
+                        When.allOf(
+                                When.create().set(CANDLE, false),
+                                When.create().set(FACING, Direction.NORTH)
+                        ),
+                        BlockStateVariant.create()
+                                .put(VariantSettings.MODEL, emptyModel)
+                                .put(VariantSettings.Y, VariantSettings.Rotation.R180)
+                )
+                .with(
+                        When.allOf(
+                                When.create().set(CANDLE, false),
+                                When.create().set(FACING, Direction.SOUTH)
+                        ),
+                        BlockStateVariant.create()
+                                .put(VariantSettings.MODEL, emptyModel)
+                )
+                .with(
+                        When.allOf(
+                                When.create().set(CANDLE, false),
+                                When.create().set(FACING, Direction.EAST)
+                        ),
+                        BlockStateVariant.create()
+                                .put(VariantSettings.MODEL, emptyModel)
+                                .put(VariantSettings.Y, VariantSettings.Rotation.R270)
+                )
+                .with(
+                        When.allOf(
+                                When.create().set(CANDLE, false),
+                                When.create().set(FACING, Direction.WEST)
+                        ),
+                        BlockStateVariant.create()
+                                .put(VariantSettings.MODEL, emptyModel)
+                                .put(VariantSettings.Y, VariantSettings.Rotation.R90)
+                )
+                // PLAIN NON LIT
+                .with(
+                        When.allOf(
+                                When.create().set(CANDLE, true),
+                                When.create().set(CANDLE_COLOR, CandleColor.PLAIN),
+                                When.create().set(LIT, false),
+                                When.create().set(FACING, Direction.NORTH)
+                        ),
+                        BlockStateVariant.create()
+                                .put(VariantSettings.MODEL, plainCandleModel)
+                                .put(VariantSettings.Y, VariantSettings.Rotation.R180)
+                )
+                .with(
+                        When.allOf(
+                                When.create().set(CANDLE, true),
+                                When.create().set(CANDLE_COLOR, CandleColor.PLAIN),
+                                When.create().set(LIT, false),
+                                When.create().set(FACING, Direction.SOUTH)
+                        ),
+                        BlockStateVariant.create()
+                                .put(VariantSettings.MODEL, plainCandleModel)
+                )
+                .with(
+                        When.allOf(
+                                When.create().set(CANDLE, true),
+                                When.create().set(CANDLE_COLOR, CandleColor.PLAIN),
+                                When.create().set(LIT, false),
+                                When.create().set(FACING, Direction.EAST)
+                        ),
+                        BlockStateVariant.create()
+                                .put(VariantSettings.MODEL, plainCandleModel)
+                                .put(VariantSettings.Y, VariantSettings.Rotation.R270)
+                )
+                .with(
+                        When.allOf(
+                                When.create().set(CANDLE, true),
+                                When.create().set(CANDLE_COLOR, CandleColor.PLAIN),
+                                When.create().set(LIT, false),
+                                When.create().set(FACING, Direction.WEST)
+                        ),
+                        BlockStateVariant.create()
+                                .put(VariantSettings.MODEL, plainCandleModel)
+                                .put(VariantSettings.Y, VariantSettings.Rotation.R90)
+                )
+                // PLAIN LIT
+                .with(
+                        When.allOf(
+                                When.create().set(CANDLE, true),
+                                When.create().set(CANDLE_COLOR, CandleColor.PLAIN),
+                                When.create().set(LIT, true),
+                                When.create().set(FACING, Direction.NORTH)
+                        ),
+                        BlockStateVariant.create()
+                                .put(VariantSettings.MODEL, litPlainCandleModel)
+                                .put(VariantSettings.Y, VariantSettings.Rotation.R180)
+                )
+                .with(
+                        When.allOf(
+                                When.create().set(CANDLE, true),
+                                When.create().set(CANDLE_COLOR, CandleColor.PLAIN),
+                                When.create().set(LIT, true),
+                                When.create().set(FACING, Direction.SOUTH)
+                        ),
+                        BlockStateVariant.create()
+                                .put(VariantSettings.MODEL, litPlainCandleModel)
+                )
+                .with(
+                        When.allOf(
+                                When.create().set(CANDLE, true),
+                                When.create().set(CANDLE_COLOR, CandleColor.PLAIN),
+                                When.create().set(LIT, true),
+                                When.create().set(FACING, Direction.EAST)
+                        ),
+                        BlockStateVariant.create()
+                                .put(VariantSettings.MODEL, litPlainCandleModel)
+                                .put(VariantSettings.Y, VariantSettings.Rotation.R270)
+                )
+                .with(
+                        When.allOf(
+                                When.create().set(CANDLE, true),
+                                When.create().set(CANDLE_COLOR, CandleColor.PLAIN),
+                                When.create().set(LIT, true),
+                                When.create().set(FACING, Direction.WEST)
+                        ),
+                        BlockStateVariant.create()
+                                .put(VariantSettings.MODEL, litPlainCandleModel)
+                                .put(VariantSettings.Y, VariantSettings.Rotation.R90)
+                );
+
+        for (CandleColor candleColor : colouredCandleModels.keySet()) {
+            multipart
+                    // NON LIT
+                    .with(
+                            When.allOf(
+                                    When.create().set(CANDLE, true),
+                                    When.create().set(CANDLE_COLOR, candleColor),
+                                    When.create().set(LIT, false),
+                                    When.create().set(FACING, Direction.NORTH)
+                            ),
+                            BlockStateVariant.create()
+                                    .put(VariantSettings.MODEL, colouredCandleModels.get(candleColor))
+                                    .put(VariantSettings.Y, VariantSettings.Rotation.R180)
+                    )
+                    .with(
+                            When.allOf(
+                                    When.create().set(CANDLE, true),
+                                    When.create().set(CANDLE_COLOR, candleColor),
+                                    When.create().set(LIT, false),
+                                    When.create().set(FACING, Direction.SOUTH)
+                            ),
+                            BlockStateVariant.create()
+                                    .put(VariantSettings.MODEL, colouredCandleModels.get(candleColor))
+                    )
+                    .with(
+                            When.allOf(
+                                    When.create().set(CANDLE, true),
+                                    When.create().set(CANDLE_COLOR, candleColor),
+                                    When.create().set(LIT, false),
+                                    When.create().set(FACING, Direction.EAST)
+                            ),
+                            BlockStateVariant.create()
+                                    .put(VariantSettings.MODEL, colouredCandleModels.get(candleColor))
+                                    .put(VariantSettings.Y, VariantSettings.Rotation.R270)
+                    )
+                    .with(
+                            When.allOf(
+                                    When.create().set(CANDLE, true),
+                                    When.create().set(CANDLE_COLOR, candleColor),
+                                    When.create().set(LIT, false),
+                                    When.create().set(FACING, Direction.WEST)
+                            ),
+                            BlockStateVariant.create()
+                                    .put(VariantSettings.MODEL, colouredCandleModels.get(candleColor))
+                                    .put(VariantSettings.Y, VariantSettings.Rotation.R90)
+                    )
+                    // LIT
+                    .with(
+                            When.allOf(
+                                    When.create().set(CANDLE, true),
+                                    When.create().set(CANDLE_COLOR, candleColor),
+                                    When.create().set(LIT, true),
+                                    When.create().set(FACING, Direction.NORTH)
+                            ),
+                            BlockStateVariant.create()
+                                    .put(VariantSettings.MODEL, litColouredCandleModels.get(candleColor))
+                                    .put(VariantSettings.Y, VariantSettings.Rotation.R180)
+                            )
+                    .with(
+                            When.allOf(
+                                    When.create().set(CANDLE, true),
+                                    When.create().set(CANDLE_COLOR, candleColor),
+                                    When.create().set(LIT, true),
+                                    When.create().set(FACING, Direction.SOUTH)
+                            ),
+                            BlockStateVariant.create()
+                                    .put(VariantSettings.MODEL, litColouredCandleModels.get(candleColor))
+                    )
+                    .with(
+                            When.allOf(
+                                    When.create().set(CANDLE, true),
+                                    When.create().set(CANDLE_COLOR, candleColor),
+                                    When.create().set(LIT, true),
+                                    When.create().set(FACING, Direction.EAST)
+                            ),
+                            BlockStateVariant.create()
+                                    .put(VariantSettings.MODEL, litColouredCandleModels.get(candleColor))
+                                    .put(VariantSettings.Y, VariantSettings.Rotation.R270)
+                    )
+                    .with(
+                            When.allOf(
+                                    When.create().set(CANDLE, true),
+                                    When.create().set(CANDLE_COLOR, candleColor),
+                                    When.create().set(LIT, true),
+                                    When.create().set(FACING, Direction.WEST)
+                            ),
+                            BlockStateVariant.create()
+                                    .put(VariantSettings.MODEL, litColouredCandleModels.get(candleColor))
+                                    .put(VariantSettings.Y, VariantSettings.Rotation.R90)
+                    );
+        }
+
+        return multipart;
+    }
+
     protected static VariantsBlockStateSupplier getForcedCornerStairsBlockstate(Block block, Identifier modelId) {
         return VariantsBlockStateSupplier
                 .create(block)
@@ -420,6 +757,8 @@ public class ModelGenerator extends FabricModelProvider {
 
     @Override
     public void generateItemModels(ItemModelGenerator itemModelGenerator) {
-
+        for (Item item : ItemRegistry.glowingPowderVariants) {
+            itemModelGenerator.register(item, Models.GENERATED);
+        }
     }
 }
