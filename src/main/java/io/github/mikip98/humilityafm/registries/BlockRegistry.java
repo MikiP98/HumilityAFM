@@ -6,22 +6,25 @@ import io.github.mikip98.humilityafm.content.blocks.cabinet.IlluminatedCabinetBl
 import io.github.mikip98.humilityafm.content.blocks.stairs.InnerStairs;
 import io.github.mikip98.humilityafm.content.blocks.stairs.OuterStairs;
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
+import io.github.mikip98.humilityafm.generators.ColouredLightsGenerator;
+import io.github.mikip98.humilityafm.generators.CandlestickGenerator;
+import io.github.mikip98.humilityafm.util.GenerationData;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 
+import java.util.ArrayList;
+
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
+import static io.github.mikip98.humilityafm.registries.ItemGroupRegistry.putIntoItemGroup;
 
 public class BlockRegistry {
 
@@ -52,7 +55,14 @@ public class BlockRegistry {
         // Register Wooden Mosaic
         registerWithItem(WOODEN_MOSAIC, "wooden_mosaic");
 
+
         // ............ FINAL BLOCKS & BLOCK ITEMS ............
+        // Special Jack-O-Lanterns
+        // TODO: Move redstone and soul Jack-O-Lanterns here and make them special
+        //  The redstone one can be redstone reactive.
+        //  The soul one can emmit soul particles.
+        //  The PumpkinGenerator will generate only non-special coloured Jack-O-Lanterns from coloured torches.
+
         // Register cabinets
         CabinetBlockGenerator.cabinetBlockItemVariants = registerArrayWithItems(
                 CabinetBlockGenerator.cabinetBlockVariants,
@@ -61,6 +71,7 @@ public class BlockRegistry {
         );
         putIntoItemGroup(CabinetBlockGenerator.cabinetBlockItemVariants, ItemGroups.COLORED_BLOCKS);
         registerFlammable(CabinetBlockGenerator.cabinetBlockVariants, ModConfig.cabinetBlockBurnTime, ModConfig.cabinetBlockFireSpread);
+
         // Register illuminated cabinets
         CabinetBlockGenerator.illuminatedCabinetBlockItemVariants = registerArrayWithItems(
                 CabinetBlockGenerator.illuminatedCabinetBlockVariants,
@@ -69,6 +80,43 @@ public class BlockRegistry {
         );
         putIntoItemGroup(CabinetBlockGenerator.illuminatedCabinetBlockItemVariants, ItemGroups.COLORED_BLOCKS);
         registerFlammable(CabinetBlockGenerator.illuminatedCabinetBlockVariants, ModConfig.cabinetBlockBurnTime, ModConfig.cabinetBlockFireSpread);
+
+        // Register Coloured Torches
+        ColouredLightsGenerator.colouredTorchesItemVariants = registerArrayWithItems(
+                ColouredLightsGenerator.colouredTorchesVariants,
+                ColouredLightsGenerator.colouredTorchesNames,
+                "coloured_torch_"
+        );
+        putIntoItemGroup(ColouredLightsGenerator.colouredTorchesItemVariants, ItemGroups.COLORED_BLOCKS);
+
+        // Register LED blocks
+        if (ModConfig.enableLEDs) {
+            ColouredLightsGenerator.LEDBlockItemVariants = registerArrayWithItems(
+                    ColouredLightsGenerator.LEDBlockVariants,
+                    GenerationData.vanillaColorPallet,
+                    "led_"
+            );
+            putIntoItemGroup(ColouredLightsGenerator.LEDBlockItemVariants, ItemGroups.COLORED_BLOCKS);
+        }
+
+        // Register Candlestick variants
+        if (ModConfig.enableCandlesticks) {
+            CandlestickGenerator.candlestickClassicItemVariants = registerArrayWithItems(
+                    CandlestickGenerator.candlestickClassicVariants,
+                    GenerationData.vanillaCandlestickMetals,
+                    "candlestick_"
+            );
+            CandlestickGenerator.candlestickRustableItemVariants = new ArrayList<>();
+            for (int i = 0; i < CandlestickGenerator.candlestickRustableVariants.size(); i++) {
+                Block[] candlestickMetalSet = CandlestickGenerator.candlestickRustableVariants.get(i);
+                Item[] candlestickItemSet = registerArrayWithItems(
+                        candlestickMetalSet,
+                        GenerationData.vanillaRustableCandlestickMetals.get(i),
+                        "candlestick_"
+                );
+                CandlestickGenerator.candlestickRustableItemVariants.add(candlestickItemSet);
+            }
+        }
     }
 
 
@@ -91,19 +139,4 @@ public class BlockRegistry {
             FlammableBlockRegistry.getDefaultInstance().add(block, burnTime, spreadSpeed);
         }
     }
-//    protected static void registerFlammable(Block block, short burnTime, short spreadSpeed) {
-//        FlammableBlockRegistry.getDefaultInstance().add(block, burnTime, spreadSpeed);
-//    }
-
-
-    protected static void putIntoItemGroup(Item[] items, RegistryKey<ItemGroup> group) {
-        ItemGroupEvents.modifyEntriesEvent(group).register(content -> {
-            for (Item item : items) {
-                content.add(item);
-            }
-        });
-    }
-//    protected static void putIntoItemGroup(Item item, RegistryKey<ItemGroup> group) {
-//        ItemGroupEvents.modifyEntriesEvent(group).register(content -> content.add(item));
-//    }
 }
