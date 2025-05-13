@@ -63,10 +63,19 @@ This mod is highly customisable through its config!
 - Convert all the Python code to Java Fabric Datagen
 - Restructure the code a bit *(e.g. dedicated registry files)*
 - Add `Fully resourcepack compatible!` to the `Features` section
-- Port to 1.20.4
-- Port to 1.21.1
-- Port to 1.21.4
-- Port to 1.21.5?
+- Port to newer MC versions: 
+  - 1.20.4?
+  - 1.21.1
+  - 1.21.4?
+  - 1.21.5?
+- Backport to older MC versions?:
+  - 1.19.2?
+  - 1.18.2?
+  - 1.16.5?
+  - 1.12.2?
+  - 1.8.9?
+  - 1.7.10?
+  - 1.0?
 - Add floor and ceiling variants of the cabinets
 - Redo the window capture screenshots or at least crop the window app bar
 - Rethink the README structure
@@ -74,6 +83,12 @@ This mod is highly customisable through its config!
   - Add the ability to rotate items displayed in the cabinets
 - Add leather variants of the cabinets?
   - Make the leather cabinets dyable?
+- Add coloured torches:
+  - `LED powder` into `Glowing powder`
+  - 1 powder - weak torch; 2 powders - torch; 3 powders - strong torch
+  - Move LEDs to misc tab, alongside the powders
+- Compress candlesticks into 4 items for each metal type
+- Move VoxelShapes from switches to a maps or variables
 
 <br>
 
