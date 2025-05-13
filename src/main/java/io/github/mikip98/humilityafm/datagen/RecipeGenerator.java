@@ -1,6 +1,7 @@
 package io.github.mikip98.humilityafm.datagen;
 
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
+import io.github.mikip98.humilityafm.generators.CandlestickGenerator;
 import io.github.mikip98.humilityafm.generators.ColouredLightsGenerator;
 import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
 import io.github.mikip98.humilityafm.helpers.PumpkinHelper;
@@ -56,6 +57,8 @@ public class RecipeGenerator extends AFMRecipieProvider {
         generateJackOLanternRecipies(exporter);
         generateGlowingPowderRecipies(exporter);
         generateColouredTorchRecipies(exporter);
+        // Optional
+        generateCandlestickRecipies(exporter);
     }
 
     protected static void generateCabinetRecipies(Consumer<RecipeJsonProvider> exporter) {
@@ -292,6 +295,21 @@ public class RecipeGenerator extends AFMRecipieProvider {
                     MOD_ID + "/coloured_torches",
                     "coloured_torches/strong/upgrade_normal/"
             );
+        }
+    }
+
+    protected static void generateCandlestickRecipies(Consumer<RecipeJsonProvider> exporter) {
+        int i = 0;
+        for (String metal : GenerationData.vanillaCandlestickMetals) {
+            Item ingot = getItemFromName(metal + "_ingot");
+            offerCandlestickRecipie(exporter, CandlestickGenerator.candlestickClassicItemVariants[i], ingot, "candlestick/");
+            ++i;
+        }
+        i = 0;
+        for (String[] metals : GenerationData.vanillaRustableCandlestickMetals) {
+            Item ingot = getItemFromName(metals[0] + "_ingot");
+            offerCandlestickRecipie(exporter, CandlestickGenerator.candlestickRustableItemVariants.get(i)[0], ingot, "candlestick/");
+            ++i;
         }
     }
 

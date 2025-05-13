@@ -130,4 +130,23 @@ public abstract class AFMRecipieProvider extends FabricRecipeProvider {
                 .criterion(hasItem(glowingPowder), conditionsFromItem(glowingPowder))
                 .offerTo(exporter, path_prefix + getRecipeName(output));
     }
+
+    protected static void offerCandlestickRecipie(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible ingot, String path_prefix) {
+        ShapedRecipeJsonBuilder
+                .create(RecipeCategory.DECORATIONS, output)
+                .pattern("I ")
+                .pattern("II")
+                .input('I', ingot)
+                .group(MOD_ID + "/candlestick")
+                .criterion(hasItem(ingot), conditionsFromItem(ingot))
+                .offerTo(exporter, path_prefix + "classic/" + getRecipeName(output));
+        ShapedRecipeJsonBuilder
+                .create(RecipeCategory.DECORATIONS, output)
+                .pattern(" I")
+                .pattern("II")
+                .input('I', ingot)
+                .group(MOD_ID + "/candlestick")
+                .criterion(hasItem(ingot), conditionsFromItem(ingot))
+                .offerTo(exporter, path_prefix + "reversed/" + getRecipeName(output));
+    }
 }
