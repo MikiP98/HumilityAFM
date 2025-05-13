@@ -1,11 +1,13 @@
 package io.github.mikip98.humilityafm.datagen;
 
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
+import io.github.mikip98.humilityafm.generators.ColouredLightsGenerator;
 import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
 import io.github.mikip98.humilityafm.helpers.PumpkinHelper;
 import io.github.mikip98.humilityafm.helpers.TerracottaTilesHelper;
 import io.github.mikip98.humilityafm.helpers.WoodenMosaicHelper;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
+import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.GenerationData;
 import io.github.mikip98.humilityafm.util.data_types.Torch;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -52,6 +54,8 @@ public class RecipeGenerator extends AFMRecipieProvider {
         generateTerracottaTileRecipies(exporter);
         generateForcedCornerStairsRecipies(exporter);
         generateJackOLanternRecipies(exporter);
+        generateGlowingPowderRecipies(exporter);
+        generateColouredTorchRecipies(exporter);
     }
 
     protected static void generateCabinetRecipies(Consumer<RecipeJsonProvider> exporter) {
@@ -206,6 +210,88 @@ public class RecipeGenerator extends AFMRecipieProvider {
                     "jack_o_lanterns/"
             );
             ++i;
+        }
+    }
+
+    protected static void generateGlowingPowderRecipies(Consumer<RecipeJsonProvider> exporter) {
+        Item glowstoneDust = Items.GLOWSTONE_DUST;
+        Item redstone = Items.REDSTONE;
+        int i = 0;
+        for (String color : GenerationData.vanillaColorPallet) {
+            Item glowingPowder = ItemRegistry.glowingPowderVariants[i];
+            Item dye = getItemFromName(color + "_dye");
+            offerTripleInputShapelessRecipe(
+                    exporter,
+                    glowingPowder,
+                    glowstoneDust,
+                    redstone,
+                    dye,
+                    MOD_ID + "/glowing_powder",
+                    1,
+                    "glowing_powder/"
+            );
+            ++i;
+        }
+    }
+
+    protected static void generateColouredTorchRecipies(Consumer<RecipeJsonProvider> exporter) {
+        for (int i = 0; i < GenerationData.vanillaColorPallet.length; i++) {
+            Item weakColouredTorch = ColouredLightsGenerator.colouredTorchesItemVariants[i * 3];
+            Item colouredTorch = ColouredLightsGenerator.colouredTorchesItemVariants[i * 3 + 1];
+            Item strongColouredTorch = ColouredLightsGenerator.colouredTorchesItemVariants[i * 3 + 2];
+
+            Item glowingPowder = ItemRegistry.glowingPowderVariants[i];
+
+            // Weak Coloured Torch
+            offerColouredTorchRecipe(
+                    exporter,
+                    weakColouredTorch,
+                    glowingPowder, 1,
+                    MOD_ID + "/coloured_torches",
+                    "coloured_torches/weak/"
+            );
+
+            // Coloured Torch
+            offerColouredTorchRecipe(
+                    exporter,
+                    colouredTorch,
+                    glowingPowder, 2,
+                    MOD_ID + "/coloured_torches",
+                    "coloured_torches/normal/"
+            );
+            offerColouredTorchUpgradeRecipe(
+                    exporter,
+                    colouredTorch,
+                    weakColouredTorch,
+                    glowingPowder, 1,
+                    MOD_ID + "/coloured_torches",
+                    "coloured_torches/normal/upgrade/"
+            );
+
+            // Strong Coloured Torch
+            offerColouredTorchRecipe(
+                    exporter,
+                    strongColouredTorch,
+                    glowingPowder, 3,
+                    MOD_ID + "/coloured_torches",
+                    "coloured_torches/strong/"
+            );
+            offerColouredTorchUpgradeRecipe(
+                    exporter,
+                    strongColouredTorch,
+                    weakColouredTorch,
+                    glowingPowder, 2,
+                    MOD_ID + "/coloured_torches",
+                    "coloured_torches/strong/upgrade_weak/"
+            );
+            offerColouredTorchUpgradeRecipe(
+                    exporter,
+                    strongColouredTorch,
+                    colouredTorch,
+                    glowingPowder, 1,
+                    MOD_ID + "/coloured_torches",
+                    "coloured_torches/strong/upgrade_normal/"
+            );
         }
     }
 
