@@ -51,9 +51,6 @@ public enum CandleColor implements StringIdentifiable {
         };
     }
 
-    public static String getName(CandleColor color) {
-        return color.asString();
-    }
     public static CandleColor getColor(String name) {
         try {
             return CandleColor.valueOf(name.toUpperCase());

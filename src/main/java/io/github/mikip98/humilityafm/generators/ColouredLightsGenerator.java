@@ -4,7 +4,6 @@ import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.content.blocks.leds.LEDStripBlock;
 import io.github.mikip98.humilityafm.content.blocks.leds.LEDStripBlockWithEntity;
 import io.github.mikip98.humilityafm.util.GenerationData;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.TorchBlock;

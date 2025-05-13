@@ -3,7 +3,6 @@ package io.github.mikip98.humilityafm.datagen.language;
 import io.github.mikip98.humilityafm.datagen.language.util.PrefixedHashMap;
 import io.github.mikip98.humilityafm.datagen.language.util.TranslationCategory;
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
-import io.github.mikip98.humilityafm.generators.CandlestickGenerator;
 import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
 import io.github.mikip98.humilityafm.helpers.*;
 import io.github.mikip98.humilityafm.util.GenerationData;
@@ -82,24 +81,10 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
 
         return categoryTranslations;
     }
-//    @SuppressWarnings("unchecked")
-//    protected static class BlockHashMap<K, V> extends HashMap<K, V>{
-//        public BlockHashMap() { super(); }
-//        @Override
-//        public V put(K key,V value) {
-//            return super.put((K) ("block." + MOD_ID + "." + key), value);
-//        }
-//        @Override
-//        public void putAll(Map<? extends K, ? extends V> m) {
-//            for (Map.Entry<? extends K, ? extends V> entry : m.entrySet()) {
-//                put(entry.getKey(), entry.getValue());
-//            }
-//        }
-//    }
 
     public static Map<String, String> generateCabinetTranslations() {
         Map<String, String> translations = new HashMap<>();
-        for (String variant : CabinetBlockGenerator.cabinetBlockVariantsNames) {;
+        for (String variant : CabinetBlockGenerator.cabinetBlockVariantsNames) {
             String formattedName = formatName(variant);
             translations.put("cabinet_block_" + variant, formattedName + " cabinet");
             translations.put("illuminated_cabinet_block_" + variant, formattedName + " illuminated cabinet");
@@ -211,8 +196,8 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
                 .append(firstWord.substring(1).toLowerCase())
                 .append(" ");
 
-        for (Iterator<String> iter = it; iter.hasNext(); ) {
-            String word = iter.next();
+        while (it.hasNext()) {
+            String word = it.next();
             formattedName.append(word.toLowerCase()).append(" ");
         }
         return formattedName.toString().trim();

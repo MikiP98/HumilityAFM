@@ -45,18 +45,14 @@ public class ItemGroupRegistry {
     final static ItemGroup WOODEN_MOSAIC_ITEM_GROUP = FabricItemGroup.builder()
             .icon(() -> new ItemStack(WoodenMosaicHelper.woodenMosaicVariants[0]))
             .displayName(Text.translatable("itemGroup.woodenMosaics"))
-            .entries((displayContext, entries) -> {
-                Arrays.stream(WoodenMosaicHelper.woodenMosaicVariants).forEach(entries::add);
-            })
+            .entries((displayContext, entries) -> Arrays.stream(WoodenMosaicHelper.woodenMosaicVariants).forEach(entries::add))
             .build();
 
     // TerracottaTiles item group
     final static ItemGroup TERRACOTTA_TILES_ITEM_GROUP = FabricItemGroup.builder()
             .icon(() -> new ItemStack(TerracottaTilesHelper.terracottaTilesVariants[0]))
             .displayName(Text.translatable("itemGroup.terracottaTiles"))
-            .entries((displayContext, entries) -> {
-                Arrays.stream(TerracottaTilesHelper.terracottaTilesVariants).forEach(entries::add);
-            })
+            .entries((displayContext, entries) -> Arrays.stream(TerracottaTilesHelper.terracottaTilesVariants).forEach(entries::add))
             .build();
 
     // Miscellaneous (Humility Misc) item group
@@ -85,15 +81,9 @@ public class ItemGroupRegistry {
 
 
     public static void putIntoItemGroup(Item[] items, RegistryKey<ItemGroup> group) {
-        ItemGroupEvents.modifyEntriesEvent(group).register(content -> {
-            for (Item item : items) {
-                content.add(item);
-            }
-        });
+        ItemGroupEvents.modifyEntriesEvent(group).register(content -> Arrays.stream(items).forEach(content::add));
     }
     public static void putIntoItemGroup(Item item, RegistryKey<ItemGroup> group) {
-        ItemGroupEvents.modifyEntriesEvent(group).register(content -> {
-            content.add(item);
-        });
+        ItemGroupEvents.modifyEntriesEvent(group).register(content -> content.add(item));
     }
 }
