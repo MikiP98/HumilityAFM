@@ -14,6 +14,7 @@ import net.minecraft.registry.RegistryWrapper;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 
+import static io.github.mikip98.humilityafm.HumilityAFM.getId;
 import static io.github.mikip98.humilityafm.HumilityAFM.getIds;
 
 public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
@@ -59,6 +60,11 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
         getOrCreateTagBuilder(ModBlockTags.STONE_OUTER_STAIRS)
                 .add(getIds(Arrays.stream(stonyVariants).map(s -> "outer_stairs_" + s)));
 
+        // Jack o'Lanterns
+        getOrCreateTagBuilder(ModBlockTags.JACK_O_LANTERNS)
+                .add(getId("jack_o_lantern_redstone"))
+                .add(getId("jack_o_lantern_soul"));
+
         // Candlesticks
         FabricTagProvider<Block>.FabricTagBuilder tag = getOrCreateTagBuilder(ModBlockTags.CANDLESTICKS)
                 .add(getIds(Arrays.stream(GenerationData.vanillaCandlestickMetals).map(s -> "candlestick_" + s)));
@@ -78,13 +84,16 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
                 // Inner & Outer Stairs
                 .addTag(ModBlockTags.WOODEN_INNER_STAIRS)
                 .addTag(ModBlockTags.WOODEN_OUTER_STAIRS)
-                .addOptionalTag(ModBlockTags.CANDLESTICKS);
+                // Jack o'Lanterns
+                .addTag(ModBlockTags.JACK_O_LANTERNS);
         // Pickaxe Mineable
         getOrCreateTagBuilder(ModBlockTags.PICKAXE_MINEABLE)
                 // Terracotta Tiles
                 .addTag(ModBlockTags.TERRACOTTA_TILES_BLOCKS)
                 // Inner & Outer Stairs
                 .addTag(ModBlockTags.STONE_INNER_STAIRS)
-                .addTag(ModBlockTags.STONE_OUTER_STAIRS);
+                .addTag(ModBlockTags.STONE_OUTER_STAIRS)
+                // Candlesticks
+                .addOptionalTag(ModBlockTags.CANDLESTICKS);
     }
 }

@@ -30,8 +30,12 @@ public class ModBlockTags {
     public static final TagKey<Block> WOODEN_OUTER_STAIRS = TagKey.of(RegistryKeys.BLOCK, getId("wooden_outer_stairs"));
     public static final TagKey<Block> STONE_OUTER_STAIRS = TagKey.of(RegistryKeys.BLOCK, getId("stone_outer_stairs"));
 
+    // Jack o'Lanterns
+    public static final TagKey<Block> JACK_O_LANTERNS = TagKey.of(RegistryKeys.BLOCK, getId("jack_o_lanterns"));
+
     // Candlesticks
     public static final TagKey<Block> CANDLESTICKS = TagKey.of(RegistryKeys.BLOCK, getId("candlesticks"));
+
 
     // Vanilla Tags
     public static final TagKey<Block> AXE_MINEABLE = TagKey.of(RegistryKeys.BLOCK, new Identifier("minecraft:mineable/axe"));
