@@ -8,6 +8,7 @@ import io.github.mikip98.humilityafm.util.GenerationData;
 import io.github.mikip98.humilityafm.util.data_types.Pair;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.minecraft.block.Block;
 import net.minecraft.registry.RegistryWrapper;
 
 import java.util.Arrays;
@@ -58,6 +59,11 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
         getOrCreateTagBuilder(ModBlockTags.STONE_OUTER_STAIRS)
                 .add(getIds(Arrays.stream(stonyVariants).map(s -> "outer_stairs_" + s)));
 
+        // Candlesticks
+        FabricTagProvider<Block>.FabricTagBuilder tag = getOrCreateTagBuilder(ModBlockTags.CANDLESTICKS)
+                .add(getIds(Arrays.stream(GenerationData.vanillaCandlestickMetals).map(s -> "candlestick_" + s)));
+        GenerationData.vanillaRustableCandlestickMetals.forEach(metals -> tag.add(getIds(Arrays.stream(metals).map(s -> "candlestick_" + s))));
+
 
         // ------------ Vanilla Tags ------------
         // Axe Mineable
@@ -71,7 +77,8 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
                 .addTag(ModBlockTags.WOODEN_MOSAIC_BLOCKS)
                 // Inner & Outer Stairs
                 .addTag(ModBlockTags.WOODEN_INNER_STAIRS)
-                .addTag(ModBlockTags.WOODEN_OUTER_STAIRS);
+                .addTag(ModBlockTags.WOODEN_OUTER_STAIRS)
+                .addOptionalTag(ModBlockTags.CANDLESTICKS);
         // Pickaxe Mineable
         getOrCreateTagBuilder(ModBlockTags.PICKAXE_MINEABLE)
                 // Terracotta Tiles
