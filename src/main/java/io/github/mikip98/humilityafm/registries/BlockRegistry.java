@@ -50,7 +50,7 @@ public class BlockRegistry {
     // Jack o'Lanterns
     public static final Block JACK_O_LANTERN_REDSTONE = new JackOLanternRedStone();
     public static final Block JACK_O_LANTERN_SOUL = new JackOLanternSoul();
-    public static final Block[] COLOURED_JACK_O_LANTERNS = Arrays.stream(GenerationData.vanillaColorPallet).map(s -> registerWithItemB(new JackOLantern(), s)).toArray(Block[]::new);
+    public static final Block[] COLOURED_JACK_O_LANTERNS = Arrays.stream(GenerationData.vanillaColorPallet).map(s -> registerWithItemB(new JackOLantern(), "jack_o_lantern_" + s)).toArray(Block[]::new);
 
 
     public static void register() {
