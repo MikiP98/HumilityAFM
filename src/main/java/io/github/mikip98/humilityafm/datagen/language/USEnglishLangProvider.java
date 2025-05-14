@@ -131,6 +131,11 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
         Map<String, String> translations = new HashMap<>();
         translations.put("jack_o_lantern_redstone", "Redstone Jack o'Lantern");
         translations.put("jack_o_lantern_soul", "Soul Jack o'Lantern");
+        int i = 0;
+        for (String color : GenerationData.vanillaColorPallet) {
+            translations.put("jack_o_lantern_" + color, formatName(color) + " Jack o'Lantern");
+            ++i;
+        }
         return translations;
     }
 
