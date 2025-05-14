@@ -1,13 +1,17 @@
 # HumilityAFM
-## Humility - Another Furniture Mod
+### Humility - Another Furniture Mod
 
-### Description
+## Description
 This is a simple and small mod that adds some simple decorative blocks such as cabinets (which are fancier types of item frames) as well as some vanilla block variations.
 <br>
 It specializes in procedurally generating variants of the same block so that you can always find the look you were searching for.
 <br>
+### Download
+The only official downloads are from [**Modrinth**](https://modrinth.com/mod/humility-afm/versions) and [Github](https://github.com/MikiP98/HumilityAFM)  
+I can't ensure any other downloads are safe and don't include viruses  
+PLS download the mod from Modrinth if you can
 <br>
-### Features:
+## Features:
 Cabinets! <br>
 Make your treasures pop! <br>
 Match the wood to your build and wool interior to your item!  
@@ -50,7 +54,7 @@ This mod is highly customisable through its config!
 <br>
 <br>
 
-### Roadmap:
+## Roadmap:
 
 - Make Redstone Jack o'Lanterns to turn off when powered
 - Fancy carpets
@@ -92,7 +96,7 @@ This mod is highly customisable through its config!
 
 <br>
 
-### FAQ: <br>
+## FAQ: <br>
 <b>q:</b> Why don’t I see LEDs in my game? <br>
 <b>a:</b> You need to enable them in config and restart the game. I thought they aren't vanilla enough to include them by default. <br>
 <br>
