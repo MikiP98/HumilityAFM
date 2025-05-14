@@ -84,10 +84,6 @@ public class HumilityAFM implements ModInitializer {
 		ConfigJSON.checkShimmerSupportConfig();
 		checkForSupportedMods();
 
-		// DATAGEN REQUIRED!!!
-		ModConfig.enableLEDs = true;
-		ModConfig.enableCandlesticks = true;
-
 		CabinetBlockGenerator.init();
 		ForcedCornerStairsGenerator.init();
 		WoodenMosaicHelper.init();
