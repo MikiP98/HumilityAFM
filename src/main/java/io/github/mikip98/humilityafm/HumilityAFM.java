@@ -79,6 +79,7 @@ public class HumilityAFM implements ModInitializer {
 
 		// ------------------------------------ INITIALIZATION ------------------------------------
 		LOGGER.info(MOD_NAME + " is initializing!");
+		if (Math.random() < 0.05) printPumpkin();
 
 		ConfigJSON.loadConfigFromFile();
 		ConfigJSON.checkShimmerSupportConfig();
@@ -89,7 +90,6 @@ public class HumilityAFM implements ModInitializer {
 		WoodenMosaicHelper.init();
 		TerracottaTilesHelper.init();
 		ColouredLightsGenerator.init();
-		PumpkinHelper.init();
 		if (ModConfig.enableCandlesticks) CandlestickGenerator.init();
 
 
@@ -110,8 +110,6 @@ public class HumilityAFM implements ModInitializer {
 		WoodenMosaicHelper.registerWoodenMosaicVariants();
 		// Register terracotta tiles variants
 		TerracottaTilesHelper.registerTerracottaTilesVariants();
-		// Register red and blue pumpkins
-		PumpkinHelper.registerPumpkins();
 
 		// ............ BLOCK ENTITIES ............
 		//Register cabinet block entity
@@ -191,5 +189,14 @@ public class HumilityAFM implements ModInitializer {
 	}
 	public static Identifier[] getIds(Stream<String> names) {
 		return names.map(HumilityAFM::getId).toArray(Identifier[]::new);
+	}
+
+
+	public static void printPumpkin() {
+		System.out.println("  ___  ");
+		System.out.println(" / _ \\ ");
+		System.out.println("| | | |");
+		System.out.println("| |_| |");
+		System.out.println(" \\___/ ");
 	}
 }

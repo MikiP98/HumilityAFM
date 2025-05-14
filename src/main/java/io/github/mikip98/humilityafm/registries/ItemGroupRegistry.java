@@ -57,10 +57,12 @@ public class ItemGroupRegistry {
 
     // Miscellaneous (Humility Misc) item group
     final static ItemGroup HUMILITY_MISCELLANEOUS_GROUP = FabricItemGroup.builder()
-            .icon(() -> new ItemStack(PumpkinHelper.PumpkinsVariants[0]))
+            .icon(() -> new ItemStack(BlockRegistry.JACK_O_LANTERN_SOUL))
             .displayName(Text.translatable("itemGroup.humilityMisc"))
             .entries((displayContext, entries) -> {
-                Arrays.stream(PumpkinHelper.PumpkinsVariants).forEach(entries::add);
+                entries.add(BlockRegistry.JACK_O_LANTERN_REDSTONE);
+                entries.add(BlockRegistry.JACK_O_LANTERN_SOUL);
+                Arrays.stream(BlockRegistry.COLOURED_JACK_O_LANTERNS).forEach(entries::add);
                 Arrays.stream(ItemRegistry.glowingPowderVariants).forEach(entries::add);
                 Arrays.stream(ColouredLightsGenerator.colouredTorchesVariants).forEach(entries::add);
                 if (ModConfig.enableLEDs) Arrays.stream(ColouredLightsGenerator.LEDBlockVariants).forEach(entries::add);

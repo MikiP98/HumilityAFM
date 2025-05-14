@@ -4,14 +4,13 @@ import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
 import io.github.mikip98.humilityafm.generators.CandlestickGenerator;
 import io.github.mikip98.humilityafm.generators.ColouredLightsGenerator;
 import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
-import io.github.mikip98.humilityafm.helpers.PumpkinHelper;
 import io.github.mikip98.humilityafm.helpers.TerracottaTilesHelper;
 import io.github.mikip98.humilityafm.helpers.WoodenMosaicHelper;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.GenerationData;
-import io.github.mikip98.humilityafm.util.data_types.Torch;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.minecraft.block.Block;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
@@ -199,15 +198,33 @@ public class RecipeGenerator extends AFMRecipieProvider {
     }
 
     protected static void generateJackOLanternRecipies(Consumer<RecipeJsonProvider> exporter) {
-        int i = 0;
         Item carved_pumpkin = getItemFromName("carved_pumpkin");
-        for (Torch torch : PumpkinHelper.torches) {
-            Item jack_o_lantern = PumpkinHelper.PumpkinsItemVariants[i];
+        offerDoubleInputShapelessRecipe(
+                exporter,
+                BlockRegistry.JACK_O_LANTERN_REDSTONE,
+                carved_pumpkin,
+                getItemFromName("redstone_torch"),
+                MOD_ID + "/jack_o_lanterns",
+                1,
+                "jack_o_lanterns/"
+        );
+        offerDoubleInputShapelessRecipe(
+                exporter,
+                BlockRegistry.JACK_O_LANTERN_SOUL,
+                carved_pumpkin,
+                getItemFromName("soul_torch"),
+                MOD_ID + "/jack_o_lanterns",
+                1,
+                "jack_o_lanterns/"
+        );
+        int i = 0;
+        for (Block jackOLantern : BlockRegistry.COLOURED_JACK_O_LANTERNS) {
+            Item torch = ColouredLightsGenerator.colouredTorchesItemVariants[i];
             offerDoubleInputShapelessRecipe(
                     exporter,
-                    jack_o_lantern,
+                    jackOLantern,
                     carved_pumpkin,
-                    getItemFromName(torch.type() + "_torch"),
+                    torch,
                     MOD_ID + "/jack_o_lanterns",
                     1,
                     "jack_o_lanterns/"

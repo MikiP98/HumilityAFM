@@ -9,6 +9,8 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.minecraft.block.Block;
 
+import java.util.Arrays;
+
 public class BlockLootTableGenerator extends FabricBlockLootTableProvider {
     public BlockLootTableGenerator(FabricDataOutput dataOutput) {
         super(dataOutput);
@@ -46,5 +48,10 @@ public class BlockLootTableGenerator extends FabricBlockLootTableProvider {
         for (Block block : ForcedCornerStairsGenerator.outerStairsBlockVariants) {
             addDrop(block);
         }
+
+        // Jack o'Lanterns
+        addDrop(BlockRegistry.JACK_O_LANTERN_REDSTONE);
+        addDrop(BlockRegistry.JACK_O_LANTERN_SOUL);
+        Arrays.stream(BlockRegistry.COLOURED_JACK_O_LANTERNS).forEach(this::addDrop);
     }
 }

@@ -1,4 +1,4 @@
-package io.github.mikip98.humilityafm.content.blocks;
+package io.github.mikip98.humilityafm.content.blocks.templates;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -8,13 +8,13 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.Direction;
 
-public class JustHorizontalFacingBlock extends HorizontalFacingBlock {
+public class PlainHorizontalFacingBlock extends HorizontalFacingBlock {
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(Properties.HORIZONTAL_FACING);
     }
 
-    public JustHorizontalFacingBlock(Settings settings) {
+    public PlainHorizontalFacingBlock(Settings settings) {
         super(settings);
         setDefaultState(getStateManager().getDefaultState()
                 .with(Properties.HORIZONTAL_FACING, Direction.SOUTH));

@@ -3,6 +3,9 @@ package io.github.mikip98.humilityafm.registries;
 import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.CabinetBlock;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.IlluminatedCabinetBlock;
+import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.JackOLantern;
+import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.JackOLanternRedStone;
+import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.JackOLanternSoul;
 import io.github.mikip98.humilityafm.content.blocks.stairs.InnerStairs;
 import io.github.mikip98.humilityafm.content.blocks.stairs.OuterStairs;
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
@@ -22,6 +25,7 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
 import static io.github.mikip98.humilityafm.registries.ItemGroupRegistry.putIntoItemGroup;
@@ -43,6 +47,11 @@ public class BlockRegistry {
     private static final FabricBlockSettings WoodenMosaicSettings = FabricBlockSettings.create().strength(WoodenMosaicStrength).requiresTool().sounds(BlockSoundGroup.WOOD);
     public static final Block WOODEN_MOSAIC = new Block(WoodenMosaicSettings);
 
+    // Jack o'Lanterns
+    public static final Block JACK_O_LANTERN_REDSTONE = new JackOLanternRedStone();
+    public static final Block JACK_O_LANTERN_SOUL = new JackOLanternSoul();
+    public static final Block[] COLOURED_JACK_O_LANTERNS = Arrays.stream(GenerationData.vanillaColorPallet).map(s -> registerWithItemB(new JackOLantern(), s)).toArray(Block[]::new);
+
 
     public static void register() {
         // ............ TEST BLOCKS & BLOCK ITEMS ............
@@ -58,10 +67,11 @@ public class BlockRegistry {
 
         // ............ FINAL BLOCKS & BLOCK ITEMS ............
         // Special Jack-O-Lanterns
-        // TODO: Move redstone and soul Jack-O-Lanterns here and make them special
+        registerWithItem(JACK_O_LANTERN_REDSTONE, "jack_o_lantern_redstone");
+        registerWithItem(JACK_O_LANTERN_SOUL, "jack_o_lantern_soul");
+        // TODO: Make redstone and soul Jack-O-Lanterns them special
         //  The redstone one can be redstone reactive.
         //  The soul one can emmit soul particles.
-        //  The PumpkinGenerator will generate only non-special coloured Jack-O-Lanterns from coloured torches.
 
         // Register cabinets
         CabinetBlockGenerator.cabinetBlockItemVariants = registerArrayWithItems(
@@ -131,6 +141,12 @@ public class BlockRegistry {
         Identifier id = getId(name);
         Registry.register(Registries.BLOCK, id, block);
         return Registry.register(Registries.ITEM, id, new BlockItem(block, new FabricItemSettings()));
+    }
+    protected static Block registerWithItemB(Block block, String name) {
+        Identifier id = getId(name);
+        Registry.register(Registries.BLOCK, id, block);
+        Registry.register(Registries.ITEM, id, new BlockItem(block, new FabricItemSettings()));
+        return block;
     }
 
 
