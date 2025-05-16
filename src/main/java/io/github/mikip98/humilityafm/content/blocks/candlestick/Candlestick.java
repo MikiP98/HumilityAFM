@@ -222,7 +222,7 @@ public class Candlestick extends HorizontalFacingBlock {
     @SuppressWarnings("deprecation")
     @Override
     public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-        if (state.getBlock() != newState.getBlock()) {
+        if (state.getBlock() != newState.getBlock() && state.get(ModProperties.CANDLE)) {
             Block.dropStack(world, pos, new ItemStack(state.get(CANDLE_COLOR).asCandle()));
             super.onStateReplaced(state, world, pos, newState, moved);
         }
