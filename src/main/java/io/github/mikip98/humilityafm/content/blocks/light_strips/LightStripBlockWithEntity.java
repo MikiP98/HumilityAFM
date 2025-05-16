@@ -1,6 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.light_strips;
 
-import io.github.mikip98.humilityafm.content.blockentities.LEDBlockEntity;
+import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntity;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -16,6 +16,6 @@ public class LightStripBlockWithEntity extends LightStripBlock implements BlockE
     @Nullable
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new LEDBlockEntity(pos, state);
+        return new LightStripBlockEntity(pos, state);
     }
 }
