@@ -77,7 +77,7 @@ public class Candlestick extends HorizontalFacingBlock {
             if (((BlockItem) heldItem.getItem()).getBlock() instanceof CandleBlock) {
                 // Check if the candlestick is already holding a candle
                 if (state.get(ModProperties.CANDLE)) {
-                    player.giveItemStack(new ItemStack(state.get(CANDLE_COLOR).asCandle(), 1));
+                    player.getInventory().offerOrDrop(new ItemStack(state.get(CANDLE_COLOR).asCandle()));
                 }
                 world.setBlockState(pos, state.with(ModProperties.CANDLE, true).with(CANDLE_COLOR, CandleColor.getColor(heldItem.getItem())), Block.NOTIFY_ALL);
                 if (!player.isCreative()) heldItem.decrement(1);
@@ -85,7 +85,7 @@ public class Candlestick extends HorizontalFacingBlock {
                 return ActionResult.SUCCESS;
             }
         }
-        // Remove candle & extinguish
+        // Remove candle and extinguish
         if (heldItem.isEmpty() && player.isSneaking()) {
             // Extinguish the candle
             if (state.get(Properties.LIT)) {
@@ -95,7 +95,7 @@ public class Candlestick extends HorizontalFacingBlock {
             }
             // Remove the candle
             else if (state.get(ModProperties.CANDLE)) {
-                player.giveItemStack(new ItemStack(state.get(CANDLE_COLOR).asCandle(), 1));
+                player.getInventory().offerOrDrop(new ItemStack(state.get(CANDLE_COLOR).asCandle()));
                 world.setBlockState(pos, state.with(ModProperties.CANDLE, false), Block.NOTIFY_ALL);
                 world.playSoundAtBlockCenter(pos, SoundEvents.ENTITY_ITEM_FRAME_REMOVE_ITEM, SoundCategory.BLOCKS, 0.9f, 0.9f, true);
                 return ActionResult.SUCCESS;
@@ -217,5 +217,14 @@ public class Candlestick extends HorizontalFacingBlock {
             }
         }
         return Block.createCuboidShape(5, 0, 11, 11, 16, 16);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+        if (state.getBlock() != newState.getBlock()) {
+            Block.dropStack(world, pos, new ItemStack(state.get(CANDLE_COLOR).asCandle()));
+            super.onStateReplaced(state, world, pos, newState, moved);
+        }
     }
 }
