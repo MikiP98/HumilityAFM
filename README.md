@@ -57,10 +57,13 @@ This mod is highly customisable through its config!
 ## Roadmap:
 
 - Make Redstone Jack o'Lanterns to turn off when powered
+- Make Soul Jack o'Lanterns special in some way
 - Fancy carpets
-- Server feature sync
+- Server feature sync?
+  - If done through a datapack, the blocks can be enabled by default on the client?
 - Add ceiling and floor candlesticks variants
-- Make LEDs and Candlestick into integrated datapacks
+- Add floor and ceiling variants of the cabinets
+- Make LEDs and Candlestick into integrated datapacks?
 - Make BetterNether and BetterEnd support into integrated datapacks
 - Add thin <sup>*(Blibiocraft style)*</sup> and short cabinets?
 - Add a feature to connect 2 neighboring Cabinets into a big one?
@@ -80,7 +83,6 @@ This mod is highly customisable through its config!
   - 1.8.9?
   - 1.7.10?
   - 1.0?
-- Add floor and ceiling variants of the cabinets
 - Redo the window capture screenshots or at least crop the window app bar
 - Rethink the README structure
 - Rethink cabinet opening, item insertion and removal, and such
@@ -88,11 +90,15 @@ This mod is highly customisable through its config!
 - Add leather variants of the cabinets?
   - Make the leather cabinets dyable?
 - Add coloured torches:
-  - `LED powder` into `Glowing powder`
-  - 1 powder - weak torch; 2 powders - torch; 3 powders - strong torch
-  - Move LEDs to misc tab, alongside the powders
-- Compress candlesticks into 4 items for each metal type
+  - ~~`LED powder` into `Glowing powder`~~
+  - ~~1 powder - weak torch; 2 powders - torch; 3 powders - strong torch~~
+  - ~~Move LEDs to misc tab, alongside the powders~~
+  - Rename LEDs to light strips, consider enabling them by default?
+  - Make coloured Jack o'Lanterns
+- ~~Compress candlesticks into 4 items for each metal type~~
 - Move VoxelShapes from switches to a maps or variables
+- Add hanging pots
+- Add crafting table on a stick?
 
 <br>
 
