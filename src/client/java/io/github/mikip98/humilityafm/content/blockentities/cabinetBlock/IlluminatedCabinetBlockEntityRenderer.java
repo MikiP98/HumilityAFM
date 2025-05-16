@@ -20,7 +20,6 @@ import org.joml.Quaternionf;
 
 @Environment(EnvType.CLIENT)
 public class IlluminatedCabinetBlockEntityRenderer implements BlockEntityRenderer<IlluminatedCabinetBlockEntity> {
-
     @SuppressWarnings("unused")
     public IlluminatedCabinetBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {}
 
@@ -40,7 +39,6 @@ public class IlluminatedCabinetBlockEntityRenderer implements BlockEntityRendere
         BlockState blockState = world.getBlockState(pos);
 
         if (blockState == null || !(blockState.getBlock() instanceof IlluminatedCabinetBlock)) {
-            // If the block state is null or not an instance of LEDStripBlock, return early
             matrices.pop();
             return;
         }
@@ -84,36 +82,16 @@ public class IlluminatedCabinetBlockEntityRenderer implements BlockEntityRendere
         matrices.pop(); // Pop before rendering the block
         matrices.push(); // Push again to render the block
 
-        float blockSize = 0.875f;
+        float blockSizeYZ = 0.875f;
 //        byte posisionConstant = 8;
         float posisionConstant = 1.15f;
 
-        float blockSizeX = blockSize;
-        float blockSizeY = blockSize;
-        float blockSizeZ = blockSize;
+        float blockSizeX = 0.25f;
         float posisionConstantX = posisionConstant;
-        float posisionConstantY = posisionConstant;
         float posisionConstantZ = posisionConstant;
 
         float scale = 1.005f;
 
-//        switch (blockState.get(CabinetBlock.FACING)) {
-//            case NORTH -> {
-//                blockSizeZ = 0.25f;
-//                posisionConstantZ = posisionConstant;
-//            }
-//            case SOUTH -> {
-//                blockSizeZ = 0.25f;
-//            }
-//            case EAST -> {
-//                blockSizeX = 0.25f;
-//            }
-//            case WEST -> {
-//                blockSizeX = 0.25f;
-//                posisionConstantX = posisionConstant;
-//            }
-//        }
-        blockSizeX = 0.25f;
         switch (blockState.get(CabinetBlock.FACING)) {
             case NORTH -> {
                 posisionConstantX = 4f;
@@ -128,9 +106,7 @@ public class IlluminatedCabinetBlockEntityRenderer implements BlockEntityRendere
             }
         }
 
-//        matrices.scale(1, 1, 1);
-        matrices.translate(-blockSizeX/2*(scale-1)*posisionConstantX, -blockSizeY/2*(scale-1)*posisionConstantY, -blockSizeZ/2*(scale-1)*posisionConstantZ);
-
+        matrices.translate(-blockSizeX/2*(scale-1)*posisionConstantX, -blockSizeYZ/2*(scale-1)*posisionConstant, -blockSizeYZ/2*(scale-1)*posisionConstantZ);
         matrices.scale(scale, scale, scale);
 
         // Render the LED strip block
@@ -145,11 +121,10 @@ public class IlluminatedCabinetBlockEntityRenderer implements BlockEntityRendere
 
         scale = 0.992f;
 
-        matrices.translate(-blockSizeX/2*(scale-1)*posisionConstantX, -blockSizeY/2*(scale-1)*posisionConstantY, -blockSizeZ/2*(scale-1)*posisionConstantZ);
-
+        matrices.translate(-blockSizeX/2*(scale-1)*posisionConstantX, -blockSizeYZ/2*(scale-1)*posisionConstant, -blockSizeYZ/2*(scale-1)*posisionConstantZ);
         matrices.scale(scale, scale, scale);
 
-        // Render the LED strip block
+        // Brighten the inside of the illuminated cabinet
         int insideLight = BlockEntityRendererHelper.multiplyLight(light, 1.15f);
         insideLight = BlockEntityRendererHelper.addLight(insideLight, 3);
 
