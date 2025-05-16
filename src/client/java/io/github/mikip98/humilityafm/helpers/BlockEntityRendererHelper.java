@@ -12,9 +12,9 @@ public class BlockEntityRendererHelper {
         // Extract 4 bits from the second position
         int light2 = (light >> 4) & 0b1111;
 
-        // Adjust the brightness here, you may need to fine-tune the formula based on your needs
-        light1 = (int)(light1 * brightness);
-        light2 = (int)(light2 * brightness);
+        // Multiply the brightness
+        light1 = Math.round(light1 * brightness);
+        light2 = Math.round(light2 * brightness);
 
         // Clamp the values to ensure they stay within the valid range
         light1 = Math.min(15, light1);
