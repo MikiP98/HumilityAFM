@@ -55,10 +55,10 @@ public class RustableCandlestick extends Candlestick {
         if (random.nextDouble() >= 0.96) this.rust(state, world, pos);
     }
 
-    public void rust(BlockState state, ServerWorld world, BlockPos pos) {
+    public void rust(BlockState state, World world, BlockPos pos) {
         world.setBlockState(pos, getChanageBlockState(rustNextLevel, state), Block.NOTIFY_ALL);
     }
-    public void derust(BlockState state, ServerWorld world, BlockPos pos) {
+    public void derust(BlockState state, World world, BlockPos pos) {
         world.setBlockState(pos, getChanageBlockState(rustPreviousLevel, state), Block.NOTIFY_ALL);
     }
     protected BlockState getChanageBlockState(BlockState newBase, BlockState state) {
@@ -137,10 +137,8 @@ public class RustableCandlestick extends Candlestick {
             // De-rust
             else if (rustPreviousLevel != null) {
                 // ServerWorld check is required to be spam proof
-                if (world instanceof ServerWorld) {
-                    derust(state, (ServerWorld) world, pos);
-                    return ActionResult.SUCCESS;
-                }
+                if (!world.isClient) derust(state, world, pos);
+                return ActionResult.SUCCESS;
             }
         }
 
