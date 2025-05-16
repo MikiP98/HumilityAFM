@@ -101,9 +101,7 @@ public class IlluminatedCabinetBlockEntityRenderer implements BlockEntityRendere
                 posisionConstantX = 4f;
                 posisionConstantZ = 0.3f;
             }
-            case WEST -> {
-                posisionConstantX = 7f;
-            }
+            case WEST -> posisionConstantX = 7f;
         }
 
         matrices.translate(-blockSizeX/2*(scale-1)*posisionConstantX, -blockSizeYZ/2*(scale-1)*posisionConstant, -blockSizeYZ/2*(scale-1)*posisionConstantZ);
