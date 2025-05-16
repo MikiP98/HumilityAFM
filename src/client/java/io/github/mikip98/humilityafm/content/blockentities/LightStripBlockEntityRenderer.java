@@ -1,6 +1,6 @@
 package io.github.mikip98.humilityafm.content.blockentities;
 
-import io.github.mikip98.humilityafm.content.blocks.light_strips.LightStripBlock;
+import io.github.mikip98.humilityafm.content.blocks.light_strips.LightStripBlockWithEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.StairsBlock;
@@ -33,7 +33,7 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LEDBlo
 
         BlockState blockState = world.getBlockState(pos);
 
-        if (blockState == null || !(blockState.getBlock() instanceof LightStripBlock)) {
+        if (blockState == null || !(blockState.getBlock() instanceof LightStripBlockWithEntity)) {
             // If the block state is null or not an instance of LEDStripBlock, return early
             matrices.pop();
             return;
