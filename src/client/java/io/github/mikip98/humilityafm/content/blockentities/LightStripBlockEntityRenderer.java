@@ -14,9 +14,9 @@ import net.minecraft.world.World;
 
 import static net.minecraft.block.enums.BlockHalf.TOP;
 
-public class LEDBlockEntityRenderer implements BlockEntityRenderer<LEDBlockEntity> {
+public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LEDBlockEntity> {
     @SuppressWarnings("unused")
-    public LEDBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {}
+    public LightStripBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {}
 
     @Override
     public void render(LEDBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
