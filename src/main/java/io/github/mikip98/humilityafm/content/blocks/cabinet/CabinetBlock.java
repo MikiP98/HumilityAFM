@@ -18,7 +18,6 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -28,7 +27,22 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetBlockEntity;
 
+import java.util.Map;
+
 public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable, BlockEntityProvider {
+    protected static final Map<Direction, VoxelShape> openVoxelShape = Map.of(
+            Direction.NORTH, VoxelShapes.cuboid(0.0625f, 0.0625f, 0.81252f, 0.9375f, 0.9375f, 1.0f),  //open, reverse original, second half finished, to do
+            Direction.SOUTH, VoxelShapes.cuboid(0.0625f, 0.0625f, 0.0f, 0.9375f, 0.9375f, 0.18748f),  //open, original
+            Direction.EAST,  VoxelShapes.cuboid(0.0f, 0.0625f, 0.0625f, 0.18748f, 0.9375f, 0.9375f),  //open, swap z <-> x
+            Direction.WEST,  VoxelShapes.cuboid(0.81252f, 0.0625f, 0.0625f, 1.0f, 0.9375f, 0.9375f)  //open, reverse + swap
+    );
+    protected static final Map<Direction, VoxelShape> closedVoxelShape = Map.of(
+            Direction.NORTH, VoxelShapes.union(openVoxelShape.get(Direction.NORTH), VoxelShapes.cuboid(0.0625f, 0.0625f, 0.75f, 0.9375f, 0.9375f, 0.81248f)),  //reverse original, second half finished, to do
+            Direction.SOUTH, VoxelShapes.union(openVoxelShape.get(Direction.SOUTH), VoxelShapes.cuboid(0.0625f, 0.0625f, 0.18752f, 0.9375f, 0.9375f, 0.25f)),  //original
+            Direction.EAST,  VoxelShapes.union(openVoxelShape.get(Direction.EAST), VoxelShapes.cuboid(0.18752f, 0.0625f, 0.0625f, 0.25f, 0.9375f, 0.9375f)),  //swap z <-> x
+            Direction.WEST,  VoxelShapes.union(openVoxelShape.get(Direction.WEST), VoxelShapes.cuboid(0.75f, 0.0625f, 0.0625f, 0.81248f, 0.9375f, 0.9375f))  //reverse + swap
+    );
+
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
     public static final BooleanProperty OPEN = Properties.OPEN;
 
@@ -39,8 +53,7 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
         builder.add(WATERLOGGED);
     }
 
-    public static final FabricBlockSettings defaultSettings = FabricBlockSettings
-            .create()
+    public static final FabricBlockSettings defaultSettings = FabricBlockSettings.create()
             .strength(2.0f)
             .requiresTool()
             .nonOpaque()
@@ -119,37 +132,8 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
     public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
         Direction dir = state.get(FACING);
         boolean open = state.get(OPEN);
-
-        if (open) {
-
-            switch(dir) {
-                case NORTH:
-                    return VoxelShapes.cuboid(0.0625f, 0.0625f, 0.81252f, 0.9375f, 0.9375f, 1.0f); //open, reverse original, second half finished, to do
-                case SOUTH:
-                    return VoxelShapes.cuboid(0.0625f, 0.0625f, 0.0f, 0.9375f, 0.9375f, 0.18748f); //open, original
-                case EAST:
-                    return VoxelShapes.cuboid(0.0f, 0.0625f, 0.0625f, 0.18748f, 0.9375f, 0.9375f); //open, swap z <-> x
-                case WEST:
-                    return VoxelShapes.cuboid(0.81252f, 0.0625f, 0.0625f, 1.0f, 0.9375f, 0.9375f); //open, reverse + swap
-                default:
-                    return VoxelShapes.fullCube();
-            }
-
-        } else {
-
-            switch(dir) {
-                case NORTH:
-                    return VoxelShapes.combine(VoxelShapes.cuboid(0.0625f, 0.0625f, 0.81252f, 0.9375f, 0.9375f, 1.0f), VoxelShapes.cuboid(0.0625f, 0.0625f, 0.75f, 0.9375f, 0.9375f, 0.81248f), BooleanBiFunction.OR); //reverse original, second half finished, to do
-                case SOUTH:
-                    return VoxelShapes.combine(VoxelShapes.cuboid(0.0625f, 0.0625f, 0.0f, 0.9375f, 0.9375f, 0.18748f), VoxelShapes.cuboid(0.0625f, 0.0625f, 0.18752f, 0.9375f, 0.9375f, 0.25f), BooleanBiFunction.OR); //original
-                case EAST:
-                    return VoxelShapes.combine(VoxelShapes.cuboid(0.0f, 0.0625f, 0.0625f, 0.18748f, 0.9375f, 0.9375f), VoxelShapes.cuboid(0.18752f, 0.0625f, 0.0625f, 0.25f, 0.9375f, 0.9375f), BooleanBiFunction.OR); //swap z <-> x
-                case WEST:
-                    return VoxelShapes.combine(VoxelShapes.cuboid(0.81252f, 0.0625f, 0.0625f, 1.0f, 0.9375f, 0.9375f), VoxelShapes.cuboid(0.75f, 0.0625f, 0.0625f, 0.81248f, 0.9375f, 0.9375f), BooleanBiFunction.OR); //reverse + swap
-                default:
-                    return VoxelShapes.fullCube();
-            }
-        }
+        if (open) return openVoxelShape.get(dir);
+        else return closedVoxelShape.get(dir);
     }
 
     @Override
