@@ -99,6 +99,17 @@ This mod is highly customisable through its config!
 - Move VoxelShapes from switches to a maps or variables
 - Add hanging pots
 - Add crafting table on a stick?
+- Add carpet covered stairs?
+- Add correct map colors to generated blocks:
+  - Cabinets and Illuminated Cabinets
+  - Candlesticks
+  - Wooden Mosaics
+  - Terracotta Tiles
+  - Light Strips
+  - Coloured Torches
+  - Jack o'Lanterns
+  - Forced Corner Stairs
+- Fix LEDs loosing their Block Entity
 
 <br>
 
