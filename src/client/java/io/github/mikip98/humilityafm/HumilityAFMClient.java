@@ -7,16 +7,16 @@ import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetBlockEntityRenderer;
-import io.github.mikip98.humilityafm.content.blockentities.LEDBlockEntityRenderer;
+import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntityRenderer;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
-import net.minecraft.util.Identifier;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.MOD_ID;
+import static io.github.mikip98.humilityafm.HumilityAFM.getId;
 
 public class HumilityAFMClient implements ClientModInitializer {
 	@Override
@@ -40,18 +40,14 @@ public class HumilityAFMClient implements ClientModInitializer {
 
 		// LED block variants
 		if (ModConfig.enableLEDs) {
-			BlockEntityRendererFactories.register(HumilityAFM.LED_BLOCK_ENTITY, LEDBlockEntityRenderer::new);
+			BlockEntityRendererFactories.register(HumilityAFM.LED_BLOCK_ENTITY, LightStripBlockEntityRenderer::new);
 		}
 
 		FabricLoader.getInstance().getModContainer(MOD_ID).ifPresent(container -> {
-			ResourceManagerHelper.registerBuiltinResourcePack(asId("3d_cabinet"), container, ResourcePackActivationType.NORMAL);
-			ResourceManagerHelper.registerBuiltinResourcePack(asId("3d_cabinet_plus_vanilla_rp_compat"), container, ResourcePackActivationType.NORMAL);
-			ResourceManagerHelper.registerBuiltinResourcePack(asId("cabinet_vanilla_rp_compat"), container, ResourcePackActivationType.NORMAL);
-			ResourceManagerHelper.registerBuiltinResourcePack(asId("low_quality_cabinet"), container, ResourcePackActivationType.NORMAL);
+			ResourceManagerHelper.registerBuiltinResourcePack(getId("3d_cabinet"), container, ResourcePackActivationType.NORMAL);
+			ResourceManagerHelper.registerBuiltinResourcePack(getId("3d_cabinet_plus_vanilla_rp_compat"), container, ResourcePackActivationType.NORMAL);
+			ResourceManagerHelper.registerBuiltinResourcePack(getId("cabinet_vanilla_rp_compat"), container, ResourcePackActivationType.NORMAL);
+			ResourceManagerHelper.registerBuiltinResourcePack(getId("low_quality_cabinet"), container, ResourcePackActivationType.NORMAL);
 		});
-	}
-
-	public static Identifier asId(String path) {
-		return new Identifier(MOD_ID, path);
 	}
 }
