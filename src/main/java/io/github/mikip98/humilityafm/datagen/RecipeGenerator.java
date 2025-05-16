@@ -13,6 +13,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.block.Block;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.Registries;
@@ -63,12 +64,12 @@ public class RecipeGenerator extends AFMRecipieProvider {
     protected static void generateCabinetRecipies(Consumer<RecipeJsonProvider> exporter) {
         int i = 0;
         for (String woodType : GenerationData.vanillaWoodTypes) {
-            Item[] currentWoodTypeCabinets = Arrays.copyOfRange(CabinetBlockGenerator.cabinetBlockItemVariants, i, i + GenerationData.vanillaColorPallet.length);
-            Item[] currentWoodTypeIlluminatedCabinets = Arrays.copyOfRange(CabinetBlockGenerator.illuminatedCabinetBlockItemVariants, i, i + GenerationData.vanillaColorPallet.length);
+            ItemConvertible[] currentWoodTypeCabinets = Arrays.copyOfRange(CabinetBlockGenerator.cabinetBlockVariants, i, i + GenerationData.vanillaColorPallet.length);
+            ItemConvertible[] currentWoodTypeIlluminatedCabinets = Arrays.copyOfRange(CabinetBlockGenerator.illuminatedCabinetBlockVariants, i, i + GenerationData.vanillaColorPallet.length);
 
             for (String color : GenerationData.vanillaColorPallet) {
-                Item cabinetBlockItemVariant = CabinetBlockGenerator.cabinetBlockItemVariants[i];
-                Item illuminatedCabinetBlockItemVariant = CabinetBlockGenerator.illuminatedCabinetBlockItemVariants[i];
+                ItemConvertible cabinetBlockItemVariant = CabinetBlockGenerator.cabinetBlockVariants[i];
+                ItemConvertible illuminatedCabinetBlockItemVariant = CabinetBlockGenerator.illuminatedCabinetBlockVariants[i];
 
                 offerCabinetRecipe(
                         exporter,
@@ -87,25 +88,25 @@ public class RecipeGenerator extends AFMRecipieProvider {
                 // Color change recipies
                 Item currentDye = getItemFromName(color + "_dye");
 
-                List<Item> currentWoodTypeCabinetsWithoutCurrentColor = new ArrayList<>(List.of(currentWoodTypeCabinets));
+                List<ItemConvertible> currentWoodTypeCabinetsWithoutCurrentColor = new ArrayList<>(List.of(currentWoodTypeCabinets));
                 currentWoodTypeCabinetsWithoutCurrentColor.remove(i % GenerationData.vanillaColorPallet.length);
 
                 offerColorChangeRecipie(
                         exporter,
                         cabinetBlockItemVariant,
-                        Ingredient.ofItems(currentWoodTypeCabinetsWithoutCurrentColor.toArray(new Item[0])),
+                        Ingredient.ofItems(currentWoodTypeCabinetsWithoutCurrentColor.toArray(new ItemConvertible[0])),
                         currentDye,
                         MOD_ID + "/cabinets",
                         "cabinets/color_change/"
                 );
 
-                List<Item> currentWoodTypeIlluminatedCabinetsWithoutCurrentColor = new ArrayList<>(List.of(currentWoodTypeIlluminatedCabinets));
+                List<ItemConvertible> currentWoodTypeIlluminatedCabinetsWithoutCurrentColor = new ArrayList<>(List.of(currentWoodTypeIlluminatedCabinets));
                 currentWoodTypeIlluminatedCabinetsWithoutCurrentColor.remove(i % GenerationData.vanillaColorPallet.length);
 
                 offerColorChangeRecipie(
                         exporter,
                         illuminatedCabinetBlockItemVariant,
-                        Ingredient.ofItems(currentWoodTypeIlluminatedCabinetsWithoutCurrentColor.toArray(new Item[0])),
+                        Ingredient.ofItems(currentWoodTypeIlluminatedCabinetsWithoutCurrentColor.toArray(new ItemConvertible[0])),
                         currentDye,
                         MOD_ID + "/illuminated_cabinets",
                         "illuminated_cabinets/color_change/"
@@ -189,10 +190,11 @@ public class RecipeGenerator extends AFMRecipieProvider {
         int i = 0;
         for (String woodType : GenerationData.vanillaWoodTypes) {
             Item stairs = getItemFromName(woodType + "_stairs");
-            Item inner_stairs = ForcedCornerStairsGenerator.innerStairsBlockItemVariants[i];
-            Item outer_stairs = ForcedCornerStairsGenerator.outerStairsBlockItemVariants[i];
+            ItemConvertible inner_stairs = ForcedCornerStairsGenerator.innerStairsBlockVariants[i];
+            ItemConvertible outer_stairs = ForcedCornerStairsGenerator.outerStairsBlockVariants[i];
             offerChangeRecipie(exporter, inner_stairs, stairs, MOD_ID + "/stairs", "stairs/inner/");
             offerChangeRecipie(exporter, outer_stairs, inner_stairs, MOD_ID + "/stairs", "stairs/outer/");
+            offerChangeRecipie(exporter, stairs, outer_stairs, MOD_ID + "/stairs", "stairs/normal/");
             ++i;
         }
     }
@@ -219,7 +221,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
         );
         int i = 0;
         for (Block jackOLantern : BlockRegistry.COLOURED_JACK_O_LANTERNS) {
-            Item torch = ColouredLightsGenerator.colouredTorchesItemVariants[i];
+            ItemConvertible torch = ColouredLightsGenerator.colouredTorchesVariants[i];
             offerDoubleInputShapelessRecipe(
                     exporter,
                     jackOLantern,
@@ -256,9 +258,9 @@ public class RecipeGenerator extends AFMRecipieProvider {
 
     protected static void generateColouredTorchRecipies(Consumer<RecipeJsonProvider> exporter) {
         for (int i = 0; i < GenerationData.vanillaColorPallet.length; i++) {
-            Item weakColouredTorch = ColouredLightsGenerator.colouredTorchesItemVariants[i * 3];
-            Item colouredTorch = ColouredLightsGenerator.colouredTorchesItemVariants[i * 3 + 1];
-            Item strongColouredTorch = ColouredLightsGenerator.colouredTorchesItemVariants[i * 3 + 2];
+            ItemConvertible weakColouredTorch = ColouredLightsGenerator.colouredTorchesVariants[i * 3];
+            ItemConvertible colouredTorch = ColouredLightsGenerator.colouredTorchesVariants[i * 3 + 1];
+            ItemConvertible strongColouredTorch = ColouredLightsGenerator.colouredTorchesVariants[i * 3 + 2];
 
             Item glowingPowder = ItemRegistry.glowingPowderVariants[i];
 
@@ -319,13 +321,13 @@ public class RecipeGenerator extends AFMRecipieProvider {
         int i = 0;
         for (String metal : GenerationData.vanillaCandlestickMetals) {
             Item ingot = getItemFromName(metal + "_ingot");
-            offerCandlestickRecipie(exporter, CandlestickGenerator.candlestickClassicItemVariants[i], ingot, "candlestick/");
+            offerCandlestickRecipie(exporter, CandlestickGenerator.candlestickClassicVariants[i], ingot, "candlestick/");
             ++i;
         }
         i = 0;
         for (String[] metals : GenerationData.vanillaRustableCandlestickMetals) {
             Item ingot = getItemFromName(metals[0] + "_ingot");
-            offerCandlestickRecipie(exporter, CandlestickGenerator.candlestickRustableItemVariants.get(i)[0], ingot, "candlestick/");
+            offerCandlestickRecipie(exporter, CandlestickGenerator.candlestickRustableVariants.get(i)[0], ingot, "candlestick/");
             ++i;
         }
     }

@@ -8,7 +8,7 @@ import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
 import io.github.mikip98.humilityafm.helpers.*;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
@@ -67,8 +67,8 @@ public class ItemGroupRegistry {
                 Arrays.stream(ColouredLightsGenerator.colouredTorchesVariants).forEach(entries::add);
                 if (ModConfig.enableLEDs) Arrays.stream(ColouredLightsGenerator.LEDBlockVariants).forEach(entries::add);
                 if (ModConfig.enableCandlesticks) {
-                    Arrays.stream(CandlestickGenerator.candlestickClassicItemVariants).forEach(entries::add);
-                    CandlestickGenerator.candlestickRustableItemVariants.forEach(set -> Arrays.stream(set).forEach(entries::add));
+                    Arrays.stream(CandlestickGenerator.candlestickClassicVariants).forEach(entries::add);
+                    CandlestickGenerator.candlestickRustableVariants.forEach(set -> Arrays.stream(set).forEach(entries::add));
                 }
             }).build();
 
@@ -82,10 +82,10 @@ public class ItemGroupRegistry {
     }
 
 
-    public static void putIntoItemGroup(Item[] items, RegistryKey<ItemGroup> group) {
+    public static void putIntoItemGroup(ItemConvertible[] items, RegistryKey<ItemGroup> group) {
         ItemGroupEvents.modifyEntriesEvent(group).register(content -> Arrays.stream(items).forEach(content::add));
     }
-    public static void putIntoItemGroup(Item item, RegistryKey<ItemGroup> group) {
+    public static void putIntoItemGroup(ItemConvertible item, RegistryKey<ItemGroup> group) {
         ItemGroupEvents.modifyEntriesEvent(group).register(content -> content.add(item));
     }
 }

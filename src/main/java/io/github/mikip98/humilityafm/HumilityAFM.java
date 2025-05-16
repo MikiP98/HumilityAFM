@@ -104,8 +104,6 @@ public class HumilityAFM implements ModInitializer {
 		BlockRegistry.register();
 
 		// ............ FINAL BLOCKS & ITEMS ............
-		// Register innerOuter stairs variants
-		ForcedCornerStairsGenerator.registerInnerOuterStairsVariants();
 		// Register wooden mosaic variants
 		WoodenMosaicHelper.registerWoodenMosaicVariants();
 		// Register terracotta tiles variants

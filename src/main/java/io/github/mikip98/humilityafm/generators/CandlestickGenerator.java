@@ -4,7 +4,6 @@ import io.github.mikip98.humilityafm.content.blocks.candlestick.Candlestick;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.RustableCandlestick;
 import io.github.mikip98.humilityafm.util.GenerationData;
 import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,10 +15,8 @@ public class CandlestickGenerator {
     }
 
     public static Block[] candlestickClassicVariants;
-    public static Item[] candlestickClassicItemVariants;
 
     public static List<RustableCandlestick[]> candlestickRustableVariants;
-    public static List<Item[]> candlestickRustableItemVariants;
 
     public static void init() {
         candlestickClassicVariants = Arrays.stream(GenerationData.vanillaCandlestickMetals).map(s -> new Candlestick()).toArray(Block[]::new);

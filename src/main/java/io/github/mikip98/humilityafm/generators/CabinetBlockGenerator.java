@@ -4,7 +4,6 @@ import io.github.mikip98.humilityafm.content.blocks.cabinet.CabinetBlock;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.IlluminatedCabinetBlock;
 import io.github.mikip98.humilityafm.util.GenerationData;
 import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,17 +18,11 @@ public class CabinetBlockGenerator {
 
     // Vanilla
     public static Block[] cabinetBlockVariants;
-    public static Item[] cabinetBlockItemVariants;
-
     public static Block[] illuminatedCabinetBlockVariants;
-    public static Item[] illuminatedCabinetBlockItemVariants;
 
-    // Modded
-    public static Block[] moddedCabinetBlockVariants;
-    public static Item[] moddedCabinetBlockItemVariants;
-
-    public static Block[] moddedIlluminatedCabinetBlockVariants;
-    public static Item[] moddedIlluminatedCabinetBlockItemVariants;
+//    // Modded
+//    public static Block[] moddedCabinetBlockVariants;
+//    public static Block[] moddedIlluminatedCabinetBlockVariants;
 
 
     private static void createCabinetBlockVariant(
@@ -40,14 +33,6 @@ public class CabinetBlockGenerator {
         cabinetBlockVariantsNames[i] = cabinetBlockVariantName;
         cabinetBlockVariants[i] = new CabinetBlock();
         illuminatedCabinetBlockVariants[i] = new IlluminatedCabinetBlock();
-    }
-
-
-    private static void putVariantInModded(short i, short j) {
-        moddedCabinetBlockVariants[j] = cabinetBlockVariants[i];
-        moddedCabinetBlockItemVariants[j] = cabinetBlockItemVariants[i];
-        moddedIlluminatedCabinetBlockVariants[j] = illuminatedCabinetBlockVariants[i];
-        moddedIlluminatedCabinetBlockItemVariants[j] = illuminatedCabinetBlockItemVariants[i];
     }
 
 

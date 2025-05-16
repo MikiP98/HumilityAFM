@@ -11,20 +11,19 @@ import io.github.mikip98.humilityafm.content.blocks.stairs.OuterStairs;
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
 import io.github.mikip98.humilityafm.generators.ColouredLightsGenerator;
 import io.github.mikip98.humilityafm.generators.CandlestickGenerator;
+import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
 import io.github.mikip98.humilityafm.util.GenerationData;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
@@ -74,78 +73,83 @@ public class BlockRegistry {
         //  The soul one can emmit soul particles.
 
         // Register cabinets
-        CabinetBlockGenerator.cabinetBlockItemVariants = registerArrayWithItems(
+        registerArrayWithItems(
                 CabinetBlockGenerator.cabinetBlockVariants,
                 CabinetBlockGenerator.cabinetBlockVariantsNames,
                 "cabinet_block_"
         );
-        putIntoItemGroup(CabinetBlockGenerator.cabinetBlockItemVariants, ItemGroups.COLORED_BLOCKS);
+        putIntoItemGroup(CabinetBlockGenerator.cabinetBlockVariants, ItemGroups.COLORED_BLOCKS);
         registerFlammable(CabinetBlockGenerator.cabinetBlockVariants, ModConfig.cabinetBlockBurnTime, ModConfig.cabinetBlockFireSpread);
 
         // Register illuminated cabinets
-        CabinetBlockGenerator.illuminatedCabinetBlockItemVariants = registerArrayWithItems(
+        registerArrayWithItems(
                 CabinetBlockGenerator.illuminatedCabinetBlockVariants,
                 CabinetBlockGenerator.cabinetBlockVariantsNames,
                 "illuminated_cabinet_block_"
         );
-        putIntoItemGroup(CabinetBlockGenerator.illuminatedCabinetBlockItemVariants, ItemGroups.COLORED_BLOCKS);
+        putIntoItemGroup(CabinetBlockGenerator.illuminatedCabinetBlockVariants, ItemGroups.COLORED_BLOCKS);
         registerFlammable(CabinetBlockGenerator.illuminatedCabinetBlockVariants, ModConfig.cabinetBlockBurnTime, ModConfig.cabinetBlockFireSpread);
 
         // Register Coloured Torches
-        ColouredLightsGenerator.colouredTorchesItemVariants = registerArrayWithItems(
+        registerArrayWithItems(
                 ColouredLightsGenerator.colouredTorchesVariants,
                 ColouredLightsGenerator.colouredTorchesNames,
                 "coloured_torch_"
         );
-        putIntoItemGroup(ColouredLightsGenerator.colouredTorchesItemVariants, ItemGroups.COLORED_BLOCKS);
+        putIntoItemGroup(ColouredLightsGenerator.colouredTorchesVariants, ItemGroups.COLORED_BLOCKS);
+
+        // Register Forced corner stairs
+        registerArrayWithItems(
+                ForcedCornerStairsGenerator.innerStairsBlockVariants,
+                ForcedCornerStairsGenerator.innerOuterStairsBlockVariantsNames,
+                "inner_stairs_"
+        );
+        registerArrayWithItems(
+                ForcedCornerStairsGenerator.outerStairsBlockVariants,
+                ForcedCornerStairsGenerator.innerOuterStairsBlockVariantsNames,
+                "outer_stairs_"
+        );
 
         // Register LED blocks
         if (ModConfig.enableLEDs) {
-            ColouredLightsGenerator.LEDBlockItemVariants = registerArrayWithItems(
+            registerArrayWithItems(
                     ColouredLightsGenerator.LEDBlockVariants,
                     GenerationData.vanillaColorPallet,
                     "led_"
             );
-            putIntoItemGroup(ColouredLightsGenerator.LEDBlockItemVariants, ItemGroups.COLORED_BLOCKS);
+            putIntoItemGroup(ColouredLightsGenerator.LEDBlockVariants, ItemGroups.COLORED_BLOCKS);
         }
 
         // Register Candlestick variants
         if (ModConfig.enableCandlesticks) {
-            CandlestickGenerator.candlestickClassicItemVariants = registerArrayWithItems(
+            registerArrayWithItems(
                     CandlestickGenerator.candlestickClassicVariants,
                     GenerationData.vanillaCandlestickMetals,
                     "candlestick_"
             );
-            CandlestickGenerator.candlestickRustableItemVariants = new ArrayList<>();
             for (int i = 0; i < CandlestickGenerator.candlestickRustableVariants.size(); i++) {
-                Block[] candlestickMetalSet = CandlestickGenerator.candlestickRustableVariants.get(i);
-                Item[] candlestickItemSet = registerArrayWithItems(
-                        candlestickMetalSet,
+                registerArrayWithItems(
+                        CandlestickGenerator.candlestickRustableVariants.get(i),
                         GenerationData.vanillaRustableCandlestickMetals.get(i),
                         "candlestick_"
                 );
-                CandlestickGenerator.candlestickRustableItemVariants.add(candlestickItemSet);
             }
         }
     }
 
 
-    protected static Item[] registerArrayWithItems(Block[] blocks, String[] names, String prefix) {
-        Item[] items = new Item[blocks.length];
+    protected static void registerArrayWithItems(Block[] blocks, String[] names, String prefix) {
         for (int i = 0; i < blocks.length; i++) {
-            items[i] = registerWithItem(blocks[i], prefix + names[i]);
+            registerWithItem(blocks[i], prefix + names[i]);
         }
-        return items;
     }
-    protected static Item registerWithItem(Block block, String name) {
-        Identifier id = getId(name);
-        Registry.register(Registries.BLOCK, id, block);
-        return Registry.register(Registries.ITEM, id, new BlockItem(block, new FabricItemSettings()));
-    }
-    protected static Block registerWithItemB(Block block, String name) {
+    protected static void registerWithItem(Block block, String name) {
         Identifier id = getId(name);
         Registry.register(Registries.BLOCK, id, block);
         Registry.register(Registries.ITEM, id, new BlockItem(block, new FabricItemSettings()));
+    }
+    protected static Block registerWithItemB(Block block, String name) {
+        registerWithItem(block, name);
         return block;
     }
 
