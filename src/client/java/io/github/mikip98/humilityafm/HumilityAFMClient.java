@@ -3,6 +3,7 @@ package io.github.mikip98.humilityafm;
 import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.IlluminatedCabinetBlockEntityRenderer;
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
+import io.github.mikip98.humilityafm.registries.BlockEntityRegistry;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
@@ -23,8 +24,8 @@ public class HumilityAFMClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
 
-		BlockEntityRendererFactories.register(HumilityAFM.CABINET_BLOCK_ENTITY, CabinetBlockEntityRenderer::new);
-		BlockEntityRendererFactories.register(HumilityAFM.ILLUMINATED_CABINET_BLOCK_ENTITY, IlluminatedCabinetBlockEntityRenderer::new);
+		BlockEntityRendererFactories.register(BlockEntityRegistry.CABINET_BLOCK_ENTITY, CabinetBlockEntityRenderer::new);
+		BlockEntityRendererFactories.register(BlockEntityRegistry.ILLUMINATED_CABINET_BLOCK_ENTITY, IlluminatedCabinetBlockEntityRenderer::new);
 
 		RenderLayer renderLayer = ModConfig.TransparentCabinetBlocks ? RenderLayer.getTranslucent() : RenderLayer.getCutout();
 
@@ -40,7 +41,7 @@ public class HumilityAFMClient implements ClientModInitializer {
 
 		// LED block variants
 		if (ModConfig.enableLEDs) {
-			BlockEntityRendererFactories.register(HumilityAFM.LED_BLOCK_ENTITY, LightStripBlockEntityRenderer::new);
+			BlockEntityRendererFactories.register(BlockEntityRegistry.LIGHT_STRIP_BLOCK_ENTITY, LightStripBlockEntityRenderer::new);
 		}
 
 		FabricLoader.getInstance().getModContainer(MOD_ID).ifPresent(container -> {

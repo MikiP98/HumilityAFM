@@ -7,12 +7,9 @@ import net.minecraft.util.math.BlockPos;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.IlluminatedCabinetBlockEntity;
 
 public class IlluminatedCabinetBlock extends CabinetBlock {
+    public static final FabricBlockSettings defaultSettings = FabricBlockSettings.copyOf(CabinetBlock.defaultSettings).luminance(2);
 
-    public static final FabricBlockSettings defaultSettings = FabricBlockSettings
-            .copyOf(CabinetBlock.defaultSettings)
-            .luminance(2);
-
-    public IlluminatedCabinetBlock() { super(defaultSettings); }
+    public IlluminatedCabinetBlock() { this(defaultSettings); }
     public IlluminatedCabinetBlock(Settings settings) { super(settings); }
 
     @Override

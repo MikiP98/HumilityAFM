@@ -1,6 +1,6 @@
 package io.github.mikip98.humilityafm.content.blockentities.cabinetBlock;
 
-import io.github.mikip98.humilityafm.HumilityAFM;
+import io.github.mikip98.humilityafm.registries.BlockEntityRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -26,7 +26,7 @@ public class CabinetBlockEntity extends BlockEntity implements ImplementedInvent
     }
 
     public CabinetBlockEntity(BlockPos pos, BlockState state) {
-        super(HumilityAFM.CABINET_BLOCK_ENTITY, pos, state);
+        super(BlockEntityRegistry.CABINET_BLOCK_ENTITY, pos, state);
     }
 
 
