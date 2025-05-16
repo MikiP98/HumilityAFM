@@ -110,6 +110,7 @@ This mod is highly customisable through its config!
   - Jack o'Lanterns
   - Forced Corner Stairs
 - Fix LEDs loosing their Block Entity
+- Fix LED brightening breaking on corer pieces
 
 <br>
 
