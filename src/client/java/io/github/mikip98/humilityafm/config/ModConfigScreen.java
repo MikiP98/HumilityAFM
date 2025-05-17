@@ -33,26 +33,26 @@ public class ModConfigScreen {
                 .build()
         );
         rootCategory.addEntry(ConfigEntryBuilder.create()
-                .startBooleanToggle(Text.literal("Enable LEDs"), ModConfig.enableLEDs)
+                .startBooleanToggle(Text.literal("Enable Light Strips"), ModConfig.enableLightStrips)
                 .setDefaultValue(false)
                 .setSaveConsumer(value -> {
                     // Save the value to your mod's configuration
-                    ModConfig.enableLEDs = value;
+                    ModConfig.enableLightStrips = value;
                 })
                 .build()
         );
         rootCategory.addEntry(ConfigEntryBuilder.create()
-                .startBooleanToggle(Text.literal("Enable LEDs Brightening"), ModConfig.enableLEDsBrightening)
+                .startBooleanToggle(Text.literal("Enable Light Strip Brightening"), ModConfig.enableLightStripBrightening)
                 .setDefaultValue(true)
-                .setTooltip(Text.of("Enables LEDs Brightening, better looking, small performance impact.\n(Auto disabled when Shimmer is installed)"))
-                .setSaveConsumer(value -> ModConfig.enableLEDsBrightening = value)
+                .setTooltip(Text.of("Enables Light Strips Brightening, better looking, small performance impact.\n(Auto disabled when Shimmer is installed)"))
+                .setSaveConsumer(value -> ModConfig.enableLightStripBrightening = value)
                 .build()
         );
         rootCategory.addEntry(ConfigEntryBuilder.create()
-                .startBooleanToggle(Text.literal("Enable LED Radius Color Compensation"), ModConfig.enableLEDRadiusColorCompensation)
+                .startBooleanToggle(Text.literal("Enable Light Strip Radius Color Compensation"), ModConfig.enableLightStripRadiusColorCompensation)
                 .setDefaultValue(true)
-                .setTooltip(Text.of("Enables LED Radius Color Compensation\nTries to increase brightness without losing out on saturation\n(Requires Shimmer to be installed)"))
-                .setSaveConsumer(value -> ModConfig.enableLEDRadiusColorCompensation = value)
+                .setTooltip(Text.of("Enables Light Strip Radius Color Compensation\nTries to increase brightness without losing out on saturation\n(Requires Shimmer to be installed)"))
+                .setSaveConsumer(value -> ModConfig.enableLightStripRadiusColorCompensation = value)
                 .build()
         );
         rootCategory.addEntry(ConfigEntryBuilder.create()
@@ -65,24 +65,24 @@ public class ModConfigScreen {
         ConfigCategory customizationCategory = builder.getOrCreateCategory(Text.literal("Blocks Customization"));
 
         customizationCategory.addEntry(ConfigEntryBuilder.create()
-                .startIntSlider(Text.literal("LED Colored Light Strength"), ModConfig.LEDColoredLightStrength, 0, 255)
+                .startIntSlider(Text.literal("Light Strip Colored Light Strength"), ModConfig.LightStripColoredLightStrength, 0, 255)
                 .setDefaultValue(85)
-                .setTooltip(Text.of("The strength of the LED Colored Light.\n(Requires Shimmer to be installed)"))
-                .setSaveConsumer(value -> ModConfig.LEDColoredLightStrength = value.shortValue())
+                .setTooltip(Text.of("The strength of the Light Strip Colored Light.\n(Requires Shimmer to be installed)"))
+                .setSaveConsumer(value -> ModConfig.LightStripColoredLightStrength = value.shortValue())
                 .build()
         );
         customizationCategory.addEntry(ConfigEntryBuilder.create()
-                .startIntSlider(Text.literal("LED Colored Light Radius"), ModConfig.LEDColoredLightRadius, 0, 63)
+                .startIntSlider(Text.literal("Light Strip Colored Light Radius"), ModConfig.LightStripColoredLightRadius, 0, 63)
                 .setDefaultValue(9)
-                .setTooltip(Text.of("The radius of the LED Colored Light.\n(Requires Shimmer to be installed)"))
-                .setSaveConsumer(value -> ModConfig.LEDColoredLightRadius = value.shortValue())
+                .setTooltip(Text.of("The radius of the Light Strip Colored Light.\n(Requires Shimmer to be installed)"))
+                .setSaveConsumer(value -> ModConfig.LightStripColoredLightRadius = value.shortValue())
                 .build()
         );
         customizationCategory.addEntry(ConfigEntryBuilder.create()
-                .startIntSlider(Text.literal("LED Radius Color Compensation Bias"), ModConfig.LEDRadiusColorCompensationBias, -1, 1)
+                .startIntSlider(Text.literal("Light Strip Radius Color Compensation Bias"), ModConfig.LightStripRadiusColorCompensationBias, -1, 1)
                 .setDefaultValue(0)
-                .setTooltip(Text.of("The bias of the LED Radius Color Compensation.\n(Requires Shimmer to be installed)"))
-                .setSaveConsumer(value -> ModConfig.LEDRadiusColorCompensationBias = value.shortValue())
+                .setTooltip(Text.of("The bias of the Light Strip Radius Color Compensation.\n(Requires Shimmer to be installed)"))
+                .setSaveConsumer(value -> ModConfig.LightStripRadiusColorCompensationBias = value.shortValue())
                 .build()
         );
         customizationCategory.addEntry(ConfigEntryBuilder.create()
@@ -104,9 +104,10 @@ public class ModConfigScreen {
                 .build()
         );
 
-        ConfigCategory ledColorsCategory = builder.getOrCreateCategory(Text.literal("LED Colors"));
+        ConfigCategory lightStripColorsCategory = builder.getOrCreateCategory(Text.literal("Light Strip Colors"));
 
-        for (Color color : ModConfig.LEDColors) {
+        for (Color color : ModConfig.LightStripColors) {
+            @SuppressWarnings("rawtypes")
             List<AbstractConfigListEntry> entries = new ArrayList<>();
             entries.add(ConfigEntryBuilder.create()
                     .startIntSlider(Text.literal("Red"), color.r, 0, 255)
@@ -126,13 +127,14 @@ public class ModConfigScreen {
                     .setSaveConsumer(value -> color.b = value.shortValue())
                     .build()
             );
-            ledColorsCategory.addEntry(ConfigEntryBuilder.create()
+            lightStripColorsCategory.addEntry(ConfigEntryBuilder.create()
                     .startSubCategory(Text.of(color.name), entries).build());
         }
 
         ConfigCategory pumpkinColorsCategory = builder.getOrCreateCategory(Text.literal("Pumpkin Colors"));
 
         for (Color color : ModConfig.pumpkinColors.values()) {
+            @SuppressWarnings("rawtypes")
             List<AbstractConfigListEntry> entries = new ArrayList<>();
             entries.add(ConfigEntryBuilder.create()
                     .startIntSlider(Text.literal("Red"), color.r, 0, 255)

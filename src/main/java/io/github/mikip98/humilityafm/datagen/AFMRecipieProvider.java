@@ -2,6 +2,7 @@ package io.github.mikip98.humilityafm.datagen;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.minecraft.block.Blocks;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
@@ -147,6 +148,35 @@ public abstract class AFMRecipieProvider extends FabricRecipeProvider {
                 .input('I', ingot)
                 .group(MOD_ID + "/candlestick")
                 .criterion(hasItem(ingot), conditionsFromItem(ingot))
+                .offerTo(exporter, path_prefix + "reversed/" + getRecipeName(output));
+    }
+
+    protected static void offerLightStripRecipie(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible glowingPowder, String path_prefix) {
+        ShapedRecipeJsonBuilder
+                .create(RecipeCategory.DECORATIONS, output, 2)
+                .pattern("QQQ")
+                .pattern("PPP")
+                .pattern("GGG")
+                .input('Q', Items.QUARTZ)
+                .input('P', glowingPowder)
+                .input('G', Blocks.GLASS_PANE)
+                .group(MOD_ID + "/light_strip")
+                .criterion(hasItem(Items.QUARTZ), conditionsFromItem(Items.QUARTZ))
+                .criterion(hasItem(glowingPowder), conditionsFromItem(glowingPowder))
+                .criterion(hasItem(Blocks.GLASS_PANE), conditionsFromItem(Blocks.GLASS_PANE))
+                .offerTo(exporter, path_prefix + "classic/" + getRecipeName(output));
+        ShapedRecipeJsonBuilder
+                .create(RecipeCategory.DECORATIONS, output, 2)
+                .pattern("GGG")
+                .pattern("PPP")
+                .pattern("QQQ")
+                .input('Q', Items.QUARTZ)
+                .input('P', glowingPowder)
+                .input('G', Blocks.GLASS_PANE)
+                .group(MOD_ID + "/light_strip")
+                .criterion(hasItem(Items.QUARTZ), conditionsFromItem(Items.QUARTZ))
+                .criterion(hasItem(glowingPowder), conditionsFromItem(glowingPowder))
+                .criterion(hasItem(Blocks.GLASS_PANE), conditionsFromItem(Blocks.GLASS_PANE))
                 .offerTo(exporter, path_prefix + "reversed/" + getRecipeName(output));
     }
 }

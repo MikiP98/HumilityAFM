@@ -59,6 +59,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
         generateColouredTorchRecipies(exporter);
         // Optional
         generateCandlestickRecipies(exporter);
+        generateLightStripRecipies(exporter);
     }
 
     protected static void generateCabinetRecipies(Consumer<RecipeJsonProvider> exporter) {
@@ -321,14 +322,25 @@ public class RecipeGenerator extends AFMRecipieProvider {
         int i = 0;
         for (String metal : GenerationData.vanillaCandlestickMetals) {
             Item ingot = getItemFromName(metal + "_ingot");
-            offerCandlestickRecipie(exporter, CandlestickGenerator.candlestickClassicVariants[i], ingot, "candlestick/");
+            offerCandlestickRecipie(exporter, CandlestickGenerator.candlestickClassicVariants[i], ingot, "candlesticks/");
             ++i;
         }
         i = 0;
         for (String[] metals : GenerationData.vanillaRustableCandlestickMetals) {
             Item ingot = getItemFromName(metals[0] + "_ingot");
-            offerCandlestickRecipie(exporter, CandlestickGenerator.candlestickRustableVariants.get(i)[0], ingot, "candlestick/");
+            offerCandlestickRecipie(exporter, CandlestickGenerator.candlestickRustableVariants.get(i)[0], ingot, "candlesticks/");
             ++i;
+        }
+    }
+
+    protected static void generateLightStripRecipies(Consumer<RecipeJsonProvider> exporter) {
+        for (int i = 0; i < GenerationData.vanillaColorPallet.length; ++i) {
+            offerLightStripRecipie(
+                    exporter,
+                    ColouredLightsGenerator.LightStripBlockVariants[i],
+                    ItemRegistry.glowingPowderVariants[i],
+                    "light_strips/"
+            );
         }
     }
 

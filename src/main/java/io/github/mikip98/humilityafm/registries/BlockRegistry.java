@@ -111,13 +111,13 @@ public class BlockRegistry {
         );
 
         // Register LED blocks
-        if (ModConfig.enableLEDs) {
+        if (ModConfig.enableLightStrips) {
             registerArrayWithItems(
-                    ColouredLightsGenerator.LEDBlockVariants,
+                    ColouredLightsGenerator.LightStripBlockVariants,
                     GenerationData.vanillaColorPallet,
-                    "led_"
+                    "light_strip_"
             );
-            putIntoItemGroup(ColouredLightsGenerator.LEDBlockVariants, ItemGroups.COLORED_BLOCKS);
+            putIntoItemGroup(ColouredLightsGenerator.LightStripBlockVariants, ItemGroups.COLORED_BLOCKS);
         }
 
         // Register Candlestick variants

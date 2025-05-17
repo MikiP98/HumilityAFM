@@ -2,6 +2,7 @@ package io.github.mikip98.humilityafm.datagen;
 
 import io.github.mikip98.humilityafm.content.ModProperties;
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
+import io.github.mikip98.humilityafm.generators.ColouredLightsGenerator;
 import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
 import io.github.mikip98.humilityafm.generators.CandlestickGenerator;
 import io.github.mikip98.humilityafm.helpers.TerracottaTilesHelper;
@@ -16,6 +17,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.enums.BlockHalf;
+import net.minecraft.block.enums.StairShape;
 import net.minecraft.data.client.*;
 import net.minecraft.item.Item;
 import net.minecraft.state.property.*;
@@ -66,6 +68,19 @@ public class ModelGenerator extends FabricModelProvider {
             Optional.of(getId("block/candlestick_candle_lit")),
             Optional.empty()
     );
+    // Light Strip Models
+    protected static final Model LIGHT_STRIP_STRAIGHT_MODEL = new Model(
+            Optional.of(getId("block/light_strip")),
+            Optional.empty()
+    );
+    protected static final Model LIGHT_STRIP_INNER_MODEL = new Model(
+            Optional.of(getId("block/light_strip_inner")),
+            Optional.empty()
+    );
+    protected static final Model LIGHT_STRIP_OUTER_MODEL = new Model(
+            Optional.of(getId("block/light_strip_outer")),
+            Optional.empty()
+    );
 
 
     public ModelGenerator(FabricDataOutput output) {
@@ -97,6 +112,41 @@ public class ModelGenerator extends FabricModelProvider {
         generateForcedCornerStairsModelsAndBlockstates(blockStateModelGenerator);
         // Optional blocks
         generateCandlestickModelsAndBlockStates(blockStateModelGenerator);
+        generateLightStripModelsAndBlockStates(blockStateModelGenerator);
+    }
+
+    protected static void generateLightStripModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
+        int i = 0;
+        for (String color : GenerationData.vanillaColorPallet) {
+            final Identifier coloured_concrete = new Identifier("block/" + color + "_concrete");
+            final TextureMap textureMap = new TextureMap()
+                    .register(TextureKey.PARTICLE, coloured_concrete)
+                    .register(TextureKey.of("0"), coloured_concrete);
+
+            final Identifier lightStripStraightModelId = LIGHT_STRIP_STRAIGHT_MODEL.upload(
+                    getId("block/light_strip/straight/light_strip_" + color),
+                    textureMap,
+                    blockStateModelGenerator.modelCollector
+            );
+            final Identifier lightStripInnerModelId = LIGHT_STRIP_INNER_MODEL.upload(
+                    getId("block/light_strip/inner/light_strip_inner_" + color),
+                    textureMap,
+                    blockStateModelGenerator.modelCollector
+            );
+            final Identifier lightStripOuterModelId = LIGHT_STRIP_OUTER_MODEL.upload(
+                    getId("block/light_strip/outer/light_strip_outer_" + color),
+                    textureMap,
+                    blockStateModelGenerator.modelCollector
+            );
+            blockStateModelGenerator.registerParentedItemModel(ColouredLightsGenerator.LightStripBlockVariants[i], lightStripStraightModelId);
+            blockStateModelGenerator.blockStateCollector.accept(getLightStripBlockstate(
+                    ColouredLightsGenerator.LightStripBlockVariants[i],
+                    lightStripStraightModelId,
+                    lightStripInnerModelId,
+                    lightStripOuterModelId
+            ));
+            ++i;
+        }
     }
 
     protected static void generateCandlestickModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
@@ -374,6 +424,189 @@ public class ModelGenerator extends FabricModelProvider {
     }
 
 
+    protected static VariantsBlockStateSupplier getLightStripBlockstate(
+            Block block,
+            Identifier straightModel,
+            Identifier innerModel,
+            Identifier outerModel
+    ) {
+        DirectionProperty FACING = Properties.HORIZONTAL_FACING;
+        EnumProperty<BlockHalf> HALF = Properties.BLOCK_HALF;
+        EnumProperty<StairShape> SHAPE = Properties.STAIR_SHAPE;
+
+        return VariantsBlockStateSupplier.create(block)
+                .coordinate(BlockStateVariantMap.create(FACING, HALF, SHAPE)
+                        // East Bottom
+                        .register(
+                                Direction.EAST, BlockHalf.BOTTOM, StairShape.INNER_LEFT,
+                                getUVLockedVariantX(innerModel, VariantSettings.Rotation.R180)
+                        )
+                        .register(
+                                Direction.EAST, BlockHalf.BOTTOM, StairShape.INNER_RIGHT,
+                                getUVLockedVariantXY(innerModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R90)
+                        )
+                        .register(
+                                Direction.EAST, BlockHalf.BOTTOM, StairShape.OUTER_LEFT,
+                                getUVLockedVariantX(outerModel, VariantSettings.Rotation.R180)
+                        )
+                        .register(
+                                Direction.EAST, BlockHalf.BOTTOM, StairShape.OUTER_RIGHT,
+                                getUVLockedVariantXY(outerModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R90)
+                        )
+                        .register(
+                                Direction.EAST, BlockHalf.BOTTOM, StairShape.STRAIGHT,
+                                getUVLockedVariantXY(straightModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R90)
+                        )
+                        // East Top
+                        .register(
+                                Direction.EAST, BlockHalf.TOP, StairShape.INNER_LEFT,
+                                getUVLockedVariantY(innerModel, VariantSettings.Rotation.R270)
+                        )
+                        .register(
+                                Direction.EAST, BlockHalf.TOP, StairShape.INNER_RIGHT,
+                                getVariant(innerModel)
+                        )
+                        .register(
+                                Direction.EAST, BlockHalf.TOP, StairShape.OUTER_LEFT,
+                                getUVLockedVariantY(outerModel, VariantSettings.Rotation.R270)
+                        )
+                        .register(
+                                Direction.EAST, BlockHalf.TOP, StairShape.OUTER_RIGHT,
+                                getVariant(outerModel)
+                        )
+                        .register(
+                                Direction.EAST, BlockHalf.TOP, StairShape.STRAIGHT,
+                                getUVLockedVariantY(straightModel, VariantSettings.Rotation.R270)
+                        )
+                        // North Bottom
+                        .register(
+                                Direction.NORTH, BlockHalf.BOTTOM, StairShape.INNER_LEFT,
+                                getUVLockedVariantXY(innerModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R270)
+                        )
+                        .register(
+                                Direction.NORTH, BlockHalf.BOTTOM, StairShape.INNER_RIGHT,
+                                getUVLockedVariantX(innerModel, VariantSettings.Rotation.R180)
+                        )
+                        .register(
+                                Direction.NORTH, BlockHalf.BOTTOM, StairShape.OUTER_LEFT,
+                                getUVLockedVariantXY(outerModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R270)
+                        )
+                        .register(
+                                Direction.NORTH, BlockHalf.BOTTOM, StairShape.OUTER_RIGHT,
+                                getUVLockedVariantX(outerModel, VariantSettings.Rotation.R180)
+                        )
+                        .register(
+                                Direction.NORTH, BlockHalf.BOTTOM, StairShape.STRAIGHT,
+                                getUVLockedVariantX(straightModel, VariantSettings.Rotation.R180)
+                        )
+                        // North Top
+                        .register(
+                                Direction.NORTH, BlockHalf.TOP, StairShape.INNER_LEFT,
+                                getUVLockedVariantY(innerModel, VariantSettings.Rotation.R180)
+                        )
+                        .register(
+                                Direction.NORTH, BlockHalf.TOP, StairShape.INNER_RIGHT,
+                                getUVLockedVariantY(innerModel, VariantSettings.Rotation.R270)
+                        )
+                        .register(
+                                Direction.NORTH, BlockHalf.TOP, StairShape.OUTER_LEFT,
+                                getUVLockedVariantY(outerModel, VariantSettings.Rotation.R180)
+                        )
+                        .register(
+                                Direction.NORTH, BlockHalf.TOP, StairShape.OUTER_RIGHT,
+                                getUVLockedVariantY(outerModel, VariantSettings.Rotation.R270)
+                        )
+                        .register(
+                                Direction.NORTH, BlockHalf.TOP, StairShape.STRAIGHT,
+                                getUVLockedVariantY(straightModel, VariantSettings.Rotation.R180)
+                        )
+                        // South Bottom
+                        .register(
+                                Direction.SOUTH, BlockHalf.BOTTOM, StairShape.INNER_LEFT,
+                                getUVLockedVariantXY(innerModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R90)
+                        )
+                        .register(
+                                Direction.SOUTH, BlockHalf.BOTTOM, StairShape.INNER_RIGHT,
+                                getUVLockedVariantXY(innerModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R180)
+                        )
+                        .register(
+                                Direction.SOUTH, BlockHalf.BOTTOM, StairShape.OUTER_LEFT,
+                                getUVLockedVariantXY(outerModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R90)
+                        )
+                        .register(
+                                Direction.SOUTH, BlockHalf.BOTTOM, StairShape.OUTER_RIGHT,
+                                getUVLockedVariantXY(outerModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R180)
+                        )
+                        .register(
+                                Direction.SOUTH, BlockHalf.BOTTOM, StairShape.STRAIGHT,
+                                getUVLockedVariantXY(straightModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R180)
+                        )
+                        // South Top
+                        .register(
+                                Direction.SOUTH, BlockHalf.TOP, StairShape.INNER_LEFT,
+                                getVariant(innerModel)
+                        )
+                        .register(
+                                Direction.SOUTH, BlockHalf.TOP, StairShape.INNER_RIGHT,
+                                getUVLockedVariantY(innerModel, VariantSettings.Rotation.R90)
+                        )
+                        .register(
+                                Direction.SOUTH, BlockHalf.TOP, StairShape.OUTER_LEFT,
+                                getVariant(outerModel)
+                        )
+                        .register(
+                                Direction.SOUTH, BlockHalf.TOP, StairShape.OUTER_RIGHT,
+                                getUVLockedVariantY(outerModel, VariantSettings.Rotation.R90)
+                        )
+                        .register(
+                                Direction.SOUTH, BlockHalf.TOP, StairShape.STRAIGHT,
+                                getVariant(straightModel)
+                        )
+                        // West Bottom
+                        .register(
+                                Direction.WEST, BlockHalf.BOTTOM, StairShape.INNER_LEFT,
+                                getUVLockedVariantXY(innerModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R180)
+                        )
+                        .register(
+                                Direction.WEST, BlockHalf.BOTTOM, StairShape.INNER_RIGHT,
+                                getUVLockedVariantXY(innerModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R270)
+                        )
+                        .register(
+                                Direction.WEST, BlockHalf.BOTTOM, StairShape.OUTER_LEFT,
+                                getUVLockedVariantXY(outerModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R180)
+                        )
+                        .register(
+                                Direction.WEST, BlockHalf.BOTTOM, StairShape.OUTER_RIGHT,
+                                getUVLockedVariantXY(outerModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R270)
+                        )
+                        .register(
+                                Direction.WEST, BlockHalf.BOTTOM, StairShape.STRAIGHT,
+                                getUVLockedVariantXY(straightModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R270)
+                        )
+                        // West Top
+                        .register(
+                                Direction.WEST, BlockHalf.TOP, StairShape.INNER_LEFT,
+                                getUVLockedVariantY(innerModel, VariantSettings.Rotation.R90)
+                        )
+                        .register(
+                                Direction.WEST, BlockHalf.TOP, StairShape.INNER_RIGHT,
+                                getUVLockedVariantY(innerModel, VariantSettings.Rotation.R180)
+                        )
+                        .register(
+                                Direction.WEST, BlockHalf.TOP, StairShape.OUTER_LEFT,
+                                getUVLockedVariantY(outerModel, VariantSettings.Rotation.R90)
+                        )
+                        .register(
+                                Direction.WEST, BlockHalf.TOP, StairShape.OUTER_RIGHT,
+                                getUVLockedVariantY(outerModel, VariantSettings.Rotation.R180)
+                        )
+                        .register(
+                                Direction.WEST, BlockHalf.TOP, StairShape.STRAIGHT,
+                                getUVLockedVariantY(straightModel, VariantSettings.Rotation.R90)
+                        )
+                );
+    }
+
     protected static MultipartBlockStateSupplier getCandlestickBlockstate(
             Block block,
             Identifier emptyModel,
@@ -611,64 +844,38 @@ public class ModelGenerator extends FabricModelProvider {
     protected static VariantsBlockStateSupplier getForcedCornerStairsBlockstate(Block block, Identifier modelId) {
         return VariantsBlockStateSupplier
                 .create(block)
-                .coordinate(BlockStateVariantMap
-                        .create(Properties.HORIZONTAL_FACING, Properties.BLOCK_HALF)
+                .coordinate(BlockStateVariantMap.create(Properties.HORIZONTAL_FACING, Properties.BLOCK_HALF)
                         .register(
                                 Direction.EAST, BlockHalf.BOTTOM,
-                                BlockStateVariant.create()
-                                        .put(VariantSettings.MODEL, modelId)
-                                        .put(VariantSettings.UVLOCK, true)
-                                        .put(VariantSettings.Y, VariantSettings.Rotation.R90)
+                                getUVLockedVariantY(modelId, VariantSettings.Rotation.R90)
                         )
                         .register(
                                 Direction.EAST, BlockHalf.TOP,
-                                BlockStateVariant.create()
-                                        .put(VariantSettings.MODEL, modelId)
-                                        .put(VariantSettings.UVLOCK, true)
-                                        .put(VariantSettings.Y, VariantSettings.Rotation.R180)
-                                        .put(VariantSettings.X, VariantSettings.Rotation.R180)
+                                getUVLockedVariantXY(modelId, VariantSettings.Rotation.R180, VariantSettings.Rotation.R180)
                         )
                         .register(
                                 Direction.NORTH, BlockHalf.BOTTOM,
-                                BlockStateVariant.create()
-                                        .put(VariantSettings.MODEL, modelId)
+                                getVariant(modelId)
                         )
                         .register(
                                 Direction.NORTH, BlockHalf.TOP,
-                                BlockStateVariant.create()
-                                        .put(VariantSettings.MODEL, modelId)
-                                        .put(VariantSettings.UVLOCK, true)
-                                        .put(VariantSettings.Y, VariantSettings.Rotation.R90)
-                                        .put(VariantSettings.X, VariantSettings.Rotation.R180)
+                                getUVLockedVariantXY(modelId, VariantSettings.Rotation.R180, VariantSettings.Rotation.R90)
                         )
                         .register(
                                 Direction.SOUTH, BlockHalf.BOTTOM,
-                                BlockStateVariant.create()
-                                        .put(VariantSettings.MODEL, modelId)
-                                        .put(VariantSettings.UVLOCK, true)
-                                        .put(VariantSettings.Y, VariantSettings.Rotation.R180)
+                                getUVLockedVariantY(modelId, VariantSettings.Rotation.R180)
                         )
                         .register(
                                 Direction.SOUTH, BlockHalf.TOP,
-                                BlockStateVariant.create()
-                                        .put(VariantSettings.MODEL, modelId)
-                                        .put(VariantSettings.UVLOCK, true)
-                                        .put(VariantSettings.Y, VariantSettings.Rotation.R270)
-                                        .put(VariantSettings.X, VariantSettings.Rotation.R180)
+                                getUVLockedVariantXY(modelId, VariantSettings.Rotation.R180, VariantSettings.Rotation.R270)
                         )
                         .register(
                                 Direction.WEST, BlockHalf.BOTTOM,
-                                BlockStateVariant.create()
-                                        .put(VariantSettings.MODEL, modelId)
-                                        .put(VariantSettings.UVLOCK, true)
-                                        .put(VariantSettings.Y, VariantSettings.Rotation.R270)
+                                getUVLockedVariantY(modelId, VariantSettings.Rotation.R270)
                         )
                         .register(
                                 Direction.WEST, BlockHalf.TOP,
-                                BlockStateVariant.create()
-                                        .put(VariantSettings.MODEL, modelId)
-                                        .put(VariantSettings.UVLOCK, true)
-                                        .put(VariantSettings.X, VariantSettings.Rotation.R180)
+                                getUVLockedVariantX(modelId, VariantSettings.Rotation.R180)
                         )
                 );
     }
@@ -752,6 +959,30 @@ public class ModelGenerator extends FabricModelProvider {
                                 .put(VariantSettings.MODEL, cabinetModel)
                                 .put(VariantSettings.Y, VariantSettings.Rotation.R90)
                 );
+    }
+
+
+    protected static BlockStateVariant getUVLockedVariantXY(Identifier model, VariantSettings.Rotation rotationX, VariantSettings.Rotation rotationY) {
+        return BlockStateVariant.create()
+                .put(VariantSettings.MODEL, model)
+                .put(VariantSettings.UVLOCK, true)
+                .put(VariantSettings.X, rotationX)
+                .put(VariantSettings.Y, rotationY);
+    }
+    protected static BlockStateVariant getUVLockedVariantX(Identifier model, VariantSettings.Rotation rotationX) {
+        return BlockStateVariant.create()
+                .put(VariantSettings.MODEL, model)
+                .put(VariantSettings.UVLOCK, true)
+                .put(VariantSettings.X, rotationX);
+    }
+    protected static BlockStateVariant getUVLockedVariantY(Identifier model, VariantSettings.Rotation rotationY) {
+        return BlockStateVariant.create()
+                .put(VariantSettings.MODEL, model)
+                .put(VariantSettings.UVLOCK, true)
+                .put(VariantSettings.Y, rotationY);
+    }
+    protected static BlockStateVariant getVariant(Identifier model) {
+        return BlockStateVariant.create().put(VariantSettings.MODEL, model);
     }
 
 

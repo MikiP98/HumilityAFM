@@ -65,7 +65,7 @@ public class ItemGroupRegistry {
                 Arrays.stream(BlockRegistry.COLOURED_JACK_O_LANTERNS).forEach(entries::add);
                 Arrays.stream(ItemRegistry.glowingPowderVariants).forEach(entries::add);
                 Arrays.stream(ColouredLightsGenerator.colouredTorchesVariants).forEach(entries::add);
-                if (ModConfig.enableLEDs) Arrays.stream(ColouredLightsGenerator.LEDBlockVariants).forEach(entries::add);
+                if (ModConfig.enableLightStrips) Arrays.stream(ColouredLightsGenerator.LightStripBlockVariants).forEach(entries::add);
                 if (ModConfig.enableCandlesticks) {
                     Arrays.stream(CandlestickGenerator.candlestickClassicVariants).forEach(entries::add);
                     CandlestickGenerator.candlestickRustableVariants.forEach(set -> Arrays.stream(set).forEach(entries::add));

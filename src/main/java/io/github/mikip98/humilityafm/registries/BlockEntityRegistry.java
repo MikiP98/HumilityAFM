@@ -48,11 +48,11 @@ public class BlockEntityRegistry {
         );
 
         //Register LED block entity
-        if (ModConfig.enableLEDs && ModConfig.enableLEDsBrightening && !ModConfig.shimmerDetected) {
+        if (ModConfig.enableLightStrips && ModConfig.enableLightStripBrightening && !ModConfig.shimmerDetected) {
             LIGHT_STRIP_BLOCK_ENTITY = Registry.register(
                     Registries.BLOCK_ENTITY_TYPE,
                     new Identifier(MOD_ID, "light_strip_block_entity"),
-                    FabricBlockEntityTypeBuilder.create(LightStripBlockEntity::new, ColouredLightsGenerator.LEDBlockVariants).build()
+                    FabricBlockEntityTypeBuilder.create(LightStripBlockEntity::new, ColouredLightsGenerator.LightStripBlockVariants).build()
             );
         }
     }

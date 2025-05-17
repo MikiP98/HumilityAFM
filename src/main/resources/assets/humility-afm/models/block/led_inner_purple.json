@@ -1,7 +1,0 @@
-{
-    "parent": "humility-afm:block/led_inner",
-    "textures": {
-        "0": "block/purple_concrete",
-        "particle": "block/purple_terracotta"
-    }
-}

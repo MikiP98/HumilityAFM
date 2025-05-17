@@ -25,28 +25,28 @@ public class ConfigJSON {
         // Create a JSON object to store the configuration
         JsonObject configJson = new JsonObject();
         configJson.addProperty("TransparentCabinetBlocks", ModConfig.TransparentCabinetBlocks);
-        configJson.addProperty("enableLEDs", ModConfig.enableLEDs);
-        configJson.addProperty("enableLEDsBrightening", ModConfig.enableLEDsBrightening);
-        configJson.addProperty("enableLEDRadiusColorCompensation", ModConfig.enableLEDRadiusColorCompensation);
+        configJson.addProperty("enableLightStrips", ModConfig.enableLightStrips);
+        configJson.addProperty("enableLightStripBrightening", ModConfig.enableLightStripBrightening);
+        configJson.addProperty("enableLightStripRadiusColorCompensation", ModConfig.enableLightStripRadiusColorCompensation);
         configJson.addProperty("enableCandlesticks", ModConfig.enableCandlesticks);
 
-        configJson.addProperty("LEDColoredLightStrength", ModConfig.LEDColoredLightStrength);
-        configJson.addProperty("LEDColoredLightRadius", ModConfig.LEDColoredLightRadius);
-        configJson.addProperty("LEDRadiusColorCompensationBias", ModConfig.LEDRadiusColorCompensationBias);
+        configJson.addProperty("LightStripColoredLightStrength", ModConfig.LightStripColoredLightStrength);
+        configJson.addProperty("LightStripColoredLightRadius", ModConfig.LightStripColoredLightRadius);
+        configJson.addProperty("LightStripRadiusColorCompensationBias", ModConfig.LightStripRadiusColorCompensationBias);
         configJson.addProperty("cabinetBlockBurnTime", ModConfig.cabinetBlockBurnTime);
         configJson.addProperty("cabinetBlockFireSpread", ModConfig.cabinetBlockFireSpread);
         configJson.addProperty("mosaicsAndTilesStrengthMultiplayer", ModConfig.mosaicsAndTilesStrengthMultiplayer);
 
-        JsonArray LEDColors = new JsonArray();
-        for (Color color : ModConfig.LEDColors) {
+        JsonArray LightStripColors = new JsonArray();
+        for (Color color : ModConfig.LightStripColors) {
             JsonObject colorJson = new JsonObject();
             colorJson.addProperty("name", color.name);
             colorJson.addProperty("r", color.r);
             colorJson.addProperty("g", color.g);
             colorJson.addProperty("b", color.b);
-            LEDColors.add(colorJson);
+            LightStripColors.add(colorJson);
         }
-        configJson.add("LEDColors", LEDColors);
+        configJson.add("LightStripColors", LightStripColors);
 
         JsonObject pumpkinColors = new JsonObject();
         for (Map.Entry<String, Color> entry : ModConfig.pumpkinColors.entrySet()) {
@@ -82,24 +82,24 @@ public class ConfigJSON {
                 if (configJson != null) {
                     // Load the static fields from the JSON object
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "TransparentCabinetBlocks");
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableLEDs");
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableLEDsBrightening");
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableLEDRadiusColorCompensation");
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableLightStrips");
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableLightStripBrightening");
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableLightStripRadiusColorCompensation");
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableCandlesticks");
 
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, "LEDColoredLightStrength");
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, "LEDColoredLightRadius");
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, "LEDRadiusColorCompensationBias");
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, "LightStripColoredLightStrength");
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, "LightStripColoredLightRadius");
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, "LightStripRadiusColorCompensationBias");
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsInt, "cabinetBlockBurnTime");
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsInt, "cabinetBlockFireSpread");
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsFloat, "mosaicsAndTilesStrengthMultiplayer");
 
-//                    needsUpdating |= tryLoad(configJson, JsonElement::getAsJsonArray, "LEDColors");
+//                    needsUpdating |= tryLoad(configJson, JsonElement::getAsJsonArray, "LightStripColors");
                     try {
-                        JsonArray LEDColors = configJson.getAsJsonArray("LEDColors");
+                        JsonArray LEDColors = configJson.getAsJsonArray("LightStripColors");
                         for (int i = 0; i < LEDColors.size(); i++) {
                             JsonObject colorJson = LEDColors.get(i).getAsJsonObject();
-                            Color color = ModConfig.LEDColors.get(i);
+                            Color color = ModConfig.LightStripColors.get(i);
                             color.r = colorJson.get("r").getAsShort();
                             color.g = colorJson.get("g").getAsShort();
                             color.b = colorJson.get("b").getAsShort();
@@ -171,7 +171,7 @@ public class ConfigJSON {
                 {
                 \t"ColorReference": {
                     """;
-        for (Color color : ModConfig.LEDColors) {
+        for (Color color : ModConfig.LightStripColors) {
             if (color.name.equals("pink")) {
                 JSON += """
                         \t\t\"""" + color.name + """ 
@@ -182,7 +182,7 @@ public class ConfigJSON {
                         ,
                         \t\t\t"b":\s""" + color.b + """
                         ,
-                        \t\t\t"a":\s""" + ModConfig.LEDColoredLightStrength + """
+                        \t\t\t"a":\s""" + ModConfig.LightStripColoredLightStrength + """
                             
                         \t\t}
                         """;
@@ -196,7 +196,7 @@ public class ConfigJSON {
                         ,
                         \t\t\t"b":\s""" + color.b + """
                         ,
-                        \t\t\t"a":\s""" + ModConfig.LEDColoredLightStrength + """
+                        \t\t\t"a":\s""" + ModConfig.LightStripColoredLightStrength + """
                             
                         \t\t},
                         """;
@@ -208,7 +208,7 @@ public class ConfigJSON {
         \t"LightBlock": [
         """;
 
-        for (Color color : ModConfig.LEDColors) {
+        for (Color color : ModConfig.LightStripColors) {
             if (color.name.equals("pink")) {
                 JSON += """
                         \t\t{
@@ -216,7 +216,7 @@ public class ConfigJSON {
                         ",
                         \t\t\t"color": "#""" + color.name + """
                         ",
-                        \t\t\t"radius":\s""" + (ModConfig.LEDColoredLightRadius + bias(color)) + """
+                        \t\t\t"radius":\s""" + (ModConfig.LightStripColoredLightRadius + bias(color)) + """
                         
                         \t\t}
                         """;
@@ -227,7 +227,7 @@ public class ConfigJSON {
                         ",
                         \t\t\t"color": "#""" + color.name + """
                         ",
-                        \t\t\t"radius":\s""" + (ModConfig.LEDColoredLightRadius + bias(color)) + """
+                        \t\t\t"radius":\s""" + (ModConfig.LightStripColoredLightRadius + bias(color)) + """
                         
                         \t\t},
                         """;
@@ -303,7 +303,7 @@ public class ConfigJSON {
 
 //    @BM
     private static short bias(Color color) {
-        if (ModConfig.enableLEDRadiusColorCompensation) {
+        if (ModConfig.enableLightStripRadiusColorCompensation) {
             short sum = (short) (color.r + color.g + color.b);
             if (sum <= 255) {
                 return 1;

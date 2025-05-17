@@ -5,6 +5,8 @@ import io.github.mikip98.humilityafm.util.data_types.CandleColor;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.*;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.FluidTags;
@@ -26,7 +28,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public class Candlestick extends HorizontalFacingBlock {
+public class Candlestick extends HorizontalFacingBlock implements Waterloggable {
     public static final FabricBlockSettings defaultSettings = FabricBlockSettings.create()
             .strength(0.5f)
             .requiresTool()
@@ -226,5 +228,11 @@ public class Candlestick extends HorizontalFacingBlock {
             Block.dropStack(world, pos, new ItemStack(state.get(CANDLE_COLOR).asCandle()));
             super.onStateReplaced(state, world, pos, newState, moved);
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public FluidState getFluidState(BlockState state) {
+        return state.get(Properties.WATERLOGGED) ? Fluids.WATER.getStill(false) : Fluids.EMPTY.getDefaultState();
     }
 }
