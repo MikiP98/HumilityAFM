@@ -63,11 +63,11 @@ This mod is highly customisable through its config!
   - If done through a datapack, the blocks can be enabled by default on the client?
 - Add ceiling and floor candlesticks variants
 - Add floor and ceiling variants of the cabinets
-- Make LEDs and Candlestick into integrated datapacks?
+- Make Light Strips and Candlesticks into integrated datapacks?
 - Make BetterNether and BetterEnd support into integrated datapacks
 - Add thin <sup>*(Blibiocraft style)*</sup> and short cabinets?
 - Add a feature to connect 2 neighboring Cabinets into a big one?
-- Convert all the Python code to Java Fabric Datagen
+- ~~Convert all the Python code to Java Fabric Datagen~~
 - Restructure the code a bit *(e.g. dedicated registry files)*
 - Add `Fully resourcepack compatible!` to the `Features` section
 - Port to newer MC versions: 
@@ -93,7 +93,7 @@ This mod is highly customisable through its config!
   - ~~`LED powder` into `Glowing powder`~~
   - ~~1 powder - weak torch; 2 powders - torch; 3 powders - strong torch~~
   - ~~Move LEDs to misc tab, alongside the powders~~
-  - Rename LEDs to light strips, consider enabling them by default?
+  - ~~Rename LEDs to light strips,~~ consider enabling them by default?
   - Make coloured Jack o'Lanterns
 - ~~Compress candlesticks into 4 items for each metal type~~
 - Move VoxelShapes from switches to a maps or variables
@@ -109,8 +109,10 @@ This mod is highly customisable through its config!
   - Coloured Torches
   - Jack o'Lanterns
   - Forced Corner Stairs
-- Fix LEDs loosing their Block Entity
-- Fix LED brightening breaking on corer pieces
+- ~~Fix Light Strips loosing their Block Entity~~
+- Fix Light Strip brightening breaking on corner pieces
+- Fix Light Strip voxel shape
+- ~~Fix candlestick waterlog ability~~
 
 <br>
 
