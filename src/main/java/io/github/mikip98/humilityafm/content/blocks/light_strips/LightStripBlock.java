@@ -1,7 +1,9 @@
 package io.github.mikip98.humilityafm.content.blocks.light_strips;
 
+import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.block.enums.StairShape;
 import net.minecraft.sound.BlockSoundGroup;
@@ -11,8 +13,9 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
+import org.jetbrains.annotations.Nullable;
 
-public class LightStripBlock extends StairsBlock {
+public class LightStripBlock extends StairsBlock implements BlockEntityProvider {
     public static final FabricBlockSettings defaultSettings = FabricBlockSettings.create().strength(0.5f).sounds(BlockSoundGroup.GLASS).luminance(9);
 
     public LightStripBlock() {
@@ -195,5 +198,11 @@ public class LightStripBlock extends StairsBlock {
             }
         }
         return shape;
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new LightStripBlockEntity(pos, state);
     }
 }

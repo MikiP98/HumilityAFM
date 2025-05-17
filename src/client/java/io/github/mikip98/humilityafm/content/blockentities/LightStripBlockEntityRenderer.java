@@ -1,6 +1,6 @@
 package io.github.mikip98.humilityafm.content.blockentities;
 
-import io.github.mikip98.humilityafm.content.blocks.light_strips.LightStripBlockWithEntity;
+import io.github.mikip98.humilityafm.content.blocks.light_strips.LightStripBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.StairsBlock;
@@ -20,6 +20,22 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
 
     @Override
     public void render(LightStripBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+        renderFunction.execute(entity, matrices, vertexConsumers, overlay);
+    }
+
+
+    @FunctionalInterface
+    protected interface RenderFunction {
+        void execute(LightStripBlockEntity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int overlay);
+    }
+
+    protected static RenderFunction renderFunction = LightStripBlockEntityRenderer::fakeRunnable;
+    public static void enableBrightening() {
+        renderFunction = LightStripBlockEntityRenderer::renderBrightening;
+    }
+
+    protected static void fakeRunnable(LightStripBlockEntity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int overlay) {}
+    protected static void renderBrightening(LightStripBlockEntity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int overlay) {
         matrices.push();
 
         World world = entity.getWorld();
@@ -33,7 +49,7 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
 
         BlockState blockState = world.getBlockState(pos);
 
-        if (blockState == null || !(blockState.getBlock() instanceof LightStripBlockWithEntity)) {
+        if (blockState == null || !(blockState.getBlock() instanceof LightStripBlock)) {
             // If the block state is null or not an instance of LEDStripBlock, return early
             matrices.pop();
             return;
@@ -43,8 +59,6 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
         final byte posisionConstant = 31;
 
         float blockSizeX = blockSize;
-        @SuppressWarnings("unused")
-        float blockSizeY = blockSize;
         float blockSizeZ = blockSize;
         byte posisionConstantX = 1;
         byte posisionConstantY = 1;
@@ -69,15 +83,20 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
         }
 
         // Move the matrix to the center of the object
-        matrices.translate(-blockSizeX/2*(scale-1)*posisionConstantX, -blockSizeY/2*(scale-1)*posisionConstantY, -blockSizeZ/2*(scale-1)*posisionConstantZ);
+        matrices.translate(-blockSizeX/2*(scale-1)*posisionConstantX, -blockSize/2*(scale-1)*posisionConstantY, -blockSizeZ/2*(scale-1)*posisionConstantZ);
 
         matrices.scale(scale, scale, scale);
 
         // Render the LED strip block with custom light value
         MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer().render(
-                matrices.peek(), vertexConsumers.getBuffer(RenderLayer.getSolid()), blockState,
+                matrices.peek(),
+                vertexConsumers.getBuffer(RenderLayer.getSolid()),
+                blockState,
                 MinecraftClient.getInstance().getBlockRenderManager().getModel(blockState),
-                1.0f, 1.0f, 1.0f, 0xF000F0, overlay);
+                1.0f, 1.0f, 1.0f,
+                0xF000F0,
+                overlay
+        );
 
 
 //        // Use RenderLayer.getSolid() to disable shading and AO
