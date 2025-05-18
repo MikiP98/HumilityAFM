@@ -11,7 +11,6 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -24,59 +23,48 @@ public class CabinetBlockEntityRenderer implements BlockEntityRenderer<CabinetBl
 
     @Override
     public void render(CabinetBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        matrices.push();
-
         World world = blockEntity.getWorld();
         BlockPos pos = blockEntity.getPos();
 
         if (world == null || pos == null) {
-            // If the world or position is null, return early
-            matrices.pop();
             return;
         }
 
         BlockState blockState = world.getBlockState(pos);
-
         if (blockState == null || !(blockState.getBlock() instanceof CabinetBlock)) {
-            matrices.pop();
             return;
         }
 
+        renderItem(blockEntity, blockState, matrices, vertexConsumers, light, overlay);
+    }
+
+    public static void renderItem(CabinetBlockEntity blockEntity, BlockState blockState, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         final ItemStack stack = blockEntity.getStack(0);
+        if (stack.isEmpty()) return;
 
-        float scaleY = 0.375f;
-        Quaternionf rotation;
 
-        // Move the item
-        // If the item is a block, move it down a bit
-        if (stack.getItem() instanceof BlockItem) {
-            scaleY = 0.3125f;
-        }
+        matrices.push();
+
+        // Center in a block; Required for correct rotation
+        matrices.translate(0.5, 0.5, 0.5);
+
         switch (blockState.get(CabinetBlock.FACING)) {
-            case NORTH -> {
-                matrices.translate(0.5, scaleY, 0.9);
-
-                rotation = new Quaternionf().rotationYXZ((float) Math.toRadians(180), 0.0f, 0.0f); // Create a rotation quaternion for a 180-degree rotation around the Y-axis
-                matrices.multiply(rotation);
-            }
-            case SOUTH -> matrices.translate(0.5, scaleY, 0.1);
-            case EAST -> {
-                matrices.translate(0.1, scaleY, 0.5);
-                rotation = new Quaternionf().rotationYXZ((float) Math.toRadians(90), 0.0f, 0.0f);
-                matrices.multiply(rotation);
-            }
-            case WEST -> {
-                matrices.translate(0.9, scaleY, 0.5);
-                rotation = new Quaternionf().rotationYXZ((float) Math.toRadians(270), 0.0f, 0.0f);
-                matrices.multiply(rotation);
-            }
+            case SOUTH -> matrices.multiply(new Quaternionf().rotationYXZ((float) Math.toRadians(180), 0, 0));
+            case EAST -> matrices.multiply(new Quaternionf().rotationYXZ((float) Math.toRadians(270), 0, 0));
+            case WEST -> matrices.multiply(new Quaternionf().rotationYXZ((float) Math.toRadians(90), 0, 0));
         }
 
-        // Actually render the item
-        // MinecraftClient.getInstance().getItemRenderer().renderItem(new ItemStack(Items.JUKEBOX, 1), ModelTransformation.Mode.GROUND, light, overlay, matrices, vertexConsumers, 0);
+        // X -> Left/Right; positive is left; negative is right
+        // Y -> Height
+        // Z -> Depth; positive is deeper; negative is closer
+        matrices.translate(0, 0, 0.40625);  // Z is 7/16 - 1/32 = 0.40625
+
+        float scale = 0.5625f;  // 9/16
+        matrices.scale(scale, scale, scale);
+
+        // Render the item inside the cabinet
         final BakedModel model = MinecraftClient.getInstance().getItemRenderer().getModel(stack, null, null, 0);
-        MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformationMode.GROUND, false, matrices, vertexConsumers, light, overlay, model);
-        // 15728640 + 255 = fully lit
+        MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformationMode.FIXED, false, matrices, vertexConsumers, light, overlay, model);
 
         // Mandatory call after GL calls
         matrices.pop();
