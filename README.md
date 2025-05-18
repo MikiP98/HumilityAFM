@@ -74,6 +74,8 @@ Lighten up your builds with unobtrusive light source <br>
 <br>
 <br>
 
+[//]: # (TODO: Built in Better Nether, Better End and Biomes o' Plenty support)
+
 ### High config customizability
 
 <br>
@@ -85,15 +87,18 @@ Lighten up your builds with unobtrusive light source <br>
 - Fancy carpets
 - Server feature sync?
   - If done through a datapack, the blocks can be enabled by default on the client?
-- Add ceiling and floor candlesticks variants
+- Add ceiling and floor candlestick variants
 - Add floor and ceiling variants of the cabinets
 - Make Light Strips and Candlesticks into integrated datapacks?
-- Make BetterNether and BetterEnd support into integrated datapacks
+- Make BetterNether and BetterEnd support into integrated datapacks?
+- Re-add Better Nether built-in support
+- Add Better End built-in support
+- Add Biomes o' Plenty built-in support
 - Add thin <sup>*(Blibiocraft style)*</sup> and short cabinets?
 - Add a feature to connect 2 neighboring Cabinets into a big one?
 - ~~Convert all the Python code to Java Fabric Datagen~~
 - Restructure the code a bit *(e.g. dedicated registry files)*
-- Add `Fully resourcepack compatible!` to the `Features` section
+- ~~Add `Fully resourcepack compatible!` to the `Features` section~~
 - Port to newer MC versions: 
   - 1.20.4?
   - 1.21.1
@@ -141,6 +146,7 @@ Lighten up your builds with unobtrusive light source <br>
 - Fix Cabinet open and close models not matching and cabinet inside texture stretch
 - Improve config logic
 - Consider doing a HumilityLib library mod for config or such?
+- ~~Improve Cabinet rendering~~
 
 <br>
 
