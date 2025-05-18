@@ -8,14 +8,32 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 
+import java.util.Map;
+
 public class OuterStairs extends HorizontalFacingBlock implements Waterloggable {
+    protected static final Map<Direction, VoxelShape> bottomVoxelShape = getVoxelShapeMapOfY(
+            VoxelShapes.cuboid(0f, 0f, 0f, 1f, 0.5f, 1.0f),
+            0.5f
+    );
+    protected static final Map<Direction, VoxelShape> topVoxelShape = getVoxelShapeMapOfY(
+            VoxelShapes.cuboid(0f, 0.5f, 0f, 1f, 1f, 1.0f),
+            0f
+    );
+    protected static Map<Direction, VoxelShape> getVoxelShapeMapOfY(VoxelShape base, double y) {
+        return Map.of(
+                Direction.NORTH, VoxelShapes.union(base, VoxelShapes.cuboid(0.5f, y, 0.5f, 1.0f, y+0.5f, 1.0f)),  // original
+                Direction.SOUTH, VoxelShapes.union(base, VoxelShapes.cuboid(0.0f, y, 0.0f, 0.5f, y+0.5f, 0.5f)),  // reverse original
+                Direction.EAST,  VoxelShapes.union(base, VoxelShapes.cuboid(0.0f, y, 0.5f, 0.5f, y+0.5f, 1.0f)),  // swap x <-> z + reverse
+                Direction.WEST,  VoxelShapes.union(base, VoxelShapes.cuboid(0.5f, y, 0.0f, 1.0f, y+0.5f, 0.5f))   // swap x <-> z
+        );
+    }
+
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
 
     public OuterStairs(Settings settings) {
@@ -41,31 +59,18 @@ public class OuterStairs extends HorizontalFacingBlock implements Waterloggable 
                 .with(Properties.BLOCK_HALF, ctx.getHitPos().y - ctx.getBlockPos().getY() > 0.5 ? BlockHalf.TOP : BlockHalf.BOTTOM);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public FluidState getFluidState(BlockState state) {
         return state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : Fluids.EMPTY.getDefaultState();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
         Direction dir = state.get(FACING);
-        VoxelShape base = VoxelShapes.cuboid(0f, 0f, 0f, 1f, 0.5f, 1.0f);
-        float y = 0.5f;
-        if (state.get(Properties.BLOCK_HALF) == BlockHalf.TOP) {
-            base = VoxelShapes.cuboid(0f, 0.5f, 0f, 1f, 1f, 1.0f);
-            y = 0f;
-        }
-        switch(dir) {
-            case NORTH:
-                return VoxelShapes.combine(base, VoxelShapes.cuboid(0.5f, y, 0.5f, 1f, y+0.5f, 1f), BooleanBiFunction.OR); // original
-            case SOUTH:
-                return VoxelShapes.combine(base, VoxelShapes.cuboid(0f, y, 0f, 0.5f, y+0.5f, 0.5f), BooleanBiFunction.OR); //reverse original
-            case EAST:
-                return VoxelShapes.combine(base, VoxelShapes.cuboid(00f, y, 0.5f, 0.5f, y+0.5f, 1f), BooleanBiFunction.OR); //swap z <-> x + reverse
-            case WEST:
-                return VoxelShapes.combine(base, VoxelShapes.cuboid(0.5f, y, 0f, 1f, y+0.5f, 0.5f), BooleanBiFunction.OR); //swap
-            default:
-                return VoxelShapes.fullCube();
-        }
+        return state.get(Properties.BLOCK_HALF) == BlockHalf.TOP
+                ? topVoxelShape.get(dir)
+                : bottomVoxelShape.get(dir);
     }
 }
