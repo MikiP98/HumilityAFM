@@ -4,8 +4,8 @@ import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
 import io.github.mikip98.humilityafm.generators.CandlestickGenerator;
 import io.github.mikip98.humilityafm.generators.ColouredLightsGenerator;
 import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
-import io.github.mikip98.humilityafm.helpers.TerracottaTilesHelper;
-import io.github.mikip98.humilityafm.helpers.WoodenMosaicHelper;
+import io.github.mikip98.humilityafm.generators.TerracottaTilesGenerator;
+import io.github.mikip98.humilityafm.generators.WoodenMosaicGenerator;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.GenerationData;
@@ -129,7 +129,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
 
                 offerWoodenMosaicRecipe(
                         exporter,
-                        WoodenMosaicHelper.woodenMosaicItemVariants[i],
+                        WoodenMosaicGenerator.woodenMosaicVariants[i],
                         plank,
                         plank2,
                         "wooden_mosaics/"
@@ -137,8 +137,8 @@ public class RecipeGenerator extends AFMRecipieProvider {
                 int j = getMirrorIndex(i, GenerationData.vanillaWoodTypes.length);
                 offerChangeRecipie(
                         exporter,
-                        WoodenMosaicHelper.woodenMosaicItemVariants[i],
-                        WoodenMosaicHelper.woodenMosaicItemVariants[j],
+                        WoodenMosaicGenerator.woodenMosaicVariants[i],
+                        WoodenMosaicGenerator.woodenMosaicVariants[j],
                         MOD_ID + "/wooden_mosaics",
                         "wooden_mosaics/rotation/"
                 );
@@ -158,7 +158,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
 
                 offerTerracottaTileRecipe(
                         exporter,
-                        TerracottaTilesHelper.terracottaTilesItemVariants[i],
+                        TerracottaTilesGenerator.terracottaTilesVariants[i],
                         terracotta,
                         terracotta2,
                         "terracotta_tiles/"
@@ -166,8 +166,8 @@ public class RecipeGenerator extends AFMRecipieProvider {
                 int j = getMirrorIndex(i, GenerationData.vanillaColorPallet.length);
                 offerChangeRecipie(
                         exporter,
-                        TerracottaTilesHelper.terracottaTilesItemVariants[i],
-                        TerracottaTilesHelper.terracottaTilesItemVariants[j],
+                        TerracottaTilesGenerator.terracottaTilesVariants[i],
+                        TerracottaTilesGenerator.terracottaTilesVariants[j],
                         MOD_ID + "/terracotta_tiles",
                         "terracotta_tiles/rotation/"
                 );

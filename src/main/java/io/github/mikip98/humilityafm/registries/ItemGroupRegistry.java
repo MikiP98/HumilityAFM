@@ -1,11 +1,7 @@
 package io.github.mikip98.humilityafm.registries;
 
 import io.github.mikip98.humilityafm.config.ModConfig;
-import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
-import io.github.mikip98.humilityafm.generators.CandlestickGenerator;
-import io.github.mikip98.humilityafm.generators.ColouredLightsGenerator;
-import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
-import io.github.mikip98.humilityafm.helpers.*;
+import io.github.mikip98.humilityafm.generators.*;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.ItemConvertible;
@@ -43,16 +39,16 @@ public class ItemGroupRegistry {
 
     // WoodenMosaic item group
     final static ItemGroup WOODEN_MOSAIC_ITEM_GROUP = FabricItemGroup.builder()
-            .icon(() -> new ItemStack(WoodenMosaicHelper.woodenMosaicVariants[0]))
+            .icon(() -> new ItemStack(WoodenMosaicGenerator.woodenMosaicVariants[0]))
             .displayName(Text.translatable("itemGroup.woodenMosaics"))
-            .entries((displayContext, entries) -> Arrays.stream(WoodenMosaicHelper.woodenMosaicVariants).forEach(entries::add))
+            .entries((displayContext, entries) -> Arrays.stream(WoodenMosaicGenerator.woodenMosaicVariants).forEach(entries::add))
             .build();
 
     // TerracottaTiles item group
     final static ItemGroup TERRACOTTA_TILES_ITEM_GROUP = FabricItemGroup.builder()
-            .icon(() -> new ItemStack(TerracottaTilesHelper.terracottaTilesVariants[0]))
+            .icon(() -> new ItemStack(TerracottaTilesGenerator.terracottaTilesVariants[0]))
             .displayName(Text.translatable("itemGroup.terracottaTiles"))
-            .entries((displayContext, entries) -> Arrays.stream(TerracottaTilesHelper.terracottaTilesVariants).forEach(entries::add))
+            .entries((displayContext, entries) -> Arrays.stream(TerracottaTilesGenerator.terracottaTilesVariants).forEach(entries::add))
             .build();
 
     // Miscellaneous (Humility Misc) item group

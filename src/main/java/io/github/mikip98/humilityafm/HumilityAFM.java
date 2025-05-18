@@ -2,11 +2,7 @@ package io.github.mikip98.humilityafm;
 
 import io.github.mikip98.humilityafm.config.ConfigJSON;
 import io.github.mikip98.humilityafm.config.ModConfig;
-import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
-import io.github.mikip98.humilityafm.generators.CandlestickGenerator;
-import io.github.mikip98.humilityafm.generators.ColouredLightsGenerator;
-import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
-import io.github.mikip98.humilityafm.helpers.*;
+import io.github.mikip98.humilityafm.generators.*;
 import io.github.mikip98.humilityafm.registries.BlockEntityRegistry;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.registries.ItemGroupRegistry;
@@ -51,8 +47,8 @@ public class HumilityAFM implements ModInitializer {
 
 		CabinetBlockGenerator.init();
 		ForcedCornerStairsGenerator.init();
-		WoodenMosaicHelper.init();
-		TerracottaTilesHelper.init();
+		WoodenMosaicGenerator.init();
+		TerracottaTilesGenerator.init();
 		ColouredLightsGenerator.init();
 		if (ModConfig.enableCandlesticks) CandlestickGenerator.init();
 
@@ -67,12 +63,6 @@ public class HumilityAFM implements ModInitializer {
 		// ............ BLOCKS ............
 		BlockRegistry.register();
 
-		// ............ FINAL BLOCKS & ITEMS ............
-		// Register wooden mosaic variants
-		WoodenMosaicHelper.registerWoodenMosaicVariants();
-		// Register terracotta tiles variants
-		TerracottaTilesHelper.registerTerracottaTilesVariants();
-
 		// ............ BLOCK ENTITIES ............
 		BlockEntityRegistry.register();
 	}
@@ -80,10 +70,10 @@ public class HumilityAFM implements ModInitializer {
 
 	public static void checkForSupportedMods() {
 		checkForMod("shimmer", "Shimmer", HumilityAFM::shimmerDetected);
-		checkForMod("betternether", HumilityAFM::betterNether);
+		checkForMod("betternether", HumilityAFM::betterNetherDetected);
 	}
 
-	protected static void betterNether() {
+	protected static void betterNetherDetected() {
 		LOGGER.info("Better Nether mod detected! Enabling Better Nether support.");
 		ModConfig.betterNetherDetected = true;
 	}

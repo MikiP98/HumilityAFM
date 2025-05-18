@@ -23,6 +23,7 @@ public class GenerationData {
     public static final String[] vanillaWoodTypes = {"oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "bamboo", "crimson", "warped"};
     public static final float vanillaWoodHardness = Blocks.OAK_PLANKS.getHardness();  // 2.0f;
     public static final float vanillaWoodResistance = Blocks.OAK_PLANKS.getBlastResistance();  // 3.0f;
+    // TODO: Split nether and overworld wood types, as nether wood does not burn
 
     /***
      * All stony vanilla materials that stairs can be made from

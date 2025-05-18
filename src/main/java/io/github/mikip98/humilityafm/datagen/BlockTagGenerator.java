@@ -2,7 +2,8 @@ package io.github.mikip98.humilityafm.datagen;
 
 import io.github.mikip98.humilityafm.content.ModBlockTags;
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
-import io.github.mikip98.humilityafm.helpers.*;
+import io.github.mikip98.humilityafm.generators.TerracottaTilesGenerator;
+import io.github.mikip98.humilityafm.generators.WoodenMosaicGenerator;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.util.GenerationData;
 import io.github.mikip98.humilityafm.util.data_types.Pair;
@@ -35,12 +36,12 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 
         // Wooden Mosaic Block Tag
         getOrCreateTagBuilder(ModBlockTags.WOODEN_MOSAIC_BLOCKS)
-                .add(getIds(Arrays.stream(WoodenMosaicHelper.woodenMosaicVariantsNames).map(s -> "wooden_mosaic_" + s)))
+                .add(getIds(Arrays.stream(WoodenMosaicGenerator.woodenMosaicVariantsNames).map(s -> "wooden_mosaic_" + s)))
                 .add(BlockRegistry.WOODEN_MOSAIC);  // Manual testing block
 
         // Terracotta Tiles Block Tag
         getOrCreateTagBuilder(ModBlockTags.TERRACOTTA_TILES_BLOCKS)
-                .add(getIds(Arrays.stream(TerracottaTilesHelper.terracottaTilesVariantsNames).map(s -> "terracotta_tiles_" + s)));
+                .add(getIds(Arrays.stream(TerracottaTilesGenerator.terracottaTilesVariantsNames).map(s -> "terracotta_tiles_" + s)));
 
         // Inner & Outer Stairs Block Tags
         String[] woodenVariants = GenerationData.vanillaWoodTypes;

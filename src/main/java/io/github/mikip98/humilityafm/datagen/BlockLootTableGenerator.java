@@ -4,8 +4,8 @@ import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
 import io.github.mikip98.humilityafm.generators.CandlestickGenerator;
 import io.github.mikip98.humilityafm.generators.ColouredLightsGenerator;
 import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
-import io.github.mikip98.humilityafm.helpers.TerracottaTilesHelper;
-import io.github.mikip98.humilityafm.helpers.WoodenMosaicHelper;
+import io.github.mikip98.humilityafm.generators.TerracottaTilesGenerator;
+import io.github.mikip98.humilityafm.generators.WoodenMosaicGenerator;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
@@ -32,12 +32,12 @@ public class BlockLootTableGenerator extends FabricBlockLootTableProvider {
 
         // Wooden Mosaics
         addDrop(BlockRegistry.WOODEN_MOSAIC);  // Manual testing block
-        for (Block block : WoodenMosaicHelper.woodenMosaicVariants) {
+        for (Block block : WoodenMosaicGenerator.woodenMosaicVariants) {
             addDrop(block);
         }
 
         // Terracotta Tiles
-        for (Block block : TerracottaTilesHelper.terracottaTilesVariants) {
+        for (Block block : TerracottaTilesGenerator.terracottaTilesVariants) {
             addDrop(block);
         }
 

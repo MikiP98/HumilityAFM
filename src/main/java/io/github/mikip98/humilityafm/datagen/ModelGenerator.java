@@ -5,8 +5,8 @@ import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
 import io.github.mikip98.humilityafm.generators.ColouredLightsGenerator;
 import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
 import io.github.mikip98.humilityafm.generators.CandlestickGenerator;
-import io.github.mikip98.humilityafm.helpers.TerracottaTilesHelper;
-import io.github.mikip98.humilityafm.helpers.WoodenMosaicHelper;
+import io.github.mikip98.humilityafm.generators.TerracottaTilesGenerator;
+import io.github.mikip98.humilityafm.generators.WoodenMosaicGenerator;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.GenerationData;
@@ -346,8 +346,8 @@ public class ModelGenerator extends FabricModelProvider {
                                 .register(TextureKey.PARTICLE, new Identifier("block/" + woodType + "_planks")),
                         blockStateModelGenerator.modelCollector
                 );
-                blockStateModelGenerator.registerParentedItemModel(WoodenMosaicHelper.woodenMosaicVariants[i], woodenMosaicModelId);
-                blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(WoodenMosaicHelper.woodenMosaicVariants[i], woodenMosaicModelId));
+                blockStateModelGenerator.registerParentedItemModel(WoodenMosaicGenerator.woodenMosaicVariants[i], woodenMosaicModelId);
+                blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(WoodenMosaicGenerator.woodenMosaicVariants[i], woodenMosaicModelId));
 
                 ++i;
             }
@@ -367,8 +367,8 @@ public class ModelGenerator extends FabricModelProvider {
                                 .register(TextureKey.PARTICLE, new Identifier("block/" + color + "_terracotta")),
                         blockStateModelGenerator.modelCollector
                 );
-                blockStateModelGenerator.registerParentedItemModel(TerracottaTilesHelper.terracottaTilesVariants[i], terracottaTileModelId);
-                blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(TerracottaTilesHelper.terracottaTilesVariants[i], terracottaTileModelId));
+                blockStateModelGenerator.registerParentedItemModel(TerracottaTilesGenerator.terracottaTilesVariants[i], terracottaTileModelId);
+                blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(TerracottaTilesGenerator.terracottaTilesVariants[i], terracottaTileModelId));
 
                 ++i;
             }

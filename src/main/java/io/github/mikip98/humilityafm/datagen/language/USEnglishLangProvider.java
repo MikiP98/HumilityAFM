@@ -4,7 +4,8 @@ import io.github.mikip98.humilityafm.datagen.language.util.PrefixedHashMap;
 import io.github.mikip98.humilityafm.datagen.language.util.TranslationCategory;
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
 import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
-import io.github.mikip98.humilityafm.helpers.*;
+import io.github.mikip98.humilityafm.generators.TerracottaTilesGenerator;
+import io.github.mikip98.humilityafm.generators.WoodenMosaicGenerator;
 import io.github.mikip98.humilityafm.util.GenerationData;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
@@ -94,7 +95,7 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
 
     public static Map<String, String> generateWoodenMosaicTranslations() {
         Map<String, String> translations = new HashMap<>();
-        for (String variant : WoodenMosaicHelper.woodenMosaicVariantsNames) {
+        for (String variant : WoodenMosaicGenerator.woodenMosaicVariantsNames) {
             String key = "wooden_mosaic_" + variant;
             String value = formatName(variant) + " wooden mosaic";
             translations.put(key, value);
@@ -104,7 +105,7 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
 
     public static Map<String, String> generateTerracottaTilesTranslations() {
         Map<String, String> translations = new HashMap<>();
-        for (String variant : TerracottaTilesHelper.terracottaTilesVariantsNames) {
+        for (String variant : TerracottaTilesGenerator.terracottaTilesVariantsNames) {
             String key = "terracotta_tiles_" + variant;
             String value = formatName(variant) + " terracotta tiles";
             translations.put(key, value);

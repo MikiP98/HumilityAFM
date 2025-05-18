@@ -12,6 +12,8 @@ import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
 import io.github.mikip98.humilityafm.generators.ColouredLightsGenerator;
 import io.github.mikip98.humilityafm.generators.CandlestickGenerator;
 import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
+import io.github.mikip98.humilityafm.generators.TerracottaTilesGenerator;
+import io.github.mikip98.humilityafm.generators.WoodenMosaicGenerator;
 import io.github.mikip98.humilityafm.util.GenerationData;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -68,6 +70,7 @@ public class BlockRegistry {
         // Special Jack-O-Lanterns
         registerWithItem(JACK_O_LANTERN_REDSTONE, "jack_o_lantern_redstone");
         registerWithItem(JACK_O_LANTERN_SOUL, "jack_o_lantern_soul");
+//        putIntoItemGroup(JACK_O_LANTERN_REDSTONE, ItemGroups.);  // TODO: Put into item groups
         // TODO: Make redstone and soul Jack-O-Lanterns them special
         //  The redstone one can be redstone reactive.
         //  The soul one can emmit soul particles.
@@ -104,13 +107,34 @@ public class BlockRegistry {
                 ForcedCornerStairsGenerator.innerOuterStairsBlockVariantsNames,
                 "inner_stairs_"
         );
+        putIntoItemGroup(ForcedCornerStairsGenerator.innerStairsBlockVariants, ItemGroups.BUILDING_BLOCKS);
         registerArrayWithItems(
                 ForcedCornerStairsGenerator.outerStairsBlockVariants,
                 ForcedCornerStairsGenerator.innerOuterStairsBlockVariantsNames,
                 "outer_stairs_"
         );
+        putIntoItemGroup(ForcedCornerStairsGenerator.outerStairsBlockVariants, ItemGroups.BUILDING_BLOCKS);
 
-        // Register LED blocks
+        // Register Wooden Mosaics
+        registerArrayWithItems(
+                WoodenMosaicGenerator.woodenMosaicVariants,
+                WoodenMosaicGenerator.woodenMosaicVariantsNames,
+                "wooden_mosaic_"
+        );
+        byte burn = (byte) Math.round(5 * ModConfig.mosaicsAndTilesStrengthMultiplayer);  // TODO: Find correct vanilla values
+        byte spread = (byte) Math.round(20 / ModConfig.mosaicsAndTilesStrengthMultiplayer);
+        registerFlammable(WoodenMosaicGenerator.woodenMosaicVariants, burn, spread);
+        putIntoItemGroup(WoodenMosaicGenerator.woodenMosaicVariants, ItemGroups.BUILDING_BLOCKS);
+
+        // Register Terracotta Tiles
+        registerArrayWithItems(
+                TerracottaTilesGenerator.terracottaTilesVariants,
+                TerracottaTilesGenerator.terracottaTilesVariantsNames,
+                "terracotta_tiles_"
+        );
+        putIntoItemGroup(TerracottaTilesGenerator.terracottaTilesVariants, ItemGroups.BUILDING_BLOCKS);
+
+        // Register Light Strips
         if (ModConfig.enableLightStrips) {
             registerArrayWithItems(
                     ColouredLightsGenerator.LightStripBlockVariants,
@@ -127,12 +151,14 @@ public class BlockRegistry {
                     GenerationData.vanillaCandlestickMetals,
                     "candlestick_"
             );
+            putIntoItemGroup(CandlestickGenerator.candlestickClassicVariants, ItemGroups.FUNCTIONAL);
             for (int i = 0; i < CandlestickGenerator.candlestickRustableVariants.size(); i++) {
                 registerArrayWithItems(
                         CandlestickGenerator.candlestickRustableVariants.get(i),
                         GenerationData.vanillaRustableCandlestickMetals.get(i),
                         "candlestick_"
                 );
+                putIntoItemGroup(CandlestickGenerator.candlestickRustableVariants.get(i), ItemGroups.FUNCTIONAL);
             }
         }
     }
