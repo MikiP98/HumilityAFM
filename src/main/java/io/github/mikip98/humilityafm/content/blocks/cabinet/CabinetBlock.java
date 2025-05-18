@@ -131,9 +131,7 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
         Direction dir = state.get(FACING);
-        boolean open = state.get(OPEN);
-        if (open) return openVoxelShape.get(dir);
-        else return closedVoxelShape.get(dir);
+        return state.get(OPEN) ? openVoxelShape.get(dir) : closedVoxelShape.get(dir);
     }
 
     @Override

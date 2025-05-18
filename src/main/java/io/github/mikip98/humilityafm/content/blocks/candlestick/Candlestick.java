@@ -194,10 +194,7 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
         Direction direction = state.get(Properties.HORIZONTAL_FACING);
-        if (state.get(ModProperties.CANDLE)) {
-            return candleVoxelShape.get(direction);
-        }
-        else return emptyVoxelShape.get(direction);
+        return state.get(ModProperties.CANDLE) ? candleVoxelShape.get(direction) : emptyVoxelShape.get(direction);
     }
 
     @SuppressWarnings("deprecation")
