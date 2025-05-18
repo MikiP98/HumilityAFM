@@ -18,8 +18,7 @@ import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.function.BooleanBiFunction;
-import net.minecraft.util.hit.BlockHitResult;
+    import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -28,7 +27,42 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
+import java.util.Map;
+
 public class Candlestick extends HorizontalFacingBlock implements Waterloggable {
+    protected static final Map<Direction, VoxelShape> emptyVoxelShape = Map.of(
+            Direction.NORTH, VoxelShapes.union(
+                    Block.createCuboidShape(7.5, 4, 10, 8.5, 5, 16),
+                    Block.createCuboidShape(7.5, 5, 10, 8.5, 8, 11),
+                    Block.createCuboidShape(6, 7.999, 8.5, 10, 8.001, 12.5),  // Dripper
+                    Block.createCuboidShape(7, 8, 9.5, 9, 9, 11.5)  // Holder
+            ),
+            Direction.SOUTH, VoxelShapes.union(
+                    Block.createCuboidShape(7.5, 4, 0, 8.5, 5, 6),
+                    Block.createCuboidShape(7.5, 5, 5, 8.5, 8, 6),
+                    Block.createCuboidShape(6, 7.999, 3.5, 10, 8.001, 7.5),  // Dripper
+                    Block.createCuboidShape(7, 8, 4.5, 9, 9, 6.5)  // Holder
+            ),
+            Direction.EAST, VoxelShapes.union(
+                    Block.createCuboidShape(0, 4, 7.5, 6, 5, 8.5),
+                    Block.createCuboidShape(5, 5, 7.5, 6, 8, 8.5),
+                    Block.createCuboidShape(3.5, 7.999, 6, 7.5, 8.001, 10),  // Dripper
+                    Block.createCuboidShape(4.5, 8, 7, 6.5, 9, 9)  // Holder
+            ),
+            Direction.WEST, VoxelShapes.union(
+                    Block.createCuboidShape(10, 4, 7.5, 16, 5, 8.5),
+                    Block.createCuboidShape(10, 5, 7.5, 11, 8, 8.5),
+                    Block.createCuboidShape(8.5, 7.999, 6, 12.5, 8.001, 10),  // Dripper
+                    Block.createCuboidShape(9.5, 8, 7, 11.5, 9, 9)  // Holder
+            )
+    );
+    protected static final Map<Direction, VoxelShape> candleVoxelShape = Map.of(
+            Direction.NORTH, VoxelShapes.union(emptyVoxelShape.get(Direction.NORTH), Block.createCuboidShape(7, 9.0001, 9.5, 9, 11, 11.5)),  // Holder & Candle
+            Direction.SOUTH, VoxelShapes.union(emptyVoxelShape.get(Direction.SOUTH), Block.createCuboidShape(7, 9.0001, 4.5, 9, 11, 6.5)),  // Holder & Candle
+            Direction.EAST,  VoxelShapes.union(emptyVoxelShape.get(Direction.EAST), Block.createCuboidShape(4.5, 9.0001, 7, 6.5, 11, 9)),  // Holder & Candle
+            Direction.WEST,  VoxelShapes.union(emptyVoxelShape.get(Direction.WEST), Block.createCuboidShape(9.5, 9.0001, 7, 11.5, 11, 9))  // Holder & Candle
+    );
+
     public static final FabricBlockSettings defaultSettings = FabricBlockSettings.create()
             .strength(0.5f)
             .requiresTool()
@@ -160,65 +194,10 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
         Direction direction = state.get(Properties.HORIZONTAL_FACING);
-        VoxelShape shape;
         if (state.get(ModProperties.CANDLE)) {
-            // With candle
-            switch (direction) {
-                case NORTH:
-                    shape = Block.createCuboidShape(7.5, 4, 10, 8.5, 5, 16);
-                    shape = VoxelShapes.combineAndSimplify(shape, Block.createCuboidShape(7.5, 5, 10, 8.5, 8, 11), BooleanBiFunction.OR);
-                    shape = VoxelShapes.combineAndSimplify(shape, Block.createCuboidShape(6, 7.999, 8.5, 10, 8.001, 12.5), BooleanBiFunction.OR); // Dripper
-                    shape = VoxelShapes.combineAndSimplify(shape, Block.createCuboidShape(7, 8, 9.5, 9, 11, 11.5), BooleanBiFunction.OR);  // Holder & Candle
-                    return shape;
-                case SOUTH:
-                    shape = Block.createCuboidShape(7.5, 4, 0, 8.5, 5, 6);
-                    shape = VoxelShapes.combineAndSimplify(shape, Block.createCuboidShape(7.5, 5, 5, 8.5, 8, 6), BooleanBiFunction.OR);
-                    shape = VoxelShapes.combineAndSimplify(shape, Block.createCuboidShape(6, 7.999, 3.5, 10, 8.001, 7.5), BooleanBiFunction.OR); // Dripper
-                    shape = VoxelShapes.combineAndSimplify(shape, Block.createCuboidShape(7, 8, 4.5, 9, 11, 6.5), BooleanBiFunction.OR);  // Holder & Candle
-                    return shape;
-                case EAST:
-                    shape = Block.createCuboidShape(0, 4, 7.5, 6, 5, 8.5);
-                    shape = VoxelShapes.combineAndSimplify(shape, Block.createCuboidShape(5, 5, 7.5, 6, 8, 8.5), BooleanBiFunction.OR);
-                    shape = VoxelShapes.combineAndSimplify(shape, Block.createCuboidShape(3.5, 7.999, 6, 7.5, 8.001, 10), BooleanBiFunction.OR); // Dripper
-                    shape = VoxelShapes.combineAndSimplify(shape, Block.createCuboidShape(4.5, 8, 7, 6.5, 11, 9), BooleanBiFunction.OR);  // Holder & Candle
-                    return shape;
-                case WEST:
-                    shape = Block.createCuboidShape(10, 4, 7.5, 16, 5, 8.5);
-                    shape = VoxelShapes.combineAndSimplify(shape, Block.createCuboidShape(10, 5, 7.5, 11, 8, 8.5), BooleanBiFunction.OR);
-                    shape = VoxelShapes.combineAndSimplify(shape, Block.createCuboidShape(8.5, 7.999, 6, 12.5, 8.001, 10), BooleanBiFunction.OR); // Dripper
-                    shape = VoxelShapes.combineAndSimplify(shape, Block.createCuboidShape(9.5, 8, 7, 11.5, 11, 9), BooleanBiFunction.OR);  // Holder & Candle
-                    return shape;
-            }
-        } else {
-            // Without a candle
-            switch (direction) {
-                case NORTH:
-                    shape = Block.createCuboidShape(7.5, 4, 10, 8.5, 5, 16);
-                    shape = VoxelShapes.combineAndSimplify(shape, Block.createCuboidShape(7.5, 5, 10, 8.5, 8, 11), BooleanBiFunction.OR);
-                    shape = VoxelShapes.combineAndSimplify(shape, Block.createCuboidShape(6, 7.999, 8.5, 10, 8.001, 12.5), BooleanBiFunction.OR); // Dripper
-                    shape = VoxelShapes.combineAndSimplify(shape, Block.createCuboidShape(7, 8, 9.5, 9, 9, 11.5), BooleanBiFunction.OR);  // Holder
-                    return shape;
-                case SOUTH:
-                    shape = Block.createCuboidShape(7.5, 4, 0, 8.5, 5, 6);
-                    shape = VoxelShapes.combineAndSimplify(shape, Block.createCuboidShape(7.5, 5, 5, 8.5, 8, 6), BooleanBiFunction.OR);
-                    shape = VoxelShapes.combineAndSimplify(shape, Block.createCuboidShape(6, 7.999, 3.5, 10, 8.001, 7.5), BooleanBiFunction.OR); // Dripper
-                    shape = VoxelShapes.combineAndSimplify(shape, Block.createCuboidShape(7, 8, 4.5, 9, 9, 6.5), BooleanBiFunction.OR);  // Holder
-                    return shape;
-                case EAST:
-                    shape = Block.createCuboidShape(0, 4, 7.5, 6, 5, 8.5);
-                    shape = VoxelShapes.combineAndSimplify(shape, Block.createCuboidShape(5, 5, 7.5, 6, 8, 8.5), BooleanBiFunction.OR);
-                    shape = VoxelShapes.combineAndSimplify(shape, Block.createCuboidShape(3.5, 7.999, 6, 7.5, 8.001, 10), BooleanBiFunction.OR); // Dripper
-                    shape = VoxelShapes.combineAndSimplify(shape, Block.createCuboidShape(4.5, 8, 7, 6.5, 9, 9), BooleanBiFunction.OR);  // Holder
-                    return shape;
-                case WEST:
-                    shape = Block.createCuboidShape(10, 4, 7.5, 16, 5, 8.5);
-                    shape = VoxelShapes.combineAndSimplify(shape, Block.createCuboidShape(10, 5, 7.5, 11, 8, 8.5), BooleanBiFunction.OR);
-                    shape = VoxelShapes.combineAndSimplify(shape, Block.createCuboidShape(8.5, 7.999, 6, 12.5, 8.001, 10), BooleanBiFunction.OR); // Dripper
-                    shape = VoxelShapes.combineAndSimplify(shape, Block.createCuboidShape(9.5, 8, 7, 11.5, 9, 9), BooleanBiFunction.OR);  // Holder
-                    return shape;
-            }
+            return candleVoxelShape.get(direction);
         }
-        return Block.createCuboidShape(5, 0, 11, 11, 16, 16);
+        else return emptyVoxelShape.get(direction);
     }
 
     @SuppressWarnings("deprecation")
