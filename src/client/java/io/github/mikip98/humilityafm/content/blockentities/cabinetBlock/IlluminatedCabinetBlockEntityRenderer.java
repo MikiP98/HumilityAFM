@@ -23,15 +23,10 @@ public class IlluminatedCabinetBlockEntityRenderer implements BlockEntityRendere
     public void render(IlluminatedCabinetBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         World world = blockEntity.getWorld();
         BlockPos pos = blockEntity.getPos();
-
-        if (world == null || pos == null) {
-            return;
-        }
+        if (world == null || pos == null) return;
 
         BlockState blockState = world.getBlockState(pos);
-        if (blockState == null || !(blockState.getBlock() instanceof IlluminatedCabinetBlock)) {
-            return;
-        }
+        if (blockState == null || !(blockState.getBlock() instanceof IlluminatedCabinetBlock)) return;
 
 
         CabinetBlockEntityRenderer.renderItem(blockEntity, blockState, matrices, vertexConsumers, 255, overlay);

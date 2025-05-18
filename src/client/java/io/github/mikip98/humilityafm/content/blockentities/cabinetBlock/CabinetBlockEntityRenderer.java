@@ -25,15 +25,10 @@ public class CabinetBlockEntityRenderer implements BlockEntityRenderer<CabinetBl
     public void render(CabinetBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         World world = blockEntity.getWorld();
         BlockPos pos = blockEntity.getPos();
-
-        if (world == null || pos == null) {
-            return;
-        }
+        if (world == null || pos == null) return;
 
         BlockState blockState = world.getBlockState(pos);
-        if (blockState == null || !(blockState.getBlock() instanceof CabinetBlock)) {
-            return;
-        }
+        if (blockState == null || !(blockState.getBlock() instanceof CabinetBlock)) return;
 
         renderItem(blockEntity, blockState, matrices, vertexConsumers, light, overlay);
     }
