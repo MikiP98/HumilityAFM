@@ -114,6 +114,7 @@ This mod is highly customisable through its config!
 - Fix Light Strip voxel shape
 - ~~Fix candlestick waterlog ability~~
 - Fix nether wood block variants burning
+- Fix Cabinet open and close models not matching and cabinet inside texture stretch
 
 <br>
 
