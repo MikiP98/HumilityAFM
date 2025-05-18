@@ -27,21 +27,16 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetBlockEntity;
 
-import java.util.Map;
-
 public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable, BlockEntityProvider {
-    protected static final Map<Direction, VoxelShape> openVoxelShape = Map.of(
-            Direction.NORTH, VoxelShapes.cuboid(0.0625f, 0.0625f, 0.81252f, 0.9375f, 0.9375f, 1.0f),  //open, reverse original, second half finished, to do
-            Direction.SOUTH, VoxelShapes.cuboid(0.0625f, 0.0625f, 0.0f, 0.9375f, 0.9375f, 0.18748f),  //open, original
-            Direction.EAST,  VoxelShapes.cuboid(0.0f, 0.0625f, 0.0625f, 0.18748f, 0.9375f, 0.9375f),  //open, swap z <-> x
-            Direction.WEST,  VoxelShapes.cuboid(0.81252f, 0.0625f, 0.0625f, 1.0f, 0.9375f, 0.9375f)  //open, reverse + swap
-    );
-    protected static final Map<Direction, VoxelShape> closedVoxelShape = Map.of(
-            Direction.NORTH, VoxelShapes.union(openVoxelShape.get(Direction.NORTH), VoxelShapes.cuboid(0.0625f, 0.0625f, 0.75f, 0.9375f, 0.9375f, 0.81248f)),  //reverse original, second half finished, to do
-            Direction.SOUTH, VoxelShapes.union(openVoxelShape.get(Direction.SOUTH), VoxelShapes.cuboid(0.0625f, 0.0625f, 0.18752f, 0.9375f, 0.9375f, 0.25f)),  //original
-            Direction.EAST,  VoxelShapes.union(openVoxelShape.get(Direction.EAST), VoxelShapes.cuboid(0.18752f, 0.0625f, 0.0625f, 0.25f, 0.9375f, 0.9375f)),  //swap z <-> x
-            Direction.WEST,  VoxelShapes.union(openVoxelShape.get(Direction.WEST), VoxelShapes.cuboid(0.75f, 0.0625f, 0.0625f, 0.81248f, 0.9375f, 0.9375f))  //reverse + swap
-    );
+    protected static final VoxelShape voxelShapeOpenNorth = VoxelShapes.cuboid(0.0625f, 0.0625f, 0.81252f, 0.9375f, 0.9375f, 1.0f);  //open, reverse original
+    protected static final VoxelShape voxelShapeOpenSouth = VoxelShapes.cuboid(0.0625f, 0.0625f, 0.0f, 0.9375f, 0.9375f, 0.18748f);  //open, original
+    protected static final VoxelShape voxelShapeOpenEast = VoxelShapes.cuboid(0.0f, 0.0625f, 0.0625f, 0.18748f, 0.9375f, 0.9375f);  //open, swap z <-> x
+    protected static final VoxelShape voxelShapeOpenWest = VoxelShapes.cuboid(0.81252f, 0.0625f, 0.0625f, 1.0f, 0.9375f, 0.9375f);  //open, reverse + swap
+
+    protected static final VoxelShape voxelShapeClosedNorth = VoxelShapes.union(voxelShapeOpenNorth, VoxelShapes.cuboid(0.0625f, 0.0625f, 0.75f, 0.9375f, 0.9375f, 0.81248f));  //reverse original
+    protected static final VoxelShape voxelShapeClosedSouth = VoxelShapes.union(voxelShapeOpenSouth, VoxelShapes.cuboid(0.0625f, 0.0625f, 0.18752f, 0.9375f, 0.9375f, 0.25f));  //original
+    protected static final VoxelShape voxelShapeClosedEast = VoxelShapes.union(voxelShapeOpenEast, VoxelShapes.cuboid(0.18752f, 0.0625f, 0.0625f, 0.25f, 0.9375f, 0.9375f));  //swap z <-> x
+    protected static final VoxelShape voxelShapeClosedWest = VoxelShapes.union(voxelShapeOpenWest, VoxelShapes.cuboid(0.75f, 0.0625f, 0.0625f, 0.81248f, 0.9375f, 0.9375f));  //reverse + swap
 
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
     public static final BooleanProperty OPEN = Properties.OPEN;
@@ -131,7 +126,30 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
         Direction dir = state.get(FACING);
-        return state.get(OPEN) ? openVoxelShape.get(dir) : closedVoxelShape.get(dir);
+        if (state.get(OPEN)) {
+            switch (dir) {
+                case NORTH:
+                    return voxelShapeOpenNorth;
+                case SOUTH:
+                    return voxelShapeOpenSouth;
+                case EAST:
+                    return voxelShapeOpenEast;
+                case WEST:
+                    return voxelShapeOpenWest;
+            }
+        } else {
+            switch (dir) {
+                case NORTH:
+                    return voxelShapeClosedNorth;
+                case SOUTH:
+                    return voxelShapeClosedSouth;
+                case EAST:
+                    return voxelShapeClosedEast;
+                case WEST:
+                    return voxelShapeClosedWest;
+            }
+        }
+        return null;
     }
 
     @Override
