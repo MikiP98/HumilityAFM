@@ -18,7 +18,7 @@ import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-    import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -27,41 +27,49 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-import java.util.Map;
-
 public class Candlestick extends HorizontalFacingBlock implements Waterloggable {
-    protected static final Map<Direction, VoxelShape> emptyVoxelShape = Map.of(
-            Direction.NORTH, VoxelShapes.union(
-                    Block.createCuboidShape(7.5, 4, 10, 8.5, 5, 16),
-                    Block.createCuboidShape(7.5, 5, 10, 8.5, 8, 11),
-                    Block.createCuboidShape(6, 7.999, 8.5, 10, 8.001, 12.5),  // Dripper
-                    Block.createCuboidShape(7, 8, 9.5, 9, 9, 11.5)  // Holder
-            ),
-            Direction.SOUTH, VoxelShapes.union(
-                    Block.createCuboidShape(7.5, 4, 0, 8.5, 5, 6),
-                    Block.createCuboidShape(7.5, 5, 5, 8.5, 8, 6),
-                    Block.createCuboidShape(6, 7.999, 3.5, 10, 8.001, 7.5),  // Dripper
-                    Block.createCuboidShape(7, 8, 4.5, 9, 9, 6.5)  // Holder
-            ),
-            Direction.EAST, VoxelShapes.union(
-                    Block.createCuboidShape(0, 4, 7.5, 6, 5, 8.5),
-                    Block.createCuboidShape(5, 5, 7.5, 6, 8, 8.5),
-                    Block.createCuboidShape(3.5, 7.999, 6, 7.5, 8.001, 10),  // Dripper
-                    Block.createCuboidShape(4.5, 8, 7, 6.5, 9, 9)  // Holder
-            ),
-            Direction.WEST, VoxelShapes.union(
-                    Block.createCuboidShape(10, 4, 7.5, 16, 5, 8.5),
-                    Block.createCuboidShape(10, 5, 7.5, 11, 8, 8.5),
-                    Block.createCuboidShape(8.5, 7.999, 6, 12.5, 8.001, 10),  // Dripper
-                    Block.createCuboidShape(9.5, 8, 7, 11.5, 9, 9)  // Holder
-            )
+    protected static final VoxelShape voxelShapeEmptyNorth = VoxelShapes.union(
+            Block.createCuboidShape(7.5, 4, 10, 8.5, 5, 16),
+            Block.createCuboidShape(7.5, 5, 10, 8.5, 8, 11),
+            Block.createCuboidShape(6, 7.999, 8.5, 10, 8.001, 12.5),  // Dripper
+            Block.createCuboidShape(7, 8, 9.5, 9, 9, 11.5)  // Holder
     );
-    protected static final Map<Direction, VoxelShape> candleVoxelShape = Map.of(
-            Direction.NORTH, VoxelShapes.union(emptyVoxelShape.get(Direction.NORTH), Block.createCuboidShape(7, 9.0001, 9.5, 9, 11, 11.5)),  // Holder & Candle
-            Direction.SOUTH, VoxelShapes.union(emptyVoxelShape.get(Direction.SOUTH), Block.createCuboidShape(7, 9.0001, 4.5, 9, 11, 6.5)),  // Holder & Candle
-            Direction.EAST,  VoxelShapes.union(emptyVoxelShape.get(Direction.EAST), Block.createCuboidShape(4.5, 9.0001, 7, 6.5, 11, 9)),  // Holder & Candle
-            Direction.WEST,  VoxelShapes.union(emptyVoxelShape.get(Direction.WEST), Block.createCuboidShape(9.5, 9.0001, 7, 11.5, 11, 9))  // Holder & Candle
+    protected static final VoxelShape voxelShapeEmptySouth = VoxelShapes.union(
+            Block.createCuboidShape(7.5, 4, 0, 8.5, 5, 6),
+            Block.createCuboidShape(7.5, 5, 5, 8.5, 8, 6),
+            Block.createCuboidShape(6, 7.999, 3.5, 10, 8.001, 7.5),  // Dripper
+            Block.createCuboidShape(7, 8, 4.5, 9, 9, 6.5)  // Holder
     );
+    protected static final VoxelShape voxelShapeEmptyEast = VoxelShapes.union(
+            Block.createCuboidShape(0, 4, 7.5, 6, 5, 8.5),
+            Block.createCuboidShape(5, 5, 7.5, 6, 8, 8.5),
+            Block.createCuboidShape(3.5, 7.999, 6, 7.5, 8.001, 10),  // Dripper
+            Block.createCuboidShape(4.5, 8, 7, 6.5, 9, 9)  // Holder
+    );
+    protected static final VoxelShape voxelShapeEmptyWest = VoxelShapes.union(
+            Block.createCuboidShape(10, 4, 7.5, 16, 5, 8.5),
+            Block.createCuboidShape(10, 5, 7.5, 11, 8, 8.5),
+            Block.createCuboidShape(8.5, 7.999, 6, 12.5, 8.001, 10),  // Dripper
+            Block.createCuboidShape(9.5, 8, 7, 11.5, 9, 9)  // Holder
+    );
+
+    protected static final VoxelShape voxelShapeCandleNorth = VoxelShapes.union(
+            voxelShapeEmptyNorth,
+            Block.createCuboidShape(7, 9.0001, 9.5, 9, 11, 11.5)
+    );  // Empty + Candle
+    protected static final VoxelShape voxelShapeCandleSouth = VoxelShapes.union(
+            voxelShapeEmptySouth,
+            Block.createCuboidShape(7, 9.0001, 4.5, 9, 11, 6.5)
+    );  // Empty + Candle
+    protected static final VoxelShape voxelShapeCandleEast = VoxelShapes.union(
+            voxelShapeEmptyEast,
+            Block.createCuboidShape(4.5, 9.0001, 7, 6.5, 11, 9)
+    );  // Empty + Candle
+    protected static final VoxelShape voxelShapeCandleWest = VoxelShapes.union(
+            voxelShapeEmptyWest,
+            Block.createCuboidShape(9.5, 9.0001, 7, 11.5, 11, 9)
+    );  // Empty + Candle
+
 
     public static final FabricBlockSettings defaultSettings = FabricBlockSettings.create()
             .strength(0.5f)
@@ -193,8 +201,39 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
     @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
-        Direction direction = state.get(Properties.HORIZONTAL_FACING);
-        return state.get(ModProperties.CANDLE) ? candleVoxelShape.get(direction) : emptyVoxelShape.get(direction);
+        Direction dir = state.get(Properties.HORIZONTAL_FACING);
+        if (state.get(ModProperties.CANDLE)) {
+            switch (dir) {
+                case NORTH -> {
+                    return voxelShapeCandleNorth;
+                }
+                case SOUTH -> {
+                    return voxelShapeCandleSouth;
+                }
+                case EAST -> {
+                    return voxelShapeCandleEast;
+                }
+                case WEST -> {
+                    return voxelShapeCandleWest;
+                }
+            }
+        } else {
+            switch (dir) {
+                case NORTH -> {
+                    return voxelShapeEmptyNorth;
+                }
+                case SOUTH -> {
+                    return voxelShapeEmptySouth;
+                }
+                case EAST -> {
+                    return voxelShapeEmptyEast;
+                }
+                case WEST -> {
+                    return voxelShapeEmptyWest;
+                }
+            }
+        }
+        return null;
     }
 
     @SuppressWarnings("deprecation")
