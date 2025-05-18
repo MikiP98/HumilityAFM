@@ -42,7 +42,6 @@ public class CabinetBlockEntityRenderer implements BlockEntityRenderer<CabinetBl
         final ItemStack stack = blockEntity.getStack(0);
         if (stack.isEmpty()) return;
 
-
         matrices.push();
 
         // Center in a block; Required for correct rotation
