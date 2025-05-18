@@ -12,29 +12,48 @@ I can't ensure any other downloads are safe and don't include viruses
 PLS download the mod from Modrinth if you can
 <br>
 ## Features:
-Cabinets! <br>
-Make your treasures pop! <br>
-Match the wood to your build and wool interior to your item!  
+
+### Almost fully resourcepack compatible!
+
+HumilityAFM almost exclusively uses the vanilla textures,  
+So most resourcepacks should work with it out of the box!  
+There are some included resourcepacks that improve the compatibility even more
+
+[//]: # (TODO: Add image with resourcepacks active)
+
+
+### Cabinets
+
+Make your treasures pop!  
+Match the wood to your build and wool interior to your item!
 <img width="75%" alt="Cabinet Block Image" src="https://cdn.modrinth.com/data/RoBSx69i/images/6c6be08f82249beb49aad2ea2bf9b6f41cbf5e82.png">
 <br>
 Need something brighter? Illuminated Cabinet comes for rescue!  
 <br>
-**Wooden Mosaics!** <br>
+
+### Wooden Mosaics!
+
 Mix 2 different wood types to find your look! <br>
 <img width="75%" alt="Wooden Mosaic Image" src="https://cdn.modrinth.com/data/RoBSx69i/images/aa4b885e5d8f0efa85813671d841fad77358e0fb.png">
 <br>
 <br>
-**Terracotta Tiles!** <br>
+
+### Terracotta Tiles!
+
 *It’s like wooden mosaic but flatter.* <br>
 <img width="75%" alt="Terracotta Tiles Image" src="https://cdn.modrinth.com/data/RoBSx69i/images/f4d165ecabe01bfba994ecbe28b813b1971d9e68.png">
 <br>
 <br>
-**Forced Corner Stairs** variants<br>
+
+### Forced Corner Stairs variants
+
 Make the vanillest armchairs, sofas, tables and more! <br>
 <img width="75%" alt="Forced Corner Stairs Image" src="https://cdn.modrinth.com/data/RoBSx69i/images/819ebd4a9abf9eacd4c85205768f6d454e538b7e.png">
 <br>
 <br>
-**LEDs!** *(needs to be enabled in the config)* <br>
+
+### Light Strips <sup>*(need to be enabled in the config)*</sup>
+
 Lighten up your builds with unobtrusive light source <br>
 <img width="75%" alt="LED Image" src="https://cdn.modrinth.com/data/RoBSx69i/images/e489ba0d65132aa05c279cf5ef3f3577a41f4bc7.png">
 <br>
@@ -42,16 +61,21 @@ Lighten up your builds with unobtrusive light source <br>
 <img width="75%" alt="LED coloured light Image" src="https://cdn.modrinth.com/data/RoBSx69i/images/7ff0a81c3e24eb38e83edf01f2c21e24a6b911e9.png">
 <br>
 <br>
-**Soul** and **Redstone Jack o'Lanterns!** *(With Shimmer support!)*<br>
+
+### Soul and Redstone Jack o'Lanterns! <sup>*(With Shimmer support!)*</sup>
+
 <img width="75%" alt="Soul and Redstone Pumpkins" src="https://cdn.modrinth.com/data/RoBSx69i/images/b0c38755d1e578ac181a0e7fa7e862bafa89781c.png">
 <br>
 <br>
-**Candlesticks!** *(beta, needs to be enabled in the config)*<br>
+
+### Candlesticks! <sup>*(need to be enabled in the config)*</sup>
+
 <img width="75%" alt="Candlesticks in a tunnel" src="https://cdn.modrinth.com/data/RoBSx69i/images/75aca4cacab007202b4d56215beaafb3a17971f6.webp">
 <br>
 <br>
-This mod is highly customisable through its config!
-<br>
+
+### High config customizability
+
 <br>
 
 ## Roadmap:
@@ -100,7 +124,7 @@ This mod is highly customisable through its config!
 - Add hanging pots
 - Add crafting table on a stick?
 - Add carpet covered stairs?
-- Add correct map colors to generated blocks:
+- Add correct map colours to generated blocks:
   - Cabinets and Illuminated Cabinets
   - Candlesticks
   - Wooden Mosaics
@@ -115,6 +139,8 @@ This mod is highly customisable through its config!
 - ~~Fix candlestick waterlog ability~~
 - Fix nether wood block variants burning
 - Fix Cabinet open and close models not matching and cabinet inside texture stretch
+- Improve config logic
+- Consider doing a HumilityLib library mod for config or such?
 
 <br>
 
