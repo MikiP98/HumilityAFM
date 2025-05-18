@@ -62,10 +62,10 @@ public class ConfigJSON {
         try (FileWriter writer = new FileWriter(configFile)) {
             gson.toJson(configJson, writer);
         } catch (IOException e) {
-            e.printStackTrace();
+            configSaveError(configFile, e);
         }
 
-        saveShimmerSupportConfigLED();
+        saveShimmerSupportConfigLightStrips();
         saveShimmerSupportConfigOther();
     }
 
@@ -105,7 +105,10 @@ public class ConfigJSON {
                             color.b = colorJson.get("b").getAsShort();
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOGGER.error(
+                                "Failed to load 'LightStripColors' from config file: {}\nError: {}\nStacktrace: {}\nMarking the config file for update",
+                                configFile.getAbsolutePath(), e.getMessage(), e.getStackTrace()
+                        );
                         needsUpdating = true;
                     }
 //                    needsUpdating |= tryLoad(configJson, JsonElement::getAsJsonObject, "pumpkinColors");
@@ -119,16 +122,22 @@ public class ConfigJSON {
                             color.b = colorJson.get("b").getAsShort();
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOGGER.error(
+                                "Failed to load 'pumpkinColors' from config file: {}\nError: {}\nStacktrace: {}\nMarking the config file for update",
+                                configFile.getAbsolutePath(), e.getMessage(), e.getStackTrace()
+                        );
                         needsUpdating = true;
                     }
                 }
                 if (needsUpdating) {
-                    LOGGER.info("Updating config file to include new values");
+                    LOGGER.warn("Updating config file to include new values and/or fix broken ones");
                     saveConfigToFile();  // Update the config file to include new values
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.error(
+                        "Failed to load config file: {}\nError: {}\nStacktrace: {}",
+                        configFile.getAbsolutePath(), e.getMessage(), e.getStackTrace()
+                );
             }
         } else {
             saveConfigToFile();  // Create the config file
@@ -139,7 +148,10 @@ public class ConfigJSON {
             T value = getter.apply(configJson.get(fieldName));
             ModConfig.class.getField(fieldName).set(ModConfig.class, value);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(
+                    "Failed to load '{}' from config file: {}\nError: {}\nStacktrace: {}",
+                    fieldName, configJson, e.getMessage(), e.getStackTrace()
+            );
             return true;
         }
         return false;
@@ -152,7 +164,7 @@ public class ConfigJSON {
 
         if (!configFile.exists()) {
             // Create the config file
-            saveShimmerSupportConfigLED();
+            saveShimmerSupportConfigLightStrips();
         }
 
         configFile = new File(configDir, "shimmer/humility-other.json");
@@ -162,85 +174,31 @@ public class ConfigJSON {
         }
     }
 
-    public static void saveShimmerSupportConfigLED() {
+    public static void saveShimmerSupportConfigLightStrips() {
         File configDir = FabricLoader.getInstance().getConfigDir().toFile();
-        File configFile = new File(configDir, "shimmer/humility-led.json");
+        File configFile = new File(configDir, "shimmer/humility-light_strips.json");
 
-        // Create the config file
-        String JSON = """
-                {
-                \t"ColorReference": {
-                    """;
-        for (Color color : ModConfig.LightStripColors) {
-            if (color.name.equals("pink")) {
-                JSON += """
-                        \t\t\"""" + color.name + """ 
-                        ": {
-                        \t\t\t"r":\s""" + color.r + """
-                        ,
-                        \t\t\t"g":\s""" + color.g + """
-                        ,
-                        \t\t\t"b":\s""" + color.b + """
-                        ,
-                        \t\t\t"a":\s""" + ModConfig.LightStripColoredLightStrength + """
-                            
-                        \t\t}
-                        """;
-            } else {
-                JSON += """
-                        \t\t\"""" + color.name + """ 
-                        ": {
-                        \t\t\t"r":\s""" + color.r + """
-                        ,
-                        \t\t\t"g":\s""" + color.g + """
-                        ,
-                        \t\t\t"b":\s""" + color.b + """
-                        ,
-                        \t\t\t"a":\s""" + ModConfig.LightStripColoredLightStrength + """
-                            
-                        \t\t},
-                        """;
-            }
-        }
-        JSON += """
-        \t},
-        
-        \t"LightBlock": [
-        """;
+        JsonObject configJson = new JsonObject();
 
+        JsonObject colorReference = getColorReference(ModConfig.LightStripColors, ModConfig.LightStripColoredLightStrength);
+        configJson.add("ColorReference", colorReference);
+
+        JsonArray lightBlock = new JsonArray();
         for (Color color : ModConfig.LightStripColors) {
-            if (color.name.equals("pink")) {
-                JSON += """
-                        \t\t{
-                        \t\t\t"block": "humility-afm:led_""" + color.name + """
-                        ",
-                        \t\t\t"color": "#""" + color.name + """
-                        ",
-                        \t\t\t"radius":\s""" + (ModConfig.LightStripColoredLightRadius + bias(color)) + """
-                        
-                        \t\t}
-                        """;
-            } else {
-                JSON += """
-                        \t\t{
-                        \t\t\t"block": "humility-afm:led_""" + color.name + """
-                        ",
-                        \t\t\t"color": "#""" + color.name + """
-                        ",
-                        \t\t\t"radius":\s""" + (ModConfig.LightStripColoredLightRadius + bias(color)) + """
-                        
-                        \t\t},
-                        """;
-            }
+            JsonObject lightBlockJson = new JsonObject();
+            lightBlockJson.addProperty("block", "humility-afm:light_strip_" + color.name);
+            lightBlockJson.addProperty("color", "#" + color.name);
+            lightBlockJson.addProperty("radius", ModConfig.LightStripColoredLightRadius + bias(color));
+            lightBlock.add(lightBlockJson);
         }
-        JSON +="""
-    \t]
-    }
-        """;
+        configJson.add("LightBlock", lightBlock);
+
+        // Save the JSON object to a file
         try (FileWriter writer = new FileWriter(configFile)) {
-            writer.write(JSON);
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            gson.toJson(configJson, writer);
         } catch (IOException e) {
-            LOGGER.error("Error writing to file: " + e.getMessage());
+            configSaveError(configFile, e);
         }
     }
 
@@ -251,57 +209,54 @@ public class ConfigJSON {
         }
         File configFile = new File(configDir, "shimmer/humility-other.json");
 
-        Map<String, Color> colors = ModConfig.pumpkinColors;
+        JsonObject configJson = new JsonObject();
 
-        // Create the config file
-        String JSON = """
-                {
-                \t"ColorReference": {
-                \t\t\"""" + colors.get("red").name + """
-                    " : {
-                    \t\t\t"r":\s""" + colors.get("red").r + """
-                    ,
-                    \t\t\t"g":\s""" + colors.get("red").g + """
-                    ,
-                    \t\t\t"b":\s""" + colors.get("red").b + """
-                    ,
-                    \t\t\t"a": 255
-                    \t\t},
-                    \t\t\"""" + colors.get("light_blue").name + """
-                    " : {
-                    \t\t\t"r":\s""" + colors.get("light_blue").r + """
-                    ,
-                    \t\t\t"g":\s""" + colors.get("light_blue").g + """
-                    ,
-                    \t\t\t"b":\s""" + colors.get("light_blue").b + """
-                    ,
-                    \t\t\t"a": 255
-                    \t\t}
-                    \t},
-                    
-                    \t"LightBlock": [
-                    \t\t{
-                    \t\t\t"block": "humility-afm:jack_o_lantern_redstone",
-                    \t\t\t"color": "#red",
-                    \t\t\t"radius": "9"
-                    \t\t},
-                    \t\t{
-                    \t\t\t"block": "humility-afm:jack_o_lantern_soul",
-                    \t\t\t"color": "#light_blue",
-                    \t\t\t"radius": "10"
-                    \t\t}
-                    \t]
-                    }
-                    """;
+        JsonObject colorReference = getColorReference(ModConfig.pumpkinColors.values(), 255);
+        configJson.add("ColorReference", colorReference);
 
+        JsonArray lightBlock = new JsonArray();
+
+        JsonObject lightBlockJson = new JsonObject();
+        lightBlockJson.addProperty("block", "humility-afm:jack_o_lantern_redstone");
+        lightBlockJson.addProperty("color", "#" + ModConfig.pumpkinColors.get("red").name);
+        lightBlockJson.addProperty("radius", 9);
+        lightBlock.add(lightBlockJson);
+        lightBlockJson = new JsonObject();
+        lightBlockJson.addProperty("block", "humility-afm:jack_o_lantern_soul");
+        lightBlockJson.addProperty("color", "#" + ModConfig.pumpkinColors.get("light_blue").name);
+        lightBlockJson.addProperty("radius", 10);
+        lightBlock.add(lightBlockJson);
+        configJson.add("LightBlock", lightBlock);
+
+        // Save the JSON object to a file
         try (FileWriter writer = new FileWriter(configFile)) {
-            writer.write(JSON);
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            gson.toJson(configJson, writer);
         } catch (IOException e) {
-            e.printStackTrace();
+            configSaveError(configFile, e);
         }
     }
 
-//    @BM
+    protected static JsonObject getColorReference(Iterable<Color> colors, int alpha) {
+        JsonObject colorReference = new JsonObject();
+        for (Color color : colors) {
+            JsonObject colorJson = new JsonObject();
+            colorJson.addProperty("r", color.r);
+            colorJson.addProperty("g", color.g);
+            colorJson.addProperty("b", color.b);
+            colorJson.addProperty("a", alpha);
+            colorReference.add(color.name, colorJson);
+        }
+        return colorReference;
+    }
+
+    protected static void configSaveError(File configFile, IOException e) {
+        LOGGER.error(
+                "Failed to save config file: {}\nError: {}\nStacktrace: {}",
+                configFile.getAbsolutePath(), e.getMessage(), e.getStackTrace()
+        );
+    }
+
     private static short bias(Color color) {
         if (ModConfig.enableLightStripRadiusColorCompensation) {
             short sum = (short) (color.r + color.g + color.b);
