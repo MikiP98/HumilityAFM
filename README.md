@@ -113,6 +113,7 @@ This mod is highly customisable through its config!
 - Fix Light Strip brightening breaking on corner pieces
 - Fix Light Strip voxel shape
 - ~~Fix candlestick waterlog ability~~
+- Fix nether wood block variants burning
 
 <br>
 
