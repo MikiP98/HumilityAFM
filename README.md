@@ -144,7 +144,7 @@ Lighten up your builds with unobtrusive light source <br>
 - ~~Fix candlestick waterlog ability~~
 - Fix nether wood block variants burning
 - Fix Cabinet open and close models not matching and cabinet inside texture stretch
-- Improve config logic
+- ~~Improve config logic~~
 - Consider doing a HumilityLib library mod for config or such?
 - ~~Improve Cabinet rendering~~
 
