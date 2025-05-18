@@ -120,7 +120,7 @@ Lighten up your builds with unobtrusive light source <br>
   - ~~Rename LEDs to light strips,~~ consider enabling them by default?
   - Make coloured Jack o'Lanterns
 - ~~Compress candlesticks into 4 items for each metal type~~
-- Move VoxelShapes from switches to maps or variables
+- ~~Move VoxelShapes from switches to maps or variables~~
 - Add hanging pots
 - Add crafting table on a stick?
 - Add carpet covered stairs?
@@ -135,7 +135,7 @@ Lighten up your builds with unobtrusive light source <br>
   - Forced Corner Stairs
 - ~~Fix Light Strips loosing their Block Entity~~
 - Fix Light Strip brightening breaking on corner pieces
-- Fix Light Strip voxel shape
+- ~~Fix Light Strip voxel shape~~
 - ~~Fix candlestick waterlog ability~~
 - Fix nether wood block variants burning
 - Fix Cabinet open and close models not matching and cabinet inside texture stretch
