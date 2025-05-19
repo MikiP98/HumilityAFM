@@ -55,6 +55,12 @@ public class ModelGenerator extends FabricModelProvider {
             Optional.of(getId("block/stairs_outer")),
             Optional.empty()
     );
+    // Coloured Torch Model
+    protected static final Model COLOURED_TORCH_MODEL = new Model(
+            Optional.of(getId("block/coloured_torch")),
+            Optional.empty()
+    );
+    // Optional
     // Candlestick Models
     protected static final Model CANDLESTICK_MODEL = new Model(
             Optional.of(getId("block/candlestick")),
@@ -110,9 +116,28 @@ public class ModelGenerator extends FabricModelProvider {
         generateWoodenMosaicModelsAndBlockStates(blockStateModelGenerator);
         generateTerracottaTilesModelsAndBlockStates(blockStateModelGenerator);
         generateForcedCornerStairsModelsAndBlockstates(blockStateModelGenerator);
+        generateColouredTorchModelsAndBlockStates(blockStateModelGenerator);
         // Optional blocks
         generateCandlestickModelsAndBlockStates(blockStateModelGenerator);
         generateLightStripModelsAndBlockStates(blockStateModelGenerator);
+    }
+
+    protected static void generateColouredTorchModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
+        int i = 0;
+        for (String color : GenerationData.vanillaColorPallet) {
+            final Identifier coloured_torch_texture = getId("block/coloured_torch/coloured_torch_" + color);
+            final TextureMap textureMap = new TextureMap()
+                    .register(TextureKey.TORCH, coloured_torch_texture);
+
+            final Identifier torchModelId = COLOURED_TORCH_MODEL.upload(
+                    getId("block/coloured_torch/coloured_torch_" + color),
+                    textureMap,
+                    blockStateModelGenerator.modelCollector
+            );
+            blockStateModelGenerator.registerParentedItemModel(ColouredLightsGenerator.colouredTorchesVariants[i], torchModelId);
+            blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(ColouredLightsGenerator.colouredTorchesVariants[i], torchModelId));
+            ++i;
+        }
     }
 
     protected static void generateLightStripModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
