@@ -149,6 +149,7 @@ Lighten up your builds with unobtrusive light source <br>
 - ~~Improve Cabinet rendering~~
 - Improve Illuminated Cabinet Brightening rendering?
 - Add Illuminated Cabinet Brightening to the config
+- De-separate the particle texture from the block texture in cabinets and others
 
 <br>
 
