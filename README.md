@@ -148,6 +148,7 @@ Lighten up your builds with unobtrusive light source <br>
 - Consider doing a HumilityLib library mod for config or such?
 - ~~Improve Cabinet rendering~~
 - Improve Illuminated Cabinet Brightening rendering?
+- Add Illuminated Cabinet Brightening to the config
 
 <br>
 
