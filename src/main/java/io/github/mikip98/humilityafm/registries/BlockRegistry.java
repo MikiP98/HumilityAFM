@@ -51,7 +51,7 @@ public class BlockRegistry {
     // Jack o'Lanterns
     public static final Block JACK_O_LANTERN_REDSTONE = new JackOLanternRedStone();
     public static final Block JACK_O_LANTERN_SOUL = new JackOLanternSoul();
-    public static final Block[] COLOURED_JACK_O_LANTERNS = Arrays.stream(GenerationData.vanillaColorPallet).map(s -> registerWithItemB(new JackOLantern(), "jack_o_lantern_" + s)).toArray(Block[]::new);
+    public static final Block[] COLOURED_JACK_O_LANTERNS = Arrays.stream(GenerationData.vanillaColorPallet).map(s -> registerWithItem(new JackOLantern(), "jack_o_lantern_" + s)).toArray(Block[]::new);
 
 
     public static void register() {
@@ -169,13 +169,10 @@ public class BlockRegistry {
             registerWithItem(blocks[i], prefix + names[i]);
         }
     }
-    protected static void registerWithItem(Block block, String name) {
+    protected static Block registerWithItem(Block block, String name) {
         Identifier id = getId(name);
         Registry.register(Registries.BLOCK, id, block);
         Registry.register(Registries.ITEM, id, new BlockItem(block, new FabricItemSettings()));
-    }
-    protected static Block registerWithItemB(Block block, String name) {
-        registerWithItem(block, name);
         return block;
     }
 
