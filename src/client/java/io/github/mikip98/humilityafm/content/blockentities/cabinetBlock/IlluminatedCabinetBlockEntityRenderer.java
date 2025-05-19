@@ -32,10 +32,10 @@ public class IlluminatedCabinetBlockEntityRenderer implements BlockEntityRendere
         CabinetBlockEntityRenderer.renderItem(blockEntity, blockState, matrices, vertexConsumers, 255, overlay);
 
 
-        float blockSizeYZ = 0.875f;
-        float posisionConstant = 1.15f;
+        final float blockSizeYZ = 0.875f;
+        final float posisionConstant = 1.15f;
 
-        float blockSizeX = 0.25f;
+        final float blockSizeX = 0.25f;
         float posisionConstantX = posisionConstant;
         float posisionConstantZ = posisionConstant;
 
