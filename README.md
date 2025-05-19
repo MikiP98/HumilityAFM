@@ -139,7 +139,7 @@ Lighten up your builds with unobtrusive light source <br>
   - Jack o'Lanterns
   - Forced Corner Stairs
 - ~~Fix Light Strips loosing their Block Entity~~
-- Fix Light Strip brightening breaking on corner pieces
+- ~~Fix Light Strip brightening breaking on corner pieces~~
 - ~~Fix Light Strip voxel shape~~
 - ~~Fix candlestick waterlog ability~~
 - Fix nether wood block variants burning
@@ -147,6 +147,7 @@ Lighten up your builds with unobtrusive light source <br>
 - ~~Improve config logic~~
 - Consider doing a HumilityLib library mod for config or such?
 - ~~Improve Cabinet rendering~~
+- Improve Illuminated Cabinet Brightening rendering?
 
 <br>
 
