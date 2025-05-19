@@ -51,9 +51,8 @@ public class CabinetBlockEntityRenderer implements BlockEntityRenderer<CabinetBl
         // X -> Left/Right; positive is left; negative is right
         // Y -> Height
         // Z -> Depth; positive is deeper; negative is closer
-        matrices.translate(0, 0, 0.40625);  // Z is 7/16 - 1/32 = 0.40625
-
-        float scale = 0.5625f;  // 9/16
+        float scale = 0.59375f;  // 19/32
+        matrices.translate(0, 0, 0.4375 - 3f/64*(1-scale));  // Z is 7/16 - 3f/64*(1-scale)
         matrices.scale(scale, scale, scale);
 
         // Render the item inside the cabinet
