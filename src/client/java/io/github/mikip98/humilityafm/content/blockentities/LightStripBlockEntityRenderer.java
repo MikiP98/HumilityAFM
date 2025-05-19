@@ -2,13 +2,13 @@ package io.github.mikip98.humilityafm.content.blockentities;
 
 import io.github.mikip98.humilityafm.content.blocks.light_strips.LightStripBlock;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -36,55 +36,158 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
 
     protected static void fakeRunnable(LightStripBlockEntity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int overlay) {}
     protected static void renderBrightening(LightStripBlockEntity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int overlay) {
-        matrices.push();
-
         World world = entity.getWorld();
         BlockPos pos = entity.getPos();
-
         if (world == null || pos == null) {
-            // If the world or position is null, return early
-            matrices.pop();
             return;
         }
 
         BlockState blockState = world.getBlockState(pos);
-
         if (blockState == null || !(blockState.getBlock() instanceof LightStripBlock)) {
-            // If the block state is null or not an instance of LEDStripBlock, return early
-            matrices.pop();
             return;
         }
 
-        final float blockSize = 0.0625f;
-        final byte posisionConstant = 31;
 
-        float blockSizeX = blockSize;
-        float blockSizeZ = blockSize;
-        byte posisionConstantX = 1;
-        byte posisionConstantY = 1;
-        byte posisionConstantZ = 1;
+        matrices.push();
 
-        float scale = 1.005f;
+        // Scale the rendered block by a configurable factor
+        final float scale = 1.01111f;
 
-        switch (blockState.get(HorizontalFacingBlock.FACING)) {
-            case NORTH -> blockSizeX = 1f;
-            case SOUTH -> {
-                blockSizeX = 1f;
-                posisionConstantZ = posisionConstant;
-            }
-            case EAST -> {
-                blockSizeZ = 1f;
-                posisionConstantX = posisionConstant;
-            }
-            case WEST -> blockSizeZ = 1f;
+        // Calculate a pixel shift constant for centering the block
+        final float pixelShift = (1f/32f)*(1-scale);
+
+        // Move the block up or down depending on the block's half, and center it
+        final float deltaY = blockState.get(StairsBlock.HALF) == TOP ? (1-scale)-pixelShift : pixelShift;
+
+        // Move the rendered block half of the difference between the original and the scaled size
+        final float deltaLongAxis = 0.5f*(1-scale);
+
+        float deltaX = 0f;
+        float deltaZ = 0f;
+        switch (blockState.get(Properties.STAIR_SHAPE)) {
+            case STRAIGHT:
+                switch (blockState.get(Properties.HORIZONTAL_FACING)) {
+                    case NORTH:
+                        deltaX = deltaLongAxis;
+                        // Center the block on the Z axis
+                        deltaZ = pixelShift;
+                        break;
+                    case SOUTH:
+                        deltaX = deltaLongAxis;
+                        // Center the block on the Z axis
+                        deltaZ = (1-scale)-pixelShift;
+                        break;
+                    case EAST:
+                        // Center the block on the X axis
+                        deltaX = (1-scale)-pixelShift;
+                        deltaZ = deltaLongAxis;
+                        break;
+                    case WEST:
+                        // Center the block on the X axis
+                        deltaX = pixelShift;
+                        deltaZ = deltaLongAxis;
+                        break;
+                }
+                break;
+            case INNER_LEFT:
+                switch (blockState.get(Properties.HORIZONTAL_FACING)) {
+                    case NORTH:
+                        // Center the block on the X and Z axis
+                        deltaX = pixelShift;
+                        deltaZ = pixelShift;
+                        break;
+                    case SOUTH:
+                        // Center the block on the X and Z axis
+                        deltaX = (1-scale)-pixelShift;
+                        deltaZ = (1-scale)-pixelShift;
+                        break;
+                    case EAST:
+                        // Center the block on the X and Z axis
+                        deltaX = deltaLongAxis*2 - pixelShift;
+                        deltaZ = pixelShift;
+                        break;
+                    case WEST:
+                        // Center the block on the X and Z axis
+                        deltaX = pixelShift;
+                        deltaZ = deltaLongAxis*2 - pixelShift;
+                        break;
+                }
+                break;
+            case INNER_RIGHT:
+                switch (blockState.get(Properties.HORIZONTAL_FACING)) {
+                    case NORTH:
+                        // Center the block on the X and Z axis
+                        deltaX = deltaLongAxis*2 - pixelShift;
+                        deltaZ = pixelShift;
+                        break;
+                    case SOUTH:
+                        // Center the block on the X and Z axis
+                        deltaX = pixelShift;
+                        deltaZ = deltaLongAxis*2 - pixelShift;
+                        break;
+                    case EAST:
+                        // Center the block on the X and Z axis
+                        deltaX = (1-scale)-pixelShift;
+                        deltaZ = (1-scale)-pixelShift;
+                        break;
+                    case WEST:
+                        // Center the block on the X and Z axis
+                        deltaX = pixelShift;
+                        deltaZ = pixelShift;
+                        break;
+                }
+                break;
+            case OUTER_LEFT:
+                switch (blockState.get(Properties.HORIZONTAL_FACING)) {
+                    case NORTH:
+                        // Center the block on the X and Z axis
+                        deltaX = pixelShift;
+                        deltaZ = pixelShift;
+                        break;
+                    case SOUTH:
+                        // Center the block on the X and Z axis
+                        deltaX = 2*deltaLongAxis;
+                        deltaZ = 2*deltaLongAxis;
+                        break;
+                    case EAST:
+                        // Center the block on the X and Z axis
+                        deltaX = 2*deltaLongAxis;
+                        deltaZ = pixelShift;
+                        break;
+                    case WEST:
+                        // Center the block on the X and Z axis
+                        deltaX = pixelShift;
+                        deltaZ = 2*deltaLongAxis;
+                        break;
+                }
+                break;
+            case OUTER_RIGHT:
+                switch (blockState.get(Properties.HORIZONTAL_FACING)) {
+                    case NORTH:
+                        // Center the block on the X and Z axis
+                        deltaX = 2*deltaLongAxis;
+                        deltaZ = pixelShift;
+                        break;
+                    case SOUTH:
+                        // Center the block on the X and Z axis
+                        deltaX = pixelShift;
+                        deltaZ = 2*deltaLongAxis;
+                        break;
+                    case EAST:
+                        // Center the block on the X and Z axis
+                        deltaX = 2*deltaLongAxis;
+                        deltaZ = 2*deltaLongAxis;
+                        break;
+                    case WEST:
+                        // Center the block on the X and Z axis
+                        deltaX = pixelShift;
+                        deltaZ = pixelShift;
+                        break;
+                }
+                break;
         }
-        if (blockState.get(StairsBlock.HALF) == TOP) {
-            posisionConstantY = posisionConstant;
-        }
 
-        // Move the matrix to the center of the object
-        matrices.translate(-blockSizeX/2*(scale-1)*posisionConstantX, -blockSize/2*(scale-1)*posisionConstantY, -blockSizeZ/2*(scale-1)*posisionConstantZ);
-
+        matrices.translate(deltaX, deltaY, deltaZ);
         matrices.scale(scale, scale, scale);
 
         // Render the LED strip block with custom light value
@@ -98,21 +201,6 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
                 overlay
         );
 
-
-//        // Use RenderLayer.getSolid() to disable shading and AO
-//        RenderLayer renderLayer = RenderLayer.getSolid();
-//        VertexConsumer vertexConsumer = vertexConsumers.getBuffer(renderLayer);
-//
-//        // Render the LED strip block
-//        MinecraftClient.getInstance().getBlockRenderManager().renderBlock(
-//                blockState, pos, world, matrices, vertexConsumer, true, world.getRandom());
-
-
-//        // Render the LED strip block
-//        MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(
-//                blockState, matrices, vertexConsumers, 0xF000F0, overlay);
-
-        // Pop the matrix stack to avoid issues with subsequent rendering
         matrices.pop();
     }
 }
