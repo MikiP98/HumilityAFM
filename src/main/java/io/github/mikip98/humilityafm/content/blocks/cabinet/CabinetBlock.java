@@ -109,7 +109,7 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
                     assert cabinetBlockEntity != null;
                     player.getInventory().offerOrDrop(cabinetBlockEntity.getStack(0));
                     // Remove the stack from the inventory
-                    cabinetBlockEntity.removeStack(0);
+                    cabinetBlockEntity.clear();
 
                     //Update block state?
                     world.setBlockState(pos, state.with(OPEN, false));
