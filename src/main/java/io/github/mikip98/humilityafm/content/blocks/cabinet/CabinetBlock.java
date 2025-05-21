@@ -14,6 +14,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -26,6 +27,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetBlockEntity;
+import org.jetbrains.annotations.NotNull;
 
 public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable, BlockEntityProvider {
     protected static final VoxelShape voxelShapeOpenNorth = VoxelShapes.cuboid(0.0625f, 0.0625f, 0.81252f, 0.9375f, 0.9375f, 1.0f);  //open, reverse original
@@ -38,8 +40,9 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
     protected static final VoxelShape voxelShapeClosedEast = VoxelShapes.union(voxelShapeOpenEast, VoxelShapes.cuboid(0.18752f, 0.0625f, 0.0625f, 0.25f, 0.9375f, 0.9375f));  //swap z <-> x
     protected static final VoxelShape voxelShapeClosedWest = VoxelShapes.union(voxelShapeOpenWest, VoxelShapes.cuboid(0.75f, 0.0625f, 0.0625f, 0.81248f, 0.9375f, 0.9375f));  //reverse + swap
 
-    public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
-    public static final BooleanProperty OPEN = Properties.OPEN;
+    protected static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
+    protected static final BooleanProperty OPEN = Properties.OPEN;
+    protected static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
@@ -153,7 +156,7 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
     }
 
     @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
+    public @NotNull BlockState getPlacementState(ItemPlacementContext ctx) {
         return this.getDefaultState()
                 .with(Properties.HORIZONTAL_FACING, ctx.getHorizontalPlayerFacing().getOpposite())
                 .with(Properties.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER);

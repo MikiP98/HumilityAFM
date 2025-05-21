@@ -1,9 +1,16 @@
 package io.github.mikip98.humilityafm.generators;
 
 import io.github.mikip98.humilityafm.content.blocks.cabinet.CabinetBlock;
+import io.github.mikip98.humilityafm.content.blocks.cabinet.FloorCabinetBlock;
+import io.github.mikip98.humilityafm.content.blocks.cabinet.FloorIlluminatedCabinetBlock;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.IlluminatedCabinetBlock;
+import io.github.mikip98.humilityafm.content.items.DoubleVerticallyAttachableBlockItem;
+import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.GenerationData;
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +26,8 @@ public class CabinetBlockGenerator {
     // Vanilla
     public static Block[] cabinetBlockVariants;
     public static Block[] illuminatedCabinetBlockVariants;
+    public static Block[] floorCabinetBlockVariants;
+    public static Block[] floorIlluminatedCabinetBlockVariants;
 
 //    // Modded
 //    public static Block[] moddedCabinetBlockVariants;
@@ -33,6 +42,16 @@ public class CabinetBlockGenerator {
         cabinetBlockVariantsNames[i] = cabinetBlockVariantName;
         cabinetBlockVariants[i] = new CabinetBlock();
         illuminatedCabinetBlockVariants[i] = new IlluminatedCabinetBlock();
+        floorCabinetBlockVariants[i] = new FloorCabinetBlock();
+        floorIlluminatedCabinetBlockVariants[i] = new FloorIlluminatedCabinetBlock();
+        ItemRegistry.cabinetVariants[i] = ItemRegistry.register(
+                new DoubleVerticallyAttachableBlockItem(floorCabinetBlockVariants[i], cabinetBlockVariants[i], new FabricItemSettings()),
+                "cabinet_" + cabinetBlockVariantName
+        );
+        ItemRegistry.illuminatedCabinetVariants[i] = ItemRegistry.register(
+                new DoubleVerticallyAttachableBlockItem(floorIlluminatedCabinetBlockVariants[i], illuminatedCabinetBlockVariants[i], new FabricItemSettings()),
+                "illuminated_cabinet_" + cabinetBlockVariantName
+        );
     }
 
 
@@ -49,6 +68,10 @@ public class CabinetBlockGenerator {
         cabinetBlockVariantsNames = new String[cabinetBlockVariantsCount];
         cabinetBlockVariants = new Block[cabinetBlockVariantsCount];
         illuminatedCabinetBlockVariants = new Block[cabinetBlockVariantsCount];
+        floorCabinetBlockVariants = new Block[cabinetBlockVariantsCount];
+        floorIlluminatedCabinetBlockVariants = new Block[cabinetBlockVariantsCount];
+        ItemRegistry.cabinetVariants = new Item[cabinetBlockVariantsCount];
+        ItemRegistry.illuminatedCabinetVariants = new Item[cabinetBlockVariantsCount];
 
         short i = 0;
         for (String woodType : GenerationData.vanillaWoodTypes) {

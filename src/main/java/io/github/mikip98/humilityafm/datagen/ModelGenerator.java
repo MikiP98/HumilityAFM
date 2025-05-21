@@ -41,6 +41,14 @@ public class ModelGenerator extends FabricModelProvider {
             Optional.of(getId("block/cabinet_block_open")),
             Optional.empty()
     );
+    protected static final Model FLOOR_CABINET_BLOCK_MODEL = new Model(
+            Optional.of(getId("block/floor_cabinet_block")),
+            Optional.empty()
+    );
+    protected static final Model FLOOR_CABINET_BLOCK_OPEN_MODEL = new Model(
+            Optional.of(getId("block/floor_cabinet_block_open")),
+            Optional.empty()
+    );
     // Checker 2x2 Model
     protected static final Model CHECKER_2X2_MODEL = new Model(
             Optional.of(getId("block/checker_2x2")),
@@ -56,8 +64,8 @@ public class ModelGenerator extends FabricModelProvider {
             Optional.empty()
     );
     // Coloured Torch Model
-    protected static final Model COLOURED_TORCH_MODEL = new Model(
-            Optional.of(getId("block/coloured_torch")),
+    protected static final Model TORCH_MODEL = new Model(
+            Optional.of(getId("block/torch")),
             Optional.empty()
     );
     // Optional
@@ -98,8 +106,8 @@ public class ModelGenerator extends FabricModelProvider {
     public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
         // ............ TEST BLOCKS & BLOCK ITEMS ............
         // Cabinet Blocks
-        blockStateModelGenerator.registerParentedItemModel(BlockRegistry.CABINET_BLOCK, getId("block/cabinet_block"));
-        blockStateModelGenerator.registerParentedItemModel(BlockRegistry.ILLUMINATED_CABINET_BLOCK, getId("block/cabinet_block"));
+        blockStateModelGenerator.registerParentedItemModel(ItemRegistry.CABINET_ITEM, getId("block/cabinet_block"));
+        blockStateModelGenerator.registerParentedItemModel(ItemRegistry.ILLUMINATED_CABINET_ITEM, getId("block/cabinet_block"));
         blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(BlockRegistry.CABINET_BLOCK, getId("block/cabinet_block"), getId("block/cabinet_block_open")));
         blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(BlockRegistry.ILLUMINATED_CABINET_BLOCK, getId("block/cabinet_block"), getId("block/cabinet_block_open")));
         // Wooden Mosaic
@@ -129,14 +137,18 @@ public class ModelGenerator extends FabricModelProvider {
             final TextureMap textureMap = new TextureMap()
                     .register(TextureKey.TORCH, coloured_torch_texture);
 
-            final Identifier torchModelId = COLOURED_TORCH_MODEL.upload(
+            final Identifier torchModelId = TORCH_MODEL.upload(
                     getId("block/coloured_torch/coloured_torch_" + color),
                     textureMap,
                     blockStateModelGenerator.modelCollector
             );
             blockStateModelGenerator.registerParentedItemModel(ColouredLightsGenerator.colouredTorchesVariants[i], torchModelId);
+            blockStateModelGenerator.registerParentedItemModel(ColouredLightsGenerator.colouredTorchesVariants[i+1], torchModelId);
+            blockStateModelGenerator.registerParentedItemModel(ColouredLightsGenerator.colouredTorchesVariants[i+2], torchModelId);
             blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(ColouredLightsGenerator.colouredTorchesVariants[i], torchModelId));
-            ++i;
+            blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(ColouredLightsGenerator.colouredTorchesVariants[i+1], torchModelId));
+            blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(ColouredLightsGenerator.colouredTorchesVariants[i+2], torchModelId));
+            i += 3;
         }
     }
 
@@ -403,11 +415,14 @@ public class ModelGenerator extends FabricModelProvider {
     protected static void generateCabinetModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
         int i = 0;
         for (String woodType : GenerationData.vanillaWoodTypes) {
+            final TextureMap plankTextureMap = new TextureMap().register(
+                    TextureKey.of("planks"),
+                    new Identifier("block/" + woodType + "_planks")
+            );
+
             final Identifier woodTypeCabinetId = CABINET_BLOCK_MODEL.upload(
                     getId("block/cabinet/closed/cabinet_block_" + woodType),
-                    new TextureMap()
-                            .register(TextureKey.of("2"), new Identifier("block/" + woodType + "_planks"))
-                            .register(TextureKey.PARTICLE, new Identifier("block/" + woodType + "_planks")),
+                    plankTextureMap,
                     blockStateModelGenerator.modelCollector
             );
             final Model woodTypeCabinetModel = new Model(
@@ -417,9 +432,7 @@ public class ModelGenerator extends FabricModelProvider {
 
             final Identifier woodTypeCabinetOpenId = CABINET_BLOCK_OPEN_MODEL.upload(
                     getId("block/cabinet/open/cabinet_block_open_" + woodType),
-                    new TextureMap()
-                            .register(TextureKey.of("2"), new Identifier("block/" + woodType + "_planks"))
-                            .register(TextureKey.PARTICLE, new Identifier("block/" + woodType + "_planks")),
+                    plankTextureMap,
                     blockStateModelGenerator.modelCollector
             );
             final Model woodTypeCabinetOpenModel = new Model(
@@ -427,20 +440,54 @@ public class ModelGenerator extends FabricModelProvider {
                     Optional.empty()
             );
 
+            final Identifier woodTypeFloorCabinetId = FLOOR_CABINET_BLOCK_MODEL.upload(
+                    getId("block/cabinet/floor/closed/floor_cabinet_block_" + woodType),
+                    plankTextureMap,
+                    blockStateModelGenerator.modelCollector
+            );
+            final Model woodTypeFloorCabinetModel = new Model(
+                    Optional.of(woodTypeFloorCabinetId),
+                    Optional.empty()
+            );
+
+            final Identifier woodTypeFloorCabinetOpenId = FLOOR_CABINET_BLOCK_OPEN_MODEL.upload(
+                    getId("block/cabinet/floor/open/floor_cabinet_block_open_" + woodType),
+                    plankTextureMap,
+                    blockStateModelGenerator.modelCollector
+            );
+            final Model woodTypeFloorCabinetOpenModel = new Model(
+                    Optional.of(woodTypeFloorCabinetOpenId),
+                    Optional.empty()
+            );
+
             for (String color : GenerationData.vanillaColorPallet) {
+                final TextureMap woolTextureMap = new TextureMap().register(
+                        TextureKey.of("wool"),
+                        new Identifier("block/" + color + "_wool")
+                );
                 final Identifier coloredCabinet = woodTypeCabinetModel.upload(
                         getId("block/cabinet/closed/" + woodType + "/cabinet_block_" + woodType + "_" + color),
-                        new TextureMap().register(TextureKey.of("1"), new Identifier("block/" + color + "_wool")),
+                        woolTextureMap,
                         blockStateModelGenerator.modelCollector
                 );
                 final Identifier coloredCabinetOpen = woodTypeCabinetOpenModel.upload(
                         getId("block/cabinet/open/" + woodType + "/cabinet_block_open_" + woodType + "_" + color),
-                        new TextureMap().register(TextureKey.of("1"), new Identifier("block/" + color + "_wool")),
+                        woolTextureMap,
+                        blockStateModelGenerator.modelCollector
+                );
+                final Identifier coloredFloorCabinet = woodTypeCabinetModel.upload(
+                        getId("block/cabinet/floor/closed/" + woodType + "/floor_cabinet_block_" + woodType + "_" + color),
+                        woolTextureMap,
+                        blockStateModelGenerator.modelCollector
+                );
+                final Identifier coloredFloorCabinetOpen = woodTypeCabinetOpenModel.upload(
+                        getId("block/cabinet/floor/open/" + woodType + "/floor_cabinet_block_open_" + woodType + "_" + color),
+                        woolTextureMap,
                         blockStateModelGenerator.modelCollector
                 );
 
-                blockStateModelGenerator.registerParentedItemModel(CabinetBlockGenerator.cabinetBlockVariants[i], coloredCabinet);
-                blockStateModelGenerator.registerParentedItemModel(CabinetBlockGenerator.illuminatedCabinetBlockVariants[i], coloredCabinet);
+                blockStateModelGenerator.registerParentedItemModel(ItemRegistry.cabinetVariants[i], coloredCabinet);
+                blockStateModelGenerator.registerParentedItemModel(ItemRegistry.illuminatedCabinetVariants[i], coloredCabinet);
                 blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(CabinetBlockGenerator.cabinetBlockVariants[i], coloredCabinet, coloredCabinetOpen));
                 blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(CabinetBlockGenerator.illuminatedCabinetBlockVariants[i], coloredCabinet, coloredCabinetOpen));
                 ++i;
@@ -909,80 +956,41 @@ public class ModelGenerator extends FabricModelProvider {
         return VariantsBlockStateSupplier.create(block, BlockStateVariant.create().put(VariantSettings.MODEL, modelId));
     }
 
-    protected static MultipartBlockStateSupplier getCabinetBlockstate(Block cabinetBlock, Identifier cabinetModel, Identifier cabinetOpenModel) {
-        return MultipartBlockStateSupplier
-                .create(cabinetBlock)
-                .with(
-                        When.allOf(
-                                When.create().set(Properties.HORIZONTAL_FACING, Direction.NORTH),
-                                When.create().set(Properties.OPEN, true)
-                        ),
-                        BlockStateVariant.create()
-                                .put(VariantSettings.MODEL, cabinetOpenModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R180)
-                )
-                .with(
-                        When.allOf(
-                                When.create().set(Properties.HORIZONTAL_FACING, Direction.NORTH),
-                                When.create().set(Properties.OPEN, false)
-                        ),
-                        BlockStateVariant.create()
-                                .put(VariantSettings.MODEL, cabinetModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R180)
-                )
-                .with(
-                        When.allOf(
-                                When.create().set(Properties.HORIZONTAL_FACING, Direction.EAST),
-                                When.create().set(Properties.OPEN, true)
-                        ),
-                        BlockStateVariant.create()
-                                .put(VariantSettings.MODEL, cabinetOpenModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R270)
-                )
-                .with(
-                        When.allOf(
-                                When.create().set(Properties.HORIZONTAL_FACING, Direction.EAST),
-                                When.create().set(Properties.OPEN, false)
-                        ),
-                        BlockStateVariant.create()
-                                .put(VariantSettings.MODEL, cabinetModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R270)
-                )
-                .with(
-                        When.allOf(
-                                When.create().set(Properties.HORIZONTAL_FACING, Direction.SOUTH),
-                                When.create().set(Properties.OPEN, true)
-                        ),
-                        BlockStateVariant.create()
-                                .put(VariantSettings.MODEL, cabinetOpenModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R0)
-                )
-                .with(
-                        When.allOf(
-                                When.create().set(Properties.HORIZONTAL_FACING, Direction.SOUTH),
-                                When.create().set(Properties.OPEN, false)
-                        ),
-                        BlockStateVariant.create()
-                                .put(VariantSettings.MODEL, cabinetModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R0)
-                )
-                .with(
-                        When.allOf(
-                                When.create().set(Properties.HORIZONTAL_FACING, Direction.WEST),
-                                When.create().set(Properties.OPEN, true)
-                        ),
-                        BlockStateVariant.create()
-                                .put(VariantSettings.MODEL, cabinetOpenModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R90)
-                )
-                .with(
-                        When.allOf(
-                                When.create().set(Properties.HORIZONTAL_FACING, Direction.WEST),
-                                When.create().set(Properties.OPEN, false)
-                        ),
-                        BlockStateVariant.create()
-                                .put(VariantSettings.MODEL, cabinetModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R90)
+    protected static VariantsBlockStateSupplier getCabinetBlockstate(Block cabinetBlock, Identifier cabinetModel, Identifier cabinetOpenModel) {
+        return VariantsBlockStateSupplier.create(cabinetBlock)
+                .coordinate(BlockStateVariantMap.create(Properties.HORIZONTAL_FACING, Properties.OPEN)
+                    .register(
+                            Direction.NORTH, true,
+                            getVariantY(cabinetOpenModel, VariantSettings.Rotation.R180)
+                    )
+                    .register(
+                            Direction.NORTH, false,
+                            getVariantY(cabinetModel, VariantSettings.Rotation.R180)
+                    )
+                    .register(
+                            Direction.EAST, true,
+                            getVariantY(cabinetOpenModel, VariantSettings.Rotation.R270)
+                    )
+                    .register(
+                            Direction.EAST, false,
+                            getVariantY(cabinetModel, VariantSettings.Rotation.R270)
+                    )
+                    .register(
+                            Direction.SOUTH, true,
+                            getVariant(cabinetOpenModel)
+                    )
+                    .register(
+                            Direction.SOUTH, false,
+                            getVariant(cabinetModel)
+                    )
+                    .register(
+                            Direction.WEST, true,
+                            getVariantY(cabinetOpenModel, VariantSettings.Rotation.R90)
+                    )
+                    .register(
+                            Direction.WEST, false,
+                            getVariantY(cabinetModel, VariantSettings.Rotation.R90)
+                    )
                 );
     }
 
@@ -1004,6 +1012,11 @@ public class ModelGenerator extends FabricModelProvider {
         return BlockStateVariant.create()
                 .put(VariantSettings.MODEL, model)
                 .put(VariantSettings.UVLOCK, true)
+                .put(VariantSettings.Y, rotationY);
+    }
+    protected static BlockStateVariant getVariantY(Identifier model, VariantSettings.Rotation rotationY) {
+        return BlockStateVariant.create()
+                .put(VariantSettings.MODEL, model)
                 .put(VariantSettings.Y, rotationY);
     }
     protected static BlockStateVariant getVariant(Identifier model) {

@@ -22,8 +22,8 @@ public class ItemGroupRegistry {
             .icon(() -> new ItemStack(BlockRegistry.CABINET_BLOCK))
             .displayName(Text.translatable("itemGroup.cabinets"))
             .entries((displayContext, entries) -> {
-                Arrays.stream(CabinetBlockGenerator.cabinetBlockVariants).forEach(entries::add);
-                Arrays.stream(CabinetBlockGenerator.illuminatedCabinetBlockVariants).forEach(entries::add);
+                Arrays.stream(ItemRegistry.cabinetVariants).forEach(entries::add);
+                Arrays.stream(ItemRegistry.illuminatedCabinetVariants).forEach(entries::add);
             })
             .build();
 

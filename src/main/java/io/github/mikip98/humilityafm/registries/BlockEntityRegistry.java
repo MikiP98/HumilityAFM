@@ -3,6 +3,8 @@ package io.github.mikip98.humilityafm.registries;
 import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntity;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetBlockEntity;
+import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorCabinetBlockEntity;
+import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorIlluminatedCabinetBlockEntity;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.IlluminatedCabinetBlockEntity;
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
 import io.github.mikip98.humilityafm.generators.ColouredLightsGenerator;
@@ -24,6 +26,8 @@ public class BlockEntityRegistry {
     //Cabinet block entity
     public static BlockEntityType<CabinetBlockEntity> CABINET_BLOCK_ENTITY;
     public static BlockEntityType<IlluminatedCabinetBlockEntity> ILLUMINATED_CABINET_BLOCK_ENTITY;
+    public static BlockEntityType<FloorCabinetBlockEntity> FLOOR_CABINET_BLOCK_ENTITY;
+    public static BlockEntityType<FloorIlluminatedCabinetBlockEntity> FLOOR_ILLUMINATED_CABINET_BLOCK_ENTITY;
     // LED block entity
     public static BlockEntityType<LightStripBlockEntity> LIGHT_STRIP_BLOCK_ENTITY;
 
@@ -44,6 +48,24 @@ public class BlockEntityRegistry {
                 FabricBlockEntityTypeBuilder.create(
                         IlluminatedCabinetBlockEntity::new,
                         concat(ILLUMINATED_CABINET_BLOCK, CabinetBlockGenerator.illuminatedCabinetBlockVariants)
+                ).build()
+        );
+        //Register floor cabinet block entity
+        FLOOR_CABINET_BLOCK_ENTITY = Registry.register(
+                Registries.BLOCK_ENTITY_TYPE,
+                new Identifier(MOD_ID, "floor_cabinet_block_entity"),
+                FabricBlockEntityTypeBuilder.create(
+                        FloorCabinetBlockEntity::new//,
+                        //concat(CABINET_BLOCK, CabinetBlockGenerator.floorCabinetBlockVariants)
+                ).build()
+        );
+        //Register floor illuminated cabinet block entity
+        FLOOR_ILLUMINATED_CABINET_BLOCK_ENTITY = Registry.register(
+                Registries.BLOCK_ENTITY_TYPE,
+                new Identifier(MOD_ID, "floor_illuminated_cabinet_block_entity"),
+                FabricBlockEntityTypeBuilder.create(
+                        FloorIlluminatedCabinetBlockEntity::new//,
+                        //concat(ILLUMINATED_CABINET_BLOCK, CabinetBlockGenerator.floorIlluminatedCabinetBlockVariants)
                 ).build()
         );
 

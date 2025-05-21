@@ -15,12 +15,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 @Environment(EnvType.CLIENT)
-public class IlluminatedCabinetBlockEntityRenderer implements BlockEntityRenderer<IlluminatedCabinetBlockEntity> {
+public class FloorIlluminatedCabinetBlockEntityRenderer implements BlockEntityRenderer<FloorIlluminatedCabinetBlockEntity> {
     @SuppressWarnings("unused")
-    public IlluminatedCabinetBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {}
+    public FloorIlluminatedCabinetBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {}
 
     @Override
-    public void render(IlluminatedCabinetBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+    public void render(FloorIlluminatedCabinetBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         World world = blockEntity.getWorld();
         BlockPos pos = blockEntity.getPos();
         if (world == null || pos == null) return;

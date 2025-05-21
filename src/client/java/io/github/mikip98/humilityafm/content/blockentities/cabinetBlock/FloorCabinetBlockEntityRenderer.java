@@ -18,12 +18,12 @@ import net.minecraft.world.World;
 import org.joml.Quaternionf;
 
 @Environment(EnvType.CLIENT)
-public class CabinetBlockEntityRenderer implements BlockEntityRenderer<CabinetBlockEntity> {
+public class FloorCabinetBlockEntityRenderer implements BlockEntityRenderer<FloorCabinetBlockEntity> {
     @SuppressWarnings("unused")
-    public CabinetBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {}
+    public FloorCabinetBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {}
 
     @Override
-    public void render(CabinetBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+    public void render(FloorCabinetBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         World world = blockEntity.getWorld();
         BlockPos pos = blockEntity.getPos();
         if (world == null || pos == null) return;

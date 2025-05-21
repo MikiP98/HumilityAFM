@@ -2,6 +2,8 @@ package io.github.mikip98.humilityafm.registries;
 
 import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.CabinetBlock;
+import io.github.mikip98.humilityafm.content.blocks.cabinet.FloorCabinetBlock;
+import io.github.mikip98.humilityafm.content.blocks.cabinet.FloorIlluminatedCabinetBlock;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.IlluminatedCabinetBlock;
 import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.JackOLantern;
 import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.JackOLanternRedStone;
@@ -36,6 +38,8 @@ public class BlockRegistry {
     // Cabinet blocks
     public static final CabinetBlock CABINET_BLOCK = new CabinetBlock();
     public static final IlluminatedCabinetBlock ILLUMINATED_CABINET_BLOCK = new IlluminatedCabinetBlock();
+    public static final FloorCabinetBlock FLOOR_CABINET_BLOCK = new FloorCabinetBlock();
+    public static final FloorIlluminatedCabinetBlock FLOOR_ILLUMINATED_CABINET_BLOCK = new FloorIlluminatedCabinetBlock();
 
     // Stairs
     private static final float WoodenStairsBlockStrength = 2.0f;
@@ -57,8 +61,10 @@ public class BlockRegistry {
     public static void register() {
         // ............ TEST BLOCKS & BLOCK ITEMS ............
         // Register Cabinets
-        registerWithItem(CABINET_BLOCK, "cabinet_block");
-        registerWithItem(ILLUMINATED_CABINET_BLOCK, "illuminated_cabinet_block");
+        register(CABINET_BLOCK, "cabinet_block");
+        register(ILLUMINATED_CABINET_BLOCK, "illuminated_cabinet_block");
+        register(FLOOR_CABINET_BLOCK, "floor_cabinet_block");
+        register(FLOOR_ILLUMINATED_CABINET_BLOCK, "floor_illuminated_cabinet_block");
         // Register Stairs
         registerWithItem(OUTER_STAIRS, "outer_stairs");
         registerWithItem(INNER_STAIRS, "inner_stairs");
@@ -76,22 +82,36 @@ public class BlockRegistry {
         //  The soul one can emmit soul particles.
 
         // Register cabinets
-        registerArrayWithItems(
+        registerArray(
                 CabinetBlockGenerator.cabinetBlockVariants,
                 CabinetBlockGenerator.cabinetBlockVariantsNames,
                 "cabinet_block_"
         );
-        putIntoItemGroup(CabinetBlockGenerator.cabinetBlockVariants, ItemGroups.COLORED_BLOCKS);
         registerFlammable(CabinetBlockGenerator.cabinetBlockVariants, ModConfig.cabinetBlockBurnTime, ModConfig.cabinetBlockFireSpread);
 
         // Register illuminated cabinets
-        registerArrayWithItems(
+        registerArray(
                 CabinetBlockGenerator.illuminatedCabinetBlockVariants,
                 CabinetBlockGenerator.cabinetBlockVariantsNames,
                 "illuminated_cabinet_block_"
         );
-        putIntoItemGroup(CabinetBlockGenerator.illuminatedCabinetBlockVariants, ItemGroups.COLORED_BLOCKS);
         registerFlammable(CabinetBlockGenerator.illuminatedCabinetBlockVariants, ModConfig.cabinetBlockBurnTime, ModConfig.cabinetBlockFireSpread);
+
+        // Register floor cabinets
+        registerArray(
+                CabinetBlockGenerator.floorCabinetBlockVariants,
+                CabinetBlockGenerator.cabinetBlockVariantsNames,
+                "floor_cabinet_block_"
+        );
+        registerFlammable(CabinetBlockGenerator.floorCabinetBlockVariants, ModConfig.cabinetBlockBurnTime, ModConfig.cabinetBlockFireSpread);
+
+        // Register floor illuminated cabinets
+        registerArray(
+                CabinetBlockGenerator.floorIlluminatedCabinetBlockVariants,
+                CabinetBlockGenerator.cabinetBlockVariantsNames,
+                "floor_illuminated_cabinet_block_"
+        );
+        registerFlammable(CabinetBlockGenerator.floorIlluminatedCabinetBlockVariants, ModConfig.cabinetBlockBurnTime, ModConfig.cabinetBlockFireSpread);
 
         // Register Coloured Torches
         registerArrayWithItems(
@@ -174,6 +194,14 @@ public class BlockRegistry {
         Registry.register(Registries.BLOCK, id, block);
         Registry.register(Registries.ITEM, id, new BlockItem(block, new FabricItemSettings()));
         return block;
+    }
+    protected static void registerArray(Block[] blocks, String[] names, String prefix) {
+        for (int i = 0; i < blocks.length; i++) {
+            register(blocks[i], prefix + names[i]);
+        }
+    }
+    protected static void register(Block block, String name) {
+        Registry.register(Registries.BLOCK, getId(name), block);
     }
 
 
