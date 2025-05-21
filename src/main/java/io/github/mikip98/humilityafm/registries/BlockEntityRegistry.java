@@ -1,6 +1,5 @@
 package io.github.mikip98.humilityafm.registries;
 
-import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntity;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetBlockEntity;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorCabinetBlockEntity;
@@ -55,8 +54,8 @@ public class BlockEntityRegistry {
                 Registries.BLOCK_ENTITY_TYPE,
                 new Identifier(MOD_ID, "floor_cabinet_block_entity"),
                 FabricBlockEntityTypeBuilder.create(
-                        FloorCabinetBlockEntity::new//,
-                        //concat(CABINET_BLOCK, CabinetBlockGenerator.floorCabinetBlockVariants)
+                        FloorCabinetBlockEntity::new,
+                        CabinetBlockGenerator.floorCabinetBlockVariants
                 ).build()
         );
         //Register floor illuminated cabinet block entity
@@ -64,19 +63,17 @@ public class BlockEntityRegistry {
                 Registries.BLOCK_ENTITY_TYPE,
                 new Identifier(MOD_ID, "floor_illuminated_cabinet_block_entity"),
                 FabricBlockEntityTypeBuilder.create(
-                        FloorIlluminatedCabinetBlockEntity::new//,
-                        //concat(ILLUMINATED_CABINET_BLOCK, CabinetBlockGenerator.floorIlluminatedCabinetBlockVariants)
+                        FloorIlluminatedCabinetBlockEntity::new,
+                        CabinetBlockGenerator.floorIlluminatedCabinetBlockVariants
                 ).build()
         );
 
         //Register LED block entity
-        if (ModConfig.enableLightStrips && ModConfig.enableLightStripBrightening && !ModConfig.shimmerDetected) {
-            LIGHT_STRIP_BLOCK_ENTITY = Registry.register(
-                    Registries.BLOCK_ENTITY_TYPE,
-                    new Identifier(MOD_ID, "light_strip_block_entity"),
-                    FabricBlockEntityTypeBuilder.create(LightStripBlockEntity::new, ColouredLightsGenerator.LightStripBlockVariants).build()
-            );
-        }
+        LIGHT_STRIP_BLOCK_ENTITY = Registry.register(
+                Registries.BLOCK_ENTITY_TYPE,
+                new Identifier(MOD_ID, "light_strip_block_entity"),
+                FabricBlockEntityTypeBuilder.create(LightStripBlockEntity::new, ColouredLightsGenerator.LightStripBlockVariants).build()
+        );
     }
 
     protected static Block[] concat(Block block, Block[] blocks) {

@@ -55,7 +55,9 @@ public class BlockRegistry {
     // Jack o'Lanterns
     public static final Block JACK_O_LANTERN_REDSTONE = new JackOLanternRedStone();
     public static final Block JACK_O_LANTERN_SOUL = new JackOLanternSoul();
+    public static final Block[] COLOURED_WEAK_JACK_O_LANTERNS = Arrays.stream(GenerationData.vanillaColorPallet).map(s -> registerWithItem(new JackOLantern(), "jack_o_lantern_" + s + "_weak")).toArray(Block[]::new);
     public static final Block[] COLOURED_JACK_O_LANTERNS = Arrays.stream(GenerationData.vanillaColorPallet).map(s -> registerWithItem(new JackOLantern(), "jack_o_lantern_" + s)).toArray(Block[]::new);
+    public static final Block[] COLOURED_STRONG_JACK_O_LANTERNS = Arrays.stream(GenerationData.vanillaColorPallet).map(s -> registerWithItem(new JackOLantern(), "jack_o_lantern_" + s + "_strong")).toArray(Block[]::new);
 
 
     public static void register() {
@@ -115,11 +117,25 @@ public class BlockRegistry {
 
         // Register Coloured Torches
         registerArrayWithItems(
-                ColouredLightsGenerator.colouredTorchesVariants,
-                ColouredLightsGenerator.colouredTorchesNames,
+                ColouredLightsGenerator.colouredTorchWeakVariants,
+                GenerationData.vanillaColorPallet,
+                "coloured_torch_",
+                "_weak"
+        );
+        registerArrayWithItems(
+                ColouredLightsGenerator.colouredTorchVariants,
+                GenerationData.vanillaColorPallet,
                 "coloured_torch_"
         );
-        putIntoItemGroup(ColouredLightsGenerator.colouredTorchesVariants, ItemGroups.COLORED_BLOCKS);
+        registerArrayWithItems(
+                ColouredLightsGenerator.colouredTorchStrongVariants,
+                GenerationData.vanillaColorPallet,
+                "coloured_torch_",
+                "_strong"
+        );
+        putIntoItemGroup(ColouredLightsGenerator.colouredTorchWeakVariants, ItemGroups.COLORED_BLOCKS);
+        putIntoItemGroup(ColouredLightsGenerator.colouredTorchVariants, ItemGroups.COLORED_BLOCKS);
+        putIntoItemGroup(ColouredLightsGenerator.colouredTorchStrongVariants, ItemGroups.COLORED_BLOCKS);
 
         // Register Forced corner stairs
         registerArrayWithItems(
@@ -155,31 +171,27 @@ public class BlockRegistry {
         putIntoItemGroup(TerracottaTilesGenerator.terracottaTilesVariants, ItemGroups.BUILDING_BLOCKS);
 
         // Register Light Strips
-        if (ModConfig.enableLightStrips) {
-            registerArrayWithItems(
-                    ColouredLightsGenerator.LightStripBlockVariants,
-                    GenerationData.vanillaColorPallet,
-                    "light_strip_"
-            );
-            putIntoItemGroup(ColouredLightsGenerator.LightStripBlockVariants, ItemGroups.COLORED_BLOCKS);
-        }
+        registerArrayWithItems(
+                ColouredLightsGenerator.LightStripBlockVariants,
+                GenerationData.vanillaColorPallet,
+                "light_strip_"
+        );
+        putIntoItemGroup(ColouredLightsGenerator.LightStripBlockVariants, ItemGroups.COLORED_BLOCKS);
 
         // Register Candlestick variants
-        if (ModConfig.enableCandlesticks) {
+        registerArrayWithItems(
+                CandlestickGenerator.candlestickClassicVariants,
+                GenerationData.vanillaCandlestickMetals,
+                "candlestick_"
+        );
+        putIntoItemGroup(CandlestickGenerator.candlestickClassicVariants, ItemGroups.FUNCTIONAL);
+        for (int i = 0; i < CandlestickGenerator.candlestickRustableVariants.size(); i++) {
             registerArrayWithItems(
-                    CandlestickGenerator.candlestickClassicVariants,
-                    GenerationData.vanillaCandlestickMetals,
+                    CandlestickGenerator.candlestickRustableVariants.get(i),
+                    GenerationData.vanillaRustableCandlestickMetals.get(i),
                     "candlestick_"
             );
-            putIntoItemGroup(CandlestickGenerator.candlestickClassicVariants, ItemGroups.FUNCTIONAL);
-            for (int i = 0; i < CandlestickGenerator.candlestickRustableVariants.size(); i++) {
-                registerArrayWithItems(
-                        CandlestickGenerator.candlestickRustableVariants.get(i),
-                        GenerationData.vanillaRustableCandlestickMetals.get(i),
-                        "candlestick_"
-                );
-                putIntoItemGroup(CandlestickGenerator.candlestickRustableVariants.get(i), ItemGroups.FUNCTIONAL);
-            }
+            putIntoItemGroup(CandlestickGenerator.candlestickRustableVariants.get(i), ItemGroups.FUNCTIONAL);
         }
     }
 
@@ -187,6 +199,11 @@ public class BlockRegistry {
     protected static void registerArrayWithItems(Block[] blocks, String[] names, String prefix) {
         for (int i = 0; i < blocks.length; i++) {
             registerWithItem(blocks[i], prefix + names[i]);
+        }
+    }
+    protected static void registerArrayWithItems(Block[] blocks, String[] names, String prefix, String suffix) {
+        for (int i = 0; i < blocks.length; i++) {
+            registerWithItem(blocks[i], prefix + names[i] + suffix);
         }
     }
     protected static Block registerWithItem(Block block, String name) {

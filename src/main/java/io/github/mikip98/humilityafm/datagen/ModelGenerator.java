@@ -142,13 +142,13 @@ public class ModelGenerator extends FabricModelProvider {
                     textureMap,
                     blockStateModelGenerator.modelCollector
             );
-            blockStateModelGenerator.registerParentedItemModel(ColouredLightsGenerator.colouredTorchesVariants[i], torchModelId);
-            blockStateModelGenerator.registerParentedItemModel(ColouredLightsGenerator.colouredTorchesVariants[i+1], torchModelId);
-            blockStateModelGenerator.registerParentedItemModel(ColouredLightsGenerator.colouredTorchesVariants[i+2], torchModelId);
-            blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(ColouredLightsGenerator.colouredTorchesVariants[i], torchModelId));
-            blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(ColouredLightsGenerator.colouredTorchesVariants[i+1], torchModelId));
-            blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(ColouredLightsGenerator.colouredTorchesVariants[i+2], torchModelId));
-            i += 3;
+            blockStateModelGenerator.registerParentedItemModel(ColouredLightsGenerator.colouredTorchWeakVariants[i], torchModelId);
+            blockStateModelGenerator.registerParentedItemModel(ColouredLightsGenerator.colouredTorchVariants[i], torchModelId);
+            blockStateModelGenerator.registerParentedItemModel(ColouredLightsGenerator.colouredTorchStrongVariants[i], torchModelId);
+            blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(ColouredLightsGenerator.colouredTorchWeakVariants[i], torchModelId));
+            blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(ColouredLightsGenerator.colouredTorchVariants[i], torchModelId));
+            blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(ColouredLightsGenerator.colouredTorchStrongVariants[i], torchModelId));
+            ++i;
         }
     }
 
@@ -490,6 +490,8 @@ public class ModelGenerator extends FabricModelProvider {
                 blockStateModelGenerator.registerParentedItemModel(ItemRegistry.illuminatedCabinetVariants[i], coloredCabinet);
                 blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(CabinetBlockGenerator.cabinetBlockVariants[i], coloredCabinet, coloredCabinetOpen));
                 blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(CabinetBlockGenerator.illuminatedCabinetBlockVariants[i], coloredCabinet, coloredCabinetOpen));
+                blockStateModelGenerator.blockStateCollector.accept(getFloorCabinetBlockstate(CabinetBlockGenerator.floorCabinetBlockVariants[i], coloredFloorCabinet, coloredFloorCabinetOpen));
+                blockStateModelGenerator.blockStateCollector.accept(getFloorCabinetBlockstate(CabinetBlockGenerator.floorIlluminatedCabinetBlockVariants[i], coloredFloorCabinet, coloredFloorCabinetOpen));
                 ++i;
             }
         }
@@ -991,6 +993,43 @@ public class ModelGenerator extends FabricModelProvider {
                             Direction.WEST, false,
                             getVariantY(cabinetModel, VariantSettings.Rotation.R90)
                     )
+                );
+    }
+    protected static VariantsBlockStateSupplier getFloorCabinetBlockstate(Block cabinetBlock, Identifier cabinetModel, Identifier cabinetOpenModel) {
+        return VariantsBlockStateSupplier.create(cabinetBlock)
+                .coordinate(BlockStateVariantMap.create(Properties.BLOCK_HALF, Properties.HORIZONTAL_FACING, Properties.OPEN)
+                        .register(
+                                BlockHalf.BOTTOM, Direction.NORTH, true,
+                                getVariantY(cabinetOpenModel, VariantSettings.Rotation.R180)
+                        )
+                        .register(
+                                BlockHalf.BOTTOM, Direction.NORTH, false,
+                                getVariantY(cabinetModel, VariantSettings.Rotation.R180)
+                        )
+                        .register(
+                                BlockHalf.BOTTOM, Direction.EAST, true,
+                                getVariantY(cabinetOpenModel, VariantSettings.Rotation.R270)
+                        )
+                        .register(
+                                BlockHalf.BOTTOM, Direction.EAST, false,
+                                getVariantY(cabinetModel, VariantSettings.Rotation.R270)
+                        )
+                        .register(
+                                BlockHalf.BOTTOM, Direction.SOUTH, true,
+                                getVariant(cabinetOpenModel)
+                        )
+                        .register(
+                                BlockHalf.BOTTOM, Direction.SOUTH, false,
+                                getVariant(cabinetModel)
+                        )
+                        .register(
+                                BlockHalf.BOTTOM, Direction.WEST, true,
+                                getVariantY(cabinetOpenModel, VariantSettings.Rotation.R90)
+                        )
+                        .register(
+                                BlockHalf.BOTTOM, Direction.WEST, false,
+                                getVariantY(cabinetModel, VariantSettings.Rotation.R90)
+                        )
                 );
     }
 

@@ -1,6 +1,5 @@
 package io.github.mikip98.humilityafm.registries;
 
-import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.generators.*;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -19,7 +18,7 @@ import static io.github.mikip98.humilityafm.HumilityAFM.getId;
 public class ItemGroupRegistry {
     // Cabinet item group
     final static ItemGroup CABINETS_ITEM_GROUP = FabricItemGroup.builder()
-            .icon(() -> new ItemStack(BlockRegistry.CABINET_BLOCK))
+            .icon(() -> new ItemStack(ItemRegistry.CABINET_ITEM))
             .displayName(Text.translatable("itemGroup.cabinets"))
             .entries((displayContext, entries) -> {
                 Arrays.stream(ItemRegistry.cabinetVariants).forEach(entries::add);
@@ -58,14 +57,16 @@ public class ItemGroupRegistry {
             .entries((displayContext, entries) -> {
                 entries.add(BlockRegistry.JACK_O_LANTERN_REDSTONE);
                 entries.add(BlockRegistry.JACK_O_LANTERN_SOUL);
+                Arrays.stream(BlockRegistry.COLOURED_WEAK_JACK_O_LANTERNS).forEach(entries::add);
                 Arrays.stream(BlockRegistry.COLOURED_JACK_O_LANTERNS).forEach(entries::add);
+                Arrays.stream(BlockRegistry.COLOURED_STRONG_JACK_O_LANTERNS).forEach(entries::add);
                 Arrays.stream(ItemRegistry.glowingPowderVariants).forEach(entries::add);
-                Arrays.stream(ColouredLightsGenerator.colouredTorchesVariants).forEach(entries::add);
-                if (ModConfig.enableLightStrips) Arrays.stream(ColouredLightsGenerator.LightStripBlockVariants).forEach(entries::add);
-                if (ModConfig.enableCandlesticks) {
-                    Arrays.stream(CandlestickGenerator.candlestickClassicVariants).forEach(entries::add);
-                    CandlestickGenerator.candlestickRustableVariants.forEach(set -> Arrays.stream(set).forEach(entries::add));
-                }
+                Arrays.stream(ColouredLightsGenerator.colouredTorchWeakVariants).forEach(entries::add);
+                Arrays.stream(ColouredLightsGenerator.colouredTorchVariants).forEach(entries::add);
+                Arrays.stream(ColouredLightsGenerator.colouredTorchStrongVariants).forEach(entries::add);
+                Arrays.stream(ColouredLightsGenerator.LightStripBlockVariants).forEach(entries::add);
+                Arrays.stream(CandlestickGenerator.candlestickClassicVariants).forEach(entries::add);
+                CandlestickGenerator.candlestickRustableVariants.forEach(set -> Arrays.stream(set).forEach(entries::add));
             }).build();
 
 

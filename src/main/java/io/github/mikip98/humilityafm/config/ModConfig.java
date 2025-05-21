@@ -8,10 +8,8 @@ import java.util.Map;
 
 public class ModConfig {
     public static boolean TransparentCabinetBlocks = true;
-    public static boolean enableLightStrips = false;
     public static boolean enableLightStripBrightening = true;
     public static boolean enableLightStripRadiusColorCompensation = true;
-    public static boolean enableCandlesticks = false;
 
     public static short LightStripColoredLightStrength = 85;
     public static short LightStripColoredLightRadius = 9;

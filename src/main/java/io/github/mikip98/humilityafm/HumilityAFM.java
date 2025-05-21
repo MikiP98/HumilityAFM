@@ -50,7 +50,7 @@ public class HumilityAFM implements ModInitializer {
 		WoodenMosaicGenerator.init();
 		TerracottaTilesGenerator.init();
 		ColouredLightsGenerator.init();
-		if (ModConfig.enableCandlesticks) CandlestickGenerator.init();
+		CandlestickGenerator.init();
 
 
 		// ------------------------------------ REGISTRATION ------------------------------------

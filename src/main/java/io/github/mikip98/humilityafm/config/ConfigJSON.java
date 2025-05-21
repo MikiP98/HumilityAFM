@@ -25,10 +25,8 @@ public class ConfigJSON {
         // Create a JSON object to store the configuration
         JsonObject configJson = new JsonObject();
         configJson.addProperty("TransparentCabinetBlocks", ModConfig.TransparentCabinetBlocks);
-        configJson.addProperty("enableLightStrips", ModConfig.enableLightStrips);
         configJson.addProperty("enableLightStripBrightening", ModConfig.enableLightStripBrightening);
         configJson.addProperty("enableLightStripRadiusColorCompensation", ModConfig.enableLightStripRadiusColorCompensation);
-        configJson.addProperty("enableCandlesticks", ModConfig.enableCandlesticks);
 
         configJson.addProperty("LightStripColoredLightStrength", ModConfig.LightStripColoredLightStrength);
         configJson.addProperty("LightStripColoredLightRadius", ModConfig.LightStripColoredLightRadius);
@@ -82,10 +80,8 @@ public class ConfigJSON {
                 if (configJson != null) {
                     // Load the static fields from the JSON object
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "TransparentCabinetBlocks");
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableLightStrips");
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableLightStripBrightening");
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableLightStripRadiusColorCompensation");
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableCandlesticks");
 
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, "LightStripColoredLightStrength");
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, "LightStripColoredLightRadius");

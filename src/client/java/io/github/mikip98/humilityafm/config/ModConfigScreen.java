@@ -33,15 +33,6 @@ public class ModConfigScreen {
                 .build()
         );
         rootCategory.addEntry(ConfigEntryBuilder.create()
-                .startBooleanToggle(Text.literal("Enable Light Strips"), ModConfig.enableLightStrips)
-                .setDefaultValue(false)
-                .setSaveConsumer(value -> {
-                    // Save the value to your mod's configuration
-                    ModConfig.enableLightStrips = value;
-                })
-                .build()
-        );
-        rootCategory.addEntry(ConfigEntryBuilder.create()
                 .startBooleanToggle(Text.literal("Enable Light Strip Brightening"), ModConfig.enableLightStripBrightening)
                 .setDefaultValue(true)
                 .setTooltip(Text.of("Enables Light Strips Brightening, better looking, small performance impact.\n(Auto disabled when Shimmer is installed)"))
@@ -53,12 +44,6 @@ public class ModConfigScreen {
                 .setDefaultValue(true)
                 .setTooltip(Text.of("Enables Light Strip Radius Color Compensation\nTries to increase brightness without losing out on saturation\n(Requires Shimmer to be installed)"))
                 .setSaveConsumer(value -> ModConfig.enableLightStripRadiusColorCompensation = value)
-                .build()
-        );
-        rootCategory.addEntry(ConfigEntryBuilder.create()
-                .startBooleanToggle(Text.literal("Enable Candlesticks"), ModConfig.enableCandlesticks)
-                .setDefaultValue(false)
-                .setSaveConsumer(value -> ModConfig.enableCandlesticks = value)
                 .build()
         );
 

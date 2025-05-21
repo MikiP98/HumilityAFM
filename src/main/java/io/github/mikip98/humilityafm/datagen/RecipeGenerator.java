@@ -10,7 +10,6 @@ import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.GenerationData;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.minecraft.block.Block;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
@@ -220,9 +219,25 @@ public class RecipeGenerator extends AFMRecipieProvider {
                 1,
                 "jack_o_lanterns/"
         );
-        int i = 0;
-        for (Block jackOLantern : BlockRegistry.COLOURED_JACK_O_LANTERNS) {
-            ItemConvertible torch = ColouredLightsGenerator.colouredTorchesVariants[i];
+
+        for (int i = 0; i < GenerationData.vanillaColorPallet.length; ++i) {
+            ItemConvertible weakJackOLantern = BlockRegistry.COLOURED_WEAK_JACK_O_LANTERNS[i];
+            ItemConvertible jackOLantern = BlockRegistry.COLOURED_JACK_O_LANTERNS[i];
+            ItemConvertible strongJackOLantern = BlockRegistry.COLOURED_STRONG_JACK_O_LANTERNS[i];
+
+            ItemConvertible weakTorch = ColouredLightsGenerator.colouredTorchWeakVariants[i];
+            ItemConvertible torch = ColouredLightsGenerator.colouredTorchVariants[i];
+            ItemConvertible strongTorch = ColouredLightsGenerator.colouredTorchStrongVariants[i];
+
+            offerDoubleInputShapelessRecipe(
+                    exporter,
+                    weakJackOLantern,
+                    carved_pumpkin,
+                    weakTorch,
+                    MOD_ID + "/jack_o_lanterns",
+                    1,
+                    "jack_o_lanterns/weak/"
+            );
             offerDoubleInputShapelessRecipe(
                     exporter,
                     jackOLantern,
@@ -230,9 +245,17 @@ public class RecipeGenerator extends AFMRecipieProvider {
                     torch,
                     MOD_ID + "/jack_o_lanterns",
                     1,
-                    "jack_o_lanterns/"
+                    "jack_o_lanterns/normal/"
             );
-            ++i;
+            offerDoubleInputShapelessRecipe(
+                    exporter,
+                    strongJackOLantern,
+                    carved_pumpkin,
+                    strongTorch,
+                    MOD_ID + "/jack_o_lanterns",
+                    1,
+                    "jack_o_lanterns/strong/"
+            );
         }
     }
 
@@ -259,9 +282,9 @@ public class RecipeGenerator extends AFMRecipieProvider {
 
     protected static void generateColouredTorchRecipies(Consumer<RecipeJsonProvider> exporter) {
         for (int i = 0; i < GenerationData.vanillaColorPallet.length; i++) {
-            ItemConvertible weakColouredTorch = ColouredLightsGenerator.colouredTorchesVariants[i * 3];
-            ItemConvertible colouredTorch = ColouredLightsGenerator.colouredTorchesVariants[i * 3 + 1];
-            ItemConvertible strongColouredTorch = ColouredLightsGenerator.colouredTorchesVariants[i * 3 + 2];
+            ItemConvertible weakColouredTorch = ColouredLightsGenerator.colouredTorchWeakVariants[i];
+            ItemConvertible colouredTorch = ColouredLightsGenerator.colouredTorchVariants[i];
+            ItemConvertible strongColouredTorch = ColouredLightsGenerator.colouredTorchStrongVariants[i];
 
             Item glowingPowder = ItemRegistry.glowingPowderVariants[i];
 
