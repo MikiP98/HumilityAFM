@@ -5,12 +5,13 @@ import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.util.math.Direction;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class DoubleVerticallyAttachableBlockItem extends BlockItem {
     protected final Block standingBlock;
 
-    public DoubleVerticallyAttachableBlockItem(Block standingBlock, Block wallBlock, Settings settings) {
+    public DoubleVerticallyAttachableBlockItem(@NotNull Block standingBlock, @NotNull Block wallBlock, Settings settings) {
         super(wallBlock, settings);
         this.standingBlock = standingBlock;
     }

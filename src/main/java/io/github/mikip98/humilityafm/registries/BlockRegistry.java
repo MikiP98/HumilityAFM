@@ -38,8 +38,8 @@ public class BlockRegistry {
     // Cabinet blocks
     public static final CabinetBlock CABINET_BLOCK = new CabinetBlock();
     public static final IlluminatedCabinetBlock ILLUMINATED_CABINET_BLOCK = new IlluminatedCabinetBlock();
-    public static final FloorCabinetBlock FLOOR_CABINET_BLOCK = new FloorCabinetBlock();
-    public static final FloorIlluminatedCabinetBlock FLOOR_ILLUMINATED_CABINET_BLOCK = new FloorIlluminatedCabinetBlock();
+    public static final FloorCabinetBlock FLOOR_CABINET_BLOCK = new FloorCabinetBlock(ItemRegistry.CABINET_ITEM);
+    public static final FloorIlluminatedCabinetBlock FLOOR_ILLUMINATED_CABINET_BLOCK = new FloorIlluminatedCabinetBlock(ItemRegistry.ILLUMINATED_CABINET_ITEM);
 
     // Stairs
     private static final float WoodenStairsBlockStrength = 2.0f;

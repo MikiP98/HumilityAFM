@@ -25,8 +25,8 @@ public class CabinetBlockGenerator {
     // Vanilla
     public static Block[] cabinetBlockVariants;
     public static Block[] illuminatedCabinetBlockVariants;
-    public static Block[] floorCabinetBlockVariants;
-    public static Block[] floorIlluminatedCabinetBlockVariants;
+    public static FloorCabinetBlock[] floorCabinetBlockVariants;
+    public static FloorCabinetBlock[] floorIlluminatedCabinetBlockVariants;
 
 //    // Modded
 //    public static Block[] moddedCabinetBlockVariants;
@@ -38,11 +38,15 @@ public class CabinetBlockGenerator {
             short i
     ) {
         String cabinetBlockVariantName = woodType + "_" + woolType;
+
         cabinetBlockVariantsNames[i] = cabinetBlockVariantName;
+
         cabinetBlockVariants[i] = new CabinetBlock();
         illuminatedCabinetBlockVariants[i] = new IlluminatedCabinetBlock();
+
         floorCabinetBlockVariants[i] = new FloorCabinetBlock();
         floorIlluminatedCabinetBlockVariants[i] = new FloorIlluminatedCabinetBlock();
+
         ItemRegistry.CABINET_ITEM_VARIANTS[i] = ItemRegistry.register(
                 new DoubleVerticallyAttachableBlockItem(floorCabinetBlockVariants[i], cabinetBlockVariants[i], new FabricItemSettings()),
                 "cabinet_" + cabinetBlockVariantName
@@ -51,6 +55,9 @@ public class CabinetBlockGenerator {
                 new DoubleVerticallyAttachableBlockItem(floorIlluminatedCabinetBlockVariants[i], illuminatedCabinetBlockVariants[i], new FabricItemSettings()),
                 "illuminated_cabinet_" + cabinetBlockVariantName
         );
+
+        floorCabinetBlockVariants[i].setItem(ItemRegistry.CABINET_ITEM_VARIANTS[i]);
+        floorIlluminatedCabinetBlockVariants[i].setItem(ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS[i]);
     }
 
 
@@ -67,8 +74,8 @@ public class CabinetBlockGenerator {
         cabinetBlockVariantsNames = new String[cabinetBlockVariantsCount];
         cabinetBlockVariants = new Block[cabinetBlockVariantsCount];
         illuminatedCabinetBlockVariants = new Block[cabinetBlockVariantsCount];
-        floorCabinetBlockVariants = new Block[cabinetBlockVariantsCount];
-        floorIlluminatedCabinetBlockVariants = new Block[cabinetBlockVariantsCount];
+        floorCabinetBlockVariants = new FloorCabinetBlock[cabinetBlockVariantsCount];
+        floorIlluminatedCabinetBlockVariants = new FloorCabinetBlock[cabinetBlockVariantsCount];
         ItemRegistry.CABINET_ITEM_VARIANTS = new Item[cabinetBlockVariantsCount];
         ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS = new Item[cabinetBlockVariantsCount];
 

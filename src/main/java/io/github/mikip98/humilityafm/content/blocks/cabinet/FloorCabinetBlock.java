@@ -4,7 +4,9 @@ import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorCab
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.BlockHalf;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
@@ -23,6 +25,8 @@ public class FloorCabinetBlock extends CabinetBlock implements Waterloggable, Bl
 
     protected static final EnumProperty<BlockHalf> HALF = Properties.BLOCK_HALF;
 
+    protected Item item;
+
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         super.appendProperties(builder);
@@ -30,6 +34,9 @@ public class FloorCabinetBlock extends CabinetBlock implements Waterloggable, Bl
     }
 
 
+    public FloorCabinetBlock(Item item) {
+        this(defaultSettings, item);
+    }
     public FloorCabinetBlock() {
         this(defaultSettings);
     }
@@ -38,6 +45,17 @@ public class FloorCabinetBlock extends CabinetBlock implements Waterloggable, Bl
         setDefaultState(getDefaultState()
                 .with(HALF, BlockHalf.BOTTOM)
         );
+    }
+    public FloorCabinetBlock(Settings settings, Item item) {
+        super(settings);
+        setDefaultState(getDefaultState()
+                .with(HALF, BlockHalf.BOTTOM)
+        );
+        this.item = item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
     }
 
 
@@ -68,5 +86,10 @@ public class FloorCabinetBlock extends CabinetBlock implements Waterloggable, Bl
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return new FloorCabinetBlockEntity(pos, state);
+    }
+
+    @Override
+    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
+        return new ItemStack(item);
     }
 }

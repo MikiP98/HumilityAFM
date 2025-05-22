@@ -1,7 +1,6 @@
 package io.github.mikip98.humilityafm.content.blockentities.cabinetBlock;
 
 import io.github.mikip98.humilityafm.content.blocks.cabinet.FloorIlluminatedCabinetBlock;
-import io.github.mikip98.humilityafm.content.blocks.cabinet.IlluminatedCabinetBlock;
 import io.github.mikip98.humilityafm.helpers.BlockEntityRendererHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -11,7 +10,6 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -40,17 +38,17 @@ public class FloorIlluminatedCabinetBlockEntityRenderer implements BlockEntityRe
         float posisionConstantX = posisionConstant;
         float posisionConstantZ = posisionConstant;
 
-        switch (blockState.get(Properties.HORIZONTAL_FACING)) {
-            case NORTH -> {
-                posisionConstantX = 4f;
-                posisionConstantZ = 2f;
-            }
-            case SOUTH -> {
-                posisionConstantX = 4f;
-                posisionConstantZ = 0.3f;
-            }
-            case WEST -> posisionConstantX = 7f;
-        }
+//        switch (blockState.get(Properties.HORIZONTAL_FACING)) {
+//            case NORTH -> {
+//                posisionConstantX = 4f;
+//                posisionConstantZ = 2f;
+//            }
+//            case SOUTH -> {
+//                posisionConstantX = 4f;
+//                posisionConstantZ = 0.3f;
+//            }
+//            case WEST -> posisionConstantX = 7f;
+//        }
 
         // Render the brightened outside shell of the cabinet
         renderSelf(
