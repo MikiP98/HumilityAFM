@@ -29,7 +29,7 @@ public class FloorIlluminatedCabinetBlockEntityRenderer implements BlockEntityRe
         if (blockState == null || !(blockState.getBlock() instanceof IlluminatedCabinetBlock)) return;
 
 
-        CabinetBlockEntityRenderer.renderItem(blockEntity, blockState, matrices, vertexConsumers, 255, overlay);
+        FloorCabinetBlockEntityRenderer.renderItem(blockEntity, blockState, matrices, vertexConsumers, 255, overlay);
 
 
         final float blockSizeYZ = 0.875f;

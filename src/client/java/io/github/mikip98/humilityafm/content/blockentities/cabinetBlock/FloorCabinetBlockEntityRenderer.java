@@ -4,6 +4,7 @@ import io.github.mikip98.humilityafm.content.blocks.cabinet.CabinetBlock;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
@@ -38,22 +39,25 @@ public class FloorCabinetBlockEntityRenderer implements BlockEntityRenderer<Floo
         final ItemStack stack = blockEntity.getStack(0);
         if (stack.isEmpty()) return;
 
+        float scale = 0.59375f;  // 19/32
+
         matrices.push();
 
         // Center in a block; Required for correct rotation
         matrices.translate(0.5, 0.5, 0.5);
 
+        float rotationX = (float) (blockState.get(Properties.BLOCK_HALF) == BlockHalf.BOTTOM ? Math.toRadians(90) : Math.toRadians(270));
         switch (blockState.get(Properties.HORIZONTAL_FACING)) {
-            case SOUTH -> matrices.multiply(new Quaternionf().rotationYXZ((float) Math.toRadians(180), 0, 0));
-            case EAST -> matrices.multiply(new Quaternionf().rotationYXZ((float) Math.toRadians(270), 0, 0));
-            case WEST -> matrices.multiply(new Quaternionf().rotationYXZ((float) Math.toRadians(90), 0, 0));
+            case NORTH -> matrices.multiply(new Quaternionf().rotationYXZ(0, rotationX, 0));
+            case SOUTH -> matrices.multiply(new Quaternionf().rotationYXZ((float) Math.toRadians(180), rotationX, 0));
+            case EAST -> matrices.multiply(new Quaternionf().rotationYXZ((float) Math.toRadians(270), rotationX, 0));
+            case WEST -> matrices.multiply(new Quaternionf().rotationYXZ((float) Math.toRadians(90), rotationX, 0));
         }
 
         // X -> Left/Right; positive is left; negative is right
         // Y -> Height
         // Z -> Depth; positive is deeper; negative is closer
-        float scale = 0.59375f;  // 19/32
-        matrices.translate(0, 0, 0.4375 - 3f/64*(1-scale));  // Z is 7/16 - 3f/64*(1-scale)
+        matrices.translate(0, 0, 0.4375 - 3f/64*(1-scale));
         matrices.scale(scale, scale, scale);
 
         // Render the item inside the cabinet
