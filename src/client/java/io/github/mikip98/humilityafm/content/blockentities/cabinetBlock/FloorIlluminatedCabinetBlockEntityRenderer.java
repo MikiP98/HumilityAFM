@@ -1,5 +1,6 @@
 package io.github.mikip98.humilityafm.content.blockentities.cabinetBlock;
 
+import io.github.mikip98.humilityafm.content.blocks.cabinet.FloorIlluminatedCabinetBlock;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.IlluminatedCabinetBlock;
 import io.github.mikip98.humilityafm.helpers.BlockEntityRendererHelper;
 import net.fabricmc.api.EnvType;
@@ -26,7 +27,7 @@ public class FloorIlluminatedCabinetBlockEntityRenderer implements BlockEntityRe
         if (world == null || pos == null) return;
 
         BlockState blockState = world.getBlockState(pos);
-        if (blockState == null || !(blockState.getBlock() instanceof IlluminatedCabinetBlock)) return;
+        if (blockState == null || !(blockState.getBlock() instanceof FloorIlluminatedCabinetBlock)) return;
 
 
         FloorCabinetBlockEntityRenderer.renderItem(blockEntity, blockState, matrices, vertexConsumers, 255, overlay);
