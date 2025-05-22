@@ -1,6 +1,5 @@
 package io.github.mikip98.humilityafm.datagen;
 
-import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
 import io.github.mikip98.humilityafm.generators.CandlestickGenerator;
 import io.github.mikip98.humilityafm.generators.ColouredLightsGenerator;
 import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
@@ -35,7 +34,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
         // Cabinet Blocks
         offerCabinetRecipe(
                 exporter,
-                BlockRegistry.CABINET_BLOCK,
+                ItemRegistry.CABINET_ITEM,
                 Items.PETRIFIED_OAK_SLAB,
                 Items.WHITE_CARPET,
                 "cabinets/"
@@ -44,8 +43,8 @@ public class RecipeGenerator extends AFMRecipieProvider {
         // Illuminated Cabinet Blocks
         offerIlluminatedCabinetRecipe(
                 exporter,
-                BlockRegistry.ILLUMINATED_CABINET_BLOCK,
-                BlockRegistry.CABINET_BLOCK
+                ItemRegistry.ILLUMINATED_CABINET_ITEM,
+                ItemRegistry.CABINET_ITEM
         );
 
         // ............ FINAL BLOCKS & BLOCK ITEMS ............
@@ -64,12 +63,12 @@ public class RecipeGenerator extends AFMRecipieProvider {
     protected static void generateCabinetRecipies(Consumer<RecipeJsonProvider> exporter) {
         int i = 0;
         for (String woodType : GenerationData.vanillaWoodTypes) {
-            ItemConvertible[] currentWoodTypeCabinets = Arrays.copyOfRange(CabinetBlockGenerator.cabinetBlockVariants, i, i + GenerationData.vanillaColorPallet.length);
-            ItemConvertible[] currentWoodTypeIlluminatedCabinets = Arrays.copyOfRange(CabinetBlockGenerator.illuminatedCabinetBlockVariants, i, i + GenerationData.vanillaColorPallet.length);
+            ItemConvertible[] currentWoodTypeCabinets = Arrays.copyOfRange(ItemRegistry.CABINET_ITEM_VARIANTS, i, i + GenerationData.vanillaColorPallet.length);
+            ItemConvertible[] currentWoodTypeIlluminatedCabinets = Arrays.copyOfRange(ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS, i, i + GenerationData.vanillaColorPallet.length);
 
             for (String color : GenerationData.vanillaColorPallet) {
-                ItemConvertible cabinetBlockItemVariant = CabinetBlockGenerator.cabinetBlockVariants[i];
-                ItemConvertible illuminatedCabinetBlockItemVariant = CabinetBlockGenerator.illuminatedCabinetBlockVariants[i];
+                ItemConvertible cabinetBlockItemVariant = ItemRegistry.CABINET_ITEM_VARIANTS[i];
+                ItemConvertible illuminatedCabinetBlockItemVariant = ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS[i];
 
                 offerCabinetRecipe(
                         exporter,
@@ -264,7 +263,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
         Item redstone = Items.REDSTONE;
         int i = 0;
         for (String color : GenerationData.vanillaColorPallet) {
-            Item glowingPowder = ItemRegistry.glowingPowderVariants[i];
+            Item glowingPowder = ItemRegistry.GLOWING_POWDER_VARIANTS[i];
             Item dye = getItemFromName(color + "_dye");
             offerTripleInputShapelessRecipe(
                     exporter,
@@ -286,7 +285,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
             ItemConvertible colouredTorch = ColouredLightsGenerator.colouredTorchVariants[i];
             ItemConvertible strongColouredTorch = ColouredLightsGenerator.colouredTorchStrongVariants[i];
 
-            Item glowingPowder = ItemRegistry.glowingPowderVariants[i];
+            Item glowingPowder = ItemRegistry.GLOWING_POWDER_VARIANTS[i];
 
             // Weak Coloured Torch
             offerColouredTorchRecipe(
@@ -361,7 +360,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
             offerLightStripRecipie(
                     exporter,
                     ColouredLightsGenerator.LightStripBlockVariants[i],
-                    ItemRegistry.glowingPowderVariants[i],
+                    ItemRegistry.GLOWING_POWDER_VARIANTS[i],
                     "light_strips/"
             );
         }

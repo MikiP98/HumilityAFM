@@ -7,6 +7,6 @@ import net.minecraft.util.math.BlockPos;
 public class FloorIlluminatedCabinetBlockEntity extends FloorCabinetBlockEntity {
 
     public FloorIlluminatedCabinetBlockEntity(BlockPos pos, BlockState state) {
-        super(BlockEntityRegistry.ILLUMINATED_CABINET_BLOCK_ENTITY, pos, state);
+        super(BlockEntityRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_ENTITY, pos, state);
     }
 }

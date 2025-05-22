@@ -7,9 +7,11 @@ import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
 import io.github.mikip98.humilityafm.generators.TerracottaTilesGenerator;
 import io.github.mikip98.humilityafm.generators.WoodenMosaicGenerator;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
+import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 
 import java.util.Arrays;
 
@@ -21,13 +23,19 @@ public class BlockLootTableGenerator extends FabricBlockLootTableProvider {
     @Override
     public void generate() {
         // Cabinet blocks
-        addDrop(BlockRegistry.CABINET_BLOCK);  // Manual testing block
-        addDrop(BlockRegistry.ILLUMINATED_CABINET_BLOCK);  // Manual testing block
-        for (Block block : CabinetBlockGenerator.cabinetBlockVariants) {
-            addDrop(block);
-        }
-        for (Block block : CabinetBlockGenerator.illuminatedCabinetBlockVariants) {
-            addDrop(block);
+        addDrop(BlockRegistry.CABINET_BLOCK, ItemRegistry.CABINET_ITEM);  // Manual testing block
+        addDrop(BlockRegistry.ILLUMINATED_CABINET_BLOCK, ItemRegistry.ILLUMINATED_CABINET_ITEM);  // Manual testing block
+        addDrop(BlockRegistry.FLOOR_CABINET_BLOCK, ItemRegistry.CABINET_ITEM);  // Manual testing block
+        addDrop(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK, ItemRegistry.ILLUMINATED_CABINET_ITEM);  // Manual testing block
+        for (int i = 0; i < CabinetBlockGenerator.cabinetBlockVariants.length; ++i) {
+            Item cabinetItem = ItemRegistry.CABINET_ITEM_VARIANTS[i];
+            Item illuminatedCabinetItem = ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS[i];
+
+            addDrop(CabinetBlockGenerator.cabinetBlockVariants[i], cabinetItem);
+            addDrop(CabinetBlockGenerator.floorCabinetBlockVariants[i], cabinetItem);
+
+            addDrop(CabinetBlockGenerator.illuminatedCabinetBlockVariants[i], illuminatedCabinetItem);
+            addDrop(CabinetBlockGenerator.floorIlluminatedCabinetBlockVariants[i], illuminatedCabinetItem);
         }
 
         // Wooden Mosaics

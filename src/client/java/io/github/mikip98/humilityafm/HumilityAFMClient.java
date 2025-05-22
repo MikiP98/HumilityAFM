@@ -1,6 +1,8 @@
 package io.github.mikip98.humilityafm;
 
 import io.github.mikip98.humilityafm.config.ModConfig;
+import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorCabinetBlockEntityRenderer;
+import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorIlluminatedCabinetBlockEntityRenderer;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.IlluminatedCabinetBlockEntityRenderer;
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
 import io.github.mikip98.humilityafm.registries.BlockEntityRegistry;
@@ -26,17 +28,27 @@ public class HumilityAFMClient implements ClientModInitializer {
 
 		BlockEntityRendererFactories.register(BlockEntityRegistry.CABINET_BLOCK_ENTITY, CabinetBlockEntityRenderer::new);
 		BlockEntityRendererFactories.register(BlockEntityRegistry.ILLUMINATED_CABINET_BLOCK_ENTITY, IlluminatedCabinetBlockEntityRenderer::new);
+		BlockEntityRendererFactories.register(BlockEntityRegistry.FLOOR_CABINET_BLOCK_ENTITY, FloorCabinetBlockEntityRenderer::new);
+		BlockEntityRendererFactories.register(BlockEntityRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_ENTITY, FloorIlluminatedCabinetBlockEntityRenderer::new);
 
 		RenderLayer renderLayer = ModConfig.TransparentCabinetBlocks ? RenderLayer.getTranslucent() : RenderLayer.getCutout();
 
 		BlockRenderLayerMap.INSTANCE.putBlock(BlockRegistry.CABINET_BLOCK, renderLayer);
 		BlockRenderLayerMap.INSTANCE.putBlock(BlockRegistry.ILLUMINATED_CABINET_BLOCK, renderLayer);
+		BlockRenderLayerMap.INSTANCE.putBlock(BlockRegistry.FLOOR_CABINET_BLOCK, renderLayer);
+		BlockRenderLayerMap.INSTANCE.putBlock(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK, renderLayer);
 
 		for (Block cabinetBlockVariant : CabinetBlockGenerator.cabinetBlockVariants) {
 			BlockRenderLayerMap.INSTANCE.putBlock(cabinetBlockVariant, renderLayer);
 		}
 		for (Block illuminatedCabinetBlockVariant : CabinetBlockGenerator.illuminatedCabinetBlockVariants) {
 			BlockRenderLayerMap.INSTANCE.putBlock(illuminatedCabinetBlockVariant, renderLayer);
+		}
+		for (Block floorCabinetBlockVariant : CabinetBlockGenerator.floorCabinetBlockVariants) {
+			BlockRenderLayerMap.INSTANCE.putBlock(floorCabinetBlockVariant, renderLayer);
+		}
+		for (Block floorIlluminatedCabinetBlockVariant : CabinetBlockGenerator.floorIlluminatedCabinetBlockVariants) {
+			BlockRenderLayerMap.INSTANCE.putBlock(floorIlluminatedCabinetBlockVariant, renderLayer);
 		}
 
 		// LED block variants

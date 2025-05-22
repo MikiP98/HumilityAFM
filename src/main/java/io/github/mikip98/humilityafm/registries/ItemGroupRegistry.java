@@ -21,8 +21,8 @@ public class ItemGroupRegistry {
             .icon(() -> new ItemStack(ItemRegistry.CABINET_ITEM))
             .displayName(Text.translatable("itemGroup.cabinets"))
             .entries((displayContext, entries) -> {
-                Arrays.stream(ItemRegistry.cabinetVariants).forEach(entries::add);
-                Arrays.stream(ItemRegistry.illuminatedCabinetVariants).forEach(entries::add);
+                Arrays.stream(ItemRegistry.CABINET_ITEM_VARIANTS).forEach(entries::add);
+                Arrays.stream(ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS).forEach(entries::add);
             })
             .build();
 
@@ -60,7 +60,7 @@ public class ItemGroupRegistry {
                 Arrays.stream(BlockRegistry.COLOURED_WEAK_JACK_O_LANTERNS).forEach(entries::add);
                 Arrays.stream(BlockRegistry.COLOURED_JACK_O_LANTERNS).forEach(entries::add);
                 Arrays.stream(BlockRegistry.COLOURED_STRONG_JACK_O_LANTERNS).forEach(entries::add);
-                Arrays.stream(ItemRegistry.glowingPowderVariants).forEach(entries::add);
+                Arrays.stream(ItemRegistry.GLOWING_POWDER_VARIANTS).forEach(entries::add);
                 Arrays.stream(ColouredLightsGenerator.colouredTorchWeakVariants).forEach(entries::add);
                 Arrays.stream(ColouredLightsGenerator.colouredTorchVariants).forEach(entries::add);
                 Arrays.stream(ColouredLightsGenerator.colouredTorchStrongVariants).forEach(entries::add);

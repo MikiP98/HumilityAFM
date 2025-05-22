@@ -10,7 +10,6 @@ import io.github.mikip98.humilityafm.util.GenerationData;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,11 +43,11 @@ public class CabinetBlockGenerator {
         illuminatedCabinetBlockVariants[i] = new IlluminatedCabinetBlock();
         floorCabinetBlockVariants[i] = new FloorCabinetBlock();
         floorIlluminatedCabinetBlockVariants[i] = new FloorIlluminatedCabinetBlock();
-        ItemRegistry.cabinetVariants[i] = ItemRegistry.register(
+        ItemRegistry.CABINET_ITEM_VARIANTS[i] = ItemRegistry.register(
                 new DoubleVerticallyAttachableBlockItem(floorCabinetBlockVariants[i], cabinetBlockVariants[i], new FabricItemSettings()),
                 "cabinet_" + cabinetBlockVariantName
         );
-        ItemRegistry.illuminatedCabinetVariants[i] = ItemRegistry.register(
+        ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS[i] = ItemRegistry.register(
                 new DoubleVerticallyAttachableBlockItem(floorIlluminatedCabinetBlockVariants[i], illuminatedCabinetBlockVariants[i], new FabricItemSettings()),
                 "illuminated_cabinet_" + cabinetBlockVariantName
         );
@@ -70,8 +69,8 @@ public class CabinetBlockGenerator {
         illuminatedCabinetBlockVariants = new Block[cabinetBlockVariantsCount];
         floorCabinetBlockVariants = new Block[cabinetBlockVariantsCount];
         floorIlluminatedCabinetBlockVariants = new Block[cabinetBlockVariantsCount];
-        ItemRegistry.cabinetVariants = new Item[cabinetBlockVariantsCount];
-        ItemRegistry.illuminatedCabinetVariants = new Item[cabinetBlockVariantsCount];
+        ItemRegistry.CABINET_ITEM_VARIANTS = new Item[cabinetBlockVariantsCount];
+        ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS = new Item[cabinetBlockVariantsCount];
 
         short i = 0;
         for (String woodType : GenerationData.vanillaWoodTypes) {

@@ -16,15 +16,10 @@ import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.NotNull;
 
 public class FloorCabinetBlock extends CabinetBlock implements Waterloggable, BlockEntityProvider {
-    protected static final VoxelShape voxelShapeOpenNorth = VoxelShapes.cuboid(0.0625f, 0.0625f, 0.81252f, 0.9375f, 0.9375f, 1.0f);  //open, reverse original
-    protected static final VoxelShape voxelShapeOpenSouth = VoxelShapes.cuboid(0.0625f, 0.0625f, 0.0f, 0.9375f, 0.9375f, 0.18748f);  //open, original
-    protected static final VoxelShape voxelShapeOpenEast = VoxelShapes.cuboid(0.0f, 0.0625f, 0.0625f, 0.18748f, 0.9375f, 0.9375f);  //open, swap z <-> x
-    protected static final VoxelShape voxelShapeOpenWest = VoxelShapes.cuboid(0.81252f, 0.0625f, 0.0625f, 1.0f, 0.9375f, 0.9375f);  //open, reverse + swap
-
-    protected static final VoxelShape voxelShapeClosedNorth = VoxelShapes.union(voxelShapeOpenNorth, VoxelShapes.cuboid(0.0625f, 0.0625f, 0.75f, 0.9375f, 0.9375f, 0.81248f));  //reverse original
-    protected static final VoxelShape voxelShapeClosedSouth = VoxelShapes.union(voxelShapeOpenSouth, VoxelShapes.cuboid(0.0625f, 0.0625f, 0.18752f, 0.9375f, 0.9375f, 0.25f));  //original
-    protected static final VoxelShape voxelShapeClosedEast = VoxelShapes.union(voxelShapeOpenEast, VoxelShapes.cuboid(0.18752f, 0.0625f, 0.0625f, 0.25f, 0.9375f, 0.9375f));  //swap z <-> x
-    protected static final VoxelShape voxelShapeClosedWest = VoxelShapes.union(voxelShapeOpenWest, VoxelShapes.cuboid(0.75f, 0.0625f, 0.0625f, 0.81248f, 0.9375f, 0.9375f));  //reverse + swap
+    protected static final VoxelShape voxelShapeOpenBottom = Block.createCuboidShape(1, 0, 1, 15, 3, 15);
+    protected static final VoxelShape voxelShapeOpenTop = Block.createCuboidShape(1, 13, 1, 15, 16, 15);
+    protected static final VoxelShape voxelShapeBottom = VoxelShapes.union(voxelShapeOpenBottom, Block.createCuboidShape(1, 3.001, 1, 15, 4, 15));
+    protected static final VoxelShape voxelShapeTop = VoxelShapes.union(voxelShapeOpenTop, Block.createCuboidShape(1, 12, 1, 15, 12.999, 15));
 
     protected static final EnumProperty<BlockHalf> HALF = Properties.BLOCK_HALF;
 
@@ -48,31 +43,19 @@ public class FloorCabinetBlock extends CabinetBlock implements Waterloggable, Bl
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
-        Direction dir = state.get(FACING);
         if (state.get(OPEN)) {
-            switch (dir) {
-                case NORTH:
-                    return voxelShapeOpenNorth;
-                case SOUTH:
-                    return voxelShapeOpenSouth;
-                case EAST:
-                    return voxelShapeOpenEast;
-                case WEST:
-                    return voxelShapeOpenWest;
+            if (state.get(HALF) == BlockHalf.BOTTOM) {
+                return voxelShapeOpenBottom;
+            } else {
+                return voxelShapeOpenTop;
             }
         } else {
-            switch (dir) {
-                case NORTH:
-                    return voxelShapeClosedNorth;
-                case SOUTH:
-                    return voxelShapeClosedSouth;
-                case EAST:
-                    return voxelShapeClosedEast;
-                case WEST:
-                    return voxelShapeClosedWest;
+            if (state.get(HALF) == BlockHalf.BOTTOM) {
+                return voxelShapeBottom;
+            } else {
+                return voxelShapeTop;
             }
         }
-        return null;
     }
 
     @Override

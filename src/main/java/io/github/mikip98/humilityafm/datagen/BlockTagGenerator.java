@@ -33,6 +33,12 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
         getOrCreateTagBuilder(ModBlockTags.ILLUMINATED_CABINET_BLOCKS)
                 .add(getIds(Arrays.stream(CabinetBlockGenerator.cabinetBlockVariantsNames).map(s -> "illuminated_cabinet_block_" + s)))
                 .add(BlockRegistry.ILLUMINATED_CABINET_BLOCK);  // Manual testing block
+        getOrCreateTagBuilder(ModBlockTags.CABINET_BLOCKS)
+                .add(getIds(Arrays.stream(CabinetBlockGenerator.cabinetBlockVariantsNames).map(s -> "floor_cabinet_block_" + s)))
+                .add(BlockRegistry.FLOOR_CABINET_BLOCK);  // Manual testing block
+        getOrCreateTagBuilder(ModBlockTags.ILLUMINATED_CABINET_BLOCKS)
+                .add(getIds(Arrays.stream(CabinetBlockGenerator.cabinetBlockVariantsNames).map(s -> "floor_illuminated_cabinet_block_" + s)))
+                .add(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK);  // Manual testing block
 
         // Wooden Mosaic Block Tag
         getOrCreateTagBuilder(ModBlockTags.WOODEN_MOSAIC_BLOCKS)
