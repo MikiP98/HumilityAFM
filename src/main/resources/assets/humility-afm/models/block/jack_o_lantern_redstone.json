@@ -1,8 +1,6 @@
 {
-    "parent": "minecraft:block/orientable",
+    "parent": "humility-afm:block/jack_o_lantern_template",
     "textures": {
-        "front": "humility-afm:block/jack_o_lantern_redstone",
-        "side": "minecraft:block/pumpkin_side",
-        "top": "minecraft:block/pumpkin_top"
+        "front": "humility-afm:block/jack_o_lantern_redstone"
     }
 }
