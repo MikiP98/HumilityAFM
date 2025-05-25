@@ -1,18 +1,33 @@
 {
     "variants": {
-        "facing=east": {
+        "facing=east,lit=true": {
             "model": "humility-afm:block/jack_o_lantern_redstone",
             "y": 90
         },
-        "facing=north": {
+        "facing=north,lit=true": {
             "model": "humility-afm:block/jack_o_lantern_redstone"
         },
-        "facing=south": {
+        "facing=south,lit=true": {
             "model": "humility-afm:block/jack_o_lantern_redstone",
             "y": 180
         },
-        "facing=west": {
+        "facing=west,lit=true": {
             "model": "humility-afm:block/jack_o_lantern_redstone",
+            "y": 270
+        },
+        "facing=east,lit=false": {
+            "model": "minecraft:block/carved_pumpkin",
+            "y": 90
+        },
+        "facing=north,lit=false": {
+            "model": "minecraft:block/carved_pumpkin"
+        },
+        "facing=south,lit=false": {
+            "model": "minecraft:block/carved_pumpkin",
+            "y": 180
+        },
+        "facing=west,lit=false": {
+            "model": "minecraft:block/carved_pumpkin",
             "y": 270
         }
     }
