@@ -1,4 +1,4 @@
-package io.github.mikip98.humilityafm.content.blocks.light_strips;
+package io.github.mikip98.humilityafm.content.blocks;
 
 import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
