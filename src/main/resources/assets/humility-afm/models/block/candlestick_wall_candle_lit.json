@@ -1,0 +1,6 @@
+{
+	"parent": "humility-afm:block/candlestick_wall_candle",
+	"textures": {
+		"candle": "block/candle_lit"
+	}
+}
