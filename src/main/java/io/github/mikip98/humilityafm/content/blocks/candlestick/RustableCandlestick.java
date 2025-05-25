@@ -48,6 +48,11 @@ public class RustableCandlestick extends Candlestick {
                 .with(ModProperties.WAXED, false)
         );
     }
+    public RustableCandlestick(Settings settings, BlockState rustPreviousLevel, BlockState rustNextLevel, boolean ignored) {
+        super(settings, false);
+        this.rustPreviousLevel = rustPreviousLevel;
+        this.rustNextLevel = rustNextLevel;
+    }
 
     @SuppressWarnings("deprecation")
     @Override
@@ -56,12 +61,12 @@ public class RustableCandlestick extends Candlestick {
     }
 
     public void rust(BlockState state, World world, BlockPos pos) {
-        world.setBlockState(pos, getChanageBlockState(rustNextLevel, state), Block.NOTIFY_ALL);
+        world.setBlockState(pos, getChanagedBlockState(rustNextLevel, state), Block.NOTIFY_ALL);
     }
     public void derust(BlockState state, World world, BlockPos pos) {
-        world.setBlockState(pos, getChanageBlockState(rustPreviousLevel, state), Block.NOTIFY_ALL);
+        world.setBlockState(pos, getChanagedBlockState(rustPreviousLevel, state), Block.NOTIFY_ALL);
     }
-    protected BlockState getChanageBlockState(BlockState newBase, BlockState state) {
+    protected BlockState getChanagedBlockState(BlockState newBase, BlockState state) {
         return newBase
                 .with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING))
                 .with(Properties.WATERLOGGED, state.get(Properties.WATERLOGGED))

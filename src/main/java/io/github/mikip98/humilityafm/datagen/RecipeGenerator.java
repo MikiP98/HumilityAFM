@@ -1,6 +1,5 @@
 package io.github.mikip98.humilityafm.datagen;
 
-import io.github.mikip98.humilityafm.generators.CandlestickGenerator;
 import io.github.mikip98.humilityafm.generators.ColouredLightsGenerator;
 import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
 import io.github.mikip98.humilityafm.generators.TerracottaTilesGenerator;
@@ -344,13 +343,13 @@ public class RecipeGenerator extends AFMRecipieProvider {
         int i = 0;
         for (String metal : GenerationData.vanillaCandlestickMetals) {
             Item ingot = getItemFromName(metal + "_ingot");
-            offerCandlestickRecipie(exporter, CandlestickGenerator.candlestickClassicVariants[i], ingot, "candlesticks/");
+            offerCandlestickRecipie(exporter, ItemRegistry.CANDLESTICK_ITEM_VARIANTS[i], ingot, "candlesticks/");
             ++i;
         }
         i = 0;
         for (String[] metals : GenerationData.vanillaRustableCandlestickMetals) {
             Item ingot = getItemFromName(metals[0] + "_ingot");
-            offerCandlestickRecipie(exporter, CandlestickGenerator.candlestickRustableVariants.get(i)[0], ingot, "candlesticks/");
+            offerCandlestickRecipie(exporter, ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS.get(i)[0], ingot, "candlesticks/");
             ++i;
         }
     }

@@ -74,8 +74,10 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 
         // Candlesticks
         FabricTagProvider<Block>.FabricTagBuilder tag = getOrCreateTagBuilder(ModBlockTags.CANDLESTICKS)
-                .add(getIds(Arrays.stream(GenerationData.vanillaCandlestickMetals).map(s -> "candlestick_" + s)));
+                .add(getIds(Arrays.stream(GenerationData.vanillaCandlestickMetals).map(s -> "candlestick_" + s)))
+                .add(getIds(Arrays.stream(GenerationData.vanillaCandlestickMetals).map(s -> "candlestick_wall_" + s)));
         GenerationData.vanillaRustableCandlestickMetals.forEach(metals -> tag.add(getIds(Arrays.stream(metals).map(s -> "candlestick_" + s))));
+        GenerationData.vanillaRustableCandlestickMetals.forEach(metals -> tag.add(getIds(Arrays.stream(metals).map(s -> "candlestick_wall_" + s))));
 
 
         // ------------ Vanilla Tags ------------

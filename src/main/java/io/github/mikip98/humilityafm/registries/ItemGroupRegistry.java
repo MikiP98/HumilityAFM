@@ -65,8 +65,8 @@ public class ItemGroupRegistry {
                 Arrays.stream(ColouredLightsGenerator.colouredTorchVariants).forEach(entries::add);
                 Arrays.stream(ColouredLightsGenerator.colouredTorchStrongVariants).forEach(entries::add);
                 Arrays.stream(ColouredLightsGenerator.LightStripBlockVariants).forEach(entries::add);
-                Arrays.stream(CandlestickGenerator.candlestickClassicVariants).forEach(entries::add);
-                CandlestickGenerator.candlestickRustableVariants.forEach(set -> Arrays.stream(set).forEach(entries::add));
+                Arrays.stream(ItemRegistry.CANDLESTICK_ITEM_VARIANTS).forEach(entries::add);
+                ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS.forEach(set -> Arrays.stream(set).forEach(entries::add));
             }).build();
 
 

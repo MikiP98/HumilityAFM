@@ -64,22 +64,33 @@ public class ModelGenerator extends FabricModelProvider {
             Optional.empty()
     );
     // Coloured Torch Model
-    protected static final Model TORCH_MODEL = new Model(
-            Optional.of(getId("block/torch")),
+    protected static final Model TORCH_TEMPLATE_MODEL = new Model(
+            Optional.of(getId("block/torch_template")),
             Optional.empty()
     );
-    // Optional
     // Candlestick Models
-    protected static final Model CANDLESTICK_MODEL = new Model(
+    protected static final Model CANDLESTICK_STANDING_MODEL = new Model(
             Optional.of(getId("block/candlestick")),
             Optional.empty()
     );
-    protected static final Model CANDLESTICK_WITH_CANDLE_MODEL = new Model(
+    protected static final Model CANDLESTICK_STANDING_WITH_CANDLE_MODEL = new Model(
             Optional.of(getId("block/candlestick_candle")),
             Optional.empty()
     );
-    protected static final Model CANDLESTICK_WITH_CANDLE_LIT_MODEL = new Model(
+    protected static final Model CANDLESTICK_STANDING_WITH_CANDLE_LIT_MODEL = new Model(
             Optional.of(getId("block/candlestick_candle_lit")),
+            Optional.empty()
+    );
+    protected static final Model CANDLESTICK_WALL_MODEL = new Model(
+            Optional.of(getId("block/candlestick_wall")),
+            Optional.empty()
+    );
+    protected static final Model CANDLESTICK_WALL_WITH_CANDLE_MODEL = new Model(
+            Optional.of(getId("block/candlestick_wall_candle")),
+            Optional.empty()
+    );
+    protected static final Model CANDLESTICK_WALL_WITH_CANDLE_LIT_MODEL = new Model(
+            Optional.of(getId("block/candlestick_wall_candle_lit")),
             Optional.empty()
     );
     // Light Strip Models
@@ -127,9 +138,9 @@ public class ModelGenerator extends FabricModelProvider {
         generateTerracottaTilesModelsAndBlockStates(blockStateModelGenerator);
         generateForcedCornerStairsModelsAndBlockstates(blockStateModelGenerator);
         generateColouredTorchModelsAndBlockStates(blockStateModelGenerator);
+        generateLightStripModelsAndBlockStates(blockStateModelGenerator);
         // Optional blocks
         generateCandlestickModelsAndBlockStates(blockStateModelGenerator);
-        generateLightStripModelsAndBlockStates(blockStateModelGenerator);
     }
 
     protected static void generateColouredTorchModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
@@ -139,7 +150,7 @@ public class ModelGenerator extends FabricModelProvider {
             final TextureMap textureMap = new TextureMap()
                     .register(TextureKey.TORCH, coloured_torch_texture);
 
-            final Identifier torchModelId = TORCH_MODEL.upload(
+            final Identifier torchModelId = TORCH_TEMPLATE_MODEL.upload(
                     getId("block/coloured_torch/coloured_torch_" + color),
                     textureMap,
                     blockStateModelGenerator.modelCollector
@@ -159,7 +170,6 @@ public class ModelGenerator extends FabricModelProvider {
         for (String color : GenerationData.vanillaColorPallet) {
             final Identifier coloured_concrete = new Identifier("block/" + color + "_concrete");
             final TextureMap textureMap = new TextureMap()
-                    .register(TextureKey.PARTICLE, coloured_concrete)
                     .register(TextureKey.of("0"), coloured_concrete);
 
             final Identifier lightStripStraightModelId = LIGHT_STRIP_STRAIGHT_MODEL.upload(
@@ -189,80 +199,136 @@ public class ModelGenerator extends FabricModelProvider {
     }
 
     protected static void generateCandlestickModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
-        generateCandlestickMABForMetals(blockStateModelGenerator, GenerationData.vanillaCandlestickMetals, CandlestickGenerator.candlestickClassicVariants);
-        int i = 0;
-        for (String[] metals : GenerationData.vanillaRustableCandlestickMetals) {
-            generateCandlestickMABForMetals(blockStateModelGenerator, metals, CandlestickGenerator.candlestickRustableVariants.get(i));
-            ++i;
+        generateCandlestickModelsAndBlockstatesForMetals(
+                blockStateModelGenerator,
+                GenerationData.vanillaCandlestickMetals,
+                ItemRegistry.CANDLESTICK_ITEM_VARIANTS,
+                CandlestickGenerator.candlestickClassicWallVariants,
+                CandlestickGenerator.candlestickClassicStandingVariants
+        );
+        for (int i = 0; i < ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS.size(); ++i) {
+            generateCandlestickModelsAndBlockstatesForMetals(
+                    blockStateModelGenerator,
+                    GenerationData.vanillaRustableCandlestickMetals.get(i),
+                    ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS.get(i),
+                    CandlestickGenerator.candlestickRustableWallVariants.get(i),
+                    CandlestickGenerator.candlestickRustableStandingVariants.get(i)
+            );
         }
     }
-    protected static void generateCandlestickMABForMetals(BlockStateModelGenerator blockStateModelGenerator, String[] metals, Block[] candlesticks) {
+    protected static void generateCandlestickModelsAndBlockstatesForMetals(BlockStateModelGenerator blockStateModelGenerator, String[] metals, Item[] items, Block[] wallBlocks, Block[] standingBlocks) {
         int i = 0;
-        Set<String> block_suffix_metals = Set.of("copper", "gold");
+        Set<String> block_suffix_metals = Set.of("copper", "gold", "iron");
         for (String metal : metals) {
             String suffix = "";
             if (block_suffix_metals.contains(metal)) suffix = "_block";
 
-            final Identifier candlestickModelId = CANDLESTICK_MODEL.upload(
-                    getId("block/candlestick/" + metal + "/candlestick_" + metal),
-                    new TextureMap()
-                            .register(TextureKey.PARTICLE, new Identifier("block/" + metal + suffix))
-                            .register(TextureKey.of("0"), new Identifier("block/" + metal + suffix)),
+            final TextureMap metalTextureMap = new TextureMap()
+                    .register(TextureKey.of("metal"), new Identifier("block/" + metal + suffix));
+
+            final Identifier candlestickStandingMetalModelId = CANDLESTICK_STANDING_MODEL.upload(
+                    getId("block/candlestick/standing/" + metal + "/candlestick_" + metal),
+                    metalTextureMap,
+                    blockStateModelGenerator.modelCollector
+            );
+            final Identifier candlestickWallMetalModelId = CANDLESTICK_WALL_MODEL.upload(
+                    getId("block/candlestick/wall/" + metal + "/candlestick_wall_" + metal),
+                    metalTextureMap,
                     blockStateModelGenerator.modelCollector
             );
 
-            final Identifier candlestickWithCandleModelId = CANDLESTICK_WITH_CANDLE_MODEL.upload(
-                    getId("block/candlestick/" + metal + "/candlestick_" + metal + "_candle"),
-                    new TextureMap()
-                            .register(TextureKey.PARTICLE, new Identifier("block/" + metal + suffix))
-                            .register(TextureKey.of("0"), new Identifier("block/" + metal + suffix)),
+            final Identifier candlestickWithCandleStandingMetalModelId = CANDLESTICK_STANDING_WITH_CANDLE_MODEL.upload(
+                    getId("block/candlestick/standing/" + metal + "/candlestick_" + metal + "_candle"),
+                    metalTextureMap,
                     blockStateModelGenerator.modelCollector
             );
-            final Identifier candlestickWithCandleLitModelId = CANDLESTICK_WITH_CANDLE_LIT_MODEL.upload(
-                    getId("block/candlestick/" + metal + "/candlestick_" + metal + "_candle_lit"),
-                    new TextureMap()
-                            .register(TextureKey.PARTICLE, new Identifier("block/" + metal + suffix))
-                            .register(TextureKey.of("0"), new Identifier("block/" + metal + suffix)),
+            final Identifier candlestickWithCandleLitStandingMetalModelId = CANDLESTICK_STANDING_WITH_CANDLE_LIT_MODEL.upload(
+                    getId("block/candlestick/standing/" + metal + "/candlestick_" + metal + "_candle_lit"),
+                    metalTextureMap,
+                    blockStateModelGenerator.modelCollector
+            );
+            final Identifier candlestickWithCandleWallMetalModelId = CANDLESTICK_WALL_WITH_CANDLE_MODEL.upload(
+                    getId("block/candlestick/wall/" + metal + "/candlestick_wall_" + metal + "_candle"),
+                    metalTextureMap,
+                    blockStateModelGenerator.modelCollector
+            );
+            final Identifier candlestickWithCandleLitWallMetalModelId = CANDLESTICK_WALL_WITH_CANDLE_LIT_MODEL.upload(
+                    getId("block/candlestick/wall/" + metal + "/candlestick_wall_" + metal + "_candle_lit"),
+                    metalTextureMap,
                     blockStateModelGenerator.modelCollector
             );
 
-            final Model candlestickWithCandleMetalModel = new Model(
-                    Optional.of(candlestickWithCandleModelId),
+            final Model candlestickWithCandleStandingMetalModel = new Model(
+                    Optional.of(candlestickWithCandleStandingMetalModelId),
                     Optional.empty()
             );
-            final Model candlestickWithCandleLitMetalModel = new Model(
-                    Optional.of(candlestickWithCandleLitModelId),
+            final Model candlestickWithCandleLitStandingMetalModel = new Model(
+                    Optional.of(candlestickWithCandleLitStandingMetalModelId),
+                    Optional.empty()
+            );
+            final Model candlestickWithCandleWallMetalModel = new Model(
+                    Optional.of(candlestickWithCandleWallMetalModelId),
+                    Optional.empty()
+            );
+            final Model candlestickWithCandleLitWallMetalModel = new Model(
+                    Optional.of(candlestickWithCandleLitWallMetalModelId),
                     Optional.empty()
             );
 
-            Map<CandleColor, Identifier> candleColorModelMap = new HashMap<>();
-            Map<CandleColor, Identifier> litCandleColorModelMap = new HashMap<>();
+            Map<CandleColor, Identifier> wallCandleColorModelMap = new HashMap<>();
+            Map<CandleColor, Identifier> wallLitCandleColorModelMap = new HashMap<>();
+            Map<CandleColor, Identifier> standingCandleColorModelMap = new HashMap<>();
+            Map<CandleColor, Identifier> standingLitCandleColorModelMap = new HashMap<>();
             for (String color : GenerationData.vanillaColorPallet) {
-                CandleColor candleColor = CandleColor.getColor(color);
-                final Identifier candlestickColoredModelId = candlestickWithCandleMetalModel.upload(
-                        getId("block/candlestick/" + metal + "/candlestick_" + metal + "_" + color),
-                        new TextureMap()
-                                .register(TextureKey.of("2"), new Identifier("block/" + color + "_candle")),
+                final CandleColor candleColor = CandleColor.getColor(color);
+                final TextureMap candleColorTextureMap = new TextureMap()
+                        .register(TextureKey.of("candle"), new Identifier("block/" + color + "_candle_lit"));
+
+                String id = "block/candlestick/standing/" + metal + "/candlestick_" + metal + "_" + color;
+                final Identifier standingCandlestickColoredModelId = candlestickWithCandleStandingMetalModel.upload(
+                        getId(id),
+                        candleColorTextureMap,
                         blockStateModelGenerator.modelCollector
                 );
-                candleColorModelMap.put(candleColor, candlestickColoredModelId);
-                final Identifier candlestickLitColoredModelId = candlestickWithCandleLitMetalModel.upload(
-                        getId("block/candlestick/" + metal + "/candlestick_" + metal + "_" + color + "_lit"),
-                        new TextureMap()
-                                .register(TextureKey.of("2"), new Identifier("block/" + color + "_candle_lit")),
+                standingCandleColorModelMap.put(candleColor, standingCandlestickColoredModelId);
+                final Identifier standingCandlestickLitColoredModelId = candlestickWithCandleLitStandingMetalModel.upload(
+                        getId(id + "_lit"),
+                        candleColorTextureMap,
                         blockStateModelGenerator.modelCollector
                 );
-                litCandleColorModelMap.put(candleColor, candlestickLitColoredModelId);
+                standingLitCandleColorModelMap.put(candleColor, standingCandlestickLitColoredModelId);
+
+                id = "block/candlestick/wall/" + metal + "/candlestick_wall_" + metal + "_" + color;
+                final Identifier wallCandlestickColoredModelId = candlestickWithCandleWallMetalModel.upload(
+                        getId(id),
+                        candleColorTextureMap,
+                        blockStateModelGenerator.modelCollector
+                );
+                wallCandleColorModelMap.put(candleColor, wallCandlestickColoredModelId);
+                final Identifier wallCandlestickLitColoredModelId = candlestickWithCandleLitWallMetalModel.upload(
+                        getId(id + "_lit"),
+                        candleColorTextureMap,
+                        blockStateModelGenerator.modelCollector
+                );
+                wallLitCandleColorModelMap.put(candleColor, wallCandlestickLitColoredModelId);
             }
 
-            blockStateModelGenerator.registerParentedItemModel(candlesticks[i], candlestickModelId);
-            blockStateModelGenerator.blockStateCollector.accept(getCandlestickBlockstate(
-                    candlesticks[i],
-                    candlestickModelId,
-                    candlestickWithCandleModelId,
-                    candlestickWithCandleLitModelId,
-                    candleColorModelMap,
-                    litCandleColorModelMap
+            blockStateModelGenerator.registerParentedItemModel(items[i], candlestickStandingMetalModelId);
+            blockStateModelGenerator.blockStateCollector.accept(getWallCandlestickBlockstate(
+                    wallBlocks[i],
+                    candlestickWallMetalModelId,
+                    candlestickWithCandleWallMetalModelId,
+                    candlestickWithCandleLitWallMetalModelId,
+                    wallCandleColorModelMap,
+                    wallLitCandleColorModelMap
+            ));
+            blockStateModelGenerator.blockStateCollector.accept(getStandingCandlestickBlockstate(
+                    standingBlocks[i],
+                    candlestickStandingMetalModelId,
+                    candlestickWithCandleStandingMetalModelId,
+                    candlestickWithCandleLitStandingMetalModelId,
+                    standingCandleColorModelMap,
+                    standingLitCandleColorModelMap
             ));
             ++i;
         }
@@ -274,7 +340,6 @@ public class ModelGenerator extends FabricModelProvider {
             final Identifier innerStairsModelId = INNER_CORNER_STAIRS_MODEL.upload(
                     getId("block/corner_stairs/inner_stairs/inner_stairs_" + woodType),
                     new TextureMap()
-                            .register(TextureKey.PARTICLE, new Identifier("block/" + woodType + "_planks"))
                             .register(TextureKey.TOP, new Identifier("block/" + woodType + "_planks"))
                             .register(TextureKey.BOTTOM, new Identifier("block/" + woodType + "_planks"))
                             .register(TextureKey.SIDE, new Identifier("block/" + woodType + "_planks")),
@@ -283,7 +348,6 @@ public class ModelGenerator extends FabricModelProvider {
             final Identifier outerStairsModelId = OUTER_CORNER_STAIRS_MODEL.upload(
                     getId("block/corner_stairs/outer_stairs/outer_stairs_" + woodType),
                     new TextureMap()
-                            .register(TextureKey.PARTICLE, new Identifier("block/" + woodType + "_planks"))
                             .register(TextureKey.TOP, new Identifier("block/" + woodType + "_planks"))
                             .register(TextureKey.BOTTOM, new Identifier("block/" + woodType + "_planks"))
                             .register(TextureKey.SIDE, new Identifier("block/" + woodType + "_planks")),
@@ -345,7 +409,6 @@ public class ModelGenerator extends FabricModelProvider {
                 final Identifier innerStairsModelId = INNER_CORNER_STAIRS_MODEL.upload(
                         getId("block/corner_stairs/inner_stairs/inner_stairs_" + material),
                         new TextureMap()
-                                .register(TextureKey.PARTICLE, new Identifier(topTexture))
                                 .register(TextureKey.TOP, new Identifier(topTexture))
                                 .register(TextureKey.BOTTOM, new Identifier(bottomTexture))
                                 .register(TextureKey.SIDE, new Identifier(sideTexture)),
@@ -354,7 +417,6 @@ public class ModelGenerator extends FabricModelProvider {
                 final Identifier outerStairsModelId = OUTER_CORNER_STAIRS_MODEL.upload(
                         getId("block/corner_stairs/outer_stairs/outer_stairs_" + material),
                         new TextureMap()
-                                .register(TextureKey.PARTICLE, new Identifier(topTexture))
                                 .register(TextureKey.TOP, new Identifier(topTexture))
                                 .register(TextureKey.BOTTOM, new Identifier(bottomTexture))
                                 .register(TextureKey.SIDE, new Identifier(sideTexture)),
@@ -381,8 +443,7 @@ public class ModelGenerator extends FabricModelProvider {
                         getId("block/wooden_mosaic/wooden_mosaic_" + woodType + "_" + woodType2),
                         new TextureMap()
                                 .register(TextureKey.of("1"), new Identifier("block/" + woodType + "_planks"))
-                                .register(TextureKey.of("2"), new Identifier("block/" + woodType2 + "_planks"))
-                                .register(TextureKey.PARTICLE, new Identifier("block/" + woodType + "_planks")),
+                                .register(TextureKey.of("2"), new Identifier("block/" + woodType2 + "_planks")),
                         blockStateModelGenerator.modelCollector
                 );
                 blockStateModelGenerator.registerParentedItemModel(WoodenMosaicGenerator.woodenMosaicVariants[i], woodenMosaicModelId);
@@ -402,8 +463,7 @@ public class ModelGenerator extends FabricModelProvider {
                         getId("block/terracotta_tiles/terracotta_tiles_" + color + "_" + color2),
                         new TextureMap()
                                 .register(TextureKey.of("1"), new Identifier("block/" + color + "_terracotta"))
-                                .register(TextureKey.of("2"), new Identifier("block/" + color2 + "_terracotta"))
-                                .register(TextureKey.PARTICLE, new Identifier("block/" + color + "_terracotta")),
+                                .register(TextureKey.of("2"), new Identifier("block/" + color2 + "_terracotta")),
                         blockStateModelGenerator.modelCollector
                 );
                 blockStateModelGenerator.registerParentedItemModel(TerracottaTilesGenerator.terracottaTilesVariants[i], terracottaTileModelId);
@@ -683,7 +743,73 @@ public class ModelGenerator extends FabricModelProvider {
                 );
     }
 
-    protected static MultipartBlockStateSupplier getCandlestickBlockstate(
+    protected static MultipartBlockStateSupplier getStandingCandlestickBlockstate(
+            Block block,
+            Identifier emptyModel,
+            Identifier plainCandleModel,
+            Identifier litPlainCandleModel,
+            Map<CandleColor, Identifier> colouredCandleModels,
+            Map<CandleColor, Identifier> litColouredCandleModels
+    ) {
+        BooleanProperty CANDLE = ModProperties.CANDLE;
+        BooleanProperty LIT = Properties.LIT;
+        EnumProperty<CandleColor> CANDLE_COLOR = ModProperties.CANDLE_COLOR;
+
+        MultipartBlockStateSupplier multipart = MultipartBlockStateSupplier.create(block)
+                // NO CANDLE
+                .with(
+                        When.create().set(CANDLE, false),
+                        BlockStateVariant.create()
+                                .put(VariantSettings.MODEL, emptyModel)
+                )
+                // PLAIN NON LIT
+                .with(
+                        When.allOf(
+                                When.create().set(CANDLE, true),
+                                When.create().set(CANDLE_COLOR, CandleColor.PLAIN),
+                                When.create().set(LIT, false)
+                        ),
+                        BlockStateVariant.create()
+                                .put(VariantSettings.MODEL, plainCandleModel)
+                )
+                // PLAIN LIT
+                .with(
+                        When.allOf(
+                                When.create().set(CANDLE, true),
+                                When.create().set(CANDLE_COLOR, CandleColor.PLAIN),
+                                When.create().set(LIT, true)
+                        ),
+                        BlockStateVariant.create()
+                                .put(VariantSettings.MODEL, litPlainCandleModel)
+                );
+
+        for (CandleColor candleColor : colouredCandleModels.keySet()) {
+            multipart
+                    // NON-LIT
+                    .with(
+                            When.allOf(
+                                    When.create().set(CANDLE, true),
+                                    When.create().set(CANDLE_COLOR, candleColor),
+                                    When.create().set(LIT, false)
+                            ),
+                            BlockStateVariant.create()
+                                    .put(VariantSettings.MODEL, colouredCandleModels.get(candleColor))
+                    )
+                    // LIT
+                    .with(
+                            When.allOf(
+                                    When.create().set(CANDLE, true),
+                                    When.create().set(CANDLE_COLOR, candleColor),
+                                    When.create().set(LIT, true)
+                            ),
+                            BlockStateVariant.create()
+                                    .put(VariantSettings.MODEL, litColouredCandleModels.get(candleColor))
+                    );
+        }
+
+        return multipart;
+    }
+    protected static MultipartBlockStateSupplier getWallCandlestickBlockstate(
             Block block,
             Identifier emptyModel,
             Identifier plainCandleModel,
@@ -824,7 +950,7 @@ public class ModelGenerator extends FabricModelProvider {
 
         for (CandleColor candleColor : colouredCandleModels.keySet()) {
             multipart
-                    // NON LIT
+                    // NON-LIT
                     .with(
                             When.allOf(
                                     When.create().set(CANDLE, true),

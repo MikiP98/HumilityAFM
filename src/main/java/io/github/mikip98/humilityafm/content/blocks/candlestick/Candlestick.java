@@ -102,6 +102,9 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
                 .with(Properties.LIT, false)
         );
     }
+    public Candlestick(Settings settings, boolean ignored) {
+        super(settings);
+    }
 
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
@@ -195,6 +198,9 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
                 world.playSound(x, y, z, SoundEvents.BLOCK_CANDLE_AMBIENT, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
             }
         }
+        super.randomDisplayTick(state, world, pos, random);
+    }
+    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random, boolean ignored) {
         super.randomDisplayTick(state, world, pos, random);
     }
 

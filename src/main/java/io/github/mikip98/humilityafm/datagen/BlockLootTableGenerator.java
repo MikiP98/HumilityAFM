@@ -65,8 +65,20 @@ public class BlockLootTableGenerator extends FabricBlockLootTableProvider {
         Arrays.stream(BlockRegistry.COLOURED_JACK_O_LANTERNS).forEach(this::addDrop);
 
         // Candlesticks
-        Arrays.stream(CandlestickGenerator.candlestickClassicVariants).forEach(this::addDrop);
-        CandlestickGenerator.candlestickRustableVariants.forEach(v -> Arrays.stream(v).forEach(this::addDrop));
+        for (int i = 0; i < ItemRegistry.CANDLESTICK_ITEM_VARIANTS.length; ++i) {
+            Item item = ItemRegistry.CANDLESTICK_ITEM_VARIANTS[i];
+            addDrop(CandlestickGenerator.candlestickClassicWallVariants[i], item);
+            addDrop(CandlestickGenerator.candlestickClassicStandingVariants[i], item);
+        }
+        for (int i = 0; i < ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS.size(); ++i) {
+            Item[] itemSet = ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS.get(i);
+            Block[] wallSet = CandlestickGenerator.candlestickRustableWallVariants.get(i);
+            Block[] standingSet = CandlestickGenerator.candlestickRustableStandingVariants.get(i);
+            for (int j = 0; j < ItemRegistry.CANDLESTICK_ITEM_VARIANTS.length; ++j) {
+                addDrop(wallSet[i], itemSet[i]);
+                addDrop(standingSet[i], itemSet[i]);
+            }
+        }
 
         // Light Strips
         Arrays.stream(ColouredLightsGenerator.LightStripBlockVariants).forEach(this::addDrop);
