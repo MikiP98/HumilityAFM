@@ -38,8 +38,8 @@ public class BlockRegistry {
     // Cabinet blocks
     public static final CabinetBlock CABINET_BLOCK = new CabinetBlock();
     public static final IlluminatedCabinetBlock ILLUMINATED_CABINET_BLOCK = new IlluminatedCabinetBlock();
-    public static final FloorCabinetBlock FLOOR_CABINET_BLOCK = new FloorCabinetBlock(ItemRegistry.CABINET_ITEM);
-    public static final FloorIlluminatedCabinetBlock FLOOR_ILLUMINATED_CABINET_BLOCK = new FloorIlluminatedCabinetBlock(ItemRegistry.ILLUMINATED_CABINET_ITEM);
+    public static final FloorCabinetBlock FLOOR_CABINET_BLOCK = new FloorCabinetBlock();
+    public static final FloorIlluminatedCabinetBlock FLOOR_ILLUMINATED_CABINET_BLOCK = new FloorIlluminatedCabinetBlock();
 
     // Stairs
     private static final float WoodenStairsBlockStrength = 2.0f;
@@ -179,19 +179,29 @@ public class BlockRegistry {
         putIntoItemGroup(ColouredLightsGenerator.LightStripBlockVariants, ItemGroups.COLORED_BLOCKS);
 
         // Register Candlestick variants
-        registerArrayWithItems(
-                CandlestickGenerator.candlestickClassicVariants,
-                GenerationData.vanillaCandlestickMetals,
-                "candlestick_"
-        );
-        putIntoItemGroup(CandlestickGenerator.candlestickClassicVariants, ItemGroups.FUNCTIONAL);
-        for (int i = 0; i < CandlestickGenerator.candlestickRustableVariants.size(); i++) {
-            registerArrayWithItems(
-                    CandlestickGenerator.candlestickRustableVariants.get(i),
-                    GenerationData.vanillaRustableCandlestickMetals.get(i),
+        if (ModConfig.enableCandlestickBeta) {
+            registerArray(
+                    CandlestickGenerator.candlestickClassicStandingVariants,
+                    GenerationData.vanillaCandlestickMetals,
                     "candlestick_"
             );
-            putIntoItemGroup(CandlestickGenerator.candlestickRustableVariants.get(i), ItemGroups.FUNCTIONAL);
+            registerArray(
+                    CandlestickGenerator.candlestickClassicWallVariants,
+                    GenerationData.vanillaCandlestickMetals,
+                    "candlestick_wall_"
+            );
+            for (int i = 0; i < CandlestickGenerator.candlestickRustableStandingVariants.size(); i++) {
+                registerArray(
+                        CandlestickGenerator.candlestickRustableStandingVariants.get(i),
+                        GenerationData.vanillaRustableCandlestickMetals.get(i),
+                        "candlestick_"
+                );
+                registerArray(
+                        CandlestickGenerator.candlestickRustableWallVariants.get(i),
+                        GenerationData.vanillaRustableCandlestickMetals.get(i),
+                        "candlestick_wall_"
+                );
+            }
         }
     }
 

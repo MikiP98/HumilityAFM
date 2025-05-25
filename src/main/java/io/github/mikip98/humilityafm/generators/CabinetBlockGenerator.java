@@ -55,9 +55,6 @@ public class CabinetBlockGenerator {
                 new DoubleVerticallyAttachableBlockItem(floorIlluminatedCabinetBlockVariants[i], illuminatedCabinetBlockVariants[i], new FabricItemSettings()),
                 "illuminated_cabinet_" + cabinetBlockVariantName
         );
-
-        floorCabinetBlockVariants[i].setItem(ItemRegistry.CABINET_ITEM_VARIANTS[i]);
-        floorIlluminatedCabinetBlockVariants[i].setItem(ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS[i]);
     }
 
 
