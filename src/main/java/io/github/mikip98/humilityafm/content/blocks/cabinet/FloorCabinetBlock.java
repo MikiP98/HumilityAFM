@@ -25,8 +25,6 @@ public class FloorCabinetBlock extends CabinetBlock implements Waterloggable, Bl
 
     protected static final EnumProperty<BlockHalf> HALF = Properties.BLOCK_HALF;
 
-    protected Item item;
-
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         super.appendProperties(builder);
@@ -34,9 +32,6 @@ public class FloorCabinetBlock extends CabinetBlock implements Waterloggable, Bl
     }
 
 
-    public FloorCabinetBlock(Item item) {
-        this(defaultSettings, item);
-    }
     public FloorCabinetBlock() {
         this(defaultSettings);
     }
@@ -45,17 +40,6 @@ public class FloorCabinetBlock extends CabinetBlock implements Waterloggable, Bl
         setDefaultState(getDefaultState()
                 .with(HALF, BlockHalf.BOTTOM)
         );
-    }
-    public FloorCabinetBlock(Settings settings, Item item) {
-        super(settings);
-        setDefaultState(getDefaultState()
-                .with(HALF, BlockHalf.BOTTOM)
-        );
-        this.item = item;
-    }
-
-    public void setItem(Item item) {
-        this.item = item;
     }
 
 
@@ -86,10 +70,5 @@ public class FloorCabinetBlock extends CabinetBlock implements Waterloggable, Bl
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return new FloorCabinetBlockEntity(pos, state);
-    }
-
-    @Override
-    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
-        return new ItemStack(item);
     }
 }
