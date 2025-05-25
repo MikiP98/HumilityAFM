@@ -49,12 +49,12 @@ public class GenerationData {
     /***
      * Vanilla metals used for candlesticks that do not rust
      */
-    public static final String[] vanillaCandlestickMetals = {"gold"};
+    public static final String[] vanillaCandlestickMetals = {"iron", "gold"};
     /***
      * Vanilla metals used for candlesticks that rust
      */
     public static final List<String[]> vanillaRustableCandlestickMetals = List.of(
-            new String[][]{{"copper", "weathered_copper", "exposed_copper", "oxidized_copper"}}
+            new String[][]{{"copper", "exposed_copper", "weathered_copper", "oxidized_copper"}}
     );
 
 
