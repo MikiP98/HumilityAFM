@@ -1,10 +1,7 @@
 {
 	"credit": "Made with Blockbench by Mikołaj Pokora",
+	"parent": "humility-afm:block/light_strip",
 	"ambientocclusion": false,
-	"textures": {
-		"0": "block/blue_terracotta",
-		"particle": "block/blue_terracotta"
-	},
 	"elements": [
 		{
 			"from": [15, 15, 15],

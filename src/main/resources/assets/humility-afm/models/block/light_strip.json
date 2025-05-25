@@ -3,7 +3,7 @@
 	"ambientocclusion": false,
 	"textures": {
 		"0": "block/blue_terracotta",
-		"particle": "block/blue_terracotta"
+		"particle": "#0"
 	},
 	"elements": [
 		{
