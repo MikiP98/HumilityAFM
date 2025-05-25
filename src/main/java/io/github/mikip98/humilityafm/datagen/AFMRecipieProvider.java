@@ -113,7 +113,7 @@ public abstract class AFMRecipieProvider extends FabricRecipeProvider {
         ShapelessRecipeJsonBuilder
                 .create(RecipeCategory.MISC, output, 2)
                 .input(Items.STICK)
-                .input(Items.QUARTZ)
+                .input(Items.GLOW_INK_SAC)
                 .input(glowingPowder, glowingPowderAmount)
                 .group(group)
                 .criterion(hasItem(Items.STICK), conditionsFromItem(Items.STICK))
