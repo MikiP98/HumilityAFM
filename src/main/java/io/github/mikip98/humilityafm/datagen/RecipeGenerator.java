@@ -8,7 +8,7 @@ import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.GenerationData;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.data.server.recipe.RecipeExporter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
@@ -17,7 +17,6 @@ import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.MOD_ID;
 
@@ -27,7 +26,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
     }
 
     @Override
-    public void generate(Consumer<RecipeJsonProvider> exporter) {
+    public void generate(RecipeExporter exporter) {
         // ............ TEST BLOCKS & BLOCK ITEMS ............
 
         // Cabinet Blocks
@@ -59,7 +58,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
         generateLightStripRecipies(exporter);
     }
 
-    protected static void generateCabinetRecipies(Consumer<RecipeJsonProvider> exporter) {
+    protected static void generateCabinetRecipies(RecipeExporter exporter) {
         int i = 0;
         for (String woodType : GenerationData.vanillaWoodTypes) {
             ItemConvertible[] currentWoodTypeCabinets = Arrays.copyOfRange(ItemRegistry.CABINET_ITEM_VARIANTS, i, i + GenerationData.vanillaColorPallet.length);
@@ -115,7 +114,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
         }
     }
 
-    protected static void generateWoodenMosaicRecipies(Consumer<RecipeJsonProvider> exporter) {
+    protected static void generateWoodenMosaicRecipies(RecipeExporter exporter) {
         int i = 0;
         for (String woodType : GenerationData.vanillaWoodTypes) {
             Item plank = getItemFromName(woodType + "_planks");
@@ -144,7 +143,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
             }
         }
     }
-    protected static void generateTerracottaTileRecipies(Consumer<RecipeJsonProvider> exporter) {
+    protected static void generateTerracottaTileRecipies(RecipeExporter exporter) {
         int i = 0;
         for (String color : GenerationData.vanillaColorPallet) {
             Item terracotta = getItemFromName(color + "_terracotta");
@@ -184,7 +183,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
         return j * (n - 1) + mirrorOffset;
     }
 
-    protected static void generateForcedCornerStairsRecipies(Consumer<RecipeJsonProvider> exporter) {
+    protected static void generateForcedCornerStairsRecipies(RecipeExporter exporter) {
         int i = 0;
         for (String woodType : GenerationData.vanillaWoodTypes) {
             Item stairs = getItemFromName(woodType + "_stairs");
@@ -197,7 +196,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
         }
     }
 
-    protected static void generateJackOLanternRecipies(Consumer<RecipeJsonProvider> exporter) {
+    protected static void generateJackOLanternRecipies(RecipeExporter exporter) {
         Item carved_pumpkin = getItemFromName("carved_pumpkin");
         offerDoubleInputShapelessRecipe(
                 exporter,
@@ -257,7 +256,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
         }
     }
 
-    protected static void generateGlowingPowderRecipies(Consumer<RecipeJsonProvider> exporter) {
+    protected static void generateGlowingPowderRecipies(RecipeExporter exporter) {
         Item glowstoneDust = Items.GLOWSTONE_DUST;
         Item redstone = Items.REDSTONE;
         int i = 0;
@@ -278,7 +277,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
         }
     }
 
-    protected static void generateColouredTorchRecipies(Consumer<RecipeJsonProvider> exporter) {
+    protected static void generateColouredTorchRecipies(RecipeExporter exporter) {
         for (int i = 0; i < GenerationData.vanillaColorPallet.length; i++) {
             ItemConvertible weakColouredTorch = ColouredFeatureSetGenerator.colouredTorchWeakVariants[i];
             ItemConvertible colouredTorch = ColouredFeatureSetGenerator.colouredTorchVariants[i];
@@ -339,7 +338,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
         }
     }
 
-    protected static void generateCandlestickRecipies(Consumer<RecipeJsonProvider> exporter) {
+    protected static void generateCandlestickRecipies(RecipeExporter exporter) {
         int i = 0;
         for (String metal : GenerationData.vanillaCandlestickMetals) {
             Item ingot = getItemFromName(metal + "_ingot");
@@ -354,7 +353,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
         }
     }
 
-    protected static void generateLightStripRecipies(Consumer<RecipeJsonProvider> exporter) {
+    protected static void generateLightStripRecipies(RecipeExporter exporter) {
         for (int i = 0; i < GenerationData.vanillaColorPallet.length; ++i) {
             offerLightStripRecipie(
                     exporter,
