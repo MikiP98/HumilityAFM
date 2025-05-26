@@ -1,5 +1,6 @@
 package io.github.mikip98.humilityafm.registries;
 
+import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.generators.*;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -57,16 +58,20 @@ public class ItemGroupRegistry {
             .entries((displayContext, entries) -> {
                 entries.add(BlockRegistry.JACK_O_LANTERN_REDSTONE);
                 entries.add(BlockRegistry.JACK_O_LANTERN_SOUL);
-                Arrays.stream(BlockRegistry.COLOURED_WEAK_JACK_O_LANTERNS).forEach(entries::add);
-                Arrays.stream(BlockRegistry.COLOURED_JACK_O_LANTERNS).forEach(entries::add);
-                Arrays.stream(BlockRegistry.COLOURED_STRONG_JACK_O_LANTERNS).forEach(entries::add);
-                Arrays.stream(ItemRegistry.GLOWING_POWDER_VARIANTS).forEach(entries::add);
-                Arrays.stream(ColouredFeatureSetGenerator.colouredTorchWeakVariants).forEach(entries::add);
-                Arrays.stream(ColouredFeatureSetGenerator.colouredTorchVariants).forEach(entries::add);
-                Arrays.stream(ColouredFeatureSetGenerator.colouredTorchStrongVariants).forEach(entries::add);
-                Arrays.stream(ColouredFeatureSetGenerator.LightStripBlockVariants).forEach(entries::add);
-                Arrays.stream(ItemRegistry.CANDLESTICK_ITEM_VARIANTS).forEach(entries::add);
-                ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS.forEach(set -> Arrays.stream(set).forEach(entries::add));
+                if (ModConfig.enableColouredFeatureSetBeta) {
+                    Arrays.stream(BlockRegistry.COLOURED_WEAK_JACK_O_LANTERNS).forEach(entries::add);
+                    Arrays.stream(BlockRegistry.COLOURED_JACK_O_LANTERNS).forEach(entries::add);
+                    Arrays.stream(BlockRegistry.COLOURED_STRONG_JACK_O_LANTERNS).forEach(entries::add);
+                    Arrays.stream(ItemRegistry.GLOWING_POWDER_VARIANTS).forEach(entries::add);
+                    Arrays.stream(ColouredFeatureSetGenerator.colouredTorchWeakVariants).forEach(entries::add);
+                    Arrays.stream(ColouredFeatureSetGenerator.colouredTorchVariants).forEach(entries::add);
+                    Arrays.stream(ColouredFeatureSetGenerator.colouredTorchStrongVariants).forEach(entries::add);
+                    Arrays.stream(ColouredFeatureSetGenerator.LightStripBlockVariants).forEach(entries::add);
+                }
+                if (ModConfig.enableCandlestickBeta) {
+                    Arrays.stream(ItemRegistry.CANDLESTICK_ITEM_VARIANTS).forEach(entries::add);
+                    ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS.forEach(set -> Arrays.stream(set).forEach(entries::add));
+                }
             }).build();
 
 
