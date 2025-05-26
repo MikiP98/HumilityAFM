@@ -1,5 +1,6 @@
 package io.github.mikip98.humilityafm.registries;
 
+import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.content.items.DoubleVerticallyAttachableBlockItem;
 import io.github.mikip98.humilityafm.util.GenerationData;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -36,11 +37,15 @@ public class ItemRegistry {
 
 
     public static void register() {
-        putIntoItemGroup(GLOWING_POWDER_VARIANTS, ItemGroups.INGREDIENTS);
         putIntoItemGroup(CABINET_ITEM_VARIANTS, ItemGroups.COLORED_BLOCKS);
         putIntoItemGroup(ILLUMINATED_CABINET_ITEM_VARIANTS, ItemGroups.COLORED_BLOCKS);
-        putIntoItemGroup(CANDLESTICK_ITEM_VARIANTS, ItemGroups.FUNCTIONAL);
-        RUSTABLE_CANDLESTICK_ITEM_VARIANTS.forEach(s -> putIntoItemGroup(s, ItemGroups.FUNCTIONAL));
+        if (ModConfig.enableCandlestickBeta) {
+            putIntoItemGroup(CANDLESTICK_ITEM_VARIANTS, ItemGroups.FUNCTIONAL);
+            RUSTABLE_CANDLESTICK_ITEM_VARIANTS.forEach(s -> putIntoItemGroup(s, ItemGroups.FUNCTIONAL));
+        }
+        if (ModConfig.enableColouredFeatureSetBeta) {
+            putIntoItemGroup(GLOWING_POWDER_VARIANTS, ItemGroups.INGREDIENTS);
+        }
     }
 
 
