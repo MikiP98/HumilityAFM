@@ -20,9 +20,9 @@ public class ColouredFeatureSetGenerator {
         if (!ModConfig.enableColouredFeatureSetBeta) return;
 
         for (byte i = 0; i < GenerationData.vanillaColorPallet.length; ++i) {
-            colouredTorchWeakVariants[i] = new TorchBlock(FabricBlockSettings.copyOf(Blocks.TORCH).luminance(7), ParticleTypes.FLAME);
-            colouredTorchVariants[i] = new TorchBlock(FabricBlockSettings.copyOf(Blocks.TORCH).luminance(11), ParticleTypes.FLAME);
-            colouredTorchStrongVariants[i] = new TorchBlock(FabricBlockSettings.copyOf(Blocks.TORCH).luminance(15), ParticleTypes.FLAME);
+            colouredTorchWeakVariants[i] = new TorchBlock(ParticleTypes.FLAME, FabricBlockSettings.copyOf(Blocks.TORCH).luminance(7));
+            colouredTorchVariants[i] = new TorchBlock(ParticleTypes.FLAME, FabricBlockSettings.copyOf(Blocks.TORCH).luminance(11));
+            colouredTorchStrongVariants[i] = new TorchBlock(ParticleTypes.FLAME, FabricBlockSettings.copyOf(Blocks.TORCH).luminance(15));
             LightStripBlockVariants[i] = new LightStripBlock();
         }
     }
