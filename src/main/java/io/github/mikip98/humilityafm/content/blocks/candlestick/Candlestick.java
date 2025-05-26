@@ -1,5 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.candlestick;
 
+import com.mojang.serialization.MapCodec;
 import io.github.mikip98.humilityafm.content.ModProperties;
 import io.github.mikip98.humilityafm.util.data_types.CandleColor;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -80,6 +81,8 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
 
     protected static final EnumProperty<CandleColor> CANDLE_COLOR = ModProperties.CANDLE_COLOR;
 
+    protected static final MapCodec<Candlestick> CODEC = createCodec(Candlestick::new);
+
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(Properties.HORIZONTAL_FACING);
@@ -102,6 +105,12 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
                 .with(Properties.LIT, false)
         );
     }
+
+    @Override
+    protected MapCodec<? extends HorizontalFacingBlock> getCodec() {
+        return CODEC;
+    }
+
     public Candlestick(Settings settings, boolean ignored) {
         super(settings);
     }
