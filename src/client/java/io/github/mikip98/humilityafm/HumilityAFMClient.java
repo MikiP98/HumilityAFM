@@ -51,9 +51,12 @@ public class HumilityAFMClient implements ClientModInitializer {
 			BlockRenderLayerMap.INSTANCE.putBlock(floorIlluminatedCabinetBlockVariant, renderLayer);
 		}
 
-		// LED block variants
-		BlockEntityRendererFactories.register(BlockEntityRegistry.LIGHT_STRIP_BLOCK_ENTITY, LightStripBlockEntityRenderer::new);
-		if (ModConfig.enableLightStripBrightening && !ModConfig.shimmerDetected) LightStripBlockEntityRenderer.enableBrightening();
+		// Light Strip variants
+		if (ModConfig.enableColouredFeatureSetBeta) {
+			BlockEntityRendererFactories.register(BlockEntityRegistry.LIGHT_STRIP_BLOCK_ENTITY, LightStripBlockEntityRenderer::new);
+			if (ModConfig.enableLightStripBrightening && !ModConfig.shimmerDetected)
+				LightStripBlockEntityRenderer.enableBrightening();
+		}
 
 		FabricLoader.getInstance().getModContainer(MOD_ID).ifPresent(container -> {
 			ResourceManagerHelper.registerBuiltinResourcePack(getId("3d_cabinet"), container, ResourcePackActivationType.NORMAL);
