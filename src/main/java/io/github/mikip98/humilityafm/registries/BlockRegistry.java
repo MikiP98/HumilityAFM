@@ -11,7 +11,7 @@ import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.JackOLantern
 import io.github.mikip98.humilityafm.content.blocks.stairs.InnerStairs;
 import io.github.mikip98.humilityafm.content.blocks.stairs.OuterStairs;
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
-import io.github.mikip98.humilityafm.generators.ColouredLightsGenerator;
+import io.github.mikip98.humilityafm.generators.ColouredFeatureSetGenerator;
 import io.github.mikip98.humilityafm.generators.CandlestickGenerator;
 import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
 import io.github.mikip98.humilityafm.generators.TerracottaTilesGenerator;
@@ -115,27 +115,38 @@ public class BlockRegistry {
         );
         registerFlammable(CabinetBlockGenerator.floorIlluminatedCabinetBlockVariants, ModConfig.cabinetBlockBurnTime, ModConfig.cabinetBlockFireSpread);
 
-        // Register Coloured Torches
-        registerArrayWithItems(
-                ColouredLightsGenerator.colouredTorchWeakVariants,
-                GenerationData.vanillaColorPallet,
-                "coloured_torch_",
-                "_weak"
-        );
-        registerArrayWithItems(
-                ColouredLightsGenerator.colouredTorchVariants,
-                GenerationData.vanillaColorPallet,
-                "coloured_torch_"
-        );
-        registerArrayWithItems(
-                ColouredLightsGenerator.colouredTorchStrongVariants,
-                GenerationData.vanillaColorPallet,
-                "coloured_torch_",
-                "_strong"
-        );
-        putIntoItemGroup(ColouredLightsGenerator.colouredTorchWeakVariants, ItemGroups.COLORED_BLOCKS);
-        putIntoItemGroup(ColouredLightsGenerator.colouredTorchVariants, ItemGroups.COLORED_BLOCKS);
-        putIntoItemGroup(ColouredLightsGenerator.colouredTorchStrongVariants, ItemGroups.COLORED_BLOCKS);
+        // Register coloured feature set
+        if (ModConfig.enableColouredFeatureSetBeta) {
+            // Register Coloured Torches
+            registerArrayWithItems(
+                    ColouredFeatureSetGenerator.colouredTorchWeakVariants,
+                    GenerationData.vanillaColorPallet,
+                    "coloured_torch_",
+                    "_weak"
+            );
+            registerArrayWithItems(
+                    ColouredFeatureSetGenerator.colouredTorchVariants,
+                    GenerationData.vanillaColorPallet,
+                    "coloured_torch_"
+            );
+            registerArrayWithItems(
+                    ColouredFeatureSetGenerator.colouredTorchStrongVariants,
+                    GenerationData.vanillaColorPallet,
+                    "coloured_torch_",
+                    "_strong"
+            );
+            putIntoItemGroup(ColouredFeatureSetGenerator.colouredTorchWeakVariants, ItemGroups.COLORED_BLOCKS);
+            putIntoItemGroup(ColouredFeatureSetGenerator.colouredTorchVariants, ItemGroups.COLORED_BLOCKS);
+            putIntoItemGroup(ColouredFeatureSetGenerator.colouredTorchStrongVariants, ItemGroups.COLORED_BLOCKS);
+
+            // Register Light Strips
+            registerArrayWithItems(
+                    ColouredFeatureSetGenerator.LightStripBlockVariants,
+                    GenerationData.vanillaColorPallet,
+                    "light_strip_"
+            );
+            putIntoItemGroup(ColouredFeatureSetGenerator.LightStripBlockVariants, ItemGroups.COLORED_BLOCKS);
+        }
 
         // Register Forced corner stairs
         registerArrayWithItems(
@@ -169,14 +180,6 @@ public class BlockRegistry {
                 "terracotta_tiles_"
         );
         putIntoItemGroup(TerracottaTilesGenerator.terracottaTilesVariants, ItemGroups.BUILDING_BLOCKS);
-
-        // Register Light Strips
-        registerArrayWithItems(
-                ColouredLightsGenerator.LightStripBlockVariants,
-                GenerationData.vanillaColorPallet,
-                "light_strip_"
-        );
-        putIntoItemGroup(ColouredLightsGenerator.LightStripBlockVariants, ItemGroups.COLORED_BLOCKS);
 
         // Register Candlestick variants
         if (ModConfig.enableCandlestickBeta) {

@@ -27,6 +27,8 @@ public class ConfigJSON {
         configJson.addProperty("TransparentCabinetBlocks", ModConfig.TransparentCabinetBlocks);
         configJson.addProperty("enableLightStripBrightening", ModConfig.enableLightStripBrightening);
         configJson.addProperty("enableLightStripRadiusColorCompensation", ModConfig.enableLightStripRadiusColorCompensation);
+        configJson.addProperty("enableCandlestickBeta", ModConfig.enableCandlestickBeta);
+        configJson.addProperty("enableColouredFeatureSetBeta", ModConfig.enableColouredFeatureSetBeta);
 
         configJson.addProperty("LightStripColoredLightStrength", ModConfig.LightStripColoredLightStrength);
         configJson.addProperty("LightStripColoredLightRadius", ModConfig.LightStripColoredLightRadius);
@@ -82,6 +84,8 @@ public class ConfigJSON {
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "TransparentCabinetBlocks");
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableLightStripBrightening");
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableLightStripRadiusColorCompensation");
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableCandlestickBeta");
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableColouredFeatureSetBeta");
 
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, "LightStripColoredLightStrength");
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, "LightStripColoredLightRadius");

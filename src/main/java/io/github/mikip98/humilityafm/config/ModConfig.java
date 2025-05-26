@@ -10,6 +10,8 @@ public class ModConfig {
     public static boolean TransparentCabinetBlocks = true;
     public static boolean enableLightStripBrightening = true;
     public static boolean enableLightStripRadiusColorCompensation = true;
+    public static boolean enableCandlestickBeta = false;
+    public static boolean enableColouredFeatureSetBeta = false;
 
     public static short LightStripColoredLightStrength = 85;
     public static short LightStripColoredLightRadius = 9;

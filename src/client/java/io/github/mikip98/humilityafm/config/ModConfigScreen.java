@@ -46,6 +46,20 @@ public class ModConfigScreen {
                 .setSaveConsumer(value -> ModConfig.enableLightStripRadiusColorCompensation = value)
                 .build()
         );
+        rootCategory.addEntry(ConfigEntryBuilder.create()
+                .startBooleanToggle(Text.literal("Enable Candlestick Beta"), ModConfig.enableCandlestickBeta)
+                .setDefaultValue(false)
+                .setTooltip(Text.of("Enables Candlestick blocks and items (beta)"))
+                .setSaveConsumer(value -> ModConfig.enableCandlestickBeta = value)
+                .build()
+        );
+        rootCategory.addEntry(ConfigEntryBuilder.create()
+                .startBooleanToggle(Text.literal("Enable Coloured Feature Set Beta"), ModConfig.enableColouredFeatureSetBeta)
+                .setDefaultValue(false)
+                .setTooltip(Text.of("Enables coloured feature set (beta)\nThis includes coloured torches, jack o'Lanterns and light strips + a new ingredient 'glowing powder' for crafting them.\n(For all the blocks to emmit coloured light, Shimmer must be installed or a compatible shader pack must be used)"))
+                .setSaveConsumer(value -> ModConfig.enableColouredFeatureSetBeta = value)
+                .build()
+        );
 
         ConfigCategory customizationCategory = builder.getOrCreateCategory(Text.literal("Blocks Customization"));
 
