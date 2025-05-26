@@ -8,7 +8,6 @@ import io.github.mikip98.humilityafm.content.blocks.candlestick.RustableCandlest
 import io.github.mikip98.humilityafm.content.items.ModVerticallyAttachableBlockItem;
 import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.GenerationData;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.Direction;
@@ -42,7 +41,7 @@ public class CandlestickGenerator {
                     new ModVerticallyAttachableBlockItem(
                             candlestickClassicStandingVariants[i],
                             candlestickClassicWallVariants[i],
-                            new FabricItemSettings(),
+                            new Item.Settings(),
                             Direction.DOWN
                     )
             );
@@ -61,7 +60,7 @@ public class CandlestickGenerator {
                         new ModVerticallyAttachableBlockItem(
                                 candlestickStandingMetalSet[i],
                                 candlestickWallMetalSet[i],
-                                new FabricItemSettings(),
+                                new Item.Settings(),
                                 Direction.DOWN
                         )
                 );

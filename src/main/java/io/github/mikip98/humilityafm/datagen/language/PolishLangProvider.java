@@ -3,17 +3,19 @@ package io.github.mikip98.humilityafm.datagen.language;
 import io.github.mikip98.humilityafm.datagen.language.util.TranslationCategory;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
+import net.minecraft.registry.RegistryWrapper;
 
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class PolishLangProvider extends FabricLanguageProvider {
-    public PolishLangProvider(FabricDataOutput dataOutput) {
-        super(dataOutput, "pl_pl");
+    public PolishLangProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+        super(dataOutput, "pl_pl", registryLookup);
     }
 
     @Override
-    public void generateTranslations(TranslationBuilder translationBuilder) {
+    public void generateTranslations(RegistryWrapper.WrapperLookup registryLookup, TranslationBuilder translationBuilder) {
         for (Map.Entry<TranslationCategory, Map<String, String>> entry : generatePolishTranslations().entrySet()) {
             for (Map.Entry<String, String> subEntry : entry.getValue().entrySet()) {
                 translationBuilder.add(subEntry.getKey(), subEntry.getValue());

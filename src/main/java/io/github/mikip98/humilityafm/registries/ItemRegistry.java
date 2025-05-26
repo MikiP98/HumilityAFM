@@ -3,7 +3,6 @@ package io.github.mikip98.humilityafm.registries;
 import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.content.items.DoubleVerticallyAttachableBlockItem;
 import io.github.mikip98.humilityafm.util.GenerationData;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
@@ -27,11 +26,11 @@ public class ItemRegistry {
 
 
     public static final Item CABINET_ITEM = register(
-            new DoubleVerticallyAttachableBlockItem(BlockRegistry.FLOOR_CABINET_BLOCK, BlockRegistry.CABINET_BLOCK, new FabricItemSettings()),
+            new DoubleVerticallyAttachableBlockItem(BlockRegistry.FLOOR_CABINET_BLOCK, BlockRegistry.CABINET_BLOCK, new Item.Settings()),
             "cabinet_block"
     );
     public static final Item ILLUMINATED_CABINET_ITEM = register(
-            new DoubleVerticallyAttachableBlockItem(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK, BlockRegistry.ILLUMINATED_CABINET_BLOCK, new FabricItemSettings()),
+            new DoubleVerticallyAttachableBlockItem(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK, BlockRegistry.ILLUMINATED_CABINET_BLOCK, new Item.Settings()),
             "illuminated_cabinet_block"
     );
 
@@ -58,7 +57,7 @@ public class ItemRegistry {
         return register(name, item);
     }
     public static Item register(String name) {
-        return register(name, new Item(new FabricItemSettings()));
+        return register(name, new Item(new Item.Settings()));
     }
     public static Item register(String name, Item item) {
         Registry.register(Registries.ITEM, getId(name), item);

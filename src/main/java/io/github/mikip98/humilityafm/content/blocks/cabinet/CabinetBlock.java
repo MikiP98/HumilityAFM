@@ -1,7 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.cabinet;
 
 import com.mojang.serialization.MapCodec;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -54,7 +53,7 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
         builder.add(WATERLOGGED);
     }
 
-    public static final FabricBlockSettings defaultSettings = FabricBlockSettings.create()
+    public static final AbstractBlock.Settings defaultSettings = AbstractBlock.Settings.create()
             .strength(2.0f)
             .requiresTool()
             .nonOpaque()
@@ -78,9 +77,9 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
     }
 
 
-    @SuppressWarnings("deprecation")
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+        Hand hand = player.getActiveHand();
         world.playSoundAtBlockCenter(pos, SoundEvents.BLOCK_BAMBOO_BREAK, SoundCategory.BLOCKS, 1, 1, true);
 
         if (world.getBlockState(pos).get(OPEN)){
@@ -133,7 +132,6 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
         return ActionResult.SUCCESS;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
         Direction dir = state.get(FACING);
@@ -170,13 +168,11 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
                 .with(Properties.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public FluidState getFluidState(BlockState state) {
         return state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : Fluids.EMPTY.getDefaultState();
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
         if (state.getBlock() != newState.getBlock()) {

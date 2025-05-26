@@ -11,6 +11,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -36,15 +37,15 @@ public class CabinetBlockEntity extends BlockEntity implements ImplementedInvent
     }
 
     @Override
-    public void readNbt(NbtCompound nbt) {
-        super.readNbt(nbt);
-        Inventories.readNbt(nbt, items);
+    public void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+        super.readNbt(nbt, registryLookup);
+        Inventories.readNbt(nbt, items, registryLookup);
     }
 
     @Override
-    public void writeNbt(NbtCompound nbt) {
-        Inventories.writeNbt(nbt, items);
-        super.writeNbt(nbt);
+    public void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+        Inventories.writeNbt(nbt, items, registryLookup);
+        super.writeNbt(nbt, registryLookup);
     }
 
     @Nullable
@@ -54,8 +55,8 @@ public class CabinetBlockEntity extends BlockEntity implements ImplementedInvent
     }
 
     @Override
-    public NbtCompound toInitialChunkDataNbt() {
-        return createNbt();
+    public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registryLookup) {
+        return createNbt(registryLookup);
     }
 
 

@@ -12,21 +12,23 @@ import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.GenerationData;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
+import net.minecraft.registry.RegistryWrapper;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.MOD_ID;
 
 public class USEnglishLangProvider extends FabricLanguageProvider {
-    public USEnglishLangProvider(FabricDataOutput dataOutput) {
-        super(dataOutput, "en_us");
+    public USEnglishLangProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+        super(dataOutput, "en_us", registryLookup);
     }
 
     @Override
-    public void generateTranslations(FabricLanguageProvider.TranslationBuilder translationBuilder) {
+    public void generateTranslations(RegistryWrapper.WrapperLookup registryLookup, FabricLanguageProvider.TranslationBuilder translationBuilder) {
         for (Map.Entry<TranslationCategory, Map<String, String>> entry : generateBaseUSEnglishTranslations().entrySet()) {
             for (Map.Entry<String, String> subEntry : entry.getValue().entrySet()) {
                 translationBuilder.add(subEntry.getKey(), subEntry.getValue());

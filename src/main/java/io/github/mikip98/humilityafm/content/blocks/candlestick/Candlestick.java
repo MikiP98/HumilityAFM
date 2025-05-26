@@ -3,14 +3,15 @@ package io.github.mikip98.humilityafm.content.blocks.candlestick;
 import com.mojang.serialization.MapCodec;
 import io.github.mikip98.humilityafm.content.ModProperties;
 import io.github.mikip98.humilityafm.util.data_types.CandleColor;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.*;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.FluidTags;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -72,12 +73,15 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
     );  // Empty + Candle
 
 
-    public static final FabricBlockSettings defaultSettings = FabricBlockSettings.create()
-            .strength(0.5f)
-            .requiresTool()
-            .nonOpaque()
-            .sounds(BlockSoundGroup.METAL)
-            .luminance(state -> state.get(Properties.LIT) ? 4 : 0);
+    public static AbstractBlock.Settings getDefaultSettings() {
+        return AbstractBlock.Settings.create()
+                .strength(0.5f)
+                .requiresTool()
+                .nonOpaque()
+                .sounds(BlockSoundGroup.METAL)
+                .luminance(state -> state.get(Properties.LIT) ? 4 : 0);
+    }
+    protected static final AbstractBlock.Settings defaultSettings = getDefaultSettings();
 
     protected static final EnumProperty<CandleColor> CANDLE_COLOR = ModProperties.CANDLE_COLOR;
 
@@ -123,9 +127,9 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
     }
 
     // TODO: Move each event to a separate function
-    @SuppressWarnings("deprecation")
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+        Hand hand = player.getActiveHand();
         ItemStack heldItem = player.getStackInHand(hand);
 
         // Insert candle
@@ -160,12 +164,19 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
         // Light the candle
         if (heldItem.getItem() instanceof FlintAndSteelItem && state.get(ModProperties.CANDLE) && !state.get(Properties.LIT) && !state.get(Properties.WATERLOGGED)) {
             world.setBlockState(pos, state.with(Properties.LIT, true), Block.NOTIFY_ALL);
-            if (!player.isCreative()) heldItem.damage(1, player, (p) -> p.sendToolBreakStatus(hand));
+            if (!player.isCreative() && !world.isClient) {
+                heldItem.damage(
+                        1,
+                        world.getRandom(),
+                        (ServerPlayerEntity) player,
+                        () -> player.sendEquipmentBreakStatus(EquipmentSlot.byName(hand.name()))
+                );
+            }
             world.playSoundAtBlockCenter(pos, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
             return ActionResult.SUCCESS;
         }
 
-        return super.onUse(state, world, pos, player, hand, hit);
+        return super.onUse(state, world, pos, player, hit);
     }
 
     @Override
@@ -213,7 +224,6 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
         super.randomDisplayTick(state, world, pos, random);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
         Direction dir = state.get(Properties.HORIZONTAL_FACING);
@@ -251,7 +261,6 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
         return null;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
         if (state.getBlock() != newState.getBlock() && state.get(ModProperties.CANDLE)) {
@@ -260,7 +269,6 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
         }
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public FluidState getFluidState(BlockState state) {
         return state.get(Properties.WATERLOGGED) ? Fluids.WATER.getStill(false) : Fluids.EMPTY.getDefaultState();

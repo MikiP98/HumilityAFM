@@ -7,7 +7,6 @@ import io.github.mikip98.humilityafm.content.blocks.cabinet.IlluminatedCabinetBl
 import io.github.mikip98.humilityafm.content.items.DoubleVerticallyAttachableBlockItem;
 import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.GenerationData;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
@@ -48,11 +47,11 @@ public class CabinetBlockGenerator {
         floorIlluminatedCabinetBlockVariants[i] = new FloorIlluminatedCabinetBlock();
 
         ItemRegistry.CABINET_ITEM_VARIANTS[i] = ItemRegistry.register(
-                new DoubleVerticallyAttachableBlockItem(floorCabinetBlockVariants[i], cabinetBlockVariants[i], new FabricItemSettings()),
+                new DoubleVerticallyAttachableBlockItem(floorCabinetBlockVariants[i], cabinetBlockVariants[i], new Item.Settings()),
                 "cabinet_" + cabinetBlockVariantName
         );
         ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS[i] = ItemRegistry.register(
-                new DoubleVerticallyAttachableBlockItem(floorIlluminatedCabinetBlockVariants[i], illuminatedCabinetBlockVariants[i], new FabricItemSettings()),
+                new DoubleVerticallyAttachableBlockItem(floorIlluminatedCabinetBlockVariants[i], illuminatedCabinetBlockVariants[i], new Item.Settings()),
                 "illuminated_cabinet_" + cabinetBlockVariantName
         );
     }

@@ -14,15 +14,17 @@ import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.MOD_ID;
 
 public class RecipeGenerator extends AFMRecipieProvider {
-    public RecipeGenerator(FabricDataOutput output) {
-        super(output);
+    public RecipeGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+        super(output, registriesFuture);
     }
 
     @Override

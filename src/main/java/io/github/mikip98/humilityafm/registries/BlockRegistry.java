@@ -17,11 +17,11 @@ import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
 import io.github.mikip98.humilityafm.generators.TerracottaTilesGenerator;
 import io.github.mikip98.humilityafm.generators.WoodenMosaicGenerator;
 import io.github.mikip98.humilityafm.util.GenerationData;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -43,13 +43,13 @@ public class BlockRegistry {
 
     // Stairs
     private static final float WoodenStairsBlockStrength = 2.0f;
-    private static final FabricBlockSettings StairsBlockSettings = FabricBlockSettings.create().strength(WoodenStairsBlockStrength).requiresTool();
+    private static final AbstractBlock.Settings StairsBlockSettings = AbstractBlock.Settings.create().strength(WoodenStairsBlockStrength).requiresTool();
     public static final Block OUTER_STAIRS = new OuterStairs(StairsBlockSettings);
     public static final Block INNER_STAIRS = new InnerStairs(StairsBlockSettings);
 
     // Wooden mosaics
     private static final float WoodenMosaicStrength = 3.0f * 1.5f;
-    private static final FabricBlockSettings WoodenMosaicSettings = FabricBlockSettings.create().strength(WoodenMosaicStrength).requiresTool().sounds(BlockSoundGroup.WOOD);
+    private static final AbstractBlock.Settings WoodenMosaicSettings = AbstractBlock.Settings.create().strength(WoodenMosaicStrength).requiresTool().sounds(BlockSoundGroup.WOOD);
     public static final Block WOODEN_MOSAIC = new Block(WoodenMosaicSettings);
 
     // Jack o'Lanterns
@@ -227,7 +227,7 @@ public class BlockRegistry {
     protected static Block registerWithItem(Block block, String name) {
         Identifier id = getId(name);
         Registry.register(Registries.BLOCK, id, block);
-        Registry.register(Registries.ITEM, id, new BlockItem(block, new FabricItemSettings()));
+        Registry.register(Registries.ITEM, id, new BlockItem(block, new Item.Settings()));
         return block;
     }
     protected static void registerArray(Block[] blocks, String[] names, String prefix) {

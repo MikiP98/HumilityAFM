@@ -10,12 +10,15 @@ import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
+import net.minecraft.registry.RegistryWrapper;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.concurrent.CompletableFuture;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.MOD_ID;
 
 public abstract class AFMRecipieProvider extends FabricRecipeProvider {
-    public AFMRecipieProvider(FabricDataOutput output) { super(output); }
+    public AFMRecipieProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) { super(output, registriesFuture); }
 
     protected static void offerCabinetRecipe(RecipeExporter exporter, ItemConvertible output, ItemConvertible slab, ItemConvertible carpet, String path_prefix) {
         ShapedRecipeJsonBuilder

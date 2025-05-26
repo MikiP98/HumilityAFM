@@ -2,12 +2,13 @@ package io.github.mikip98.humilityafm.content.blocks.candlestick;
 
 import io.github.mikip98.humilityafm.content.ModProperties;
 import io.github.mikip98.humilityafm.util.data_types.CandleColor;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
-import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
@@ -23,7 +24,7 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
 public class RustableCandlestick extends Candlestick {
-    public static final FabricBlockSettings defaultSettings = FabricBlockSettings.copyOf(Candlestick.defaultSettings)
+    public static final AbstractBlock.Settings defaultSettings = getDefaultSettings()
             .sounds(BlockSoundGroup.COPPER);
 
     protected static final EnumProperty<CandleColor> CANDLE_COLOR = ModProperties.CANDLE_COLOR;
@@ -54,7 +55,6 @@ public class RustableCandlestick extends Candlestick {
         this.rustNextLevel = rustNextLevel;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         if (random.nextDouble() >= 0.96) this.rust(state, world, pos);
@@ -80,7 +80,7 @@ public class RustableCandlestick extends Candlestick {
         return !state.get(ModProperties.WAXED) && rustNextLevel != null;
     }
 
-    protected void emmitWaxingParticles(BlockState state, World world, BlockPos pos, DefaultParticleType particleType) {
+    protected void emmitWaxingParticles(BlockState state, World world, BlockPos pos, ParticleEffect particleType) {
         Random random = world.random;
 
         double x = pos.getX() + 0.5;
@@ -119,7 +119,8 @@ public class RustableCandlestick extends Candlestick {
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+        Hand hand = player.getActiveHand();
         ItemStack heldItem = player.getStackInHand(hand);
         // Wax
         if (heldItem.getItem() instanceof HoneycombItem && !state.get(ModProperties.WAXED)) {
@@ -134,7 +135,12 @@ public class RustableCandlestick extends Candlestick {
             // De-wax
             if (state.get(ModProperties.WAXED)) {
                 world.setBlockState(pos, state.with(ModProperties.WAXED, false), Block.NOTIFY_ALL);
-                if (!player.isCreative()) heldItem.damage(1, player, (p) -> p.sendToolBreakStatus(hand));
+                if (!player.isCreative() && !world.isClient) heldItem.damage(
+                        1,
+                        world.getRandom(),
+                        (ServerPlayerEntity) player,
+                        () -> player.sendEquipmentBreakStatus(EquipmentSlot.byName(hand.name()))
+                );
                 emmitWaxOffParticles(state, world, pos);
                 world.playSoundAtBlockCenter(pos, SoundEvents.ITEM_AXE_WAX_OFF, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
                 return ActionResult.SUCCESS;
@@ -147,6 +153,6 @@ public class RustableCandlestick extends Candlestick {
             }
         }
 
-        return super.onUse(state, world, pos, player, hand, hit);
+        return super.onUse(state, world, pos, player, hit);
     }
 }
