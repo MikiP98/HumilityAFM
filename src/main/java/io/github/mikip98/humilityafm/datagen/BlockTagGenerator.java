@@ -29,26 +29,26 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
         // ------------ Custom Tags ------------
         // Cabinet Block Tags
         getOrCreateTagBuilder(ModBlockTags.CABINET_BLOCKS)
-                .add(getIds(Arrays.stream(CabinetBlockGenerator.cabinetBlockVariantsNames).map(s -> "cabinet_block_" + s)))
+                .add(CabinetBlockGenerator.cabinetBlockVariants)
                 .add(BlockRegistry.CABINET_BLOCK);  // Manual testing block
         getOrCreateTagBuilder(ModBlockTags.ILLUMINATED_CABINET_BLOCKS)
-                .add(getIds(Arrays.stream(CabinetBlockGenerator.cabinetBlockVariantsNames).map(s -> "illuminated_cabinet_block_" + s)))
+                .add(CabinetBlockGenerator.illuminatedCabinetBlockVariants)
                 .add(BlockRegistry.ILLUMINATED_CABINET_BLOCK);  // Manual testing block
         getOrCreateTagBuilder(ModBlockTags.CABINET_BLOCKS)
-                .add(getIds(Arrays.stream(CabinetBlockGenerator.cabinetBlockVariantsNames).map(s -> "floor_cabinet_block_" + s)))
+                .add(CabinetBlockGenerator.floorCabinetBlockVariants)
                 .add(BlockRegistry.FLOOR_CABINET_BLOCK);  // Manual testing block
         getOrCreateTagBuilder(ModBlockTags.ILLUMINATED_CABINET_BLOCKS)
-                .add(getIds(Arrays.stream(CabinetBlockGenerator.cabinetBlockVariantsNames).map(s -> "floor_illuminated_cabinet_block_" + s)))
+                .add(CabinetBlockGenerator.floorIlluminatedCabinetBlockVariants)
                 .add(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK);  // Manual testing block
 
         // Wooden Mosaic Block Tag
         getOrCreateTagBuilder(ModBlockTags.WOODEN_MOSAIC_BLOCKS)
-                .add(getIds(Arrays.stream(WoodenMosaicGenerator.woodenMosaicVariantsNames).map(s -> "wooden_mosaic_" + s)))
+                .add(WoodenMosaicGenerator.woodenMosaicVariants)
                 .add(BlockRegistry.WOODEN_MOSAIC);  // Manual testing block
 
         // Terracotta Tiles Block Tag
         getOrCreateTagBuilder(ModBlockTags.TERRACOTTA_TILES_BLOCKS)
-                .add(getIds(Arrays.stream(TerracottaTilesGenerator.terracottaTilesVariantsNames).map(s -> "terracotta_tiles_" + s)));
+                .add(TerracottaTilesGenerator.terracottaTilesVariants);
 
         // Inner & Outer Stairs Block Tags
         String[] woodenVariants = GenerationData.vanillaWoodTypes;
@@ -70,8 +70,8 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 
         // Jack o'Lanterns
         getOrCreateTagBuilder(ModBlockTags.JACK_O_LANTERNS)
-                .add(getId("jack_o_lantern_redstone"))
-                .add(getId("jack_o_lantern_soul"));
+                .add(BlockRegistry.JACK_O_LANTERN_SOUL)
+                .add(BlockRegistry.JACK_O_LANTERN_REDSTONE);
         getOrCreateTagBuilder(ModBlockTags.COLOURED_JACK_O_LANTERNS)
                 .add(BlockRegistry.COLOURED_WEAK_JACK_O_LANTERNS)
                 .add(BlockRegistry.COLOURED_WEAK_JACK_O_LANTERNS)
