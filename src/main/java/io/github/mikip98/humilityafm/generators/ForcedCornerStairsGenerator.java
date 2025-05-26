@@ -5,7 +5,7 @@ import io.github.mikip98.humilityafm.content.blocks.stairs.OuterStairs;
 import io.github.mikip98.humilityafm.util.GenerationData;
 import io.github.mikip98.humilityafm.util.data_types.BlockStrength;
 import io.github.mikip98.humilityafm.util.data_types.Pair;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.sound.BlockSoundGroup;
 
@@ -34,7 +34,7 @@ public class ForcedCornerStairsGenerator {
 
         int i = 0;
         // Generate wood stairs block variants
-        FabricBlockSettings WoodStairsBlockSettings = FabricBlockSettings.create()
+        AbstractBlock.Settings WoodStairsBlockSettings = AbstractBlock.Settings.create()
                 .strength(GenerationData.vanillaWoodHardness, GenerationData.vanillaWoodResistance)
                 .requiresTool()
                 .sounds(BlockSoundGroup.WOOD);
@@ -43,7 +43,7 @@ public class ForcedCornerStairsGenerator {
         // Generate stony stairs block variants
         for (Pair<BlockStrength, String[]> entry : GenerationData.vanillaStonyMaterialsPerStrength) {
             BlockStrength blockStrength = entry.first();
-            FabricBlockSettings StonyStairsBlockSettings = FabricBlockSettings.create()
+            AbstractBlock.Settings StonyStairsBlockSettings = AbstractBlock.Settings.create()
                     .strength(blockStrength.hardness(), blockStrength.resistance())
                     .requiresTool()
                     .sounds(BlockSoundGroup.STONE);  // TODO: Consider adding a custom sound group for stony materials
@@ -52,7 +52,7 @@ public class ForcedCornerStairsGenerator {
     }
 
 
-    protected static int createStairsBlockVariants(String[] stairsVariants, FabricBlockSettings variantSettings, int id) {
+    protected static int createStairsBlockVariants(String[] stairsVariants, AbstractBlock.Settings variantSettings, int id) {
         // Generate stairs block variants
         for (String stairsVariant : stairsVariants) {
             innerOuterStairsBlockVariantsNames[id] = stairsVariant;

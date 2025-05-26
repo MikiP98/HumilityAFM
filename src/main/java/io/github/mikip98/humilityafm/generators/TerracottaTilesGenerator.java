@@ -2,7 +2,7 @@ package io.github.mikip98.humilityafm.generators;
 
 import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.util.GenerationData;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 
 public class TerracottaTilesGenerator {
@@ -16,7 +16,7 @@ public class TerracottaTilesGenerator {
     public static Block[] terracottaTilesVariants;
 
     public static void init() {
-        final FabricBlockSettings terracottaTilesSettings = FabricBlockSettings.create()
+        final AbstractBlock.Settings terracottaTilesSettings = AbstractBlock.Settings.create()
                 .strength(
                         GenerationData.vanillaTerracottaHardness * ModConfig.mosaicsAndTilesStrengthMultiplayer,
                         GenerationData.vanillaTerracottaResistance * ModConfig.mosaicsAndTilesStrengthMultiplayer

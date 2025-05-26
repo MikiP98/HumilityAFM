@@ -1,7 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks;
 
 import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntity;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.BlockHalf;
@@ -153,7 +152,7 @@ public class LightStripBlock extends StairsBlock implements BlockEntityProvider 
     }
 
 
-    public static final FabricBlockSettings defaultSettings = FabricBlockSettings.create().strength(0.5f).sounds(BlockSoundGroup.GLASS).luminance(9);
+    public static final AbstractBlock.Settings defaultSettings = AbstractBlock.Settings.create().strength(0.5f).sounds(BlockSoundGroup.GLASS).luminance((ignored) -> 9);
 
     public LightStripBlock() {
         super(Blocks.GLASS.getDefaultState(), defaultSettings);

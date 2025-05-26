@@ -1,6 +1,5 @@
 package io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.BlockState;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
@@ -9,7 +8,7 @@ import net.minecraft.world.World;
 
 public class JackOLanternSoul extends JackOLantern {
     public JackOLanternSoul() {
-        super(FabricBlockSettings.copyOf(defaultSettings).luminance(8));
+        super(getDefaultSettings().luminance((ignored) -> 8));
     }
 
     @Override

@@ -13,6 +13,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.util.Identifier;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
@@ -35,7 +36,7 @@ public class BlockEntityRegistry {
         CABINET_BLOCK_ENTITY = Registry.register(
                 Registries.BLOCK_ENTITY_TYPE,
                 getId("cabinet_block_entity"),
-                FabricBlockEntityTypeBuilder.create(
+                BlockEntityType.Builder.create(
                         CabinetBlockEntity::new,
                         concat(CABINET_BLOCK, CabinetBlockGenerator.cabinetBlockVariants)
                 ).build()
@@ -44,7 +45,7 @@ public class BlockEntityRegistry {
         ILLUMINATED_CABINET_BLOCK_ENTITY = Registry.register(
                 Registries.BLOCK_ENTITY_TYPE,
                 getId("illuminated_cabinet_block_entity"),
-                FabricBlockEntityTypeBuilder.create(
+                BlockEntityType.Builder.create(
                         IlluminatedCabinetBlockEntity::new,
                         concat(ILLUMINATED_CABINET_BLOCK, CabinetBlockGenerator.illuminatedCabinetBlockVariants)
                 ).build()
@@ -53,7 +54,7 @@ public class BlockEntityRegistry {
         FLOOR_CABINET_BLOCK_ENTITY = Registry.register(
                 Registries.BLOCK_ENTITY_TYPE,
                 getId("floor_cabinet_block_entity"),
-                FabricBlockEntityTypeBuilder.create(
+                BlockEntityType.Builder.create(
                         FloorCabinetBlockEntity::new,
                         CabinetBlockGenerator.floorCabinetBlockVariants
                 ).build()
@@ -62,7 +63,7 @@ public class BlockEntityRegistry {
         FLOOR_ILLUMINATED_CABINET_BLOCK_ENTITY = Registry.register(
                 Registries.BLOCK_ENTITY_TYPE,
                 getId("floor_illuminated_cabinet_block_entity"),
-                FabricBlockEntityTypeBuilder.create(
+                BlockEntityType.Builder.create(
                         FloorIlluminatedCabinetBlockEntity::new,
                         CabinetBlockGenerator.floorIlluminatedCabinetBlockVariants
                 ).build()
@@ -73,7 +74,10 @@ public class BlockEntityRegistry {
             LIGHT_STRIP_BLOCK_ENTITY = Registry.register(
                     Registries.BLOCK_ENTITY_TYPE,
                     getId("light_strip_block_entity"),
-                    FabricBlockEntityTypeBuilder.create(LightStripBlockEntity::new, ColouredFeatureSetGenerator.LightStripBlockVariants).build()
+                    BlockEntityType.Builder.create(
+                            LightStripBlockEntity::new,
+                            ColouredFeatureSetGenerator.LightStripBlockVariants
+                    ).build()
             );
         }
     }

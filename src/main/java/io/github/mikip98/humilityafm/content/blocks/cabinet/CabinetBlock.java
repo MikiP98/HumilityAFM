@@ -53,11 +53,14 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
         builder.add(WATERLOGGED);
     }
 
-    public static final AbstractBlock.Settings defaultSettings = AbstractBlock.Settings.create()
-            .strength(2.0f)
-            .requiresTool()
-            .nonOpaque()
-            .sounds(BlockSoundGroup.WOOD);
+    protected static final AbstractBlock.Settings defaultSettings = getDefaultSettings();
+    public static AbstractBlock.Settings getDefaultSettings() {
+        return AbstractBlock.Settings.create()
+                .strength(2.0f)
+                .requiresTool()
+                .nonOpaque()
+                .sounds(BlockSoundGroup.WOOD);
+    }
 
 
     public CabinetBlock() {

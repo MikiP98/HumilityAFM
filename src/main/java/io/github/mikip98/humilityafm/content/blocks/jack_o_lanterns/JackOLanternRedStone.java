@@ -1,6 +1,5 @@
 package io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;
@@ -24,7 +23,7 @@ public class JackOLanternRedStone extends JackOLantern {
 
 
     public JackOLanternRedStone() {
-        super(FabricBlockSettings.copyOf(defaultSettings).luminance((state) -> state.get(LIT) ? 7 : 0));
+        super(getDefaultSettings().luminance((state) -> state.get(LIT) ? 7 : 0));
         setDefaultState(getDefaultState().with(LIT, true));
     }
 
@@ -34,7 +33,6 @@ public class JackOLanternRedStone extends JackOLantern {
         return super.getPlacementState(ctx).with(LIT, !ctx.getWorld().isReceivingRedstonePower(ctx.getBlockPos()));
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
         if (!world.isClient) {
@@ -49,7 +47,6 @@ public class JackOLanternRedStone extends JackOLantern {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         if (!state.get(LIT) && !world.isReceivingRedstonePower(pos)) {

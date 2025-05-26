@@ -2,7 +2,7 @@ package io.github.mikip98.humilityafm.generators;
 
 import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.util.GenerationData;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.sound.BlockSoundGroup;
 
@@ -15,7 +15,7 @@ public class WoodenMosaicGenerator {
     public static Block[] woodenMosaicVariants;
 
     public static void init() {
-        final FabricBlockSettings woodenMosaicSettings = FabricBlockSettings.create()
+        final AbstractBlock.Settings woodenMosaicSettings = AbstractBlock.Settings.create()
                 .strength(
                         GenerationData.vanillaWoodHardness * ModConfig.mosaicsAndTilesStrengthMultiplayer,
                         GenerationData.vanillaWoodResistance * ModConfig.mosaicsAndTilesStrengthMultiplayer
