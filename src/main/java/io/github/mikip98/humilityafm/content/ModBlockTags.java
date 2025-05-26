@@ -32,6 +32,7 @@ public class ModBlockTags {
 
     // Jack o'Lanterns
     public static final TagKey<Block> JACK_O_LANTERNS = TagKey.of(RegistryKeys.BLOCK, getId("jack_o_lanterns"));
+    public static final TagKey<Block> COLOURED_JACK_O_LANTERNS = TagKey.of(RegistryKeys.BLOCK, getId("coloured_jack_o_lanterns"));
 
     // Candlesticks
     public static final TagKey<Block> CANDLESTICKS = TagKey.of(RegistryKeys.BLOCK, getId("candlesticks"));

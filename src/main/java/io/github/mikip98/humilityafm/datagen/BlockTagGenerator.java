@@ -71,6 +71,10 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
         getOrCreateTagBuilder(ModBlockTags.JACK_O_LANTERNS)
                 .add(getId("jack_o_lantern_redstone"))
                 .add(getId("jack_o_lantern_soul"));
+        getOrCreateTagBuilder(ModBlockTags.COLOURED_JACK_O_LANTERNS)
+                .add(getIds(Arrays.stream(GenerationData.vanillaColorPallet).map(s -> "coloured_weak_jack_o_lantern_" + s + "_weak")))
+                .add(getIds(Arrays.stream(GenerationData.vanillaColorPallet).map(s -> "coloured_weak_jack_o_lantern_" + s)))
+                .add(getIds(Arrays.stream(GenerationData.vanillaColorPallet).map(s -> "coloured_weak_jack_o_lantern_" + s + "_strong")));
 
         // Candlesticks
         FabricTagProvider<Block>.FabricTagBuilder tag = getOrCreateTagBuilder(ModBlockTags.CANDLESTICKS)
@@ -94,7 +98,8 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
                 .addTag(ModBlockTags.WOODEN_INNER_STAIRS)
                 .addTag(ModBlockTags.WOODEN_OUTER_STAIRS)
                 // Jack o'Lanterns
-                .addTag(ModBlockTags.JACK_O_LANTERNS);
+                .addTag(ModBlockTags.JACK_O_LANTERNS)
+                .addOptionalTag(ModBlockTags.COLOURED_JACK_O_LANTERNS);
         // Pickaxe Mineable
         getOrCreateTagBuilder(ModBlockTags.PICKAXE_MINEABLE)
                 // Terracotta Tiles

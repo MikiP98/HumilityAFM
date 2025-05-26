@@ -148,9 +148,9 @@ public class BlockRegistry {
             putIntoItemGroup(ColouredFeatureSetGenerator.LightStripBlockVariants, ItemGroups.COLORED_BLOCKS);
 
             // Register coloured Jack o'Lanterns
-            COLOURED_WEAK_JACK_O_LANTERNS = Arrays.stream(GenerationData.vanillaColorPallet).map(s -> registerWithItem(new JackOLantern(), "jack_o_lantern_" + s + "_weak")).toArray(Block[]::new);
-            COLOURED_JACK_O_LANTERNS = Arrays.stream(GenerationData.vanillaColorPallet).map(s -> registerWithItem(new JackOLantern(), "jack_o_lantern_" + s)).toArray(Block[]::new);
-            COLOURED_STRONG_JACK_O_LANTERNS = Arrays.stream(GenerationData.vanillaColorPallet).map(s -> registerWithItem(new JackOLantern(), "jack_o_lantern_" + s + "_strong")).toArray(Block[]::new);
+            COLOURED_WEAK_JACK_O_LANTERNS = Arrays.stream(GenerationData.vanillaColorPallet).map(s -> registerWithItem(new JackOLantern(), "coloured_jack_o_lantern_" + s + "_weak")).toArray(Block[]::new);
+            COLOURED_JACK_O_LANTERNS = Arrays.stream(GenerationData.vanillaColorPallet).map(s -> registerWithItem(new JackOLantern(), "coloured_jack_o_lantern_" + s)).toArray(Block[]::new);
+            COLOURED_STRONG_JACK_O_LANTERNS = Arrays.stream(GenerationData.vanillaColorPallet).map(s -> registerWithItem(new JackOLantern(), "coloured_jack_o_lantern_" + s + "_strong")).toArray(Block[]::new);
 
         }
 
