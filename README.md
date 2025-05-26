@@ -102,7 +102,8 @@ Lighten up your builds with unobtrusive light source
 - ~~De-separate the particle texture from the block texture in cabinets and others~~
 - ~~Make Redstone Jack o'Lanterns to turn off when powered~~
 - ~~Make Soul Jack o'Lanterns special in some way (for now particles)~~
-
+- ~~Port to newer MC versions:~~
+  - ~~1.20.4~~
 
 ### High priority:
 
@@ -150,7 +151,6 @@ Lighten up your builds with unobtrusive light source
 - Fix nether wood block variants burning
 - Add Illuminated Cabinet Brightening to the config
 - Port to newer MC versions:
-  - 1.20.4
   - 1.21.4
 
 
