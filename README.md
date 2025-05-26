@@ -115,10 +115,10 @@ Lighten up your builds with unobtrusive light source
   - ~~1 powder - weak torch; 2 powders - torch; 3 powders - strong torch~~
   - ~~Move LEDs to misc tab, alongside the powders~~
   - ~~Rename LEDs to light strips, consider enabling them by default?~~
-  - Make coloured Jack o'Lanterns
-- Fix Cabinet braking animation being invisible:
+  - ~~Make coloured Jack o'Lanterns~~
+  - Finish coloured torches and jack o'Lanterns textures
+- Fix Cabinet breaking animation being invisible:
   - Make sure all other breaking animations are also visible
-- Finish coloured torches and jack o'Lantern textures
 
 
 ### Medium priority:
@@ -162,6 +162,7 @@ Lighten up your builds with unobtrusive light source
 - Server feature sync?
   - If done through a datapack, the blocks can be enabled by default on the client?
 - Port to newer MC versions:
+  - 1.20.6?
   - 1.21.5?
 - Backport to older MC versions?:
   - 1.19.2?
