@@ -1,12 +1,13 @@
 package io.github.mikip98.humilityafm.registries;
 
+import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntity;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetBlockEntity;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorCabinetBlockEntity;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorIlluminatedCabinetBlockEntity;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.IlluminatedCabinetBlockEntity;
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
-import io.github.mikip98.humilityafm.generators.ColouredLightsGenerator;
+import io.github.mikip98.humilityafm.generators.ColouredFeatureSetGenerator;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
@@ -69,11 +70,13 @@ public class BlockEntityRegistry {
         );
 
         //Register LED block entity
-        LIGHT_STRIP_BLOCK_ENTITY = Registry.register(
-                Registries.BLOCK_ENTITY_TYPE,
-                new Identifier(MOD_ID, "light_strip_block_entity"),
-                FabricBlockEntityTypeBuilder.create(LightStripBlockEntity::new, ColouredLightsGenerator.LightStripBlockVariants).build()
-        );
+        if (ModConfig.enableColouredFeatureSetBeta) {
+            LIGHT_STRIP_BLOCK_ENTITY = Registry.register(
+                    Registries.BLOCK_ENTITY_TYPE,
+                    new Identifier(MOD_ID, "light_strip_block_entity"),
+                    FabricBlockEntityTypeBuilder.create(LightStripBlockEntity::new, ColouredFeatureSetGenerator.LightStripBlockVariants).build()
+            );
+        }
     }
 
     protected static Block[] concat(Block block, Block[] blocks) {

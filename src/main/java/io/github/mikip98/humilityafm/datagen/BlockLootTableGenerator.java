@@ -2,7 +2,7 @@ package io.github.mikip98.humilityafm.datagen;
 
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
 import io.github.mikip98.humilityafm.generators.CandlestickGenerator;
-import io.github.mikip98.humilityafm.generators.ColouredLightsGenerator;
+import io.github.mikip98.humilityafm.generators.ColouredFeatureSetGenerator;
 import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
 import io.github.mikip98.humilityafm.generators.TerracottaTilesGenerator;
 import io.github.mikip98.humilityafm.generators.WoodenMosaicGenerator;
@@ -81,6 +81,6 @@ public class BlockLootTableGenerator extends FabricBlockLootTableProvider {
         }
 
         // Light Strips
-        Arrays.stream(ColouredLightsGenerator.LightStripBlockVariants).forEach(this::addDrop);
+        Arrays.stream(ColouredFeatureSetGenerator.LightStripBlockVariants).forEach(this::addDrop);
     }
 }

@@ -61,10 +61,10 @@ public class ItemGroupRegistry {
                 Arrays.stream(BlockRegistry.COLOURED_JACK_O_LANTERNS).forEach(entries::add);
                 Arrays.stream(BlockRegistry.COLOURED_STRONG_JACK_O_LANTERNS).forEach(entries::add);
                 Arrays.stream(ItemRegistry.GLOWING_POWDER_VARIANTS).forEach(entries::add);
-                Arrays.stream(ColouredLightsGenerator.colouredTorchWeakVariants).forEach(entries::add);
-                Arrays.stream(ColouredLightsGenerator.colouredTorchVariants).forEach(entries::add);
-                Arrays.stream(ColouredLightsGenerator.colouredTorchStrongVariants).forEach(entries::add);
-                Arrays.stream(ColouredLightsGenerator.LightStripBlockVariants).forEach(entries::add);
+                Arrays.stream(ColouredFeatureSetGenerator.colouredTorchWeakVariants).forEach(entries::add);
+                Arrays.stream(ColouredFeatureSetGenerator.colouredTorchVariants).forEach(entries::add);
+                Arrays.stream(ColouredFeatureSetGenerator.colouredTorchStrongVariants).forEach(entries::add);
+                Arrays.stream(ColouredFeatureSetGenerator.LightStripBlockVariants).forEach(entries::add);
                 Arrays.stream(ItemRegistry.CANDLESTICK_ITEM_VARIANTS).forEach(entries::add);
                 ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS.forEach(set -> Arrays.stream(set).forEach(entries::add));
             }).build();

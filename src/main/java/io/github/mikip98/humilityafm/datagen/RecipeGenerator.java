@@ -1,6 +1,6 @@
 package io.github.mikip98.humilityafm.datagen;
 
-import io.github.mikip98.humilityafm.generators.ColouredLightsGenerator;
+import io.github.mikip98.humilityafm.generators.ColouredFeatureSetGenerator;
 import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
 import io.github.mikip98.humilityafm.generators.TerracottaTilesGenerator;
 import io.github.mikip98.humilityafm.generators.WoodenMosaicGenerator;
@@ -223,9 +223,9 @@ public class RecipeGenerator extends AFMRecipieProvider {
             ItemConvertible jackOLantern = BlockRegistry.COLOURED_JACK_O_LANTERNS[i];
             ItemConvertible strongJackOLantern = BlockRegistry.COLOURED_STRONG_JACK_O_LANTERNS[i];
 
-            ItemConvertible weakTorch = ColouredLightsGenerator.colouredTorchWeakVariants[i];
-            ItemConvertible torch = ColouredLightsGenerator.colouredTorchVariants[i];
-            ItemConvertible strongTorch = ColouredLightsGenerator.colouredTorchStrongVariants[i];
+            ItemConvertible weakTorch = ColouredFeatureSetGenerator.colouredTorchWeakVariants[i];
+            ItemConvertible torch = ColouredFeatureSetGenerator.colouredTorchVariants[i];
+            ItemConvertible strongTorch = ColouredFeatureSetGenerator.colouredTorchStrongVariants[i];
 
             offerDoubleInputShapelessRecipe(
                     exporter,
@@ -280,9 +280,9 @@ public class RecipeGenerator extends AFMRecipieProvider {
 
     protected static void generateColouredTorchRecipies(Consumer<RecipeJsonProvider> exporter) {
         for (int i = 0; i < GenerationData.vanillaColorPallet.length; i++) {
-            ItemConvertible weakColouredTorch = ColouredLightsGenerator.colouredTorchWeakVariants[i];
-            ItemConvertible colouredTorch = ColouredLightsGenerator.colouredTorchVariants[i];
-            ItemConvertible strongColouredTorch = ColouredLightsGenerator.colouredTorchStrongVariants[i];
+            ItemConvertible weakColouredTorch = ColouredFeatureSetGenerator.colouredTorchWeakVariants[i];
+            ItemConvertible colouredTorch = ColouredFeatureSetGenerator.colouredTorchVariants[i];
+            ItemConvertible strongColouredTorch = ColouredFeatureSetGenerator.colouredTorchStrongVariants[i];
 
             Item glowingPowder = ItemRegistry.GLOWING_POWDER_VARIANTS[i];
 
@@ -358,7 +358,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
         for (int i = 0; i < GenerationData.vanillaColorPallet.length; ++i) {
             offerLightStripRecipie(
                     exporter,
-                    ColouredLightsGenerator.LightStripBlockVariants[i],
+                    ColouredFeatureSetGenerator.LightStripBlockVariants[i],
                     ItemRegistry.GLOWING_POWDER_VARIANTS[i],
                     "light_strips/"
             );

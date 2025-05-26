@@ -2,7 +2,7 @@ package io.github.mikip98.humilityafm.datagen;
 
 import io.github.mikip98.humilityafm.content.ModProperties;
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
-import io.github.mikip98.humilityafm.generators.ColouredLightsGenerator;
+import io.github.mikip98.humilityafm.generators.ColouredFeatureSetGenerator;
 import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
 import io.github.mikip98.humilityafm.generators.CandlestickGenerator;
 import io.github.mikip98.humilityafm.generators.TerracottaTilesGenerator;
@@ -155,12 +155,12 @@ public class ModelGenerator extends FabricModelProvider {
                     textureMap,
                     blockStateModelGenerator.modelCollector
             );
-            blockStateModelGenerator.registerParentedItemModel(ColouredLightsGenerator.colouredTorchWeakVariants[i], torchModelId);
-            blockStateModelGenerator.registerParentedItemModel(ColouredLightsGenerator.colouredTorchVariants[i], torchModelId);
-            blockStateModelGenerator.registerParentedItemModel(ColouredLightsGenerator.colouredTorchStrongVariants[i], torchModelId);
-            blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(ColouredLightsGenerator.colouredTorchWeakVariants[i], torchModelId));
-            blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(ColouredLightsGenerator.colouredTorchVariants[i], torchModelId));
-            blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(ColouredLightsGenerator.colouredTorchStrongVariants[i], torchModelId));
+            blockStateModelGenerator.registerParentedItemModel(ColouredFeatureSetGenerator.colouredTorchWeakVariants[i], torchModelId);
+            blockStateModelGenerator.registerParentedItemModel(ColouredFeatureSetGenerator.colouredTorchVariants[i], torchModelId);
+            blockStateModelGenerator.registerParentedItemModel(ColouredFeatureSetGenerator.colouredTorchStrongVariants[i], torchModelId);
+            blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(ColouredFeatureSetGenerator.colouredTorchWeakVariants[i], torchModelId));
+            blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(ColouredFeatureSetGenerator.colouredTorchVariants[i], torchModelId));
+            blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(ColouredFeatureSetGenerator.colouredTorchStrongVariants[i], torchModelId));
             ++i;
         }
     }
@@ -187,9 +187,9 @@ public class ModelGenerator extends FabricModelProvider {
                     textureMap,
                     blockStateModelGenerator.modelCollector
             );
-            blockStateModelGenerator.registerParentedItemModel(ColouredLightsGenerator.LightStripBlockVariants[i], lightStripStraightModelId);
+            blockStateModelGenerator.registerParentedItemModel(ColouredFeatureSetGenerator.LightStripBlockVariants[i], lightStripStraightModelId);
             blockStateModelGenerator.blockStateCollector.accept(getLightStripBlockstate(
-                    ColouredLightsGenerator.LightStripBlockVariants[i],
+                    ColouredFeatureSetGenerator.LightStripBlockVariants[i],
                     lightStripStraightModelId,
                     lightStripInnerModelId,
                     lightStripOuterModelId

@@ -49,7 +49,7 @@ public class HumilityAFM implements ModInitializer {
 		ForcedCornerStairsGenerator.init();
 		WoodenMosaicGenerator.init();
 		TerracottaTilesGenerator.init();
-		ColouredLightsGenerator.init();
+		ColouredFeatureSetGenerator.init();
 		CandlestickGenerator.init();
 
 
