@@ -51,7 +51,9 @@ loom {
 }
 
 fabricApi {
-	configureDataGeneration()
+	configureDataGeneration {
+		client = true
+	}
 }
 
 dependencies {
@@ -68,12 +70,13 @@ dependencies {
 	}
 	modApi "com.terraformersmc:modmenu:${project.modmenu_version}"
 
-	modRuntimeOnly "maven.modrinth:polymorph:${project.polymorph_version}"  // Required for Datagen to not fail
-	runtimeOnly group: 'com.electronwill.night-config', name: 'core', version: '3.7.4'  // Required for 'polymorph'
-	modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${polymorph_cca_version}"  // Required for 'polymorph'
-	modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${polymorph_cca_version}"  // Required for 'polymorph'
-	modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-block:${polymorph_cca_version}"  // Required for 'polymorph'
-	modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-item:${polymorph_cca_version}"  // Required for 'polymorph'
+	// For some reason this does not work on 1.20.4
+//	modRuntimeOnly "maven.modrinth:polymorph:${project.polymorph_version}"  // Required for Datagen to not fail
+//	runtimeOnly group: 'com.electronwill.night-config', name: 'core', version: '3.7.4'  // Required for 'polymorph'
+//	modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${polymorph_cca_version}"  // Required for 'polymorph'
+//	modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${polymorph_cca_version}"  // Required for 'polymorph'
+//	modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-block:${polymorph_cca_version}"  // Required for 'polymorph'
+//	modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-item:${polymorph_cca_version}"  // Required for 'polymorph'
 }
 
 processResources {
