@@ -100,12 +100,12 @@ Lighten up your builds with unobtrusive light source
 - ~~Improve config logic~~
 - ~~Fix Cabinet open and close models not matching and cabinet inside texture stretch~~
 - ~~De-separate the particle texture from the block texture in cabinets and others~~
+- ~~Make Redstone Jack o'Lanterns to turn off when powered~~
+- ~~Make Soul Jack o'Lanterns special in some way (for now particles)~~
 
 
 ### High priority:
 
-- Make Redstone Jack o'Lanterns to turn off when powered
-- Make Soul Jack o'Lanterns special in some way
 - Port to newer MC versions:
   - 1.21.1
 - Rethink the README structure
@@ -118,10 +118,16 @@ Lighten up your builds with unobtrusive light source
   - Make coloured Jack o'Lanterns
 - Fix Cabinet braking animation being invisible:
   - Make sure all other breaking animations are also visible
+- Finish coloured torches and jack o'Lantern textures
 
 
 ### Medium priority:
 
+- Improve the speciality of Soul Jack o'Lantern :/
+- Add 'Shimmer' and 'Bliss' support for all the blocks from coloured feature set:
+  - Coloured Torches
+  - Coloured Jack o'Lanterns
+  - Light Strips
 - Add Fancy carpets
 - Add hanging pots
 - Add hanging candlesticks
