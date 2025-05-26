@@ -174,7 +174,7 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
         if (state.getBlock() != newState.getBlock()) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof CabinetBlockEntity cabinetEntity) {
-                // Handle item drops and block entity cleanup here
+                // Handle item drops and block entity clean-up here
                 DefaultedList<ItemStack> inventory = cabinetEntity.getItems();
                 for (ItemStack stack : inventory) {
                     if (!stack.isEmpty()) {
