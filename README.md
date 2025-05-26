@@ -104,6 +104,7 @@ Lighten up your builds with unobtrusive light source
 - ~~Make Soul Jack o'Lanterns special in some way (for now particles)~~
 - ~~Port to newer MC versions:~~
   - ~~1.20.4~~
+  - ~~1.20.6~~
 
 ### High priority:
 
@@ -162,7 +163,6 @@ Lighten up your builds with unobtrusive light source
 - Server feature sync?
   - If done through a datapack, the blocks can be enabled by default on the client?
 - Port to newer MC versions:
-  - 1.20.6?
   - 1.21.5?
 - Backport to older MC versions?:
   - 1.19.2?
