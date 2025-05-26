@@ -3,7 +3,7 @@ package io.github.mikip98.humilityafm.datagen;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Blocks;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.data.server.recipe.RecipeExporter;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.item.ItemConvertible;
@@ -12,14 +12,12 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
-
 import static io.github.mikip98.humilityafm.HumilityAFM.MOD_ID;
 
 public abstract class AFMRecipieProvider extends FabricRecipeProvider {
     public AFMRecipieProvider(FabricDataOutput output) { super(output); }
 
-    protected static void offerCabinetRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible slab, ItemConvertible carpet, String path_prefix) {
+    protected static void offerCabinetRecipe(RecipeExporter exporter, ItemConvertible output, ItemConvertible slab, ItemConvertible carpet, String path_prefix) {
         ShapedRecipeJsonBuilder
                 .create(RecipeCategory.MISC, output, 1)
                 .pattern(" G ")
@@ -35,14 +33,14 @@ public abstract class AFMRecipieProvider extends FabricRecipeProvider {
                 .offerTo(exporter, path_prefix + getRecipeName(output));
     }
 
-    protected static void offerWoodenMosaicRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible plank1, ItemConvertible plank2, String path_prefix) {
+    protected static void offerWoodenMosaicRecipe(RecipeExporter exporter, ItemConvertible output, ItemConvertible plank1, ItemConvertible plank2, String path_prefix) {
         offerCheckerPatternRecipe(exporter, output, plank1, plank2, MOD_ID + "/wooden_mosaics", path_prefix);
     }
-    protected static void offerTerracottaTileRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible terracotta1, ItemConvertible terracotta2, String path_prefix) {
+    protected static void offerTerracottaTileRecipe(RecipeExporter exporter, ItemConvertible output, ItemConvertible terracotta1, ItemConvertible terracotta2, String path_prefix) {
         offerCheckerPatternRecipe(exporter, output, terracotta1, terracotta2, MOD_ID + "/terracotta_tiles", path_prefix);
     }
 
-    protected static void offerCheckerPatternRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible input1, ItemConvertible input2, String group, String path_prefix) {
+    protected static void offerCheckerPatternRecipe(RecipeExporter exporter, ItemConvertible output, ItemConvertible input1, ItemConvertible input2, String group, String path_prefix) {
         ShapedRecipeJsonBuilder
                 .create(RecipeCategory.MISC, output, 1)
                 .pattern("FS")
@@ -55,7 +53,7 @@ public abstract class AFMRecipieProvider extends FabricRecipeProvider {
                 .offerTo(exporter, path_prefix + getRecipeName(output));
     }
 
-    protected static void offerChangeRecipie(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible input, String group, String path_prefix) {
+    protected static void offerChangeRecipie(RecipeExporter exporter, ItemConvertible output, ItemConvertible input, String group, String path_prefix) {
         ShapelessRecipeJsonBuilder
                 .create(RecipeCategory.MISC, output, 1)
                 .input(input)
@@ -64,7 +62,7 @@ public abstract class AFMRecipieProvider extends FabricRecipeProvider {
                 .offerTo(exporter, path_prefix + getRecipeName(output));
     }
 
-    protected static void offerColorChangeRecipie(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, Ingredient input, ItemConvertible dye, String group, String path_prefix) {
+    protected static void offerColorChangeRecipie(RecipeExporter exporter, ItemConvertible output, Ingredient input, ItemConvertible dye, String group, String path_prefix) {
         ShapelessRecipeJsonBuilder
                 .create(RecipeCategory.MISC, output, 1)
                 .input(input)
@@ -74,7 +72,7 @@ public abstract class AFMRecipieProvider extends FabricRecipeProvider {
                 .offerTo(exporter, path_prefix + getRecipeName(output) + "_color_change");
     }
 
-    protected static void offerIlluminatedCabinetRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible illuminated_cabinet, ItemConvertible cabinet) {
+    protected static void offerIlluminatedCabinetRecipe(RecipeExporter exporter, ItemConvertible illuminated_cabinet, ItemConvertible cabinet) {
         offerDoubleInputShapelessRecipe(
                 exporter,
                 illuminated_cabinet,
@@ -86,7 +84,7 @@ public abstract class AFMRecipieProvider extends FabricRecipeProvider {
         );
     }
 
-    protected static void offerDoubleInputShapelessRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible input1, ItemConvertible input2, @Nullable String group, int outputCount, String path_prefix) {
+    protected static void offerDoubleInputShapelessRecipe(RecipeExporter exporter, ItemConvertible output, ItemConvertible input1, ItemConvertible input2, @Nullable String group, int outputCount, String path_prefix) {
         ShapelessRecipeJsonBuilder
                 .create(RecipeCategory.MISC, output, outputCount)
                 .input(input1)
@@ -96,7 +94,7 @@ public abstract class AFMRecipieProvider extends FabricRecipeProvider {
                 .criterion(hasItem(input2), conditionsFromItem(input2))
                 .offerTo(exporter, path_prefix + getRecipeName(output));
     }
-    protected static void offerTripleInputShapelessRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible input1, ItemConvertible input2, ItemConvertible input3, @Nullable String group, int outputCount, String path_prefix) {
+    protected static void offerTripleInputShapelessRecipe(RecipeExporter exporter, ItemConvertible output, ItemConvertible input1, ItemConvertible input2, ItemConvertible input3, @Nullable String group, int outputCount, String path_prefix) {
         ShapelessRecipeJsonBuilder
                 .create(RecipeCategory.MISC, output, outputCount)
                 .input(input1)
@@ -109,7 +107,7 @@ public abstract class AFMRecipieProvider extends FabricRecipeProvider {
                 .offerTo(exporter, path_prefix + getRecipeName(output));
     }
 
-    protected static void offerColouredTorchRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible glowingPowder, int glowingPowderAmount, @Nullable String group, String path_prefix) {
+    protected static void offerColouredTorchRecipe(RecipeExporter exporter, ItemConvertible output, ItemConvertible glowingPowder, int glowingPowderAmount, @Nullable String group, String path_prefix) {
         ShapelessRecipeJsonBuilder
                 .create(RecipeCategory.MISC, output, 2)
                 .input(Items.STICK)
@@ -121,7 +119,7 @@ public abstract class AFMRecipieProvider extends FabricRecipeProvider {
                 .criterion(hasItem(glowingPowder), conditionsFromItem(glowingPowder))
                 .offerTo(exporter, path_prefix + getRecipeName(output));
     }
-    protected static void offerColouredTorchUpgradeRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible weakerColouredTorch, ItemConvertible glowingPowder, int glowingPowderAmount, @Nullable String group, String path_prefix) {
+    protected static void offerColouredTorchUpgradeRecipe(RecipeExporter exporter, ItemConvertible output, ItemConvertible weakerColouredTorch, ItemConvertible glowingPowder, int glowingPowderAmount, @Nullable String group, String path_prefix) {
         ShapelessRecipeJsonBuilder
                 .create(RecipeCategory.MISC, output)
                 .input(weakerColouredTorch)
@@ -132,7 +130,7 @@ public abstract class AFMRecipieProvider extends FabricRecipeProvider {
                 .offerTo(exporter, path_prefix + getRecipeName(output));
     }
 
-    protected static void offerCandlestickRecipie(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible ingot, String path_prefix) {
+    protected static void offerCandlestickRecipie(RecipeExporter exporter, ItemConvertible output, ItemConvertible ingot, String path_prefix) {
         ShapedRecipeJsonBuilder
                 .create(RecipeCategory.DECORATIONS, output)
                 .pattern("I ")
@@ -151,7 +149,7 @@ public abstract class AFMRecipieProvider extends FabricRecipeProvider {
                 .offerTo(exporter, path_prefix + "reversed/" + getRecipeName(output));
     }
 
-    protected static void offerLightStripRecipie(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible glowingPowder, String path_prefix) {
+    protected static void offerLightStripRecipie(RecipeExporter exporter, ItemConvertible output, ItemConvertible glowingPowder, String path_prefix) {
         ShapedRecipeJsonBuilder
                 .create(RecipeCategory.DECORATIONS, output, 2)
                 .pattern("QQQ")

@@ -1,5 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.cabinet;
 
+import com.mojang.serialization.MapCodec;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
@@ -44,6 +45,8 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
     protected static final BooleanProperty OPEN = Properties.OPEN;
     protected static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 
+    protected static final MapCodec<CabinetBlock> CODEC = createCodec(CabinetBlock::new);
+
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(OPEN);
@@ -67,6 +70,11 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
                 .with(OPEN, false)
                 .with(Properties.HORIZONTAL_FACING, Direction.SOUTH)
                 .with(Properties.WATERLOGGED, false));
+    }
+
+    @Override
+    protected MapCodec<? extends HorizontalFacingBlock> getCodec() {
+        return CODEC;
     }
 
 

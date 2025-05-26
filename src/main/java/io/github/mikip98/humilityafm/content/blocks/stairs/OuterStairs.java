@@ -1,5 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.stairs;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.fluid.FluidState;
@@ -36,12 +37,19 @@ public class OuterStairs extends HorizontalFacingBlock implements Waterloggable 
 
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
 
+    protected static final MapCodec<OuterStairs> CODEC = createCodec(OuterStairs::new);
+
     public OuterStairs(Settings settings) {
         super(settings);
         setDefaultState(getStateManager().getDefaultState()
                 .with(Properties.HORIZONTAL_FACING, Direction.SOUTH)
                 .with(Properties.WATERLOGGED, false)
                 .with(Properties.BLOCK_HALF, BlockHalf.BOTTOM));
+    }
+
+    @Override
+    protected MapCodec<? extends HorizontalFacingBlock> getCodec() {
+        return CODEC;
     }
 
     @Override
