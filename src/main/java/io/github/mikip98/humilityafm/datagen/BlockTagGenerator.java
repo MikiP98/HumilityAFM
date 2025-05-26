@@ -2,6 +2,7 @@ package io.github.mikip98.humilityafm.datagen;
 
 import io.github.mikip98.humilityafm.content.ModBlockTags;
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
+import io.github.mikip98.humilityafm.generators.CandlestickGenerator;
 import io.github.mikip98.humilityafm.generators.TerracottaTilesGenerator;
 import io.github.mikip98.humilityafm.generators.WoodenMosaicGenerator;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
@@ -72,16 +73,16 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
                 .add(getId("jack_o_lantern_redstone"))
                 .add(getId("jack_o_lantern_soul"));
         getOrCreateTagBuilder(ModBlockTags.COLOURED_JACK_O_LANTERNS)
-                .add(getIds(Arrays.stream(GenerationData.vanillaColorPallet).map(s -> "coloured_weak_jack_o_lantern_" + s + "_weak")))
-                .add(getIds(Arrays.stream(GenerationData.vanillaColorPallet).map(s -> "coloured_weak_jack_o_lantern_" + s)))
-                .add(getIds(Arrays.stream(GenerationData.vanillaColorPallet).map(s -> "coloured_weak_jack_o_lantern_" + s + "_strong")));
+                .add(BlockRegistry.COLOURED_WEAK_JACK_O_LANTERNS)
+                .add(BlockRegistry.COLOURED_WEAK_JACK_O_LANTERNS)
+                .add(BlockRegistry.COLOURED_STRONG_JACK_O_LANTERNS);
 
         // Candlesticks
         FabricTagProvider<Block>.FabricTagBuilder tag = getOrCreateTagBuilder(ModBlockTags.CANDLESTICKS)
-                .add(getIds(Arrays.stream(GenerationData.vanillaCandlestickMetals).map(s -> "candlestick_" + s)))
-                .add(getIds(Arrays.stream(GenerationData.vanillaCandlestickMetals).map(s -> "candlestick_wall_" + s)));
-        GenerationData.vanillaRustableCandlestickMetals.forEach(metals -> tag.add(getIds(Arrays.stream(metals).map(s -> "candlestick_" + s))));
-        GenerationData.vanillaRustableCandlestickMetals.forEach(metals -> tag.add(getIds(Arrays.stream(metals).map(s -> "candlestick_wall_" + s))));
+                .add(CandlestickGenerator.candlestickClassicStandingVariants)
+                .add(CandlestickGenerator.candlestickClassicWallVariants);
+        CandlestickGenerator.candlestickRustableStandingVariants.forEach(tag::add);
+        CandlestickGenerator.candlestickRustableWallVariants.forEach(tag::add);
 
 
         // ------------ Vanilla Tags ------------
