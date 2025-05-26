@@ -55,9 +55,9 @@ public class BlockRegistry {
     // Jack o'Lanterns
     public static final Block JACK_O_LANTERN_REDSTONE = new JackOLanternRedStone();
     public static final Block JACK_O_LANTERN_SOUL = new JackOLanternSoul();
-    public static final Block[] COLOURED_WEAK_JACK_O_LANTERNS = Arrays.stream(GenerationData.vanillaColorPallet).map(s -> registerWithItem(new JackOLantern(), "jack_o_lantern_" + s + "_weak")).toArray(Block[]::new);
-    public static final Block[] COLOURED_JACK_O_LANTERNS = Arrays.stream(GenerationData.vanillaColorPallet).map(s -> registerWithItem(new JackOLantern(), "jack_o_lantern_" + s)).toArray(Block[]::new);
-    public static final Block[] COLOURED_STRONG_JACK_O_LANTERNS = Arrays.stream(GenerationData.vanillaColorPallet).map(s -> registerWithItem(new JackOLantern(), "jack_o_lantern_" + s + "_strong")).toArray(Block[]::new);
+    public static Block[] COLOURED_WEAK_JACK_O_LANTERNS;
+    public static Block[] COLOURED_JACK_O_LANTERNS;
+    public static Block[] COLOURED_STRONG_JACK_O_LANTERNS;
 
 
     public static void register() {
@@ -146,6 +146,12 @@ public class BlockRegistry {
                     "light_strip_"
             );
             putIntoItemGroup(ColouredFeatureSetGenerator.LightStripBlockVariants, ItemGroups.COLORED_BLOCKS);
+
+            // Register coloured Jack o'Lanterns
+            COLOURED_WEAK_JACK_O_LANTERNS = Arrays.stream(GenerationData.vanillaColorPallet).map(s -> registerWithItem(new JackOLantern(), "jack_o_lantern_" + s + "_weak")).toArray(Block[]::new);
+            COLOURED_JACK_O_LANTERNS = Arrays.stream(GenerationData.vanillaColorPallet).map(s -> registerWithItem(new JackOLantern(), "jack_o_lantern_" + s)).toArray(Block[]::new);
+            COLOURED_STRONG_JACK_O_LANTERNS = Arrays.stream(GenerationData.vanillaColorPallet).map(s -> registerWithItem(new JackOLantern(), "jack_o_lantern_" + s + "_strong")).toArray(Block[]::new);
+
         }
 
         // Register Forced corner stairs
