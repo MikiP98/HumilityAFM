@@ -7,6 +7,7 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.Direction;
+import org.jetbrains.annotations.NotNull;
 
 public class PlainHorizontalFacingBlock extends HorizontalFacingBlock {
     @Override
@@ -21,7 +22,7 @@ public class PlainHorizontalFacingBlock extends HorizontalFacingBlock {
     }
 
     @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
+    public @NotNull BlockState getPlacementState(ItemPlacementContext ctx) {
         return this.getDefaultState()
                 .with(Properties.HORIZONTAL_FACING, ctx.getHorizontalPlayerFacing().getOpposite());
     }

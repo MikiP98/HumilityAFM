@@ -11,7 +11,7 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 public class JackOLanternRedStone extends JackOLantern {
     public static final BooleanProperty LIT = Properties.LIT;
@@ -29,10 +29,9 @@ public class JackOLanternRedStone extends JackOLantern {
     }
 
 
-    @Nullable
     @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return this.getDefaultState().with(LIT, !ctx.getWorld().isReceivingRedstonePower(ctx.getBlockPos()));
+    public @NotNull BlockState getPlacementState(ItemPlacementContext ctx) {
+        return super.getPlacementState(ctx).with(LIT, !ctx.getWorld().isReceivingRedstonePower(ctx.getBlockPos()));
     }
 
     @SuppressWarnings("deprecation")
