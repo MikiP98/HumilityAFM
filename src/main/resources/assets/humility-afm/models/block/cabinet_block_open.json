@@ -54,7 +54,7 @@
 				"east": {"uv": [13, 14, 16, 15], "texture": "#planks"},
 				"south": {"uv": [2, 14, 14, 15], "texture": "#planks"},
 				"west": {"uv": [0, 14, 3, 15], "texture": "#planks"},
-				"up": {"uv": [14, 16, 2, 13], "texture": "#planks"},
+				"up": {"uv": [2, 16, 14, 13], "texture": "#planks"},
 				"down": {"uv": [2, 13, 14, 16], "texture": "#planks"}
 			}
 		},
