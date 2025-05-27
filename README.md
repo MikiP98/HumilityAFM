@@ -77,6 +77,8 @@ Lighten up your builds with unobtrusive light source
 
 ### High config customizability
 
+[//]: # (TODO: List all the config options)
+
 <br>
 
 
@@ -105,19 +107,19 @@ Lighten up your builds with unobtrusive light source
 - ~~Port to newer MC versions:~~
   - ~~1.20.4~~
   - ~~1.20.6~~
-
-### High priority:
-
-- Port to newer MC versions:
-  - 1.21.1
-- Rethink the README structure
-- Redo the window capture screenshots or at least crop the window app bar
-- Add coloured torches:
+  - ~~1.21.1~~
+- ~~Add coloured torches:~~
   - ~~`LED powder` into `Glowing powder`~~
   - ~~1 powder - weak torch; 2 powders - torch; 3 powders - strong torch~~
   - ~~Move LEDs to misc tab, alongside the powders~~
   - ~~Rename LEDs to light strips, consider enabling them by default?~~
   - ~~Make coloured Jack o'Lanterns~~
+
+### High priority:
+
+- Rethink the README structure
+- Redo the window capture screenshots or at least crop the window app bar
+- Add coloured torches:
   - Finish coloured torches and jack o'Lanterns textures
 - Fix Cabinet breaking animation being invisible:
   - Make sure all other breaking animations are also visible
@@ -152,7 +154,7 @@ Lighten up your builds with unobtrusive light source
 - Fix nether wood block variants burning
 - Add Illuminated Cabinet Brightening to the config
 - Port to newer MC versions:
-  - 1.21.4
+  - 1.21.4 *(need to wait for 'polymorph')*
 
 
 ### Low/unknown priority:
@@ -163,7 +165,7 @@ Lighten up your builds with unobtrusive light source
 - Server feature sync?
   - If done through a datapack, the blocks can be enabled by default on the client?
 - Port to newer MC versions:
-  - 1.21.5?
+  - 1.21.5? *(need to wait for 'polymorph')*
 - Backport to older MC versions?:
   - 1.19.2?
   - 1.18.2?
