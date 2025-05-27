@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec;
 import io.github.mikip98.humilityafm.content.ModProperties;
 import io.github.mikip98.humilityafm.util.data_types.CandleColor;
 import net.minecraft.block.*;
-import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -169,7 +169,7 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
                         1,
                         world.getRandom(),
                         (ServerPlayerEntity) player,
-                        () -> player.sendEquipmentBreakStatus(EquipmentSlot.byName(hand.name()))
+                        () -> player.sendEquipmentBreakStatus(LivingEntity.getSlotForHand(hand))
                 );
             }
             world.playSoundAtBlockCenter(pos, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
