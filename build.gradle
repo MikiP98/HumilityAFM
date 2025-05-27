@@ -70,7 +70,7 @@ dependencies {
 	}
 	modApi "com.terraformersmc:modmenu:${project.modmenu_version}"
 
-	// For some reason this does not work on 1.20.4 and 1.20.6
+	// For some reason this does not work on 1.20.4, 1.20.6 and 1.21.1... ???
 //	modRuntimeOnly "maven.modrinth:polymorph:${project.polymorph_version}"  // Required for Datagen to not fail
 //	runtimeOnly group: 'com.electronwill.night-config', name: 'core', version: '3.7.4'  // Required for 'polymorph'
 //	modRuntimeOnly "org.ladysnake.cardinal-components-api:cardinal-components-base:${polymorph_cca_version}"  // Required for 'polymorph'
