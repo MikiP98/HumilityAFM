@@ -217,7 +217,7 @@ public class ModelGenerator extends FabricModelProvider {
     protected static void generateLightStripModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
         int i = 0;
         for (String color : GenerationData.vanillaColorPallet) {
-            final Identifier coloured_concrete = new Identifier("block/" + color + "_concrete");
+            final Identifier coloured_concrete = Identifier.of("block/" + color + "_concrete");
             final TextureMap textureMap = new TextureMap()
                     .register(TextureKey.of("0"), coloured_concrete);
 
@@ -273,7 +273,7 @@ public class ModelGenerator extends FabricModelProvider {
             if (block_suffix_metals.contains(metal)) suffix = "_block";
 
             final TextureMap metalTextureMap = new TextureMap()
-                    .register(TextureKey.of("metal"), new Identifier("block/" + metal + suffix));
+                    .register(TextureKey.of("metal"), Identifier.of("block/" + metal + suffix));
 
             final Identifier candlestickStandingMetalModelId = CANDLESTICK_STANDING_MODEL.upload(
                     getId("block/candlestick/standing/" + metal + "/candlestick_" + metal),
@@ -331,7 +331,7 @@ public class ModelGenerator extends FabricModelProvider {
             for (String color : GenerationData.vanillaColorPallet) {
                 final CandleColor candleColor = CandleColor.getColor(color);
                 final TextureMap candleColorTextureMap = new TextureMap()
-                        .register(TextureKey.of("candle"), new Identifier("block/" + color + "_candle_lit"));
+                        .register(TextureKey.of("candle"), Identifier.of("block/" + color + "_candle_lit"));
 
                 String id = "block/candlestick/standing/" + metal + "/candlestick_" + metal + "_" + color;
                 final Identifier standingCandlestickColoredModelId = candlestickWithCandleStandingMetalModel.upload(
@@ -389,17 +389,17 @@ public class ModelGenerator extends FabricModelProvider {
             final Identifier innerStairsModelId = INNER_CORNER_STAIRS_MODEL.upload(
                     getId("block/corner_stairs/inner_stairs/inner_stairs_" + woodType),
                     new TextureMap()
-                            .register(TextureKey.TOP, new Identifier("block/" + woodType + "_planks"))
-                            .register(TextureKey.BOTTOM, new Identifier("block/" + woodType + "_planks"))
-                            .register(TextureKey.SIDE, new Identifier("block/" + woodType + "_planks")),
+                            .register(TextureKey.TOP, Identifier.of("block/" + woodType + "_planks"))
+                            .register(TextureKey.BOTTOM, Identifier.of("block/" + woodType + "_planks"))
+                            .register(TextureKey.SIDE, Identifier.of("block/" + woodType + "_planks")),
                     blockStateModelGenerator.modelCollector
             );
             final Identifier outerStairsModelId = OUTER_CORNER_STAIRS_MODEL.upload(
                     getId("block/corner_stairs/outer_stairs/outer_stairs_" + woodType),
                     new TextureMap()
-                            .register(TextureKey.TOP, new Identifier("block/" + woodType + "_planks"))
-                            .register(TextureKey.BOTTOM, new Identifier("block/" + woodType + "_planks"))
-                            .register(TextureKey.SIDE, new Identifier("block/" + woodType + "_planks")),
+                            .register(TextureKey.TOP, Identifier.of("block/" + woodType + "_planks"))
+                            .register(TextureKey.BOTTOM, Identifier.of("block/" + woodType + "_planks"))
+                            .register(TextureKey.SIDE, Identifier.of("block/" + woodType + "_planks")),
                     blockStateModelGenerator.modelCollector
             );
 
@@ -458,17 +458,17 @@ public class ModelGenerator extends FabricModelProvider {
                 final Identifier innerStairsModelId = INNER_CORNER_STAIRS_MODEL.upload(
                         getId("block/corner_stairs/inner_stairs/inner_stairs_" + material),
                         new TextureMap()
-                                .register(TextureKey.TOP, new Identifier(topTexture))
-                                .register(TextureKey.BOTTOM, new Identifier(bottomTexture))
-                                .register(TextureKey.SIDE, new Identifier(sideTexture)),
+                                .register(TextureKey.TOP, Identifier.of(topTexture))
+                                .register(TextureKey.BOTTOM, Identifier.of(bottomTexture))
+                                .register(TextureKey.SIDE, Identifier.of(sideTexture)),
                         blockStateModelGenerator.modelCollector
                 );
                 final Identifier outerStairsModelId = OUTER_CORNER_STAIRS_MODEL.upload(
                         getId("block/corner_stairs/outer_stairs/outer_stairs_" + material),
                         new TextureMap()
-                                .register(TextureKey.TOP, new Identifier(topTexture))
-                                .register(TextureKey.BOTTOM, new Identifier(bottomTexture))
-                                .register(TextureKey.SIDE, new Identifier(sideTexture)),
+                                .register(TextureKey.TOP, Identifier.of(topTexture))
+                                .register(TextureKey.BOTTOM, Identifier.of(bottomTexture))
+                                .register(TextureKey.SIDE, Identifier.of(sideTexture)),
                         blockStateModelGenerator.modelCollector
                 );
 
@@ -491,8 +491,8 @@ public class ModelGenerator extends FabricModelProvider {
                 final Identifier woodenMosaicModelId = CHECKER_2X2_MODEL.upload(
                         getId("block/wooden_mosaic/wooden_mosaic_" + woodType + "_" + woodType2),
                         new TextureMap()
-                                .register(TextureKey.of("1"), new Identifier("block/" + woodType + "_planks"))
-                                .register(TextureKey.of("2"), new Identifier("block/" + woodType2 + "_planks")),
+                                .register(TextureKey.of("1"), Identifier.of("block/" + woodType + "_planks"))
+                                .register(TextureKey.of("2"), Identifier.of("block/" + woodType2 + "_planks")),
                         blockStateModelGenerator.modelCollector
                 );
                 blockStateModelGenerator.registerParentedItemModel(WoodenMosaicGenerator.woodenMosaicVariants[i], woodenMosaicModelId);
@@ -511,8 +511,8 @@ public class ModelGenerator extends FabricModelProvider {
                 final Identifier terracottaTileModelId = CHECKER_2X2_MODEL.upload(
                         getId("block/terracotta_tiles/terracotta_tiles_" + color + "_" + color2),
                         new TextureMap()
-                                .register(TextureKey.of("1"), new Identifier("block/" + color + "_terracotta"))
-                                .register(TextureKey.of("2"), new Identifier("block/" + color2 + "_terracotta")),
+                                .register(TextureKey.of("1"), Identifier.of("block/" + color + "_terracotta"))
+                                .register(TextureKey.of("2"), Identifier.of("block/" + color2 + "_terracotta")),
                         blockStateModelGenerator.modelCollector
                 );
                 blockStateModelGenerator.registerParentedItemModel(TerracottaTilesGenerator.terracottaTilesVariants[i], terracottaTileModelId);
@@ -528,7 +528,7 @@ public class ModelGenerator extends FabricModelProvider {
         for (String woodType : GenerationData.vanillaWoodTypes) {
             final TextureMap plankTextureMap = new TextureMap().register(
                     TextureKey.of("planks"),
-                    new Identifier("block/" + woodType + "_planks")
+                    Identifier.of("block/" + woodType + "_planks")
             );
 
             final Identifier woodTypeCabinetId = CABINET_BLOCK_MODEL.upload(
@@ -574,7 +574,7 @@ public class ModelGenerator extends FabricModelProvider {
             for (String color : GenerationData.vanillaColorPallet) {
                 final TextureMap woolTextureMap = new TextureMap().register(
                         TextureKey.of("wool"),
-                        new Identifier("block/" + color + "_wool")
+                        Identifier.of("block/" + color + "_wool")
                 );
                 final Identifier coloredCabinet = woodTypeCabinetModel.upload(
                         getId("block/cabinet/closed/" + woodType + "/cabinet_block_" + woodType + "_" + color),

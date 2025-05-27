@@ -39,6 +39,6 @@ public class ModBlockTags {
 
 
     // Vanilla Tags
-    public static final TagKey<Block> AXE_MINEABLE = TagKey.of(RegistryKeys.BLOCK, new Identifier("minecraft:mineable/axe"));
-    public static final TagKey<Block> PICKAXE_MINEABLE = TagKey.of(RegistryKeys.BLOCK, new Identifier("minecraft:mineable/pickaxe"));
+    public static final TagKey<Block> AXE_MINEABLE = TagKey.of(RegistryKeys.BLOCK, Identifier.of("minecraft:mineable/axe"));
+    public static final TagKey<Block> PICKAXE_MINEABLE = TagKey.of(RegistryKeys.BLOCK, Identifier.of("minecraft:mineable/pickaxe"));
 }

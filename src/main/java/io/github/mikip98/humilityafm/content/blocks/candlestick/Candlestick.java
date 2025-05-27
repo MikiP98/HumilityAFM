@@ -12,6 +12,7 @@ import net.minecraft.item.*;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -167,9 +168,9 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
             if (!player.isCreative() && !world.isClient) {
                 heldItem.damage(
                         1,
-                        world.getRandom(),
+                        (ServerWorld) world,
                         (ServerPlayerEntity) player,
-                        () -> player.sendEquipmentBreakStatus(LivingEntity.getSlotForHand(hand))
+                        item -> player.sendEquipmentBreakStatus(item, LivingEntity.getSlotForHand(hand))
                 );
             }
             world.playSoundAtBlockCenter(pos, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0f, 1.0f, true);

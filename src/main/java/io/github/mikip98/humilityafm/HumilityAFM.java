@@ -101,7 +101,7 @@ public class HumilityAFM implements ModInitializer {
 
 
 	public static Identifier getId(String name) {
-		return new Identifier(MOD_ID, name);
+		return Identifier.of(MOD_ID, name);
 	}
 	public static Identifier[] getIds(Stream<String> names) {
 		return names.map(HumilityAFM::getId).toArray(Identifier[]::new);

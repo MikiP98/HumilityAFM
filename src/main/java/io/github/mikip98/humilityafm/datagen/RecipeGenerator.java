@@ -368,6 +368,6 @@ public class RecipeGenerator extends AFMRecipieProvider {
 
 
     protected static Item getItemFromName(String name) {
-        return Registries.ITEM.get(new Identifier(name));
+        return Registries.ITEM.get(Identifier.of(name));
     }
 }

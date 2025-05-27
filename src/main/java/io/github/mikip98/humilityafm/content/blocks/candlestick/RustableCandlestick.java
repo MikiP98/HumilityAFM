@@ -3,6 +3,7 @@ package io.github.mikip98.humilityafm.content.blocks.candlestick;
 import io.github.mikip98.humilityafm.content.ModProperties;
 import io.github.mikip98.humilityafm.util.data_types.CandleColor;
 import net.minecraft.block.*;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
@@ -137,9 +138,9 @@ public class RustableCandlestick extends Candlestick {
                 world.setBlockState(pos, state.with(ModProperties.WAXED, false), Block.NOTIFY_ALL);
                 if (!player.isCreative() && !world.isClient) heldItem.damage(
                         1,
-                        world.getRandom(),
+                        (ServerWorld) world,
                         (ServerPlayerEntity) player,
-                        () -> player.sendEquipmentBreakStatus(LivingEntity.getSlotForHand(hand))
+                        item -> player.sendEquipmentBreakStatus(item, LivingEntity.getSlotForHand(hand))
                 );
                 emmitWaxOffParticles(state, world, pos);
                 world.playSoundAtBlockCenter(pos, SoundEvents.ITEM_AXE_WAX_OFF, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
