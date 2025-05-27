@@ -24,7 +24,7 @@ public class JackOLanternRedStone extends JackOLantern {
 
 
     public JackOLanternRedStone() {
-        super(FabricBlockSettings.copyOf(defaultSettings).luminance(7));
+        super(FabricBlockSettings.copyOf(defaultSettings).luminance((state) -> state.get(LIT) ? 7 : 0));
         setDefaultState(getDefaultState().with(LIT, true));
     }
 
