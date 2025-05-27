@@ -63,10 +63,10 @@ public class BlockRegistry {
     public static void register() {
         // ............ TEST BLOCKS & BLOCK ITEMS ............
         // Register Cabinets
-        register(CABINET_BLOCK, "cabinet_block");
-        register(ILLUMINATED_CABINET_BLOCK, "illuminated_cabinet_block");
-        register(FLOOR_CABINET_BLOCK, "floor_cabinet_block");
-        register(FLOOR_ILLUMINATED_CABINET_BLOCK, "floor_illuminated_cabinet_block");
+        register(CABINET_BLOCK, "wall_cabinet_block");
+        register(ILLUMINATED_CABINET_BLOCK, "wall_illuminated_cabinet_block");
+        register(FLOOR_CABINET_BLOCK, "cabinet_block");
+        register(FLOOR_ILLUMINATED_CABINET_BLOCK, "illuminated_cabinet_block");
         // Register Stairs
         registerWithItem(OUTER_STAIRS, "outer_stairs");
         registerWithItem(INNER_STAIRS, "inner_stairs");
@@ -78,16 +78,15 @@ public class BlockRegistry {
         // Special Jack-O-Lanterns
         registerWithItem(JACK_O_LANTERN_REDSTONE, "jack_o_lantern_redstone");
         registerWithItem(JACK_O_LANTERN_SOUL, "jack_o_lantern_soul");
-//        putIntoItemGroup(JACK_O_LANTERN_REDSTONE, ItemGroups.);  // TODO: Put into item groups
-        // TODO: Make redstone and soul Jack-O-Lanterns them special
-        //  The redstone one can be redstone reactive.
-        //  The soul one can emmit soul particles.
+        putIntoItemGroup(JACK_O_LANTERN_REDSTONE, ItemGroups.COLORED_BLOCKS);
+        putIntoItemGroup(JACK_O_LANTERN_REDSTONE, ItemGroups.REDSTONE);
+        putIntoItemGroup(JACK_O_LANTERN_SOUL, ItemGroups.COLORED_BLOCKS);
 
         // Register cabinets
         registerArray(
                 CabinetBlockGenerator.cabinetBlockVariants,
                 CabinetBlockGenerator.cabinetBlockVariantsNames,
-                "cabinet_block_"
+                "wall_cabinet_block_"
         );
         registerFlammable(CabinetBlockGenerator.cabinetBlockVariants, ModConfig.cabinetBlockBurnTime, ModConfig.cabinetBlockFireSpread);
 
@@ -95,7 +94,7 @@ public class BlockRegistry {
         registerArray(
                 CabinetBlockGenerator.illuminatedCabinetBlockVariants,
                 CabinetBlockGenerator.cabinetBlockVariantsNames,
-                "illuminated_cabinet_block_"
+                "wall_illuminated_cabinet_block_"
         );
         registerFlammable(CabinetBlockGenerator.illuminatedCabinetBlockVariants, ModConfig.cabinetBlockBurnTime, ModConfig.cabinetBlockFireSpread);
 
@@ -103,7 +102,7 @@ public class BlockRegistry {
         registerArray(
                 CabinetBlockGenerator.floorCabinetBlockVariants,
                 CabinetBlockGenerator.cabinetBlockVariantsNames,
-                "floor_cabinet_block_"
+                "cabinet_block_"
         );
         registerFlammable(CabinetBlockGenerator.floorCabinetBlockVariants, ModConfig.cabinetBlockBurnTime, ModConfig.cabinetBlockFireSpread);
 
@@ -111,7 +110,7 @@ public class BlockRegistry {
         registerArray(
                 CabinetBlockGenerator.floorIlluminatedCabinetBlockVariants,
                 CabinetBlockGenerator.cabinetBlockVariantsNames,
-                "floor_illuminated_cabinet_block_"
+                "illuminated_cabinet_block_"
         );
         registerFlammable(CabinetBlockGenerator.floorIlluminatedCabinetBlockVariants, ModConfig.cabinetBlockBurnTime, ModConfig.cabinetBlockFireSpread);
 

@@ -3,8 +3,7 @@ package io.github.mikip98.humilityafm.datagen.language.util;
 import java.util.HashMap;
 import java.util.Map;
 
-@SuppressWarnings("unchecked")
-public class PrefixedHashMap<K, V> extends HashMap<K, V> {
+public class PrefixedHashMap extends HashMap<String, String> {
 
     protected final String prefix;
     public PrefixedHashMap(String prefix) {
@@ -13,13 +12,16 @@ public class PrefixedHashMap<K, V> extends HashMap<K, V> {
     }
 
     @Override
-    public V put(K key,V value) {
-        return super.put((K) (prefix + key), value);
+    public String put(String key, String value) {
+        return super.put(prefix + key, value);
+    }
+    public String putNoPrefix(String key, String value) {
+        return super.put(key, value);
     }
 
     @Override
-    public void putAll(Map<? extends K, ? extends V> m) {
-        for (Map.Entry<? extends K, ? extends V> entry : m.entrySet()) {
+    public void putAll(Map<? extends String, ? extends String> m) {
+        for (Entry<? extends String, ? extends String> entry : m.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
     }

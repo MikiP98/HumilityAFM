@@ -2,10 +2,13 @@ package io.github.mikip98.humilityafm.datagen.language;
 
 import io.github.mikip98.humilityafm.datagen.language.util.PrefixedHashMap;
 import io.github.mikip98.humilityafm.datagen.language.util.TranslationCategory;
+import io.github.mikip98.humilityafm.datagen.language.util.TranslationHashMap;
 import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
 import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
 import io.github.mikip98.humilityafm.generators.TerracottaTilesGenerator;
 import io.github.mikip98.humilityafm.generators.WoodenMosaicGenerator;
+import io.github.mikip98.humilityafm.registries.BlockRegistry;
+import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.GenerationData;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
@@ -47,34 +50,33 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
         ));
 
         // Blocks
-        Map<String, String> blockTranslations = new PrefixedHashMap<>("block." + MOD_ID + ".");
+        TranslationHashMap blockTranslations = new TranslationHashMap("block." + MOD_ID + ".");
         // Cabinet blocks
-        blockTranslations.put("cabinet_block", "Test Cabinet Block");  // Manual testing block
-        blockTranslations.put("illuminated_cabinet_block", "Test Illuminated Cabinet Block");  // Manual testing block
+        blockTranslations.put(ItemRegistry.CABINET_ITEM, "Test Cabinet Block");  // Manual testing block
+        blockTranslations.put(ItemRegistry.ILLUMINATED_CABINET_ITEM, "Test Illuminated Cabinet Block");  // Manual testing block
         blockTranslations.putAll(generateCabinetTranslations());
         // Wooden Mosaics
-        blockTranslations.put("wooden_mosaic", "Test Wooden Mosaic");  // Manual testing block
+        blockTranslations.put(BlockRegistry.WOODEN_MOSAIC, "Test Wooden Mosaic");  // Manual testing block
         blockTranslations.putAll(generateWoodenMosaicTranslations());
         // Terracotta Tiles
         blockTranslations.putAll(generateTerracottaTilesTranslations());
         // Inner and outer stairs
-        blockTranslations.put("inner_stairs", "Test Inner Stairs");  // Manual testing block
-        blockTranslations.put("outer_stairs", "Test Outer Stairs");  // Manual testing block
+        blockTranslations.put(BlockRegistry.INNER_STAIRS, "Test Inner Stairs");  // Manual testing block
+        blockTranslations.put(BlockRegistry.OUTER_STAIRS, "Test Outer Stairs");  // Manual testing block
         blockTranslations.putAll(generateInnerOuterStairsTranslations());
         // Miscellaneous blocks
         blockTranslations.putAll(generateMiscTranslations());
         // Coloured torches
         blockTranslations.putAll(generateColouredTorchesTranslations());  // Manual testing block
-        // LEDs
-        blockTranslations.put("led", "Test LED");  // Manual testing block
-        blockTranslations.putAll(generateLEDTranslations());
+        // Light Strips
+        blockTranslations.putAll(generateLightStripTranslations());
         // Candlesticks
         blockTranslations.putAll(generateCandlestickTranslations());
         // Submit the block translations
         categoryTranslations.put(TranslationCategory.BLOCKS, blockTranslations);
 
         // Items
-        Map<String, String> itemTranslations = new PrefixedHashMap<>("item." + MOD_ID + ".");
+        Map<String, String> itemTranslations = new PrefixedHashMap("item." + MOD_ID + ".");
         // LED Powders
         itemTranslations.putAll(generateGlowingPowderTranslations());
         // Submit the item translations
@@ -162,7 +164,7 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
         }
         return translations;
     }
-    public static Map<String, String> generateLEDTranslations() {
+    public static Map<String, String> generateLightStripTranslations() {
         Map<String, String> translations = new HashMap<>();
         for (String color : GenerationData.vanillaColorPallet) {
             String key = "led_" + color;
