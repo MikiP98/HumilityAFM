@@ -35,6 +35,7 @@ public class JackOLanternRedStone extends JackOLantern {
         return this.getDefaultState().with(LIT, !ctx.getWorld().isReceivingRedstonePower(ctx.getBlockPos()));
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
         if (!world.isClient) {
@@ -49,6 +50,7 @@ public class JackOLanternRedStone extends JackOLantern {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         if (!state.get(LIT) && !world.isReceivingRedstonePower(pos)) {
