@@ -121,8 +121,8 @@ public class ModelGenerator extends FabricModelProvider {
         blockStateModelGenerator.registerParentedItemModel(ItemRegistry.ILLUMINATED_CABINET_ITEM, getId("block/cabinet_block"));
         blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(BlockRegistry.CABINET_BLOCK, getId("block/cabinet_block"), getId("block/cabinet_block_open")));
         blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(BlockRegistry.ILLUMINATED_CABINET_BLOCK, getId("block/cabinet_block"), getId("block/cabinet_block_open")));
-        blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(BlockRegistry.FLOOR_CABINET_BLOCK, getId("block/floor_cabinet_block"), getId("block/floor_cabinet_block_open")));
-        blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK, getId("block/floor_cabinet_block"), getId("block/floor_cabinet_block_open")));
+        blockStateModelGenerator.blockStateCollector.accept(getFloorCabinetBlockstate(BlockRegistry.FLOOR_CABINET_BLOCK, getId("block/floor_cabinet_block"), getId("block/floor_cabinet_block_open")));
+        blockStateModelGenerator.blockStateCollector.accept(getFloorCabinetBlockstate(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK, getId("block/floor_cabinet_block"), getId("block/floor_cabinet_block_open")));
         // Wooden Mosaic
         blockStateModelGenerator.registerParentedItemModel(BlockRegistry.WOODEN_MOSAIC, getId("block/checker_2x2"));
         blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(BlockRegistry.WOODEN_MOSAIC, getId("block/checker_2x2")));
@@ -137,10 +137,10 @@ public class ModelGenerator extends FabricModelProvider {
         generateWoodenMosaicModelsAndBlockStates(blockStateModelGenerator);
         generateTerracottaTilesModelsAndBlockStates(blockStateModelGenerator);
         generateForcedCornerStairsModelsAndBlockstates(blockStateModelGenerator);
-        generateColouredTorchModelsAndBlockStates(blockStateModelGenerator);
-        generateLightStripModelsAndBlockStates(blockStateModelGenerator);
         // Optional blocks
         generateCandlestickModelsAndBlockStates(blockStateModelGenerator);
+        generateColouredTorchModelsAndBlockStates(blockStateModelGenerator);
+        generateLightStripModelsAndBlockStates(blockStateModelGenerator);
     }
 
     protected static void generateColouredTorchModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
