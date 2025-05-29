@@ -74,9 +74,9 @@ public class BlockLootTableGenerator extends FabricBlockLootTableProvider {
             Item[] itemSet = ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS.get(i);
             Block[] wallSet = CandlestickGenerator.candlestickRustableWallVariants.get(i);
             Block[] standingSet = CandlestickGenerator.candlestickRustableStandingVariants.get(i);
-            for (int j = 0; j < ItemRegistry.CANDLESTICK_ITEM_VARIANTS.length; ++j) {
-                addDrop(wallSet[i], itemSet[i]);
-                addDrop(standingSet[i], itemSet[i]);
+            for (int j = 0; j < itemSet.length; ++j) {
+                addDrop(wallSet[j], itemSet[j]);
+                addDrop(standingSet[j], itemSet[j]);
             }
         }
 
