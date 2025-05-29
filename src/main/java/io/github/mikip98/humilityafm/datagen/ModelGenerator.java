@@ -106,6 +106,11 @@ public class ModelGenerator extends FabricModelProvider {
             Optional.of(getId("block/light_strip_outer")),
             Optional.empty()
     );
+    // Jack o'Lantern template model
+    protected static final Model JACK_O_LANTERN_TEMPLATE_MODEL = new Model(
+            Optional.of(getId("block/jack_o_lantern_template")),
+            Optional.empty()
+    );
 
 
     public ModelGenerator(FabricDataOutput output) {
@@ -141,6 +146,50 @@ public class ModelGenerator extends FabricModelProvider {
         generateCandlestickModelsAndBlockStates(blockStateModelGenerator);
         generateColouredTorchModelsAndBlockStates(blockStateModelGenerator);
         generateLightStripModelsAndBlockStates(blockStateModelGenerator);
+        generateColouredJackOLanternModelsAndBlockStates(blockStateModelGenerator);
+    }
+
+    protected static void generateColouredJackOLanternModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
+        int i = 0;
+        for (String color : GenerationData.vanillaColorPallet) {
+            final Identifier colouredJackOLanternTexture = getId("block/coloured_jack_o_lantern/coloured_jack_o_lantern_" + color);
+            final TextureMap textureMap = new TextureMap()
+                    .register(TextureKey.FRONT, colouredJackOLanternTexture);
+
+            final Identifier jackOLanternModelId = JACK_O_LANTERN_TEMPLATE_MODEL.upload(
+                    getId("block/coloured_jack_o_lantern/coloured_jack_o_lantern_" + color),
+                    textureMap,
+                    blockStateModelGenerator.modelCollector
+            );
+            blockStateModelGenerator.registerParentedItemModel(BlockRegistry.COLOURED_JACK_O_LANTERNS[i], jackOLanternModelId);
+            blockStateModelGenerator.blockStateCollector.accept(getOrientableBlockState(
+                    BlockRegistry.COLOURED_JACK_O_LANTERNS[i],
+                    jackOLanternModelId
+            ));
+            ++i;
+        }
+    }
+
+    protected static VariantsBlockStateSupplier getOrientableBlockState(Block block, Identifier modelId) {
+        return VariantsBlockStateSupplier.create(block)
+                .coordinate(BlockStateVariantMap.create(Properties.HORIZONTAL_FACING)
+                        .register(
+                                Direction.NORTH,
+                                getVariant(modelId)
+                        )
+                        .register(
+                                Direction.SOUTH,
+                                getUVLockedVariantY(modelId, VariantSettings.Rotation.R180)
+                        )
+                        .register(
+                                Direction.WEST,
+                                getUVLockedVariantY(modelId, VariantSettings.Rotation.R270)
+                        )
+                        .register(
+                                Direction.EAST,
+                                getUVLockedVariantY(modelId, VariantSettings.Rotation.R90)
+                        )
+                );
     }
 
     protected static void generateColouredTorchModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
