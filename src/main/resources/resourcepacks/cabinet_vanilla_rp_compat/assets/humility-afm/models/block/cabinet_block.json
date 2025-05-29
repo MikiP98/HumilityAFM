@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench by Mikolaj Pokora",
 	"parent": "minecraft:block/cube_all",
 	"textures": {
-		"3": "block/glass",
+		"glass": "block/glass",
 		"wool": "block/black_wool",
 		"particle": "#planks",
 		"planks": "block/oak_planks"
