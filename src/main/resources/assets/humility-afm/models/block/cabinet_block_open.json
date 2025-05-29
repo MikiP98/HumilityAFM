@@ -73,29 +73,17 @@
 			}
 		},
 		{
-			"name": "door_outside",
-			"from": [16, 2, 4],
+			"name": "door_glass",
+			"from": [15, 2, 4],
 			"to": [16, 14, 16],
 			"rotation": {"angle": 45, "axis": "y", "origin": [15, 8, 3]},
 			"faces": {
-				"north": {"uv": [14, 2, 15, 14], "texture": "#planks"},
+				"north": {"uv": [14, 2, 15, 14], "texture": "#glass"},
 				"east": {"uv": [2, 2, 14, 14], "texture": "#glass"},
-				"south": {"uv": [1, 2, 2, 14], "texture": "#planks"},
-				"up": {"uv": [2, 2, 14, 1], "rotation": 270, "texture": "#planks"},
-				"down": {"uv": [14, 14, 2, 15], "rotation": 90, "texture": "#planks"}
-			}
-		},
-		{
-			"name": "door_inside",
-			"from": [15, 2, 4],
-			"to": [15, 14, 16],
-			"rotation": {"angle": 45, "axis": "y", "origin": [15, 8, 3]},
-			"faces": {
-				"north": {"uv": [14, 2, 15, 14], "texture": "#planks"},
-				"south": {"uv": [1, 2, 2, 14], "texture": "#planks"},
+				"south": {"uv": [1, 2, 2, 14], "texture": "#glass"},
 				"west": {"uv": [14, 2, 2, 14], "texture": "#glass"},
-				"up": {"uv": [2, 2, 14, 1], "rotation": 270, "texture": "#planks"},
-				"down": {"uv": [14, 14, 2, 15], "rotation": 90, "texture": "#planks"}
+				"up": {"uv": [2, 2, 14, 1], "rotation": 270, "texture": "#glass"},
+				"down": {"uv": [14, 14, 2, 15], "rotation": 90, "texture": "#glass"}
 			}
 		},
 		{
