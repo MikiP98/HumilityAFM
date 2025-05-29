@@ -114,19 +114,21 @@ Lighten up your builds with unobtrusive light source
   - ~~Move LEDs to misc tab, alongside the powders~~
   - ~~Rename LEDs to light strips, consider enabling them by default?~~
   - ~~Make coloured Jack o'Lanterns~~
+  - ~~Finish coloured torches and jack o'Lanterns textures~~
+  - ~~Fix built-in cabinet resourcepacks~~
 
 ### High priority:
 
 - Rethink the README structure
 - Redo the window capture screenshots or at least crop the window app bar
-- Add coloured torches:
-  - Finish coloured torches and jack o'Lanterns textures
 - Fix Cabinet breaking animation being invisible:
   - Make sure all other breaking animations are also visible
 
 
 ### Medium priority:
 
+- Finish built-in jack o'Lantern rp compat resourcepack
+- Finish built-in coloured torches rp compat resourcepack
 - Improve the speciality of Soul Jack o'Lantern :/
 - Add 'Shimmer' and 'Bliss' support for all the blocks from coloured feature set:
   - Coloured Torches
@@ -155,6 +157,22 @@ Lighten up your builds with unobtrusive light source
 - Add Illuminated Cabinet Brightening to the config
 - Port to newer MC versions:
   - 1.21.4 *(need to wait for 'polymorph')*
+- Expand Light Stips:
+  - Vertical mount
+  - Fit multiple Light Strips in 1 block
+- Make coloured flame particles for coloured torches
+- Add PBR data to:
+  - Cabinet front texture:
+    - LabPBR specular (pixels only)
+    - Optional resourcepacks for:
+      - LabPBR specular (full texture)
+  - Jack o'Lanterns textures:
+    - vanilla emission (coloured face only)
+    - LabPBR emission (coloured face only)
+    - Optional resourcepacks for:
+      - vanilla emission (full texture)
+      - LabPBR emission (full texture)
+- Redo coloured torch textures using Jack o'Lantern palette system
 
 
 ### Low/unknown priority:
