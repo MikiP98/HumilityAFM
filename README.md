@@ -17,9 +17,9 @@ PLS download the mod from Modrinth if you can
 
 ### Almost fully resourcepack compatible!
 
-HumilityAFM almost exclusively uses the vanilla textures,  
+HumilityAFM uses mostly the existing vanilla textures,  
 So most resourcepacks should work with it out of the box!  
-There are some included resourcepacks that improve the compatibility even more
+There are some included resourcepacks that improve the compatibility even more :)
 
 [//]: # (TODO: Add image with resourcepacks active)
 
