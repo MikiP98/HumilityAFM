@@ -84,83 +84,22 @@ Lighten up your builds with unobtrusive light source
 
 ## Roadmap:
 
-### Done in the development version:
-
-- ~~Fix long block breaking caused by mining tag failure when not all features are enabled~~
-- ~~Add Standing Candlestick variants~~
-- ~~Add floor and ceiling variants of the cabinets~~
-- ~~Convert all the Python code to Java Fabric Datagen~~
-- ~~Restructure the code a bit *(e.g. dedicated registry files)*~~
-- ~~Add `Fully resourcepack compatible!` to the `Features` section in the readme~~
-- ~~Compress candlesticks into 4 items for each metal type~~
-- ~~Move VoxelShapes from switches to maps or variables~~
-- ~~Fix Light Strips loosing their Block Entity~~
-- ~~Fix Light Strip brightening breaking on corner pieces~~
-- ~~Fix Light Strip voxel shape~~
-- ~~Fix candlestick waterlog ability~~
-- ~~Improve Cabinet rendering~~
-- ~~Improve config logic~~
-- ~~Fix Cabinet open and close models not matching and cabinet inside texture stretch~~
-- ~~De-separate the particle texture from the block texture in cabinets and others~~
-- ~~Make Redstone Jack o'Lanterns to turn off when powered~~
-- ~~Make Soul Jack o'Lanterns special in some way (for now particles)~~
-- ~~Port to newer MC versions:~~
-  - ~~1.20.4~~
-  - ~~1.20.6~~
-  - ~~1.21.1~~
-- ~~Add coloured torches:~~
-  - ~~`LED powder` into `Glowing powder`~~
-  - ~~1 powder - weak torch; 2 powders - torch; 3 powders - strong torch~~
-  - ~~Move LEDs to misc tab, alongside the powders~~
-  - ~~Rename LEDs to light strips, consider enabling them by default?~~
-  - ~~Make coloured Jack o'Lanterns~~
-  - ~~Finish coloured torches and jack o'Lanterns textures~~
-  - ~~Fix built-in cabinet resourcepacks~~
-
 ### High priority:
 
-- Rethink the README structure
 - Redo the window capture screenshots or at least crop the window app bar
 - Fix Cabinet breaking animation being invisible:
   - Make sure all other breaking animations are also visible
-
-
-### Medium priority:
-
 - Finish built-in jack o'Lantern rp compat resourcepack
 - Finish built-in coloured torches rp compat resourcepack
-- Improve the speciality of Soul Jack o'Lantern :/
 - Add 'Shimmer' and 'Bliss' support for all the blocks from coloured feature set:
   - Coloured Torches
   - Coloured Jack o'Lanterns
   - Light Strips
-- Add Fancy carpets
-- Add hanging pots
-- Add hanging candlesticks
-- Add more candlestick variants:
-  - small, medium, large, etc.
 - Re-add Better Nether built-in support
 - Add Better End built-in support
 - Add Biomes o' Plenty built-in support
-- Add correct map colours to generated blocks:
-  - Cabinets and Illuminated Cabinets
-  - Candlesticks
-  - Wooden Mosaics
-  - Terracotta Tiles
-  - Light Strips
-  - Coloured Torches
-  - Jack o'Lanterns
-  - Forced Corner Stairs
-- Rethink cabinet opening, item insertion and removal, and such
-- Add the ability to rotate items displayed in the cabinets
 - Fix nether wood block variants burning
 - Add Illuminated Cabinet Brightening to the config
-- Port to newer MC versions:
-  - 1.21.4 *(need to wait for 'polymorph')*
-- Expand Light Stips:
-  - Vertical mount
-  - Fit multiple Light Strips in 1 block
-- Make coloured flame particles for coloured torches
 - Add PBR data to:
   - Cabinet front texture:
     - LabPBR specular (pixels only)
@@ -174,6 +113,31 @@ Lighten up your builds with unobtrusive light source
       - LabPBR emission (full texture)
 - Redo coloured torch textures using Jack o'Lantern palette system
 
+### Medium priority:
+
+- Improve the speciality of Soul Jack o'Lantern :/
+- Add Fancy carpets
+- Add hanging pots
+- Add hanging candlesticks
+- Add more candlestick variants:
+  - small, medium, large, etc.
+- Add correct map colours to generated blocks:
+  - Cabinets and Illuminated Cabinets
+  - Candlesticks
+  - Wooden Mosaics
+  - Terracotta Tiles
+  - Light Strips
+  - Coloured Torches
+  - Jack o'Lanterns
+  - Forced Corner Stairs
+- Rethink cabinet opening, item insertion and removal, and such
+- Add the ability to rotate items displayed in the cabinets
+- Port to newer MC versions:
+  - 1.21.4 *(need to wait for 'polymorph')*
+- Expand Light Stips:
+  - Vertical mount
+  - Fit multiple Light Strips in 1 block
+- Make coloured flame particles for coloured torches
 
 ### Low/unknown priority:
 
