@@ -211,6 +211,15 @@ Lighten up your builds with unobtrusive light source
 
 ## FAQ:
 
+**Q:** Can you update/port the mod to MC x.x.x?  
+**A:** Depends, I'm interested in supporting multiple MC versions, but can't support all of them.  
+If you want support for specific MC version pls create an [issue on GitHub](https://github.com/MikiP98/HumilityAFM/issues)
+
+**Q:** Can you port to mod to forge?
+**A:** I wanted this to be a forge mod, but I just could get even the empty template to work and I gave up.  
+I'm not planing on porting the mod myself, but if you are interested in porting it yourself, you can, pls let me know of such projects on Github :)  
+You can also use the mod [Kilt](https://github.com/KiltMC/Kilt) to run forge mods on fabric
+
 **Q:** Why don’t I see *Light Strips* / *Coloured Torches* / *Coloured Jack o'Lanterns* in my game?  
 **A:** You need to enable coloured feature set in the config and restart the game. The coloured torches are in beta, and I don't want to separate any of them from each other
 
