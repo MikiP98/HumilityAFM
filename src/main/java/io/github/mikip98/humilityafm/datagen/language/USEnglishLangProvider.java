@@ -52,7 +52,7 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
         ));
 
         // Blocks
-        TranslationHashMap blockTranslations = new TranslationHashMap("block." + MOD_ID + ".");
+        TranslationHashMap blockTranslations = new TranslationHashMap("item." + MOD_ID + ".");
         // Cabinet blocks
         blockTranslations.put(ItemRegistry.CABINET_ITEM, "Test Cabinet Block");  // Manual testing block
         blockTranslations.put(ItemRegistry.ILLUMINATED_CABINET_ITEM, "Test Illuminated Cabinet Block");  // Manual testing block
@@ -91,8 +91,8 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
         Map<String, String> translations = new HashMap<>();
         for (String variant : CabinetBlockGenerator.cabinetBlockVariantsNames) {
             String formattedName = formatName(variant);
-            translations.put("cabinet_block_" + variant, formattedName + " cabinet");
-            translations.put("illuminated_cabinet_block_" + variant, formattedName + " illuminated cabinet");
+            translations.put("cabinet_" + variant, formattedName + " cabinet");
+            translations.put("illuminated_cabinet_" + variant, formattedName + " illuminated cabinet");
         }
         return translations;
     }
