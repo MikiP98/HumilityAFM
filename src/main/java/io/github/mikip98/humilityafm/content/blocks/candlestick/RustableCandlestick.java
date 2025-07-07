@@ -3,7 +3,6 @@ package io.github.mikip98.humilityafm.content.blocks.candlestick;
 import io.github.mikip98.humilityafm.content.ModProperties;
 import io.github.mikip98.humilityafm.util.data_types.CandleColor;
 import net.minecraft.block.*;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
@@ -39,8 +38,8 @@ public class RustableCandlestick extends Candlestick {
         builder.add(ModProperties.WAXED);
     }
 
-    public RustableCandlestick() {
-        this(defaultSettings, null, null);
+    public RustableCandlestick(Settings settings) {
+        this(settings, null, null);
     }
     public RustableCandlestick(Settings settings, BlockState rustPreviousLevel, BlockState rustNextLevel) {
         super(settings);

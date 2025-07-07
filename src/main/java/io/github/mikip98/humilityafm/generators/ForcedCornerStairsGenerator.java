@@ -2,6 +2,7 @@ package io.github.mikip98.humilityafm.generators;
 
 import io.github.mikip98.humilityafm.content.blocks.stairs.InnerStairs;
 import io.github.mikip98.humilityafm.content.blocks.stairs.OuterStairs;
+import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.util.GenerationData;
 import io.github.mikip98.humilityafm.util.data_types.BlockStrength;
 import io.github.mikip98.humilityafm.util.data_types.Pair;
@@ -34,7 +35,7 @@ public class ForcedCornerStairsGenerator {
 
         int i = 0;
         // Generate wood stairs block variants
-        AbstractBlock.Settings WoodStairsBlockSettings = AbstractBlock.Settings.create()
+        AbstractBlock.Settings WoodStairsBlockSettings = Block.Settings.create()
                 .strength(GenerationData.vanillaWoodHardness, GenerationData.vanillaWoodResistance)
                 .requiresTool()
                 .sounds(BlockSoundGroup.WOOD);
@@ -43,7 +44,7 @@ public class ForcedCornerStairsGenerator {
         // Generate stony stairs block variants
         for (Pair<BlockStrength, String[]> entry : GenerationData.vanillaStonyMaterialsPerStrength) {
             BlockStrength blockStrength = entry.first();
-            AbstractBlock.Settings StonyStairsBlockSettings = AbstractBlock.Settings.create()
+            AbstractBlock.Settings StonyStairsBlockSettings = Block.Settings.create()
                     .strength(blockStrength.hardness(), blockStrength.resistance())
                     .requiresTool()
                     .sounds(BlockSoundGroup.STONE);  // TODO: Consider adding a custom sound group for stony materials
@@ -52,12 +53,12 @@ public class ForcedCornerStairsGenerator {
     }
 
 
-    protected static int createStairsBlockVariants(String[] stairsVariants, AbstractBlock.Settings variantSettings, int id) {
+    protected static int createStairsBlockVariants(String[] stairsVariants, Block.Settings variantSettings, int id) {
         // Generate stairs block variants
         for (String stairsVariant : stairsVariants) {
             innerOuterStairsBlockVariantsNames[id] = stairsVariant;
-            innerStairsBlockVariants[id] = new InnerStairs(variantSettings);
-            outerStairsBlockVariants[id] = new OuterStairs(variantSettings);
+            innerStairsBlockVariants[id] = BlockRegistry.registerWithItem("inner_stairs_" + stairsVariant, InnerStairs::new, variantSettings);
+            outerStairsBlockVariants[id] = BlockRegistry.registerWithItem("outer_stairs_" + stairsVariant, OuterStairs::new, variantSettings);
             ++id;
         }
         return id;

@@ -7,8 +7,9 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
 public class JackOLanternSoul extends JackOLantern {
-    public JackOLanternSoul() {
-        super(getDefaultSettings().luminance((ignored) -> 8));
+    public static Settings defaultSettings = getDefaultSettings().luminance((ignored) -> 8);
+    public JackOLanternSoul(Settings settings) {
+        super(settings);
     }
 
     @Override

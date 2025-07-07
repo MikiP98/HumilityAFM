@@ -32,8 +32,8 @@ public class FloorRustableCandlestick extends RustableCandlestick {
     }
 
 
-    public FloorRustableCandlestick() {
-        this(defaultSettings, null, null);
+    public FloorRustableCandlestick(Settings settings) {
+        this(settings, null, null);
     }
 
     public FloorRustableCandlestick(Settings settings, BlockState rustPreviousLevel, BlockState rustNextLevel) {

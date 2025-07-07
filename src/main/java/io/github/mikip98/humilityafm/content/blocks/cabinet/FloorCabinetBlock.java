@@ -30,9 +30,6 @@ public class FloorCabinetBlock extends CabinetBlock implements Waterloggable, Bl
     }
 
 
-    public FloorCabinetBlock() {
-        this(defaultSettings);
-    }
     public FloorCabinetBlock(Settings settings) {
         super(settings);
         setDefaultState(getDefaultState()

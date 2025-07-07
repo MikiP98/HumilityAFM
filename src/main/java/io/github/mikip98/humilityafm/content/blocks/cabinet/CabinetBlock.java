@@ -14,7 +14,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -42,7 +42,7 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
 
     protected static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
     protected static final BooleanProperty OPEN = Properties.OPEN;
-    protected static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
+    protected static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
 
     protected static final MapCodec<CabinetBlock> CODEC = createCodec(CabinetBlock::new);
 
@@ -53,9 +53,9 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
         builder.add(WATERLOGGED);
     }
 
-    protected static final AbstractBlock.Settings defaultSettings = getDefaultSettings();
-    public static AbstractBlock.Settings getDefaultSettings() {
-        return AbstractBlock.Settings.create()
+    public static final Settings defaultSettings = getDefaultSettings();
+    public static Settings getDefaultSettings() {
+        return Settings.create()
                 .strength(2.0f)
                 .requiresTool()
                 .nonOpaque()
@@ -63,9 +63,6 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
     }
 
 
-    public CabinetBlock() {
-        this(defaultSettings);
-    }
     public CabinetBlock(Settings settings) {
         super(settings);
         setDefaultState(getStateManager().getDefaultState()

@@ -152,11 +152,8 @@ public class LightStripBlock extends StairsBlock implements BlockEntityProvider 
     }
 
 
-    public static final AbstractBlock.Settings defaultSettings = AbstractBlock.Settings.create().strength(0.5f).sounds(BlockSoundGroup.GLASS).luminance((ignored) -> 9);
+    public static final Settings defaultSettings = Settings.create().strength(0.5f).sounds(BlockSoundGroup.GLASS).luminance((ignored) -> 9);
 
-    public LightStripBlock() {
-        super(Blocks.GLASS.getDefaultState(), defaultSettings);
-    }
     public LightStripBlock(Settings settings) {
         super(Blocks.GLASS.getDefaultState(), settings);
     }

@@ -6,6 +6,7 @@ import io.github.mikip98.humilityafm.content.blocks.candlestick.FloorCandlestick
 import io.github.mikip98.humilityafm.content.blocks.candlestick.FloorRustableCandlestick;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.RustableCandlestick;
 import io.github.mikip98.humilityafm.content.items.ModVerticallyAttachableBlockItem;
+import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.GenerationData;
 import net.minecraft.block.Block;
@@ -34,16 +35,19 @@ public class CandlestickGenerator {
         candlestickRustableStandingVariants = new ArrayList<>();
 
         for (int i = 0; i < GenerationData.vanillaCandlestickMetals.length; ++i) {
-            candlestickClassicWallVariants[i] = new Candlestick();
-            candlestickClassicStandingVariants[i] = new FloorCandlestick();
+            String metal = GenerationData.vanillaCandlestickMetals[i];
+            candlestickClassicWallVariants[i] = BlockRegistry.register("candlestick_wall_" + metal, Candlestick::new, Candlestick.defaultSettings);
+            candlestickClassicStandingVariants[i] = BlockRegistry.register("candlestick_" + metal, FloorCandlestick::new, FloorCandlestick.defaultSettings);
+            final int finalI = i;
             ItemRegistry.CANDLESTICK_ITEM_VARIANTS[i] = ItemRegistry.register(
-                    "candlestick_" + GenerationData.vanillaCandlestickMetals[i],
-                    new ModVerticallyAttachableBlockItem(
-                            candlestickClassicStandingVariants[i],
-                            candlestickClassicWallVariants[i],
-                            new Item.Settings(),
+                    "candlestick_" + metal,
+                    (settings) -> new ModVerticallyAttachableBlockItem(
+                            candlestickClassicStandingVariants[finalI],
+                            candlestickClassicWallVariants[finalI],
+                            settings,
                             Direction.DOWN
-                    )
+                    ),
+                    new Item.Settings()
             );
         }
 
@@ -53,16 +57,19 @@ public class CandlestickGenerator {
             FloorRustableCandlestick[] candlestickStandingMetalSet = new FloorRustableCandlestick[rustableMetals.length];
 
             for (int i = 0; i < rustableMetals.length; ++i) {
-                candlestickWallMetalSet[i] = new RustableCandlestick();
-                candlestickStandingMetalSet[i] = new FloorRustableCandlestick();
+                String metal = rustableMetals[i];
+                candlestickWallMetalSet[i] = (RustableCandlestick) BlockRegistry.register("candlestick_wall_" + metal, RustableCandlestick::new, RustableCandlestick.defaultSettings);
+                candlestickStandingMetalSet[i] = (FloorRustableCandlestick) BlockRegistry.register("candlestick_" + metal, FloorRustableCandlestick::new, FloorRustableCandlestick.defaultSettings);
+                final int finalI = i;
                 candlestickMetalSetItems[i] = ItemRegistry.register(
                         "candlestick_" + rustableMetals[i],
-                        new ModVerticallyAttachableBlockItem(
-                                candlestickStandingMetalSet[i],
-                                candlestickWallMetalSet[i],
-                                new Item.Settings(),
+                        (settings) -> new ModVerticallyAttachableBlockItem(
+                                candlestickStandingMetalSet[finalI],
+                                candlestickWallMetalSet[finalI],
+                                settings,
                                 Direction.DOWN
-                        )
+                        ),
+                        new Item.Settings()
                 );
             }
 

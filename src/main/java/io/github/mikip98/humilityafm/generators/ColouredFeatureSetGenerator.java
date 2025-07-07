@@ -2,6 +2,7 @@ package io.github.mikip98.humilityafm.generators;
 
 import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.content.blocks.LightStripBlock;
+import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.util.GenerationData;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -20,10 +21,11 @@ public class ColouredFeatureSetGenerator {
         if (!ModConfig.enableColouredFeatureSetBeta) return;
 
         for (byte i = 0; i < GenerationData.vanillaColorPallet.length; ++i) {
-            colouredTorchWeakVariants[i] = new TorchBlock(ParticleTypes.FLAME, AbstractBlock.Settings.copy(Blocks.TORCH).luminance((ignored) -> 7));
-            colouredTorchVariants[i] = new TorchBlock(ParticleTypes.FLAME, AbstractBlock.Settings.copy(Blocks.TORCH).luminance((ignored) -> 11));
-            colouredTorchStrongVariants[i] = new TorchBlock(ParticleTypes.FLAME, AbstractBlock.Settings.copy(Blocks.TORCH).luminance((ignored) -> 15));
-            LightStripBlockVariants[i] = new LightStripBlock();
+            String color = GenerationData.vanillaColorPallet[i];
+            colouredTorchWeakVariants[i] = BlockRegistry.registerWithItem("coloured_torch_" + color + "_weak", (settings) -> new TorchBlock(ParticleTypes.FLAME, settings), Block.Settings.copy(Blocks.TORCH).luminance((ignored) -> 7));
+            colouredTorchVariants[i] = BlockRegistry.registerWithItem("coloured_torch_" + color, (settings) -> new TorchBlock(ParticleTypes.FLAME, settings), Block.Settings.copy(Blocks.TORCH).luminance((ignored) -> 11));
+            colouredTorchStrongVariants[i] = BlockRegistry.registerWithItem("coloured_torch_" + color + "_strong", (settings) -> new TorchBlock(ParticleTypes.FLAME, settings), Block.Settings.copy(Blocks.TORCH).luminance((ignored) -> 15));
+            LightStripBlockVariants[i] = BlockRegistry.registerWithItem("light_strip_" + color, LightStripBlock::new, LightStripBlock.defaultSettings);
         }
     }
 }

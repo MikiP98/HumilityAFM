@@ -30,9 +30,6 @@ public class FloorCandlestick extends Candlestick {
         builder.add(Properties.LIT);
     }
 
-    public FloorCandlestick() {
-        this(defaultSettings);
-    }
     public FloorCandlestick(Settings settings) {
         super(settings, false);
         setDefaultState(getStateManager().getDefaultState()

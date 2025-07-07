@@ -10,10 +10,13 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
+import net.minecraft.world.block.WireOrientation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class JackOLanternRedStone extends JackOLantern {
     public static final BooleanProperty LIT = Properties.LIT;
+    public static final Settings defaultSettings = getDefaultSettings().luminance((state) -> state.get(LIT) ? 7 : 0);
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
@@ -22,8 +25,8 @@ public class JackOLanternRedStone extends JackOLantern {
     }
 
 
-    public JackOLanternRedStone() {
-        super(getDefaultSettings().luminance((state) -> state.get(LIT) ? 7 : 0));
+    public JackOLanternRedStone(Settings settings) {
+        super(settings);
         setDefaultState(getDefaultState().with(LIT, true));
     }
 
@@ -34,7 +37,7 @@ public class JackOLanternRedStone extends JackOLantern {
     }
 
     @Override
-    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
+    protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {
         if (!world.isClient) {
             boolean isLit = state.get(LIT);
             if (isLit == world.isReceivingRedstonePower(pos)) {

@@ -5,6 +5,7 @@ import io.github.mikip98.humilityafm.content.blocks.cabinet.FloorCabinetBlock;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.FloorIlluminatedCabinetBlock;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.IlluminatedCabinetBlock;
 import io.github.mikip98.humilityafm.content.items.DoubleVerticallyAttachableBlockItem;
+import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.GenerationData;
 import net.minecraft.block.Block;
@@ -24,8 +25,8 @@ public class CabinetBlockGenerator {
     // Vanilla
     public static Block[] cabinetBlockVariants;
     public static Block[] illuminatedCabinetBlockVariants;
-    public static FloorCabinetBlock[] floorCabinetBlockVariants;
-    public static FloorCabinetBlock[] floorIlluminatedCabinetBlockVariants;
+    public static Block[] floorCabinetBlockVariants;
+    public static Block[] floorIlluminatedCabinetBlockVariants;
 
 //    // Modded
 //    public static Block[] moddedCabinetBlockVariants;
@@ -40,19 +41,21 @@ public class CabinetBlockGenerator {
 
         cabinetBlockVariantsNames[i] = cabinetBlockVariantName;
 
-        cabinetBlockVariants[i] = new CabinetBlock();
-        illuminatedCabinetBlockVariants[i] = new IlluminatedCabinetBlock();
+        cabinetBlockVariants[i] = BlockRegistry.register("wall_cabinet_" + cabinetBlockVariantName, CabinetBlock::new, CabinetBlock.defaultSettings);
+        illuminatedCabinetBlockVariants[i] = BlockRegistry.register("wall_illuminated_cabinet_block_" + cabinetBlockVariantName, IlluminatedCabinetBlock::new, IlluminatedCabinetBlock.defaultSettings);
 
-        floorCabinetBlockVariants[i] = new FloorCabinetBlock();
-        floorIlluminatedCabinetBlockVariants[i] = new FloorIlluminatedCabinetBlock();
+        floorCabinetBlockVariants[i] = BlockRegistry.register("cabinet_" + cabinetBlockVariantName, FloorCabinetBlock::new, FloorCabinetBlock.defaultSettings);
+        floorIlluminatedCabinetBlockVariants[i] = BlockRegistry.register("illuminated_cabinet_block_" + cabinetBlockVariantName, FloorIlluminatedCabinetBlock::new, FloorIlluminatedCabinetBlock.defaultSettings);
 
         ItemRegistry.CABINET_ITEM_VARIANTS[i] = ItemRegistry.register(
-                new DoubleVerticallyAttachableBlockItem(floorCabinetBlockVariants[i], cabinetBlockVariants[i], new Item.Settings()),
-                "cabinet_" + cabinetBlockVariantName
+                "cabinet_" + cabinetBlockVariantName,
+                (settings) -> new DoubleVerticallyAttachableBlockItem(floorCabinetBlockVariants[i], cabinetBlockVariants[i], settings),
+                new Item.Settings()
         );
         ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS[i] = ItemRegistry.register(
-                new DoubleVerticallyAttachableBlockItem(floorIlluminatedCabinetBlockVariants[i], illuminatedCabinetBlockVariants[i], new Item.Settings()),
-                "illuminated_cabinet_" + cabinetBlockVariantName
+                "illuminated_cabinet_" + cabinetBlockVariantName,
+                (settings) -> new DoubleVerticallyAttachableBlockItem(floorIlluminatedCabinetBlockVariants[i], illuminatedCabinetBlockVariants[i], settings),
+                new Item.Settings()
         );
     }
 

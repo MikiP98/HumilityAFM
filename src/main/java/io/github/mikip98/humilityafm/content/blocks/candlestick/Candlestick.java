@@ -74,15 +74,15 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
     );  // Empty + Candle
 
 
-    public static AbstractBlock.Settings getDefaultSettings() {
-        return AbstractBlock.Settings.create()
+    public static Settings getDefaultSettings() {
+        return Settings.create()
                 .strength(0.5f)
                 .requiresTool()
                 .nonOpaque()
                 .sounds(BlockSoundGroup.METAL)
                 .luminance(state -> state.get(Properties.LIT) ? 4 : 0);
     }
-    protected static final AbstractBlock.Settings defaultSettings = getDefaultSettings();
+    public static final Settings defaultSettings = getDefaultSettings();
 
     protected static final EnumProperty<CandleColor> CANDLE_COLOR = ModProperties.CANDLE_COLOR;
 
@@ -97,9 +97,6 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
         builder.add(Properties.LIT);
     }
 
-    public Candlestick() {
-        this(defaultSettings);
-    }
     public Candlestick(Settings settings) {
         super(settings);
         setDefaultState(getDefaultState()
