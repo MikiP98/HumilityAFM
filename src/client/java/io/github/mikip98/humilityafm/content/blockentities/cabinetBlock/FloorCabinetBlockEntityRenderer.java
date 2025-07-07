@@ -9,10 +9,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ModelTransformationMode;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -61,8 +60,16 @@ public class FloorCabinetBlockEntityRenderer implements BlockEntityRenderer<Floo
         matrices.scale(scale, scale, scale);
 
         // Render the item inside the cabinet
-        final BakedModel model = MinecraftClient.getInstance().getItemRenderer().getModel(stack, null, null, 0);
-        MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformationMode.FIXED, false, matrices, vertexConsumers, light, overlay, model);
+        MinecraftClient.getInstance().getItemRenderer().renderItem(
+                stack,
+                ModelTransformationMode.FIXED,
+                light,
+                overlay,
+                matrices,
+                vertexConsumers,
+                blockEntity.getWorld(),
+                0
+        );
 
         // Mandatory call after GL calls
         matrices.pop();

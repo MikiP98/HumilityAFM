@@ -1,6 +1,7 @@
 package io.github.mikip98.humilityafm.generators;
 
 import io.github.mikip98.humilityafm.config.ModConfig;
+import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.util.GenerationData;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -34,7 +35,7 @@ public class TerracottaTilesGenerator {
             for (String terracottaType2 : terracottaTypes) {
                 if (terracottaType1.equals(terracottaType2)) continue;
                 terracottaTilesVariantsNames[i] = terracottaType1 + "_" + terracottaType2;
-                terracottaTilesVariants[i] = new Block(terracottaTilesSettings);
+                terracottaTilesVariants[i] = BlockRegistry.registerWithItem("terracotta_tiles_" + terracottaTilesVariantsNames[i], Block::new, terracottaTilesSettings);
                 i++;
             }
         }

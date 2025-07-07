@@ -1,6 +1,7 @@
 package io.github.mikip98.humilityafm.generators;
 
 import io.github.mikip98.humilityafm.config.ModConfig;
+import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.util.GenerationData;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -35,7 +36,7 @@ public class WoodenMosaicGenerator {
             for (String woodType2 : woodTypes) {
                 if (woodType1.equals(woodType2)) continue;
                 woodenMosaicVariantsNames[i] = woodType1 + "_" + woodType2;
-                woodenMosaicVariants[i] = new Block(woodenMosaicSettings);
+                woodenMosaicVariants[i] = BlockRegistry.registerWithItem("wooden_mosaic_" + woodenMosaicVariantsNames[i], Block::new, woodenMosaicSettings);
                 i++;
             }
         }
