@@ -13,12 +13,12 @@ import io.github.mikip98.humilityafm.util.GenerationData;
 import io.github.mikip98.humilityafm.util.data_types.BlockStrength;
 import io.github.mikip98.humilityafm.util.data_types.CandleColor;
 import io.github.mikip98.humilityafm.util.data_types.Pair;
+import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.block.enums.StairShape;
-import net.minecraft.data.client.*;
+import net.minecraft.client.data.*;
 import net.minecraft.item.Item;
 import net.minecraft.state.property.*;
 import net.minecraft.util.Identifier;
@@ -122,8 +122,8 @@ public class ModelGenerator extends FabricModelProvider {
     public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
         // ............ TEST BLOCKS & BLOCK ITEMS ............
         // Cabinet Blocks
-        blockStateModelGenerator.registerParentedItemModel(ItemRegistry.CABINET_ITEM, getId("block/cabinet_block"));
-        blockStateModelGenerator.registerParentedItemModel(ItemRegistry.ILLUMINATED_CABINET_ITEM, getId("block/cabinet_block"));
+        blockStateModelGenerator.registerItemModel(ItemRegistry.CABINET_ITEM, getId("block/cabinet_block"));
+        blockStateModelGenerator.registerItemModel(ItemRegistry.ILLUMINATED_CABINET_ITEM, getId("block/cabinet_block"));
         blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(BlockRegistry.CABINET_BLOCK, getId("block/cabinet_block"), getId("block/cabinet_block_open")));
         blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(BlockRegistry.ILLUMINATED_CABINET_BLOCK, getId("block/cabinet_block"), getId("block/cabinet_block_open")));
         blockStateModelGenerator.blockStateCollector.accept(getFloorCabinetBlockstate(BlockRegistry.FLOOR_CABINET_BLOCK, getId("block/floor_cabinet_block"), getId("block/floor_cabinet_block_open")));
@@ -362,7 +362,7 @@ public class ModelGenerator extends FabricModelProvider {
                 wallLitCandleColorModelMap.put(candleColor, wallCandlestickLitColoredModelId);
             }
 
-            blockStateModelGenerator.registerParentedItemModel(items[i], candlestickStandingMetalModelId);
+            blockStateModelGenerator.registerItemModel(items[i], candlestickStandingMetalModelId);
             blockStateModelGenerator.blockStateCollector.accept(getWallCandlestickBlockstate(
                     wallBlocks[i],
                     candlestickWallMetalModelId,
@@ -597,8 +597,8 @@ public class ModelGenerator extends FabricModelProvider {
                         blockStateModelGenerator.modelCollector
                 );
 
-                blockStateModelGenerator.registerParentedItemModel(ItemRegistry.CABINET_ITEM_VARIANTS[i], coloredCabinet);
-                blockStateModelGenerator.registerParentedItemModel(ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS[i], coloredCabinet);
+                blockStateModelGenerator.registerItemModel(ItemRegistry.CABINET_ITEM_VARIANTS[i], coloredCabinet);
+                blockStateModelGenerator.registerItemModel(ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS[i], coloredCabinet);
                 blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(CabinetBlockGenerator.cabinetBlockVariants[i], coloredCabinet, coloredCabinetOpen));
                 blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(CabinetBlockGenerator.illuminatedCabinetBlockVariants[i], coloredCabinet, coloredCabinetOpen));
                 blockStateModelGenerator.blockStateCollector.accept(getFloorCabinetBlockstate(CabinetBlockGenerator.floorCabinetBlockVariants[i], coloredFloorCabinet, coloredFloorCabinetOpen));
@@ -615,7 +615,7 @@ public class ModelGenerator extends FabricModelProvider {
             Identifier innerModel,
             Identifier outerModel
     ) {
-        DirectionProperty FACING = Properties.HORIZONTAL_FACING;
+        EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
         EnumProperty<BlockHalf> HALF = Properties.BLOCK_HALF;
         EnumProperty<StairShape> SHAPE = Properties.STAIR_SHAPE;
 
@@ -866,7 +866,7 @@ public class ModelGenerator extends FabricModelProvider {
             Map<CandleColor, Identifier> colouredCandleModels,
             Map<CandleColor, Identifier> litColouredCandleModels
     ) {
-        DirectionProperty FACING = Properties.HORIZONTAL_FACING;
+        EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
         BooleanProperty CANDLE = ModProperties.CANDLE;
         BooleanProperty LIT = Properties.LIT;
         EnumProperty<CandleColor> CANDLE_COLOR = ModProperties.CANDLE_COLOR;
