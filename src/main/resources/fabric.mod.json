@@ -34,8 +34,7 @@
 		"java": ">=21",
 		"fabric-api": "*",
 		"modmenu": "*",
-		"cloth-config2": "*",
-		"polymorph": "*"
+		"cloth-config2": "*"
 	},
 	"suggests": {
 		"shimmer": ">=0.2.0"
