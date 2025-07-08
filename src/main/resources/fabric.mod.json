@@ -37,7 +37,8 @@
 		"cloth-config2": "*"
 	},
 	"suggests": {
-		"shimmer": ">=0.2.0"
+		"shimmer": ">=0.2.0",
+		"polymorph": "*"
 	},
 	"configScreen": "io.github.mikip98.humilityafm.config.ModConfigScreen"
 }
