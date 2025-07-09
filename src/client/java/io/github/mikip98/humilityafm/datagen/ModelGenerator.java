@@ -19,17 +19,18 @@ import net.minecraft.block.Block;
 import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.block.enums.StairShape;
 import net.minecraft.client.data.*;
+import net.minecraft.client.render.model.json.*;
+import net.minecraft.state.property.Properties;
 import net.minecraft.item.Item;
 import net.minecraft.state.property.*;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.AxisRotation;
 import net.minecraft.util.math.Direction;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
+import static net.minecraft.client.data.BlockStateModelGenerator.createWeightedVariant;
 
 public class ModelGenerator extends FabricModelProvider {
     // Cabinet Models
@@ -170,24 +171,24 @@ public class ModelGenerator extends FabricModelProvider {
         }
     }
 
-    protected static VariantsBlockStateSupplier getOrientableBlockState(Block block, Identifier modelId) {
-        return VariantsBlockStateSupplier.create(block)
-                .coordinate(BlockStateVariantMap.create(Properties.HORIZONTAL_FACING)
+    protected static VariantsBlockModelDefinitionCreator getOrientableBlockState(Block block, Identifier modelId) {
+        return VariantsBlockModelDefinitionCreator.of(block)
+                .with(BlockStateVariantMap.models(Properties.HORIZONTAL_FACING)
                         .register(
                                 Direction.NORTH,
                                 getVariant(modelId)
                         )
                         .register(
                                 Direction.SOUTH,
-                                getUVLockedVariantY(modelId, VariantSettings.Rotation.R180)
+                                getUVLockedVariantY(modelId, AxisRotation.R180)
                         )
                         .register(
                                 Direction.WEST,
-                                getUVLockedVariantY(modelId, VariantSettings.Rotation.R270)
+                                getUVLockedVariantY(modelId, AxisRotation.R270)
                         )
                         .register(
                                 Direction.EAST,
-                                getUVLockedVariantY(modelId, VariantSettings.Rotation.R90)
+                                getUVLockedVariantY(modelId, AxisRotation.R90)
                         )
                 );
     }
@@ -609,7 +610,7 @@ public class ModelGenerator extends FabricModelProvider {
     }
 
 
-    protected static VariantsBlockStateSupplier getLightStripBlockstate(
+    protected static VariantsBlockModelDefinitionCreator getLightStripBlockstate(
             Block block,
             Identifier straightModel,
             Identifier innerModel,
@@ -619,33 +620,33 @@ public class ModelGenerator extends FabricModelProvider {
         EnumProperty<BlockHalf> HALF = Properties.BLOCK_HALF;
         EnumProperty<StairShape> SHAPE = Properties.STAIR_SHAPE;
 
-        return VariantsBlockStateSupplier.create(block)
-                .coordinate(BlockStateVariantMap.create(FACING, HALF, SHAPE)
+        return VariantsBlockModelDefinitionCreator.of(block)
+                .with(BlockStateVariantMap.models(FACING, HALF, SHAPE)
                         // East Bottom
                         .register(
                                 Direction.EAST, BlockHalf.BOTTOM, StairShape.INNER_LEFT,
-                                getUVLockedVariantX(innerModel, VariantSettings.Rotation.R180)
+                                getUVLockedVariantX(innerModel, AxisRotation.R180)
                         )
                         .register(
                                 Direction.EAST, BlockHalf.BOTTOM, StairShape.INNER_RIGHT,
-                                getUVLockedVariantXY(innerModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R90)
+                                getUVLockedVariantXY(innerModel, AxisRotation.R180, AxisRotation.R90)
                         )
                         .register(
                                 Direction.EAST, BlockHalf.BOTTOM, StairShape.OUTER_LEFT,
-                                getUVLockedVariantX(outerModel, VariantSettings.Rotation.R180)
+                                getUVLockedVariantX(outerModel, AxisRotation.R180)
                         )
                         .register(
                                 Direction.EAST, BlockHalf.BOTTOM, StairShape.OUTER_RIGHT,
-                                getUVLockedVariantXY(outerModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R90)
+                                getUVLockedVariantXY(outerModel, AxisRotation.R180, AxisRotation.R90)
                         )
                         .register(
                                 Direction.EAST, BlockHalf.BOTTOM, StairShape.STRAIGHT,
-                                getUVLockedVariantXY(straightModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R90)
+                                getUVLockedVariantXY(straightModel, AxisRotation.R180, AxisRotation.R90)
                         )
                         // East Top
                         .register(
                                 Direction.EAST, BlockHalf.TOP, StairShape.INNER_LEFT,
-                                getUVLockedVariantY(innerModel, VariantSettings.Rotation.R270)
+                                getUVLockedVariantY(innerModel, AxisRotation.R270)
                         )
                         .register(
                                 Direction.EAST, BlockHalf.TOP, StairShape.INNER_RIGHT,
@@ -653,7 +654,7 @@ public class ModelGenerator extends FabricModelProvider {
                         )
                         .register(
                                 Direction.EAST, BlockHalf.TOP, StairShape.OUTER_LEFT,
-                                getUVLockedVariantY(outerModel, VariantSettings.Rotation.R270)
+                                getUVLockedVariantY(outerModel, AxisRotation.R270)
                         )
                         .register(
                                 Direction.EAST, BlockHalf.TOP, StairShape.OUTER_RIGHT,
@@ -661,70 +662,70 @@ public class ModelGenerator extends FabricModelProvider {
                         )
                         .register(
                                 Direction.EAST, BlockHalf.TOP, StairShape.STRAIGHT,
-                                getUVLockedVariantY(straightModel, VariantSettings.Rotation.R270)
+                                getUVLockedVariantY(straightModel, AxisRotation.R270)
                         )
                         // North Bottom
                         .register(
                                 Direction.NORTH, BlockHalf.BOTTOM, StairShape.INNER_LEFT,
-                                getUVLockedVariantXY(innerModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R270)
+                                getUVLockedVariantXY(innerModel, AxisRotation.R180, AxisRotation.R270)
                         )
                         .register(
                                 Direction.NORTH, BlockHalf.BOTTOM, StairShape.INNER_RIGHT,
-                                getUVLockedVariantX(innerModel, VariantSettings.Rotation.R180)
+                                getUVLockedVariantX(innerModel, AxisRotation.R180)
                         )
                         .register(
                                 Direction.NORTH, BlockHalf.BOTTOM, StairShape.OUTER_LEFT,
-                                getUVLockedVariantXY(outerModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R270)
+                                getUVLockedVariantXY(outerModel, AxisRotation.R180, AxisRotation.R270)
                         )
                         .register(
                                 Direction.NORTH, BlockHalf.BOTTOM, StairShape.OUTER_RIGHT,
-                                getUVLockedVariantX(outerModel, VariantSettings.Rotation.R180)
+                                getUVLockedVariantX(outerModel, AxisRotation.R180)
                         )
                         .register(
                                 Direction.NORTH, BlockHalf.BOTTOM, StairShape.STRAIGHT,
-                                getUVLockedVariantX(straightModel, VariantSettings.Rotation.R180)
+                                getUVLockedVariantX(straightModel, AxisRotation.R180)
                         )
                         // North Top
                         .register(
                                 Direction.NORTH, BlockHalf.TOP, StairShape.INNER_LEFT,
-                                getUVLockedVariantY(innerModel, VariantSettings.Rotation.R180)
+                                getUVLockedVariantY(innerModel, AxisRotation.R180)
                         )
                         .register(
                                 Direction.NORTH, BlockHalf.TOP, StairShape.INNER_RIGHT,
-                                getUVLockedVariantY(innerModel, VariantSettings.Rotation.R270)
+                                getUVLockedVariantY(innerModel, AxisRotation.R270)
                         )
                         .register(
                                 Direction.NORTH, BlockHalf.TOP, StairShape.OUTER_LEFT,
-                                getUVLockedVariantY(outerModel, VariantSettings.Rotation.R180)
+                                getUVLockedVariantY(outerModel, AxisRotation.R180)
                         )
                         .register(
                                 Direction.NORTH, BlockHalf.TOP, StairShape.OUTER_RIGHT,
-                                getUVLockedVariantY(outerModel, VariantSettings.Rotation.R270)
+                                getUVLockedVariantY(outerModel, AxisRotation.R270)
                         )
                         .register(
                                 Direction.NORTH, BlockHalf.TOP, StairShape.STRAIGHT,
-                                getUVLockedVariantY(straightModel, VariantSettings.Rotation.R180)
+                                getUVLockedVariantY(straightModel, AxisRotation.R180)
                         )
                         // South Bottom
                         .register(
                                 Direction.SOUTH, BlockHalf.BOTTOM, StairShape.INNER_LEFT,
-                                getUVLockedVariantXY(innerModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R90)
+                                getUVLockedVariantXY(innerModel, AxisRotation.R180, AxisRotation.R90)
                         )
                         .register(
                                 Direction.SOUTH, BlockHalf.BOTTOM, StairShape.INNER_RIGHT,
-                                getUVLockedVariantXY(innerModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R180)
+                                getUVLockedVariantXY(innerModel, AxisRotation.R180, AxisRotation.R180)
                         )
                         .register(
                                 Direction.SOUTH, BlockHalf.BOTTOM, StairShape.OUTER_LEFT,
-                                getUVLockedVariantXY(outerModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R90)
+                                getUVLockedVariantXY(outerModel, AxisRotation.R180, AxisRotation.R90)
                         )
                         .register(
                                 Direction.SOUTH, BlockHalf.BOTTOM, StairShape.OUTER_RIGHT,
-                                getUVLockedVariantXY(outerModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R180)
+                                getUVLockedVariantXY(outerModel, AxisRotation.R180, AxisRotation.R180)
                         )
                         .register(
                                 Direction.SOUTH, BlockHalf.BOTTOM, StairShape.STRAIGHT,
-                                getUVLockedVariantXY(straightModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R180)
+                                getUVLockedVariantXY(straightModel, AxisRotation.R180, AxisRotation.R180)
                         )
                         // South Top
                         .register(
@@ -733,7 +734,7 @@ public class ModelGenerator extends FabricModelProvider {
                         )
                         .register(
                                 Direction.SOUTH, BlockHalf.TOP, StairShape.INNER_RIGHT,
-                                getUVLockedVariantY(innerModel, VariantSettings.Rotation.R90)
+                                getUVLockedVariantY(innerModel, AxisRotation.R90)
                         )
                         .register(
                                 Direction.SOUTH, BlockHalf.TOP, StairShape.OUTER_LEFT,
@@ -741,7 +742,7 @@ public class ModelGenerator extends FabricModelProvider {
                         )
                         .register(
                                 Direction.SOUTH, BlockHalf.TOP, StairShape.OUTER_RIGHT,
-                                getUVLockedVariantY(outerModel, VariantSettings.Rotation.R90)
+                                getUVLockedVariantY(outerModel, AxisRotation.R90)
                         )
                         .register(
                                 Direction.SOUTH, BlockHalf.TOP, StairShape.STRAIGHT,
@@ -750,49 +751,49 @@ public class ModelGenerator extends FabricModelProvider {
                         // West Bottom
                         .register(
                                 Direction.WEST, BlockHalf.BOTTOM, StairShape.INNER_LEFT,
-                                getUVLockedVariantXY(innerModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R180)
+                                getUVLockedVariantXY(innerModel, AxisRotation.R180, AxisRotation.R180)
                         )
                         .register(
                                 Direction.WEST, BlockHalf.BOTTOM, StairShape.INNER_RIGHT,
-                                getUVLockedVariantXY(innerModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R270)
+                                getUVLockedVariantXY(innerModel, AxisRotation.R180, AxisRotation.R270)
                         )
                         .register(
                                 Direction.WEST, BlockHalf.BOTTOM, StairShape.OUTER_LEFT,
-                                getUVLockedVariantXY(outerModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R180)
+                                getUVLockedVariantXY(outerModel, AxisRotation.R180, AxisRotation.R180)
                         )
                         .register(
                                 Direction.WEST, BlockHalf.BOTTOM, StairShape.OUTER_RIGHT,
-                                getUVLockedVariantXY(outerModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R270)
+                                getUVLockedVariantXY(outerModel, AxisRotation.R180, AxisRotation.R270)
                         )
                         .register(
                                 Direction.WEST, BlockHalf.BOTTOM, StairShape.STRAIGHT,
-                                getUVLockedVariantXY(straightModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R270)
+                                getUVLockedVariantXY(straightModel, AxisRotation.R180, AxisRotation.R270)
                         )
                         // West Top
                         .register(
                                 Direction.WEST, BlockHalf.TOP, StairShape.INNER_LEFT,
-                                getUVLockedVariantY(innerModel, VariantSettings.Rotation.R90)
+                                getUVLockedVariantY(innerModel, AxisRotation.R90)
                         )
                         .register(
                                 Direction.WEST, BlockHalf.TOP, StairShape.INNER_RIGHT,
-                                getUVLockedVariantY(innerModel, VariantSettings.Rotation.R180)
+                                getUVLockedVariantY(innerModel, AxisRotation.R180)
                         )
                         .register(
                                 Direction.WEST, BlockHalf.TOP, StairShape.OUTER_LEFT,
-                                getUVLockedVariantY(outerModel, VariantSettings.Rotation.R90)
+                                getUVLockedVariantY(outerModel, AxisRotation.R90)
                         )
                         .register(
                                 Direction.WEST, BlockHalf.TOP, StairShape.OUTER_RIGHT,
-                                getUVLockedVariantY(outerModel, VariantSettings.Rotation.R180)
+                                getUVLockedVariantY(outerModel, AxisRotation.R180)
                         )
                         .register(
                                 Direction.WEST, BlockHalf.TOP, StairShape.STRAIGHT,
-                                getUVLockedVariantY(straightModel, VariantSettings.Rotation.R90)
+                                getUVLockedVariantY(straightModel, AxisRotation.R90)
                         )
                 );
     }
 
-    protected static MultipartBlockStateSupplier getStandingCandlestickBlockstate(
+    protected static MultipartBlockModelDefinitionCreator getStandingCandlestickBlockstate(
             Block block,
             Identifier emptyModel,
             Identifier plainCandleModel,
@@ -804,61 +805,68 @@ public class ModelGenerator extends FabricModelProvider {
         BooleanProperty LIT = Properties.LIT;
         EnumProperty<CandleColor> CANDLE_COLOR = ModProperties.CANDLE_COLOR;
 
-        MultipartBlockStateSupplier multipart = MultipartBlockStateSupplier.create(block)
+        MultipartBlockModelDefinitionCreator multipart = MultipartBlockModelDefinitionCreator.create(block)
                 // NO CANDLE
                 .with(
-                        When.create().set(CANDLE, false),
-                        BlockStateVariant.create()
-                                .put(VariantSettings.MODEL, emptyModel)
+                        new MultipartModelConditionBuilder().put(CANDLE, false),
+                        getVariant(emptyModel)
                 )
                 // PLAIN NON LIT
                 .with(
-                        When.allOf(
-                                When.create().set(CANDLE, true),
-                                When.create().set(CANDLE_COLOR, CandleColor.PLAIN),
-                                When.create().set(LIT, false)
+                        new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND, 
+                                List.of(
+                                        new MultipartModelConditionBuilder().put(CANDLE, true).build(),
+                                        new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.PLAIN).build(),
+                                        new MultipartModelConditionBuilder().put(LIT, false).build()
+                                )
                         ),
-                        BlockStateVariant.create()
-                                .put(VariantSettings.MODEL, plainCandleModel)
+                        getVariant(plainCandleModel)
                 )
                 // PLAIN LIT
                 .with(
-                        When.allOf(
-                                When.create().set(CANDLE, true),
-                                When.create().set(CANDLE_COLOR, CandleColor.PLAIN),
-                                When.create().set(LIT, true)
+                        new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                        new MultipartModelConditionBuilder().put(CANDLE, true).build(),
+                                        new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.PLAIN).build(),
+                                        new MultipartModelConditionBuilder().put(LIT, true).build()
+                                )
                         ),
-                        BlockStateVariant.create()
-                                .put(VariantSettings.MODEL, litPlainCandleModel)
+                        getVariant(litPlainCandleModel)
                 );
 
         for (CandleColor candleColor : colouredCandleModels.keySet()) {
             multipart
                     // NON-LIT
                     .with(
-                            When.allOf(
-                                    When.create().set(CANDLE, true),
-                                    When.create().set(CANDLE_COLOR, candleColor),
-                                    When.create().set(LIT, false)
+                            new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                    new MultipartModelConditionBuilder().put(CANDLE, true).build(),
+                                    new MultipartModelConditionBuilder().put(CANDLE_COLOR, candleColor).build(),
+                                    new MultipartModelConditionBuilder().put(LIT, false).build()
+                                )
                             ),
-                            BlockStateVariant.create()
-                                    .put(VariantSettings.MODEL, colouredCandleModels.get(candleColor))
+                            getVariant(colouredCandleModels.get(candleColor))
                     )
                     // LIT
                     .with(
-                            When.allOf(
-                                    When.create().set(CANDLE, true),
-                                    When.create().set(CANDLE_COLOR, candleColor),
-                                    When.create().set(LIT, true)
+                            new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                    new MultipartModelConditionBuilder().put(CANDLE, true).build(),
+                                    new MultipartModelConditionBuilder().put(CANDLE_COLOR, candleColor).build(),
+                                    new MultipartModelConditionBuilder().put(LIT, true).build()
+                                )
                             ),
-                            BlockStateVariant.create()
-                                    .put(VariantSettings.MODEL, litColouredCandleModels.get(candleColor))
+                            getVariant(litColouredCandleModels.get(candleColor))
                     );
         }
 
         return multipart;
     }
-    protected static MultipartBlockStateSupplier getWallCandlestickBlockstate(
+    protected static MultipartBlockModelDefinitionCreator getWallCandlestickBlockstate(
             Block block,
             Identifier emptyModel,
             Identifier plainCandleModel,
@@ -871,238 +879,261 @@ public class ModelGenerator extends FabricModelProvider {
         BooleanProperty LIT = Properties.LIT;
         EnumProperty<CandleColor> CANDLE_COLOR = ModProperties.CANDLE_COLOR;
 
-        MultipartBlockStateSupplier multipart = MultipartBlockStateSupplier.create(block)
+        MultipartBlockModelDefinitionCreator multipart = MultipartBlockModelDefinitionCreator.create(block)
                 // NO CANDLE
                 .with(
-                        When.allOf(
-                                When.create().set(CANDLE, false),
-                                When.create().set(FACING, Direction.NORTH)
+                        new MultipartModelCombinedCondition(
+                            MultipartModelCombinedCondition.LogicalOperator.AND,
+                            List.of(
+                                new MultipartModelConditionBuilder().put(CANDLE, false).build(),
+                                new MultipartModelConditionBuilder().put(FACING, Direction.NORTH).build()
+                            )
                         ),
-                        BlockStateVariant.create()
-                                .put(VariantSettings.MODEL, emptyModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R180)
+                        getVariantY(emptyModel, AxisRotation.R180)
                 )
                 .with(
-                        When.allOf(
-                                When.create().set(CANDLE, false),
-                                When.create().set(FACING, Direction.SOUTH)
+                        new MultipartModelCombinedCondition(
+                            MultipartModelCombinedCondition.LogicalOperator.AND,
+                            List.of(
+                                new MultipartModelConditionBuilder().put(CANDLE, false).build(),
+                                new MultipartModelConditionBuilder().put(FACING, Direction.SOUTH).build()
+                            )
                         ),
-                        BlockStateVariant.create()
-                                .put(VariantSettings.MODEL, emptyModel)
+                        getVariant(emptyModel)
                 )
                 .with(
-                        When.allOf(
-                                When.create().set(CANDLE, false),
-                                When.create().set(FACING, Direction.EAST)
+                        new MultipartModelCombinedCondition(
+                            MultipartModelCombinedCondition.LogicalOperator.AND,
+                            List.of(
+                                new MultipartModelConditionBuilder().put(CANDLE, false).build(),
+                                new MultipartModelConditionBuilder().put(FACING, Direction.EAST).build()
+                            )
                         ),
-                        BlockStateVariant.create()
-                                .put(VariantSettings.MODEL, emptyModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R270)
+                        getVariantY(emptyModel, AxisRotation.R270)
                 )
                 .with(
-                        When.allOf(
-                                When.create().set(CANDLE, false),
-                                When.create().set(FACING, Direction.WEST)
+                        new MultipartModelCombinedCondition(
+                            MultipartModelCombinedCondition.LogicalOperator.AND,
+                            List.of(
+                                new MultipartModelConditionBuilder().put(CANDLE, false).build(),
+                                new MultipartModelConditionBuilder().put(FACING, Direction.WEST).build()
+                            )
                         ),
-                        BlockStateVariant.create()
-                                .put(VariantSettings.MODEL, emptyModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R90)
+                        getVariantY(emptyModel, AxisRotation.R90)
                 )
                 // PLAIN NON LIT
                 .with(
-                        When.allOf(
-                                When.create().set(CANDLE, true),
-                                When.create().set(CANDLE_COLOR, CandleColor.PLAIN),
-                                When.create().set(LIT, false),
-                                When.create().set(FACING, Direction.NORTH)
+                        new MultipartModelCombinedCondition(
+                            MultipartModelCombinedCondition.LogicalOperator.AND,
+                            List.of(
+                                new MultipartModelConditionBuilder().put(CANDLE, true).build(),
+                                new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.PLAIN).build(),
+                                new MultipartModelConditionBuilder().put(LIT, false).build(),
+                                new MultipartModelConditionBuilder().put(FACING, Direction.NORTH).build()
+                            )
                         ),
-                        BlockStateVariant.create()
-                                .put(VariantSettings.MODEL, plainCandleModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R180)
+                        getVariantY(plainCandleModel, AxisRotation.R180)
                 )
                 .with(
-                        When.allOf(
-                                When.create().set(CANDLE, true),
-                                When.create().set(CANDLE_COLOR, CandleColor.PLAIN),
-                                When.create().set(LIT, false),
-                                When.create().set(FACING, Direction.SOUTH)
+                        new MultipartModelCombinedCondition(
+                            MultipartModelCombinedCondition.LogicalOperator.AND,
+                            List.of(
+                                new MultipartModelConditionBuilder().put(CANDLE, true).build(),
+                                new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.PLAIN).build(),
+                                new MultipartModelConditionBuilder().put(LIT, false).build(),
+                                new MultipartModelConditionBuilder().put(FACING, Direction.SOUTH).build()
+                            )
                         ),
-                        BlockStateVariant.create()
-                                .put(VariantSettings.MODEL, plainCandleModel)
+                        getVariant(plainCandleModel)
                 )
                 .with(
-                        When.allOf(
-                                When.create().set(CANDLE, true),
-                                When.create().set(CANDLE_COLOR, CandleColor.PLAIN),
-                                When.create().set(LIT, false),
-                                When.create().set(FACING, Direction.EAST)
+                        new MultipartModelCombinedCondition(
+                            MultipartModelCombinedCondition.LogicalOperator.AND,
+                            List.of(
+                                new MultipartModelConditionBuilder().put(CANDLE, true).build(),
+                                new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.PLAIN).build(),
+                                new MultipartModelConditionBuilder().put(LIT, false).build(),
+                                new MultipartModelConditionBuilder().put(FACING, Direction.EAST).build()
+                            )
                         ),
-                        BlockStateVariant.create()
-                                .put(VariantSettings.MODEL, plainCandleModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R270)
+                        getVariantY(plainCandleModel, AxisRotation.R270)
                 )
                 .with(
-                        When.allOf(
-                                When.create().set(CANDLE, true),
-                                When.create().set(CANDLE_COLOR, CandleColor.PLAIN),
-                                When.create().set(LIT, false),
-                                When.create().set(FACING, Direction.WEST)
+                        new MultipartModelCombinedCondition(
+                            MultipartModelCombinedCondition.LogicalOperator.AND,
+                            List.of(
+                                new MultipartModelConditionBuilder().put(CANDLE, true).build(),
+                                new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.PLAIN).build(),
+                                new MultipartModelConditionBuilder().put(LIT, false).build(),
+                                new MultipartModelConditionBuilder().put(FACING, Direction.WEST).build()
+                            )
                         ),
-                        BlockStateVariant.create()
-                                .put(VariantSettings.MODEL, plainCandleModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R90)
+                        getVariantY(plainCandleModel, AxisRotation.R90)
                 )
                 // PLAIN LIT
                 .with(
-                        When.allOf(
-                                When.create().set(CANDLE, true),
-                                When.create().set(CANDLE_COLOR, CandleColor.PLAIN),
-                                When.create().set(LIT, true),
-                                When.create().set(FACING, Direction.NORTH)
+                        new MultipartModelCombinedCondition(
+                            MultipartModelCombinedCondition.LogicalOperator.AND,
+                            List.of(
+                                new MultipartModelConditionBuilder().put(CANDLE, true).build(),
+                                new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.PLAIN).build(),
+                                new MultipartModelConditionBuilder().put(LIT, true).build(),
+                                new MultipartModelConditionBuilder().put(FACING, Direction.NORTH).build()
+                            )
                         ),
-                        BlockStateVariant.create()
-                                .put(VariantSettings.MODEL, litPlainCandleModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R180)
+                        getVariantY(litPlainCandleModel, AxisRotation.R180)
                 )
                 .with(
-                        When.allOf(
-                                When.create().set(CANDLE, true),
-                                When.create().set(CANDLE_COLOR, CandleColor.PLAIN),
-                                When.create().set(LIT, true),
-                                When.create().set(FACING, Direction.SOUTH)
+                        new MultipartModelCombinedCondition(
+                            MultipartModelCombinedCondition.LogicalOperator.AND,
+                            List.of(
+                                new MultipartModelConditionBuilder().put(CANDLE, true).build(),
+                                new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.PLAIN).build(),
+                                new MultipartModelConditionBuilder().put(LIT, true).build(),
+                                new MultipartModelConditionBuilder().put(FACING, Direction.SOUTH).build()
+                            )
                         ),
-                        BlockStateVariant.create()
-                                .put(VariantSettings.MODEL, litPlainCandleModel)
+                        getVariant(litPlainCandleModel)
                 )
                 .with(
-                        When.allOf(
-                                When.create().set(CANDLE, true),
-                                When.create().set(CANDLE_COLOR, CandleColor.PLAIN),
-                                When.create().set(LIT, true),
-                                When.create().set(FACING, Direction.EAST)
+                        new MultipartModelCombinedCondition(
+                            MultipartModelCombinedCondition.LogicalOperator.AND,
+                            List.of(
+                                new MultipartModelConditionBuilder().put(CANDLE, true).build(),
+                                new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.PLAIN).build(),
+                                new MultipartModelConditionBuilder().put(LIT, true).build(),
+                                new MultipartModelConditionBuilder().put(FACING, Direction.EAST).build()
+                            )
                         ),
-                        BlockStateVariant.create()
-                                .put(VariantSettings.MODEL, litPlainCandleModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R270)
+                        getVariantY(litPlainCandleModel, AxisRotation.R270)
                 )
                 .with(
-                        When.allOf(
-                                When.create().set(CANDLE, true),
-                                When.create().set(CANDLE_COLOR, CandleColor.PLAIN),
-                                When.create().set(LIT, true),
-                                When.create().set(FACING, Direction.WEST)
+                        new MultipartModelCombinedCondition(
+                            MultipartModelCombinedCondition.LogicalOperator.AND,
+                            List.of(
+                                new MultipartModelConditionBuilder().put(CANDLE, true).build(),
+                                new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.PLAIN).build(),
+                                new MultipartModelConditionBuilder().put(LIT, true).build(),
+                                new MultipartModelConditionBuilder().put(FACING, Direction.WEST).build()
+                            )
                         ),
-                        BlockStateVariant.create()
-                                .put(VariantSettings.MODEL, litPlainCandleModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R90)
+                        getVariantY(litPlainCandleModel, AxisRotation.R90)
                 );
 
         for (CandleColor candleColor : colouredCandleModels.keySet()) {
             multipart
                     // NON-LIT
                     .with(
-                            When.allOf(
-                                    When.create().set(CANDLE, true),
-                                    When.create().set(CANDLE_COLOR, candleColor),
-                                    When.create().set(LIT, false),
-                                    When.create().set(FACING, Direction.NORTH)
+                            new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                    new MultipartModelConditionBuilder().put(CANDLE, true).build(),
+                                    new MultipartModelConditionBuilder().put(CANDLE_COLOR, candleColor).build(),
+                                    new MultipartModelConditionBuilder().put(LIT, false).build(),
+                                    new MultipartModelConditionBuilder().put(FACING, Direction.NORTH).build()
+                                )
                             ),
-                            BlockStateVariant.create()
-                                    .put(VariantSettings.MODEL, colouredCandleModels.get(candleColor))
-                                    .put(VariantSettings.Y, VariantSettings.Rotation.R180)
+                            getVariantY(colouredCandleModels.get(candleColor), AxisRotation.R180)
                     )
                     .with(
-                            When.allOf(
-                                    When.create().set(CANDLE, true),
-                                    When.create().set(CANDLE_COLOR, candleColor),
-                                    When.create().set(LIT, false),
-                                    When.create().set(FACING, Direction.SOUTH)
+                            new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                    new MultipartModelConditionBuilder().put(CANDLE, true).build(),
+                                    new MultipartModelConditionBuilder().put(CANDLE_COLOR, candleColor).build(),
+                                    new MultipartModelConditionBuilder().put(LIT, false).build(),
+                                    new MultipartModelConditionBuilder().put(FACING, Direction.SOUTH).build()
+                                )
                             ),
-                            BlockStateVariant.create()
-                                    .put(VariantSettings.MODEL, colouredCandleModels.get(candleColor))
+                            getVariant(colouredCandleModels.get(candleColor))
                     )
                     .with(
-                            When.allOf(
-                                    When.create().set(CANDLE, true),
-                                    When.create().set(CANDLE_COLOR, candleColor),
-                                    When.create().set(LIT, false),
-                                    When.create().set(FACING, Direction.EAST)
+                            new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                    new MultipartModelConditionBuilder().put(CANDLE, true).build(),
+                                    new MultipartModelConditionBuilder().put(CANDLE_COLOR, candleColor).build(),
+                                    new MultipartModelConditionBuilder().put(LIT, false).build(),
+                                    new MultipartModelConditionBuilder().put(FACING, Direction.EAST).build()
+                                )
                             ),
-                            BlockStateVariant.create()
-                                    .put(VariantSettings.MODEL, colouredCandleModels.get(candleColor))
-                                    .put(VariantSettings.Y, VariantSettings.Rotation.R270)
+                            getVariantY(colouredCandleModels.get(candleColor), AxisRotation.R270)
                     )
                     .with(
-                            When.allOf(
-                                    When.create().set(CANDLE, true),
-                                    When.create().set(CANDLE_COLOR, candleColor),
-                                    When.create().set(LIT, false),
-                                    When.create().set(FACING, Direction.WEST)
+                            new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                    new MultipartModelConditionBuilder().put(CANDLE, true).build(),
+                                    new MultipartModelConditionBuilder().put(CANDLE_COLOR, candleColor).build(),
+                                    new MultipartModelConditionBuilder().put(LIT, false).build(),
+                                    new MultipartModelConditionBuilder().put(FACING, Direction.WEST).build()
+                                )
                             ),
-                            BlockStateVariant.create()
-                                    .put(VariantSettings.MODEL, colouredCandleModels.get(candleColor))
-                                    .put(VariantSettings.Y, VariantSettings.Rotation.R90)
+                            getVariantY(colouredCandleModels.get(candleColor), AxisRotation.R90)
                     )
                     // LIT
                     .with(
-                            When.allOf(
-                                    When.create().set(CANDLE, true),
-                                    When.create().set(CANDLE_COLOR, candleColor),
-                                    When.create().set(LIT, true),
-                                    When.create().set(FACING, Direction.NORTH)
+                            new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                    new MultipartModelConditionBuilder().put(CANDLE, true).build(),
+                                    new MultipartModelConditionBuilder().put(CANDLE_COLOR, candleColor).build(),
+                                    new MultipartModelConditionBuilder().put(LIT, true).build(),
+                                    new MultipartModelConditionBuilder().put(FACING, Direction.NORTH).build()
+                                )
                             ),
-                            BlockStateVariant.create()
-                                    .put(VariantSettings.MODEL, litColouredCandleModels.get(candleColor))
-                                    .put(VariantSettings.Y, VariantSettings.Rotation.R180)
+                            getVariantY(litColouredCandleModels.get(candleColor), AxisRotation.R180)
                             )
                     .with(
-                            When.allOf(
-                                    When.create().set(CANDLE, true),
-                                    When.create().set(CANDLE_COLOR, candleColor),
-                                    When.create().set(LIT, true),
-                                    When.create().set(FACING, Direction.SOUTH)
+                            new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                    new MultipartModelConditionBuilder().put(CANDLE, true).build(),
+                                    new MultipartModelConditionBuilder().put(CANDLE_COLOR, candleColor).build(),
+                                    new MultipartModelConditionBuilder().put(LIT, true).build(),
+                                    new MultipartModelConditionBuilder().put(FACING, Direction.SOUTH).build()
+                                )
                             ),
-                            BlockStateVariant.create()
-                                    .put(VariantSettings.MODEL, litColouredCandleModels.get(candleColor))
+                            getVariant(litColouredCandleModels.get(candleColor))
                     )
                     .with(
-                            When.allOf(
-                                    When.create().set(CANDLE, true),
-                                    When.create().set(CANDLE_COLOR, candleColor),
-                                    When.create().set(LIT, true),
-                                    When.create().set(FACING, Direction.EAST)
+                            new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                    new MultipartModelConditionBuilder().put(CANDLE, true).build(),
+                                    new MultipartModelConditionBuilder().put(CANDLE_COLOR, candleColor).build(),
+                                    new MultipartModelConditionBuilder().put(LIT, true).build(),
+                                    new MultipartModelConditionBuilder().put(FACING, Direction.EAST).build()
+                                )
                             ),
-                            BlockStateVariant.create()
-                                    .put(VariantSettings.MODEL, litColouredCandleModels.get(candleColor))
-                                    .put(VariantSettings.Y, VariantSettings.Rotation.R270)
+                            getVariantY(litColouredCandleModels.get(candleColor), AxisRotation.R270)
                     )
                     .with(
-                            When.allOf(
-                                    When.create().set(CANDLE, true),
-                                    When.create().set(CANDLE_COLOR, candleColor),
-                                    When.create().set(LIT, true),
-                                    When.create().set(FACING, Direction.WEST)
+                            new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                    new MultipartModelConditionBuilder().put(CANDLE, true).build(),
+                                    new MultipartModelConditionBuilder().put(CANDLE_COLOR, candleColor).build(),
+                                    new MultipartModelConditionBuilder().put(LIT, true).build(),
+                                    new MultipartModelConditionBuilder().put(FACING, Direction.WEST).build()
+                                )
                             ),
-                            BlockStateVariant.create()
-                                    .put(VariantSettings.MODEL, litColouredCandleModels.get(candleColor))
-                                    .put(VariantSettings.Y, VariantSettings.Rotation.R90)
+                            getVariantY(litColouredCandleModels.get(candleColor), AxisRotation.R90)
                     );
         }
-
         return multipart;
     }
 
-    protected static VariantsBlockStateSupplier getForcedCornerStairsBlockstate(Block block, Identifier modelId) {
-        return VariantsBlockStateSupplier
-                .create(block)
-                .coordinate(BlockStateVariantMap.create(Properties.HORIZONTAL_FACING, Properties.BLOCK_HALF)
+    protected static VariantsBlockModelDefinitionCreator getForcedCornerStairsBlockstate(Block block, Identifier modelId) {
+        return VariantsBlockModelDefinitionCreator.of(block)
+                .with(BlockStateVariantMap.models(Properties.HORIZONTAL_FACING, Properties.BLOCK_HALF)
                         .register(
                                 Direction.EAST, BlockHalf.BOTTOM,
-                                getUVLockedVariantY(modelId, VariantSettings.Rotation.R90)
+                                getUVLockedVariantY(modelId, AxisRotation.R90)
                         )
                         .register(
                                 Direction.EAST, BlockHalf.TOP,
-                                getUVLockedVariantXY(modelId, VariantSettings.Rotation.R180, VariantSettings.Rotation.R180)
+                                getUVLockedVariantXY(modelId, AxisRotation.R180, AxisRotation.R180)
                         )
                         .register(
                                 Direction.NORTH, BlockHalf.BOTTOM,
@@ -1110,49 +1141,49 @@ public class ModelGenerator extends FabricModelProvider {
                         )
                         .register(
                                 Direction.NORTH, BlockHalf.TOP,
-                                getUVLockedVariantXY(modelId, VariantSettings.Rotation.R180, VariantSettings.Rotation.R90)
+                                getUVLockedVariantXY(modelId, AxisRotation.R180, AxisRotation.R90)
                         )
                         .register(
                                 Direction.SOUTH, BlockHalf.BOTTOM,
-                                getUVLockedVariantY(modelId, VariantSettings.Rotation.R180)
+                                getUVLockedVariantY(modelId, AxisRotation.R180)
                         )
                         .register(
                                 Direction.SOUTH, BlockHalf.TOP,
-                                getUVLockedVariantXY(modelId, VariantSettings.Rotation.R180, VariantSettings.Rotation.R270)
+                                getUVLockedVariantXY(modelId, AxisRotation.R180, AxisRotation.R270)
                         )
                         .register(
                                 Direction.WEST, BlockHalf.BOTTOM,
-                                getUVLockedVariantY(modelId, VariantSettings.Rotation.R270)
+                                getUVLockedVariantY(modelId, AxisRotation.R270)
                         )
                         .register(
                                 Direction.WEST, BlockHalf.TOP,
-                                getUVLockedVariantX(modelId, VariantSettings.Rotation.R180)
+                                getUVLockedVariantX(modelId, AxisRotation.R180)
                         )
                 );
     }
 
-    protected static VariantsBlockStateSupplier getDefaultBlockstate(Block block, Identifier modelId) {
-        return VariantsBlockStateSupplier.create(block, BlockStateVariant.create().put(VariantSettings.MODEL, modelId));
+    protected static VariantsBlockModelDefinitionCreator getDefaultBlockstate(Block block, Identifier modelId) {
+        return VariantsBlockModelDefinitionCreator.of(block, createWeightedVariant(new ModelVariant(modelId)));
     }
 
-    protected static VariantsBlockStateSupplier getCabinetBlockstate(Block cabinetBlock, Identifier cabinetModel, Identifier cabinetOpenModel) {
-        return VariantsBlockStateSupplier.create(cabinetBlock)
-                .coordinate(BlockStateVariantMap.create(Properties.HORIZONTAL_FACING, Properties.OPEN)
+    protected static VariantsBlockModelDefinitionCreator getCabinetBlockstate(Block cabinetBlock, Identifier cabinetModel, Identifier cabinetOpenModel) {
+        return VariantsBlockModelDefinitionCreator.of(cabinetBlock)
+                .with(BlockStateVariantMap.models(Properties.HORIZONTAL_FACING, Properties.OPEN)
                     .register(
                             Direction.NORTH, true,
-                            getVariantY(cabinetOpenModel, VariantSettings.Rotation.R180)
+                            getVariantY(cabinetOpenModel, AxisRotation.R180)
                     )
                     .register(
                             Direction.NORTH, false,
-                            getVariantY(cabinetModel, VariantSettings.Rotation.R180)
+                            getVariantY(cabinetModel, AxisRotation.R180)
                     )
                     .register(
                             Direction.EAST, true,
-                            getVariantY(cabinetOpenModel, VariantSettings.Rotation.R270)
+                            getVariantY(cabinetOpenModel, AxisRotation.R270)
                     )
                     .register(
                             Direction.EAST, false,
-                            getVariantY(cabinetModel, VariantSettings.Rotation.R270)
+                            getVariantY(cabinetModel, AxisRotation.R270)
                     )
                     .register(
                             Direction.SOUTH, true,
@@ -1164,32 +1195,32 @@ public class ModelGenerator extends FabricModelProvider {
                     )
                     .register(
                             Direction.WEST, true,
-                            getVariantY(cabinetOpenModel, VariantSettings.Rotation.R90)
+                            getVariantY(cabinetOpenModel, AxisRotation.R90)
                     )
                     .register(
                             Direction.WEST, false,
-                            getVariantY(cabinetModel, VariantSettings.Rotation.R90)
+                            getVariantY(cabinetModel, AxisRotation.R90)
                     )
                 );
     }
-    protected static VariantsBlockStateSupplier getFloorCabinetBlockstate(Block cabinetBlock, Identifier cabinetModel, Identifier cabinetOpenModel) {
-        return VariantsBlockStateSupplier.create(cabinetBlock)
-                .coordinate(BlockStateVariantMap.create(Properties.BLOCK_HALF, Properties.HORIZONTAL_FACING, Properties.OPEN)
+    protected static VariantsBlockModelDefinitionCreator getFloorCabinetBlockstate(Block cabinetBlock, Identifier cabinetModel, Identifier cabinetOpenModel) {
+        return VariantsBlockModelDefinitionCreator.of(cabinetBlock)
+                .with(BlockStateVariantMap.models(Properties.BLOCK_HALF, Properties.HORIZONTAL_FACING, Properties.OPEN)
                         .register(
                                 BlockHalf.BOTTOM, Direction.NORTH, true,
-                                getVariantY(cabinetOpenModel, VariantSettings.Rotation.R180)
+                                getVariantY(cabinetOpenModel, AxisRotation.R180)
                         )
                         .register(
                                 BlockHalf.BOTTOM, Direction.NORTH, false,
-                                getVariantY(cabinetModel, VariantSettings.Rotation.R180)
+                                getVariantY(cabinetModel, AxisRotation.R180)
                         )
                         .register(
                                 BlockHalf.BOTTOM, Direction.EAST, true,
-                                getVariantY(cabinetOpenModel, VariantSettings.Rotation.R270)
+                                getVariantY(cabinetOpenModel, AxisRotation.R270)
                         )
                         .register(
                                 BlockHalf.BOTTOM, Direction.EAST, false,
-                                getVariantY(cabinetModel, VariantSettings.Rotation.R270)
+                                getVariantY(cabinetModel, AxisRotation.R270)
                         )
                         .register(
                                 BlockHalf.BOTTOM, Direction.SOUTH, true,
@@ -1201,89 +1232,89 @@ public class ModelGenerator extends FabricModelProvider {
                         )
                         .register(
                                 BlockHalf.BOTTOM, Direction.WEST, true,
-                                getVariantY(cabinetOpenModel, VariantSettings.Rotation.R90)
+                                getVariantY(cabinetOpenModel, AxisRotation.R90)
                         )
                         .register(
                                 BlockHalf.BOTTOM, Direction.WEST, false,
-                                getVariantY(cabinetModel, VariantSettings.Rotation.R90)
+                                getVariantY(cabinetModel, AxisRotation.R90)
                         )
                         .register(
                                 BlockHalf.TOP, Direction.NORTH, true,
-                                getVariantXY(cabinetOpenModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R180)
+                                getVariantXY(cabinetOpenModel, AxisRotation.R180, AxisRotation.R180)
                         )
                         .register(
                                 BlockHalf.TOP, Direction.NORTH, false,
-                                getVariantXY(cabinetModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R180)
+                                getVariantXY(cabinetModel, AxisRotation.R180, AxisRotation.R180)
                         )
                         .register(
                                 BlockHalf.TOP, Direction.EAST, true,
-                                getVariantXY(cabinetOpenModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R270)
+                                getVariantXY(cabinetOpenModel, AxisRotation.R180, AxisRotation.R270)
                         )
                         .register(
                                 BlockHalf.TOP, Direction.EAST, false,
-                                getVariantXY(cabinetModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R270)
+                                getVariantXY(cabinetModel, AxisRotation.R180, AxisRotation.R270)
                         )
                         .register(
                                 BlockHalf.TOP, Direction.SOUTH, true,
-                                getVariantX(cabinetOpenModel, VariantSettings.Rotation.R180)
+                                getVariantX(cabinetOpenModel, AxisRotation.R180)
                         )
                         .register(
                                 BlockHalf.TOP, Direction.SOUTH, false,
-                                getVariantX(cabinetModel, VariantSettings.Rotation.R180)
+                                getVariantX(cabinetModel, AxisRotation.R180)
                         )
                         .register(
                                 BlockHalf.TOP, Direction.WEST, true,
-                                getVariantXY(cabinetOpenModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R90)
+                                getVariantXY(cabinetOpenModel, AxisRotation.R180, AxisRotation.R90)
                         )
                         .register(
                                 BlockHalf.TOP, Direction.WEST, false,
-                                getVariantXY(cabinetModel, VariantSettings.Rotation.R180, VariantSettings.Rotation.R90)
+                                getVariantXY(cabinetModel, AxisRotation.R180, AxisRotation.R90)
                         )
                 );
     }
 
 
-    protected static BlockStateVariant getUVLockedVariantXY(Identifier model, VariantSettings.Rotation rotationX, VariantSettings.Rotation rotationY) {
-        return BlockStateVariant.create()
-                .put(VariantSettings.MODEL, model)
-                .put(VariantSettings.UVLOCK, true)
-                .put(VariantSettings.X, rotationX)
-                .put(VariantSettings.Y, rotationY);
+    protected static WeightedVariant getUVLockedVariantXY(Identifier model, AxisRotation rotationX, AxisRotation rotationY) {
+        return createWeightedVariant(new ModelVariant(model)
+                .with(ModelVariantOperator.UV_LOCK.withValue(true))
+                .with(ModelVariantOperator.ROTATION_X.withValue(rotationX))
+                .with(ModelVariantOperator.ROTATION_Y.withValue(rotationY))
+        );
     }
 
-    protected static BlockStateVariant getUVLockedVariantX(Identifier model, VariantSettings.Rotation rotationX) {
-        return BlockStateVariant.create()
-                .put(VariantSettings.MODEL, model)
-                .put(VariantSettings.UVLOCK, true)
-                .put(VariantSettings.X, rotationX);
+    protected static WeightedVariant getUVLockedVariantX(Identifier model, AxisRotation rotationX) {
+        return createWeightedVariant(new ModelVariant(model)
+                .with(ModelVariantOperator.UV_LOCK.withValue(true))
+                .with(ModelVariantOperator.ROTATION_X.withValue(rotationX))
+        );
     }
-    protected static BlockStateVariant getUVLockedVariantY(Identifier model, VariantSettings.Rotation rotationY) {
-        return BlockStateVariant.create()
-                .put(VariantSettings.MODEL, model)
-                .put(VariantSettings.UVLOCK, true)
-                .put(VariantSettings.Y, rotationY);
-    }
-
-    protected static BlockStateVariant getVariantXY(Identifier model, VariantSettings.Rotation rotationX, VariantSettings.Rotation rotationY) {
-        return BlockStateVariant.create()
-                .put(VariantSettings.MODEL, model)
-                .put(VariantSettings.X, rotationX)
-                .put(VariantSettings.Y, rotationY);
+    protected static WeightedVariant getUVLockedVariantY(Identifier model, AxisRotation rotationY) {
+        return createWeightedVariant(new ModelVariant(model)
+                .with(ModelVariantOperator.UV_LOCK.withValue(true))
+                .with(ModelVariantOperator.ROTATION_Y.withValue(rotationY))
+        );
     }
 
-    protected static BlockStateVariant getVariantX(Identifier model, VariantSettings.Rotation rotationX) {
-        return BlockStateVariant.create()
-                .put(VariantSettings.MODEL, model)
-                .put(VariantSettings.X, rotationX);
-    }
-    protected static BlockStateVariant getVariantY(Identifier model, VariantSettings.Rotation rotationY) {
-        return BlockStateVariant.create()
-                .put(VariantSettings.MODEL, model)
-                .put(VariantSettings.Y, rotationY);
+    protected static WeightedVariant getVariantXY(Identifier model, AxisRotation rotationX, AxisRotation rotationY) {
+        return createWeightedVariant(new ModelVariant(model)
+                .with(ModelVariantOperator.ROTATION_X.withValue(rotationX))
+                .with(ModelVariantOperator.ROTATION_Y.withValue(rotationY))
+        );
     }
 
-    protected static BlockStateVariant getVariant(Identifier model) {
-        return BlockStateVariant.create().put(VariantSettings.MODEL, model);
+    protected static WeightedVariant getVariantX(Identifier model, AxisRotation rotationX) {
+        return createWeightedVariant(new ModelVariant(model)
+                .with(ModelVariantOperator.ROTATION_X.withValue(rotationX))
+        );
+    }
+    protected static WeightedVariant getVariantY(Identifier model, AxisRotation rotationY) {
+        return createWeightedVariant(new ModelVariant(model)
+                .with(ModelVariantOperator.ROTATION_Y.withValue(rotationY))
+        );
+    }
+
+    protected static WeightedVariant getVariant(Identifier model) {
+        return createWeightedVariant(new ModelVariant(model));
     }
 
 
