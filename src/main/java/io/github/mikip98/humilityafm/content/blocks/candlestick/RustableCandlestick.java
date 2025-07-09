@@ -107,7 +107,7 @@ public class RustableCandlestick extends Candlestick {
             double randomX = x + ((random.nextDouble() - 0.5) * 2 / 3);
             double randomY = y + ((random.nextDouble() - 0.5) * 2 / 3);
             double randomZ = z + ((random.nextDouble() - 0.5) * 2 / 3);
-            world.addParticle(particleType, randomX, randomY, randomZ, 0.0, 0.0, 0.0);
+            world.addParticleClient(particleType, randomX, randomY, randomZ, 0.0, 0.0, 0.0);
         }
     }
 
@@ -127,7 +127,7 @@ public class RustableCandlestick extends Candlestick {
             world.setBlockState(pos, state.with(ModProperties.WAXED, true), Block.NOTIFY_ALL);
             if (!player.isCreative()) heldItem.decrement(1);
             emmitWaxOnParticles(state, world, pos);
-            world.playSoundAtBlockCenter(pos, SoundEvents.ITEM_HONEYCOMB_WAX_ON, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
+            world.playSound(player, pos, SoundEvents.ITEM_HONEYCOMB_WAX_ON, SoundCategory.BLOCKS, 1.0f, 1.0f);
             return ActionResult.SUCCESS;
         }
         // De-wax & De-rust
@@ -142,7 +142,7 @@ public class RustableCandlestick extends Candlestick {
                         item -> player.sendEquipmentBreakStatus(item, LivingEntity.getSlotForHand(hand))
                 );
                 emmitWaxOffParticles(state, world, pos);
-                world.playSoundAtBlockCenter(pos, SoundEvents.ITEM_AXE_WAX_OFF, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
+                world.playSound(player, pos, SoundEvents.ITEM_AXE_WAX_OFF, SoundCategory.BLOCKS, 1.0f, 1.0f);
                 return ActionResult.SUCCESS;
             }
             // De-rust

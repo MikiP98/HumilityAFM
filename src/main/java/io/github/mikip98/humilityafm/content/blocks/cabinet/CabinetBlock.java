@@ -9,6 +9,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -80,7 +81,7 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         Hand hand = player.getActiveHand();
-        world.playSoundAtBlockCenter(pos, SoundEvents.BLOCK_BAMBOO_BREAK, SoundCategory.BLOCKS, 1, 1, true);
+        world.playSound(player, pos, SoundEvents.BLOCK_BAMBOO_BREAK, SoundCategory.BLOCKS, 1, 1);
 
         if (world.getBlockState(pos).get(OPEN)){
             if (world.isClient) return ActionResult.SUCCESS;
@@ -174,8 +175,8 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
     }
 
     @Override
-    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-        if (state.getBlock() != newState.getBlock()) {
+    protected void onStateReplaced(BlockState state, ServerWorld world, BlockPos pos, boolean moved) {
+        if (state.getBlock() != this) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof CabinetBlockEntity cabinetEntity) {
                 // Handle item drops and block entity clean-up here
@@ -186,7 +187,7 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
                     }
                 }
             }
-            super.onStateReplaced(state, world, pos, newState, moved);
+            super.onStateReplaced(state, world, pos, moved);
         }
     }
 

@@ -139,7 +139,7 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
                 }
                 world.setBlockState(pos, state.with(ModProperties.CANDLE, true).with(CANDLE_COLOR, CandleColor.getColor(heldItem.getItem())), Block.NOTIFY_ALL);
                 if (!player.isCreative()) heldItem.decrement(1);
-                world.playSoundAtBlockCenter(pos, SoundEvents.ENTITY_ITEM_FRAME_REMOVE_ITEM, SoundCategory.BLOCKS, 0.9f, 1.1f, true);
+                world.playSound(player, pos, SoundEvents.ENTITY_ITEM_FRAME_REMOVE_ITEM, SoundCategory.BLOCKS, 0.9f, 1.1f);
                 return ActionResult.SUCCESS;
             }
         }
@@ -148,14 +148,14 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
             // Extinguish the candle
             if (state.get(Properties.LIT)) {
                 world.setBlockState(pos, state.with(Properties.LIT, false), Block.NOTIFY_ALL);
-                world.playSoundAtBlockCenter(pos, SoundEvents.BLOCK_CANDLE_EXTINGUISH, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
+                world.playSound(player, pos, SoundEvents.BLOCK_CANDLE_EXTINGUISH, SoundCategory.BLOCKS, 1.0f, 1.0f);
                 return ActionResult.SUCCESS;
             }
             // Remove the candle
             else if (state.get(ModProperties.CANDLE)) {
                 player.getInventory().offerOrDrop(new ItemStack(state.get(CANDLE_COLOR).asCandle()));
                 world.setBlockState(pos, state.with(ModProperties.CANDLE, false), Block.NOTIFY_ALL);
-                world.playSoundAtBlockCenter(pos, SoundEvents.ENTITY_ITEM_FRAME_REMOVE_ITEM, SoundCategory.BLOCKS, 0.9f, 0.9f, true);
+                world.playSound(player, pos, SoundEvents.ENTITY_ITEM_FRAME_REMOVE_ITEM, SoundCategory.BLOCKS, 0.9f, 0.9f);
                 return ActionResult.SUCCESS;
             }
         }
@@ -170,7 +170,7 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
                         item -> player.sendEquipmentBreakStatus(item, LivingEntity.getSlotForHand(hand))
                 );
             }
-            world.playSoundAtBlockCenter(pos, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
+            world.playSound(player, pos, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0f, 1.0f);
             return ActionResult.SUCCESS;
         }
 
@@ -202,18 +202,18 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
                 double velocityY = random.nextDouble() * 0.001953125;
                 double velocityX = (random.nextDouble() - 0.5) * velocityPlaneMultiplayer;
                 double velocityZ = (random.nextDouble() - 0.5) * velocityPlaneMultiplayer;
-                world.addParticle(ParticleTypes.SMALL_FLAME, x, y, z, velocityX, velocityY, velocityZ);
+                world.addParticleClient(ParticleTypes.SMALL_FLAME, x, y, z, velocityX, velocityY, velocityZ);
 
                 if (random.nextInt(4) == 0) {
                     velocityPlaneMultiplayer = 0.00390625f;
                     velocityY = random.nextDouble() * 0.00390625;
                     velocityX = (random.nextDouble() - 0.5) * velocityPlaneMultiplayer;
                     velocityZ = (random.nextDouble() - 0.5) * velocityPlaneMultiplayer;
-                    world.addParticle(ParticleTypes.SMOKE, x, y, z, velocityX, velocityY, velocityZ);
+                    world.addParticleClient(ParticleTypes.SMOKE, x, y, z, velocityX, velocityY, velocityZ);
                 }
             }
             if (random.nextInt(4) == 0) {
-                world.playSound(x, y, z, SoundEvents.BLOCK_CANDLE_AMBIENT, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
+                world.playSound(null, x, y, z, SoundEvents.BLOCK_CANDLE_AMBIENT, SoundCategory.BLOCKS, 1.0f, 1.0f);
             }
         }
         super.randomDisplayTick(state, world, pos, random);
@@ -260,10 +260,10 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
     }
 
     @Override
-    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-        if (state.getBlock() != newState.getBlock() && state.get(ModProperties.CANDLE)) {
+    public void onStateReplaced(BlockState state, ServerWorld world, BlockPos pos, boolean moved) {
+        if (state.getBlock() != this && state.get(ModProperties.CANDLE)) {
             Block.dropStack(world, pos, new ItemStack(state.get(CANDLE_COLOR).asCandle()));
-            super.onStateReplaced(state, world, pos, newState, moved);
+            super.onStateReplaced(state, world, pos, moved);
         }
     }
 

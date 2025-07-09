@@ -76,18 +76,18 @@ public class FloorRustableCandlestick extends RustableCandlestick {
                 double velocityY = random.nextDouble() * 0.001953125;
                 double velocityX = (random.nextDouble() - 0.5) * velocityPlaneMultiplayer;
                 double velocityZ = (random.nextDouble() - 0.5) * velocityPlaneMultiplayer;
-                world.addParticle(ParticleTypes.SMALL_FLAME, x, y, z, velocityX, velocityY, velocityZ);
+                world.addParticleClient(ParticleTypes.SMALL_FLAME, x, y, z, velocityX, velocityY, velocityZ);
 
                 if (random.nextInt(4) == 0) {
                     velocityPlaneMultiplayer = 0.00390625f;
                     velocityY = random.nextDouble() * 0.00390625;
                     velocityX = (random.nextDouble() - 0.5) * velocityPlaneMultiplayer;
                     velocityZ = (random.nextDouble() - 0.5) * velocityPlaneMultiplayer;
-                    world.addParticle(ParticleTypes.SMOKE, x, y, z, velocityX, velocityY, velocityZ);
+                    world.addParticleClient(ParticleTypes.SMOKE, x, y, z, velocityX, velocityY, velocityZ);
                 }
             }
             if (random.nextInt(4) == 0) {
-                world.playSound(x, y, z, SoundEvents.BLOCK_CANDLE_AMBIENT, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
+                world.playSound(null, x, y, z, SoundEvents.BLOCK_CANDLE_AMBIENT, SoundCategory.BLOCKS, 1.0f, 1.0f);
             }
         }
         super.randomDisplayTick(state, world, pos, random, false);
