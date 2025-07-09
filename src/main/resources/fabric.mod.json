@@ -28,6 +28,9 @@
 			"io.github.mikip98.humilityafm.HumilityAFMDataGenerator"
 		]
 	},
+	"mixins": [
+		"humilityafm.mixins.json"
+	],
 	"depends": {
 		"fabricloader": ">=0.16.14",
 		"minecraft": "~1.21",
