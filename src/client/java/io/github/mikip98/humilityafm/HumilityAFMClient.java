@@ -8,14 +8,14 @@ import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
 import io.github.mikip98.humilityafm.registries.BlockEntityRegistry;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetBlockEntityRenderer;
 import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntityRenderer;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.MOD_ID;
@@ -31,24 +31,24 @@ public class HumilityAFMClient implements ClientModInitializer {
 		BlockEntityRendererFactories.register(BlockEntityRegistry.FLOOR_CABINET_BLOCK_ENTITY, FloorCabinetBlockEntityRenderer::new);
 		BlockEntityRendererFactories.register(BlockEntityRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_ENTITY, FloorIlluminatedCabinetBlockEntityRenderer::new);
 
-		RenderLayer renderLayer = ModConfig.TransparentCabinetBlocks ? RenderLayer.getTranslucent() : RenderLayer.getCutout();
+		BlockRenderLayer renderLayer = ModConfig.TransparentCabinetBlocks ? BlockRenderLayer.TRANSLUCENT : BlockRenderLayer.CUTOUT;
 
-		BlockRenderLayerMap.INSTANCE.putBlock(BlockRegistry.CABINET_BLOCK, renderLayer);
-		BlockRenderLayerMap.INSTANCE.putBlock(BlockRegistry.ILLUMINATED_CABINET_BLOCK, renderLayer);
-		BlockRenderLayerMap.INSTANCE.putBlock(BlockRegistry.FLOOR_CABINET_BLOCK, renderLayer);
-		BlockRenderLayerMap.INSTANCE.putBlock(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK, renderLayer);
+		BlockRenderLayerMap.putBlock(BlockRegistry.CABINET_BLOCK, renderLayer);
+		BlockRenderLayerMap.putBlock(BlockRegistry.ILLUMINATED_CABINET_BLOCK, renderLayer);
+		BlockRenderLayerMap.putBlock(BlockRegistry.FLOOR_CABINET_BLOCK, renderLayer);
+		BlockRenderLayerMap.putBlock(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK, renderLayer);
 
 		for (Block cabinetBlockVariant : CabinetBlockGenerator.cabinetBlockVariants) {
-			BlockRenderLayerMap.INSTANCE.putBlock(cabinetBlockVariant, renderLayer);
+			BlockRenderLayerMap.putBlock(cabinetBlockVariant, renderLayer);
 		}
 		for (Block illuminatedCabinetBlockVariant : CabinetBlockGenerator.illuminatedCabinetBlockVariants) {
-			BlockRenderLayerMap.INSTANCE.putBlock(illuminatedCabinetBlockVariant, renderLayer);
+			BlockRenderLayerMap.putBlock(illuminatedCabinetBlockVariant, renderLayer);
 		}
 		for (Block floorCabinetBlockVariant : CabinetBlockGenerator.floorCabinetBlockVariants) {
-			BlockRenderLayerMap.INSTANCE.putBlock(floorCabinetBlockVariant, renderLayer);
+			BlockRenderLayerMap.putBlock(floorCabinetBlockVariant, renderLayer);
 		}
 		for (Block floorIlluminatedCabinetBlockVariant : CabinetBlockGenerator.floorIlluminatedCabinetBlockVariants) {
-			BlockRenderLayerMap.INSTANCE.putBlock(floorIlluminatedCabinetBlockVariant, renderLayer);
+			BlockRenderLayerMap.putBlock(floorIlluminatedCabinetBlockVariant, renderLayer);
 		}
 
 		// Light Strip variants
