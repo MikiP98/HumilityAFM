@@ -122,7 +122,7 @@ public class BlockRegistry {
         return Blocks.register(keyOfBlock(name), blockFactory, settings);
     }
 
-    private static RegistryKey<Block> keyOfBlock(String name) {
+    public static RegistryKey<Block> keyOfBlock(String name) {
         return RegistryKey.of(RegistryKeys.BLOCK, getId(name));
     }
 
