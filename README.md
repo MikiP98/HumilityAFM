@@ -84,6 +84,13 @@ Lighten up your builds with unobtrusive light source
 
 ## Roadmap:
 
+### Done:
+- Port to newer MC versions:
+  - 1.21.4 *(no 'polymorph'! Some recipies are broken :( )*
+  - 1.21.6 *(no 'polymorph'! Some recipies are broken :( )*
+  - 1.21.7 *(no 'polymorph'! Some recipies are broken :( )*
+  - 1.21.8 *(no 'polymorph'! Some recipies are broken :( )*
+
 ### High priority:
 
 - Redo the window capture screenshots or at least crop the window app bar
@@ -132,12 +139,13 @@ Lighten up your builds with unobtrusive light source
   - Forced Corner Stairs
 - Rethink cabinet opening, item insertion and removal, and such
 - Add the ability to rotate items displayed in the cabinets
-- Port to newer MC versions:
-  - 1.21.4 *(need to wait for 'polymorph')*
 - Expand Light Stips:
   - Vertical mount
   - Fit multiple Light Strips in 1 block
 - Make coloured flame particles for coloured torches
+- Improve the sounds by varying the pitch and volume slightly
+- Move duplicated code to Interfaces
+- Optimise the model datagen
 
 ### Low/unknown priority:
 
@@ -146,8 +154,6 @@ Lighten up your builds with unobtrusive light source
 - Add carpet covered stairs?
 - Server feature sync?
   - If done through a datapack, the blocks can be enabled by default on the client?
-- Port to newer MC versions:
-  - 1.21.5? *(need to wait for 'polymorph')*
 - Backport to older MC versions?:
   - 1.19.2?
   - 1.18.2?
