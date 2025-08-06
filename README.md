@@ -85,16 +85,17 @@ Lighten up your builds with unobtrusive light source
 ## Roadmap:
 
 ### Done:
+
 - Port to newer MC versions:
-  - 1.21.4 *(no 'polymorph'! Some recipies are broken :( )*
-  - 1.21.6 *(no 'polymorph'! Some recipies are broken :( )*
-  - 1.21.7 *(no 'polymorph'! Some recipies are broken :( )*
-  - 1.21.8 *(no 'polymorph'! Some recipies are broken :( )*
+  - 1.21.4 <sup>*no `polymorph`! Some recipies are broken :(*</sup>
+  - 1.21.6 <sup>*no `polymorph`! Some recipies are broken :(*</sup>
+  - 1.21.7 <sup>*no `polymorph`! Some recipies are broken :(*</sup>
+  - 1.21.8 <sup>*no `polymorph`! Some recipies are broken :(*</sup>
 
 ### High priority:
 
 - Redo the window capture screenshots or at least crop the window app bar
-- Fix Cabinet breaking animation being invisible:
+- Fix Cabinet breaking animation being invisible
   - Make sure all other breaking animations are also visible
 - Finish built-in jack o'Lantern rp compat resourcepack
 - Finish built-in coloured torches rp compat resourcepack
@@ -102,9 +103,10 @@ Lighten up your builds with unobtrusive light source
   - Coloured Torches
   - Coloured Jack o'Lanterns
   - Light Strips
-- Re-add Better Nether built-in support
-- Add Better End built-in support
-- Add Biomes o' Plenty built-in support
+- Add special built-in mod support for:
+  - BetterNether
+  - BetterEnd
+  - Biomes o' Plenty
 - Fix nether wood block variants burning
 - Add Illuminated Cabinet Brightening to the config
 - Add PBR data to:
