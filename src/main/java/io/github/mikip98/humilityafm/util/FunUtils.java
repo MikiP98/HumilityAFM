@@ -5,23 +5,45 @@ package io.github.mikip98.humilityafm.util;
  * Provides methods to get random fun symbols, emojis, kaomojis, and to print a pumpkin ASCII art.
  */
 public class FunUtils {
+    /**
+     * Returns a random fun symbol, which can be either an emoji or a kaomoji.
+     * @return A random fun symbol as a String.
+     */
     public static String getRandomFunSymbol() {
         return Math.random() < 0.5 ? getRandomEmoji() : getRandomKaomoji();
     }
+    /**
+     * Returns a random emoji from a predefined list.
+     * @return A random emoji as a String.
+     */
     public static String getRandomEmoji() {
         String[] emojis = {"😃", "😎", "🤖", "👾", "🦄", "🐉", "🌟", "✨", "🎉", "🎊"};
         return emojis[(int) (Math.random() * emojis.length)];
     }
+    /**
+     * Returns a random kaomoji from a predefined list.
+     * @return A random kaomoji as a String.
+     */
     public static String getRandomKaomoji() {
         String[] kaomojis = {"(｡♥‿♥｡)", "(╯°□°）╯︵ ┻━┻", "(¬‿¬)", "(づ｡◕‿‿◕｡)づ", "(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧", "(✿◠‿◠)"};
         return kaomojis[(int) (Math.random() * kaomojis.length)];
     }
 
+    /**
+     * Prints a random pumpkin ASCII art from a predefined list.
+     */
     public static void printPumpkin() {
         int index = (int) (Math.random() * ASCII_PUMPKINS.length);
         System.out.println(ASCII_PUMPKINS[index]);
     }
 
+    /**
+     * An array of ASCII art representations of pumpkins.
+     * Each entry in the array is a String containing the ASCII art.
+     * Current sources of the ASCII art include:
+     * - <a href="https://ascii.co.uk/art/pumpkin">https://ascii.co.uk/art/pumpkin</a>
+     * - Me
+     */
     private static final String[] ASCII_PUMPKINS = {
             // My own pumpkin ASCII art
             String.join("\n", new String[]{
