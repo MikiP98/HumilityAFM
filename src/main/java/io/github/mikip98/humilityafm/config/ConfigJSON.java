@@ -1,6 +1,7 @@
 package io.github.mikip98.humilityafm.config;
 
 import com.google.gson.*;
+import io.github.mikip98.humilityafm.util.SupportedMods;
 import io.github.mikip98.humilityafm.util.data_types.Color;
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -14,6 +15,7 @@ import java.util.function.Function;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.LOGGER;
 
+// TODO: Move to TOML
 public class ConfigJSON {
 
     // Save the configuration to a JSON file in the Minecraft configuration folder
@@ -24,21 +26,24 @@ public class ConfigJSON {
 
         // Create a JSON object to store the configuration
         JsonObject configJson = new JsonObject();
-        configJson.addProperty("TransparentCabinetBlocks", ModConfig.TransparentCabinetBlocks);
+        configJson.addProperty("transparentCabinetBlocks", ModConfig.transparentCabinetBlocks);
         configJson.addProperty("enableLightStripBrightening", ModConfig.enableLightStripBrightening);
         configJson.addProperty("enableLightStripRadiusColorCompensation", ModConfig.enableLightStripRadiusColorCompensation);
-        configJson.addProperty("enableCandlestickBeta", ModConfig.enableCandlestickBeta);
-        configJson.addProperty("enableColouredFeatureSetBeta", ModConfig.enableColouredFeatureSetBeta);
+        configJson.addProperty("enableCandlestickBeta", ModConfig.getRawEnableCandlestickBeta());
+        configJson.addProperty("enableColouredFeatureSetBeta", ModConfig.getRawEnableColouredFeatureSetBeta());
 
-        configJson.addProperty("LightStripColoredLightStrength", ModConfig.LightStripColoredLightStrength);
-        configJson.addProperty("LightStripColoredLightRadius", ModConfig.LightStripColoredLightRadius);
-        configJson.addProperty("LightStripRadiusColorCompensationBias", ModConfig.LightStripRadiusColorCompensationBias);
+        configJson.addProperty("mosaicsAndTilesStrengthMultiplayer", ModConfig.mosaicsAndTilesStrengthMultiplayer);
         configJson.addProperty("cabinetBlockBurnTime", ModConfig.cabinetBlockBurnTime);
         configJson.addProperty("cabinetBlockFireSpread", ModConfig.cabinetBlockFireSpread);
-        configJson.addProperty("mosaicsAndTilesStrengthMultiplayer", ModConfig.mosaicsAndTilesStrengthMultiplayer);
+
+        configJson.addProperty("datagenMode", ModConfig.datagenMode);
+
+        configJson.addProperty("lightStripColoredLightStrength", ModConfig.lightStripColoredLightStrength);
+        configJson.addProperty("lightStripColoredLightRadius", ModConfig.lightStripColoredLightRadius);
+        configJson.addProperty("lightStripRadiusColorCompensationBias", ModConfig.lightStripRadiusColorCompensationBias);
 
         JsonArray LightStripColors = new JsonArray();
-        for (Color color : ModConfig.LightStripColors) {
+        for (Color color : ModConfig.lightStripColors) {
             JsonObject colorJson = new JsonObject();
             colorJson.addProperty("name", color.name);
             colorJson.addProperty("r", color.r);
@@ -57,6 +62,13 @@ public class ConfigJSON {
             pumpkinColors.add(entry.getKey(), colorJson);
         }
         configJson.add("pumpkinColors", pumpkinColors);
+
+        // Add the mod support configuration
+        JsonObject modSupportJson = new JsonObject();
+        for (Map.Entry<SupportedMods, ModSupport> entry : ModConfig.modSupport.entrySet()) {
+            modSupportJson.addProperty(entry.getKey().modId, entry.getValue().toString());
+        }
+        configJson.add("modSupport", modSupportJson);
 
         // Save the JSON object to a file
         try (FileWriter writer = new FileWriter(configFile)) {
@@ -81,25 +93,28 @@ public class ConfigJSON {
                 boolean needsUpdating = false;
                 if (configJson != null) {
                     // Load the static fields from the JSON object
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "TransparentCabinetBlocks");
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "transparentCabinetBlocks");
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableLightStripBrightening");
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableLightStripRadiusColorCompensation");
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableCandlestickBeta");
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableColouredFeatureSetBeta");
+                    needsUpdating |= tryLoadViaSetter(configJson, JsonElement::getAsBoolean, "enableCandlestickBeta", boolean.class, "setEnableCandlestickBeta");
+                    needsUpdating |= tryLoadViaSetter(configJson, JsonElement::getAsBoolean, "enableColouredFeatureSetBeta", boolean.class, "setEnableColouredFeatureSetBeta");
 
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, "LightStripColoredLightStrength");
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, "LightStripColoredLightRadius");
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, "LightStripRadiusColorCompensationBias");
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsFloat, "mosaicsAndTilesStrengthMultiplayer");
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsInt, "cabinetBlockBurnTime");
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsInt, "cabinetBlockFireSpread");
-                    needsUpdating |= tryLoad(configJson, JsonElement::getAsFloat, "mosaicsAndTilesStrengthMultiplayer");
+
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "datagenMode");
+
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, "lightStripColoredLightStrength");
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, "lightStripColoredLightRadius");
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, "lightStripRadiusColorCompensationBias");
 
 //                    needsUpdating |= tryLoad(configJson, JsonElement::getAsJsonArray, "LightStripColors");
                     try {
                         JsonArray LEDColors = configJson.getAsJsonArray("LightStripColors");
                         for (int i = 0; i < LEDColors.size(); i++) {
                             JsonObject colorJson = LEDColors.get(i).getAsJsonObject();
-                            Color color = ModConfig.LightStripColors.get(i);
+                            Color color = ModConfig.lightStripColors.get(i);
                             color.r = colorJson.get("r").getAsShort();
                             color.g = colorJson.get("g").getAsShort();
                             color.b = colorJson.get("b").getAsShort();
@@ -128,6 +143,22 @@ public class ConfigJSON {
                         );
                         needsUpdating = true;
                     }
+
+                    // Load the mod support configuration
+                    try {
+                        JsonObject modSupportJson = configJson.getAsJsonObject("modSupport");
+                        for (Map.Entry<String, JsonElement> entry : modSupportJson.entrySet()) {
+                            SupportedMods mod = SupportedMods.fromModId(entry.getKey());
+                            ModSupport support = ModSupport.valueOf(entry.getValue().getAsString());
+                            ModConfig.modSupport.put(mod, support);
+                        }
+                    } catch (Exception e) {
+                        LOGGER.error(
+                                "Failed to load 'modSupport' from config file: {}\nError: {}\nStacktrace: {}\nMarking the config file for update",
+                                configFile.getAbsolutePath(), e.getMessage(), e.getStackTrace()
+                        );
+                        needsUpdating = true;
+                    }
                 }
                 if (needsUpdating) {
                     LOGGER.warn("Updating config file to include new values and/or fix broken ones");
@@ -148,13 +179,26 @@ public class ConfigJSON {
             T value = getter.apply(configJson.get(fieldName));
             ModConfig.class.getField(fieldName).set(ModConfig.class, value);
         } catch (Exception e) {
-            LOGGER.error(
-                    "Failed to load '{}' from config file: {}\nError: {}\nStacktrace: {}",
-                    fieldName, configJson, e.getMessage(), e.getStackTrace()
-            );
+            printLoadError(fieldName, configJson, e);
             return true;
         }
         return false;
+    }
+    private static <T> boolean tryLoadViaSetter(JsonObject configJson, Function<JsonElement, T> getter, String fieldName, Class<T> clazz, String setterName) {
+        try {
+            T value = getter.apply(configJson.get(fieldName));
+            ModConfig.class.getMethod(setterName, clazz).invoke(null, value);
+        } catch (Exception e) {
+            printLoadError(fieldName, configJson, e);
+            return true;
+        }
+        return false;
+    }
+    private static void printLoadError(String fieldName, JsonObject configJson, Exception e) {
+        LOGGER.error(
+                "Failed to load '{}' from config file: {}\n\tError: {}\n\tStacktrace: {}",
+                fieldName, configJson, e.getMessage(), e.getStackTrace()
+        );
     }
 
     // Create the shimmer support configuration file if it does not exist
@@ -180,15 +224,15 @@ public class ConfigJSON {
 
         JsonObject configJson = new JsonObject();
 
-        JsonObject colorReference = getColorReference(ModConfig.LightStripColors, ModConfig.LightStripColoredLightStrength);
+        JsonObject colorReference = getColorReference(ModConfig.lightStripColors, ModConfig.lightStripColoredLightStrength);
         configJson.add("ColorReference", colorReference);
 
         JsonArray lightBlock = new JsonArray();
-        for (Color color : ModConfig.LightStripColors) {
+        for (Color color : ModConfig.lightStripColors) {
             JsonObject lightBlockJson = new JsonObject();
             lightBlockJson.addProperty("block", "humility-afm:light_strip_" + color.name);
             lightBlockJson.addProperty("color", "#" + color.name);
-            lightBlockJson.addProperty("radius", ModConfig.LightStripColoredLightRadius + bias(color));
+            lightBlockJson.addProperty("radius", ModConfig.lightStripColoredLightRadius + bias(color));
             lightBlock.add(lightBlockJson);
         }
         configJson.add("LightBlock", lightBlock);
