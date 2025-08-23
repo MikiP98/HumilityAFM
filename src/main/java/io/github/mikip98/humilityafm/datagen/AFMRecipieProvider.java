@@ -10,6 +10,8 @@ import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -178,5 +180,11 @@ public abstract class AFMRecipieProvider extends FabricRecipeProvider {
                 .criterion(hasItem(glowingPowder), conditionsFromItem(glowingPowder))
                 .criterion(hasItem(Blocks.GLASS_PANE), conditionsFromItem(Blocks.GLASS_PANE))
                 .offerTo(exporter, path_prefix + "reversed/" + getRecipeName(output));
+    }
+
+    // Override for the vanilla method to be mod safe
+    public static String hasItem(ItemConvertible item) {
+        final Identifier itemId = Registries.ITEM.getId(item.asItem());
+        return "has_" + itemId.getNamespace() + ":" + itemId.getPath();
     }
 }
