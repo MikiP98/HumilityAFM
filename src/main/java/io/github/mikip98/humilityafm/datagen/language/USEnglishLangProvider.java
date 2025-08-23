@@ -78,6 +78,7 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
             return translations;
         }
 
+        // GENERAL
         public void generateCabinetTranslations() {
             translations.put(ItemRegistry.CABINET_ITEM, "Test Cabinet Block");  // Manual testing block
             translations.put(ItemRegistry.ILLUMINATED_CABINET_ITEM, "Test Illuminated Cabinet Block");  // Manual testing block
@@ -88,19 +89,16 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
             enterTranslations(ActiveGenerationData.cabinetVariantMaterials, idPrefix1, nameSuffix1);
             enterTranslations(ActiveGenerationData.cabinetVariantMaterials, idPrefix2, nameSuffix2);
         }
-
         public void generateWoodenMosaicTranslations() {
             final String idPrefix = "wooden_mosaic_";
             final String nameSuffix = " wooden mosaic";
             enterTranslations(ActiveGenerationData.colouredFeatureSetMaterials, idPrefix, nameSuffix);
         }
-
         public void generateTerracottaTilesTranslations() {
             final String idPrefix = "terracotta_tiles_";
             final String nameSuffix = " terracotta tiles";
             enterTranslations(ActiveGenerationData.colouredFeatureSetMaterials, idPrefix, nameSuffix);
         }
-
         public void generateForcedCornerStairsTranslations() {
             translations.put(BlockRegistry.INNER_STAIRS, "Test Inner Stairs");  // Manual testing block
             translations.put(BlockRegistry.OUTER_STAIRS, "Test Outer Stairs");  // Manual testing block
@@ -112,6 +110,17 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
             enterTranslations(ActiveGenerationData.colouredFeatureSetMaterials, idPrefix2, nameSuffix2);
         }
 
+        // CANDLESTICK BETA
+        public void generateCandlestickTranslations() {
+            final String idPrefix = "candlestick_";
+            final String nameSuffix = " candlestick";
+            enterTranslations(ActiveGenerationData.simpleCandlestickMaterials, idPrefix, nameSuffix);
+            Arrays.stream(ActiveGenerationData.rustingCandlestickMaterials).forEach(
+                    (materialSet) -> enterTranslations(materialSet, idPrefix, nameSuffix)
+            );
+        }
+
+        // COLOURED FEATURE SET BETA
         public void generateSpecialJackOLanternTranslations() {
             translations.put("jack_o_lantern_redstone", "Redstone Jack o'Lantern");
             translations.put("jack_o_lantern_soul", "Soul Jack o'Lantern");
@@ -121,7 +130,6 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
             final String nameSuffix = " Jack o'Lantern";
             enterTranslations(ActiveGenerationData.colouredFeatureSetMaterials, idPrefix, nameSuffix);
         }
-
         // TODO: Figure out how to simplify this effectively
         public void generateColouredTorchesTranslations() {
             for (BlockMaterial material : ActiveGenerationData.colouredFeatureSetMaterials) {
@@ -137,15 +145,6 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
             final String nameSuffix = " Light Strip";
             enterTranslations(ActiveGenerationData.colouredFeatureSetMaterials, idPrefix, nameSuffix);
         }
-
-        public void generateCandlestickTranslations() {
-            final String idPrefix = "candlestick_";
-            final String nameSuffix = " candlestick";
-            enterTranslations(ActiveGenerationData.simpleCandlestickMaterials, idPrefix, nameSuffix);
-            Arrays.stream(ActiveGenerationData.rustingCandlestickMaterials).forEach(
-                    (materialSet) -> enterTranslations(materialSet, idPrefix, nameSuffix)
-            );
-        }
     }
 
     protected static class ItemTranslator extends TranslatorBase {
@@ -154,9 +153,7 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
         }
 
         public TranslationHashMap getItemTranslations() {
-            // LED Powders
             generateGlowingPowderTranslations();
-
             return translations;
         }
 
