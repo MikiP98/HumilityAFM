@@ -27,7 +27,7 @@ public class PolishLangProvider extends FabricLanguageProvider {
         Map<TranslationCategory, Map<String, String>> categoryTranslations = USEnglishLangProvider.generateBaseUSEnglishTranslations();
 
         // Item groups
-        LOGGER.info(" Replacing item groups translations EN -> PL");
+        LOGGER.info("Replacing item groups translations EN -> PL");
         categoryTranslations.put(TranslationCategory.ITEM_GROUPS, Map.of(
                 "itemGroup.cabinets", "Gabloty",
                 "itemGroup.innerOuterStairs", "Schody wewnętrzne i zewnętrzne",
