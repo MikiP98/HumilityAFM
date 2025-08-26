@@ -1,6 +1,7 @@
 package io.github.mikip98.humilityafm.content.blocks.candlestick;
 
 import io.github.mikip98.humilityafm.content.ModProperties;
+import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.SimpleCandlestickLogic;
 import io.github.mikip98.humilityafm.util.data_types.CandleColor;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
@@ -8,11 +9,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.*;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
@@ -27,7 +25,14 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public class Candlestick extends HorizontalFacingBlock implements Waterloggable {
+public class Candlestick extends HorizontalFacingBlock implements SimpleCandlestickLogic, Waterloggable {
+    public static final FabricBlockSettings defaultSettings = FabricBlockSettings.create()
+            .strength(0.5f)
+            .requiresTool()
+            .nonOpaque()
+            .sounds(BlockSoundGroup.METAL)
+            .luminance(state -> state.get(Properties.LIT) ? 4 : 0);
+
     protected static final VoxelShape voxelShapeEmptyNorth = VoxelShapes.union(
             Block.createCuboidShape(7.5, 4, 10, 8.5, 5, 16),
             Block.createCuboidShape(7.5, 5, 10, 8.5, 8, 11),
@@ -70,21 +75,29 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
             Block.createCuboidShape(9.5, 9.0001, 7, 11.5, 11, 9)
     );  // Empty + Candle
 
-
-    public static final FabricBlockSettings defaultSettings = FabricBlockSettings.create()
-            .strength(0.5f)
-            .requiresTool()
-            .nonOpaque()
-            .sounds(BlockSoundGroup.METAL)
-            .luminance(state -> state.get(Properties.LIT) ? 4 : 0);
-
     protected static final EnumProperty<CandleColor> CANDLE_COLOR = ModProperties.CANDLE_COLOR;
+
+    protected double candleWickX;
+    protected double candleWickY;
+    protected double candleWickZ;
+
+    protected void updateCandleWickOffset(BlockPos pos, BlockState state) {
+        candleWickX = pos.getX() + 0.5;
+        candleWickY = pos.getY() + 0.78;
+        candleWickZ = pos.getZ() + 0.5;
+
+        switch (state.get(FACING)) {
+            case NORTH -> candleWickZ += 0.15;
+            case SOUTH -> candleWickZ -= 0.15;
+            case EAST -> candleWickX -= 0.15;
+            case WEST -> candleWickX += 0.15;
+        }
+    }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(Properties.HORIZONTAL_FACING);
+        builder.add(FACING);
         builder.add(Properties.WATERLOGGED);
-        builder.add(ModProperties.CANDLE);
         builder.add(CANDLE_COLOR);
         builder.add(Properties.LIT);
     }
@@ -95,112 +108,37 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
     public Candlestick(Settings settings) {
         super(settings);
         setDefaultState(getDefaultState()
-                .with(Properties.HORIZONTAL_FACING, Direction.SOUTH)
+                .with(FACING, Direction.SOUTH)
                 .with(Properties.WATERLOGGED, false)
-                .with(ModProperties.CANDLE, false)
-                .with(CANDLE_COLOR, CandleColor.PLAIN)
+                .with(CANDLE_COLOR, CandleColor.NONE)
                 .with(Properties.LIT, false)
         );
-    }
-    public Candlestick(Settings settings, boolean ignored) {
-        super(settings);
     }
 
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return this.getDefaultState()
-                .with(Properties.HORIZONTAL_FACING, ctx.getHorizontalPlayerFacing().getOpposite())
-                .with(Properties.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).isIn(FluidTags.WATER));
+        BlockPos pos = ctx.getBlockPos();
+        BlockState state = getDefaultState()
+                .with(FACING, ctx.getHorizontalPlayerFacing().getOpposite())
+                .with(Properties.WATERLOGGED, ctx.getWorld().getFluidState(pos).isIn(FluidTags.WATER));
+        updateCandleWickOffset(pos, state);
+        return state;
     }
 
-    // TODO: Move each event to a separate function
     @SuppressWarnings("deprecation")
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        ItemStack heldItem = player.getStackInHand(hand);
-
-        // Insert candle
-        if (heldItem.getItem() instanceof BlockItem) {
-            if (((BlockItem) heldItem.getItem()).getBlock() instanceof CandleBlock) {
-                // Check if the candlestick is already holding a candle
-                if (state.get(ModProperties.CANDLE)) {
-                    player.getInventory().offerOrDrop(new ItemStack(state.get(CANDLE_COLOR).asCandle()));
-                }
-                world.setBlockState(pos, state.with(ModProperties.CANDLE, true).with(CANDLE_COLOR, CandleColor.getColor(heldItem.getItem())), Block.NOTIFY_ALL);
-                if (!player.isCreative()) heldItem.decrement(1);
-                world.playSoundAtBlockCenter(pos, SoundEvents.ENTITY_ITEM_FRAME_REMOVE_ITEM, SoundCategory.BLOCKS, 0.9f, 1.1f, true);
-                return ActionResult.SUCCESS;
-            }
-        }
-        // Remove candle and extinguish
-        if (heldItem.isEmpty() && player.isSneaking()) {
-            // Extinguish the candle
-            if (state.get(Properties.LIT)) {
-                world.setBlockState(pos, state.with(Properties.LIT, false), Block.NOTIFY_ALL);
-                world.playSoundAtBlockCenter(pos, SoundEvents.BLOCK_CANDLE_EXTINGUISH, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
-                return ActionResult.SUCCESS;
-            }
-            // Remove the candle
-            else if (state.get(ModProperties.CANDLE)) {
-                player.getInventory().offerOrDrop(new ItemStack(state.get(CANDLE_COLOR).asCandle()));
-                world.setBlockState(pos, state.with(ModProperties.CANDLE, false), Block.NOTIFY_ALL);
-                world.playSoundAtBlockCenter(pos, SoundEvents.ENTITY_ITEM_FRAME_REMOVE_ITEM, SoundCategory.BLOCKS, 0.9f, 0.9f, true);
-                return ActionResult.SUCCESS;
-            }
-        }
-        // Light the candle
-        if (heldItem.getItem() instanceof FlintAndSteelItem && state.get(ModProperties.CANDLE) && !state.get(Properties.LIT) && !state.get(Properties.WATERLOGGED)) {
-            world.setBlockState(pos, state.with(Properties.LIT, true), Block.NOTIFY_ALL);
-            if (!player.isCreative()) heldItem.damage(1, player, (p) -> p.sendToolBreakStatus(hand));
-            world.playSoundAtBlockCenter(pos, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
-            return ActionResult.SUCCESS;
-        }
-
+        if (onUseLogic(state, world, pos, player, hand, hit)) return ActionResult.SUCCESS;
         return super.onUse(state, world, pos, player, hand, hit);
     }
 
     @Override
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-        // Check if the block is lit (property LIT is true)
-        if (state.get(Properties.LIT)) {
-            double x = pos.getX() + 0.5;// + this.offsetX;
-            double y = pos.getY() + 0.8;// + this.offsetY;
-            double z = pos.getZ() + 0.5;// + this.offsetZ;
-            if (random.nextInt(1) == 0) {
-                switch (state.get(Properties.HORIZONTAL_FACING)) {
-                    case NORTH:
-                        z += 0.15;
-                        break;
-                    case SOUTH:
-                        z -= 0.15;
-                        break;
-                    case EAST:
-                        x -= 0.15;
-                        break;
-                    case WEST:
-                        x += 0.15;
-                }
-                float velocityPlaneMultiplayer = 0.001953125f;
-                double velocityY = random.nextDouble() * 0.001953125;
-                double velocityX = (random.nextDouble() - 0.5) * velocityPlaneMultiplayer;
-                double velocityZ = (random.nextDouble() - 0.5) * velocityPlaneMultiplayer;
-                world.addParticle(ParticleTypes.SMALL_FLAME, x, y, z, velocityX, velocityY, velocityZ);
-
-                if (random.nextInt(4) == 0) {
-                    velocityPlaneMultiplayer = 0.00390625f;
-                    velocityY = random.nextDouble() * 0.00390625;
-                    velocityX = (random.nextDouble() - 0.5) * velocityPlaneMultiplayer;
-                    velocityZ = (random.nextDouble() - 0.5) * velocityPlaneMultiplayer;
-                    world.addParticle(ParticleTypes.SMOKE, x, y, z, velocityX, velocityY, velocityZ);
-                }
-            }
-            if (random.nextInt(4) == 0) {
-                world.playSound(x, y, z, SoundEvents.BLOCK_CANDLE_AMBIENT, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
-            }
-        }
-        super.randomDisplayTick(state, world, pos, random);
-    }
-    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random, boolean ignored) {
+        if (candleWickX == 0 && candleWickY == 0 && candleWickZ == 0)
+            updateCandleWickOffset(pos, state);
+        // If the candle is lit, display flame and smoke particles + play sound
+        if (state.get(Properties.LIT))
+            performRandomDisplayTick(world, candleWickX, candleWickY, candleWickZ, random);
         super.randomDisplayTick(state, world, pos, random);
     }
 
@@ -208,35 +146,19 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
         Direction dir = state.get(Properties.HORIZONTAL_FACING);
-        if (state.get(ModProperties.CANDLE)) {
+        if (state.get(ModProperties.CANDLE_COLOR) != CandleColor.NONE) {
             switch (dir) {
-                case NORTH -> {
-                    return voxelShapeCandleNorth;
-                }
-                case SOUTH -> {
-                    return voxelShapeCandleSouth;
-                }
-                case EAST -> {
-                    return voxelShapeCandleEast;
-                }
-                case WEST -> {
-                    return voxelShapeCandleWest;
-                }
+                case NORTH: { return voxelShapeCandleNorth; }
+                case SOUTH: { return voxelShapeCandleSouth; }
+                case EAST: { return voxelShapeCandleEast; }
+                case WEST: { return voxelShapeCandleWest; }
             }
         } else {
             switch (dir) {
-                case NORTH -> {
-                    return voxelShapeEmptyNorth;
-                }
-                case SOUTH -> {
-                    return voxelShapeEmptySouth;
-                }
-                case EAST -> {
-                    return voxelShapeEmptyEast;
-                }
-                case WEST -> {
-                    return voxelShapeEmptyWest;
-                }
+                case NORTH: { return voxelShapeEmptyNorth; }
+                case SOUTH: { return voxelShapeEmptySouth; }
+                case EAST: { return voxelShapeEmptyEast; }
+                case WEST: { return voxelShapeEmptyWest; }
             }
         }
         return null;
@@ -245,10 +167,15 @@ public class Candlestick extends HorizontalFacingBlock implements Waterloggable 
     @SuppressWarnings("deprecation")
     @Override
     public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-        if (state.getBlock() != newState.getBlock() && state.get(ModProperties.CANDLE)) {
+        // If the new state is the same block, update the candle wick offset
+        if (state.getBlock() == newState.getBlock())
+            updateCandleWickOffset(pos, newState);
+
+        // If the block is replaced with a different block, drop the candle if present
+        else if (state.get(CANDLE_COLOR) != CandleColor.NONE)
             Block.dropStack(world, pos, new ItemStack(state.get(CANDLE_COLOR).asCandle()));
-            super.onStateReplaced(state, world, pos, newState, moved);
-        }
+
+        super.onStateReplaced(state, world, pos, newState, moved);
     }
 
     @SuppressWarnings("deprecation")
