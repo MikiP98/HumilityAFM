@@ -17,14 +17,11 @@ import org.jetbrains.annotations.Nullable;
 @Setter
 public class RustableCandlestick extends Candlestick implements RustableCandlestickLogic {
     public static final FabricBlockSettings defaultSettings = FabricBlockSettings.copyOf(Candlestick.defaultSettings)
-            .sounds(BlockSoundGroup.COPPER);
+            .sounds(BlockSoundGroup.COPPER)
+            .ticksRandomly();
 
     protected @Nullable BlockState rustPreviousLevel;
     protected @Nullable BlockState rustNextLevel;
-
-//    @Override
-//    public @Nullable BlockState getRustNextLevel() { return rustNextLevel; }
-//    public @Nullable BlockState getRustPreviousLevel() { return rustPreviousLevel; }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
