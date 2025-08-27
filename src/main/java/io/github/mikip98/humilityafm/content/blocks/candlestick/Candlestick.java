@@ -33,6 +33,44 @@ public class Candlestick extends HorizontalFacingBlock implements SimpleCandlest
             .sounds(BlockSoundGroup.METAL)
             .luminance(state -> state.get(Properties.LIT) ? 4 : 0);
 
+    // The below commented-out shapes are a simplified variants of the voxel shapes
+    // They look more vanilla-like, but are in my opinion more ugly
+    // IDK what to use.
+    // I'll leave both here for now, while using the more complex ones
+//    protected static final VoxelShape voxelShapeEmptyNorth = VoxelShapes.union(
+//            Block.createCuboidShape(5.5, 4, 8, 10.5, 7, 16),
+//            Block.createCuboidShape(5.5, 7, 8, 10.5, 9, 12)
+//    );
+//    protected static final VoxelShape voxelShapeEmptySouth = VoxelShapes.union(
+//            Block.createCuboidShape(5.5, 4, 0, 10.5, 7, 8),
+//            Block.createCuboidShape(5.5, 7, 4, 10.5, 9, 8)
+//    );
+//    protected static final VoxelShape voxelShapeEmptyEast = VoxelShapes.union(
+//            Block.createCuboidShape(0, 4, 5.5, 8, 7, 10.5),
+//            Block.createCuboidShape(4, 7, 5.5, 8, 9, 10.5)
+//    );
+//    protected static final VoxelShape voxelShapeEmptyWest = VoxelShapes.union(
+//            Block.createCuboidShape(8, 4, 5.5, 16, 7, 10.5),
+//            Block.createCuboidShape(8, 7, 5.5, 12, 9, 10.5)
+//    );
+//
+//    protected static final VoxelShape voxelShapeCandleNorth = VoxelShapes.union(
+//            voxelShapeEmptyNorth,
+//            Block.createCuboidShape(5, 9, 8, 11, 12, 16)
+//    );
+//    protected static final VoxelShape voxelShapeCandleSouth = VoxelShapes.union(
+//            voxelShapeEmptySouth,
+//            Block.createCuboidShape(5, 9, 0, 11, 12, 8)
+//    );
+//    protected static final VoxelShape voxelShapeCandleEast = VoxelShapes.union(
+//            voxelShapeEmptyEast,
+//            Block.createCuboidShape(0, 9, 5, 8, 12, 11)
+//    );
+//    protected static final VoxelShape voxelShapeCandleWest = VoxelShapes.union(
+//            voxelShapeEmptyWest,
+//            Block.createCuboidShape(8, 9, 5, 16, 12, 11)
+//    );
+
     protected static final VoxelShape voxelShapeEmptyNorth = VoxelShapes.union(
             Block.createCuboidShape(7.5, 4, 10, 8.5, 5, 16),
             Block.createCuboidShape(7.5, 5, 10, 8.5, 8, 11),
@@ -77,23 +115,6 @@ public class Candlestick extends HorizontalFacingBlock implements SimpleCandlest
 
     protected static final EnumProperty<CandleColor> CANDLE_COLOR = ModProperties.CANDLE_COLOR;
 
-    protected double candleWickX;
-    protected double candleWickY;
-    protected double candleWickZ;
-
-    protected void updateCandleWickOffset(BlockPos pos, BlockState state) {
-        candleWickX = pos.getX() + 0.5;
-        candleWickY = pos.getY() + 0.78;
-        candleWickZ = pos.getZ() + 0.5;
-
-        switch (state.get(FACING)) {
-            case NORTH -> candleWickZ += 0.15;
-            case SOUTH -> candleWickZ -= 0.15;
-            case EAST -> candleWickX -= 0.15;
-            case WEST -> candleWickX += 0.15;
-        }
-    }
-
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(FACING);
@@ -117,12 +138,9 @@ public class Candlestick extends HorizontalFacingBlock implements SimpleCandlest
 
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        BlockPos pos = ctx.getBlockPos();
-        BlockState state = getDefaultState()
+        return getDefaultState()
                 .with(FACING, ctx.getHorizontalPlayerFacing().getOpposite())
-                .with(Properties.WATERLOGGED, ctx.getWorld().getFluidState(pos).isIn(FluidTags.WATER));
-        updateCandleWickOffset(pos, state);
-        return state;
+                .with(Properties.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).isIn(FluidTags.WATER));
     }
 
     @SuppressWarnings("deprecation")
@@ -134,12 +152,23 @@ public class Candlestick extends HorizontalFacingBlock implements SimpleCandlest
 
     @Override
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-        if (candleWickX == 0 && candleWickY == 0 && candleWickZ == 0)
-            updateCandleWickOffset(pos, state);
         // If the candle is lit, display flame and smoke particles + play sound
-        if (state.get(Properties.LIT))
+        if (state.get(Properties.LIT)) {
+            // Unfortunately, the code below cannot be cached
+            // as it would require making a block entity
+            // and that would result in overall worse performance
+            double candleWickX = pos.getX() + 0.5;
+            final double candleWickY = pos.getY() + 0.78;
+            double candleWickZ = pos.getZ() + 0.5;
+            switch (state.get(FACING)) {
+                case NORTH -> candleWickZ += 0.15;
+                case SOUTH -> candleWickZ -= 0.15;
+                case EAST -> candleWickX -= 0.15;
+                case WEST -> candleWickX += 0.15;
+            }
+
             performRandomDisplayTick(world, candleWickX, candleWickY, candleWickZ, random);
-        super.randomDisplayTick(state, world, pos, random);
+        }
     }
 
     @SuppressWarnings("deprecation")
@@ -167,12 +196,8 @@ public class Candlestick extends HorizontalFacingBlock implements SimpleCandlest
     @SuppressWarnings("deprecation")
     @Override
     public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-        // If the new state is the same block, update the candle wick offset
-        if (state.getBlock() == newState.getBlock())
-            updateCandleWickOffset(pos, newState);
-
         // If the block is replaced with a different block, drop the candle if present
-        else if (state.get(CANDLE_COLOR) != CandleColor.NONE)
+        if (state.get(CANDLE_COLOR) != CandleColor.NONE)
             Block.dropStack(world, pos, new ItemStack(state.get(CANDLE_COLOR).asCandle()));
 
         super.onStateReplaced(state, world, pos, newState, moved);
