@@ -1,4 +1,4 @@
-package io.github.mikip98.humilityafm.util;
+package io.github.mikip98.humilityafm.util.mod_support;
 
 import org.jetbrains.annotations.NotNull;
 
