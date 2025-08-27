@@ -6,6 +6,5 @@ import net.minecraft.state.property.EnumProperty;
 
 public class ModProperties {
     public static final BooleanProperty WAXED = BooleanProperty.of("waxed");
-    public static final BooleanProperty CANDLE = BooleanProperty.of("candle");
-    public static final EnumProperty<CandleColor> CANDLE_COLOR = EnumProperty.of("color", CandleColor.class);
+    public static final EnumProperty<CandleColor> CANDLE_COLOR = EnumProperty.of("candle_color", CandleColor.class);
 }
