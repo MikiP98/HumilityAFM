@@ -1,11 +1,8 @@
-package io.github.mikip98.humilityafm.util.data_types;
+package io.github.mikip98.humilityafm.content.properties.enums;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.StringIdentifiable;
-
-import java.util.Map;
-import java.util.NoSuchElementException;
 
 public enum CandleColor implements StringIdentifiable {
     NONE,

@@ -1,6 +1,6 @@
 package io.github.mikip98.humilityafm.datagen.language.util;
 
-import io.github.mikip98.humilityafm.util.generation_data.material_management.data_types.BlockMaterial;
+import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
 
 import java.util.Iterator;
 

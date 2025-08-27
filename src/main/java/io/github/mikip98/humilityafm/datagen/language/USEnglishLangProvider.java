@@ -6,7 +6,7 @@ import io.github.mikip98.humilityafm.datagen.language.util.TranslatorBase;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
-import io.github.mikip98.humilityafm.util.generation_data.material_management.data_types.BlockMaterial;
+import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 

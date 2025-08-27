@@ -1,6 +1,4 @@
-package io.github.mikip98.humilityafm.util.data_types;
-
-import java.text.MessageFormat;
+package io.github.mikip98.humilityafm.config;
 
 public class Color {
     public String name;

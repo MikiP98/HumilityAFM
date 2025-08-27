@@ -1,7 +1,7 @@
 package io.github.mikip98.humilityafm.content.blocks.candlestick.logic;
 
-import io.github.mikip98.humilityafm.content.ModProperties;
-import io.github.mikip98.humilityafm.util.data_types.CandleColor;
+import io.github.mikip98.humilityafm.content.properties.ModProperties;
+import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CandleBlock;

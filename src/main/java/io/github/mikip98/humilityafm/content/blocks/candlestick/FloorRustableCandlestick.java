@@ -1,6 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.candlestick;
 
-import io.github.mikip98.humilityafm.content.ModProperties;
+import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.RustableCandlestickLogic;
 import lombok.Getter;
 import lombok.Setter;

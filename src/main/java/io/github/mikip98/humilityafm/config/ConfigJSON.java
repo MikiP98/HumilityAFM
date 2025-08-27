@@ -2,7 +2,6 @@ package io.github.mikip98.humilityafm.config;
 
 import com.google.gson.*;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
-import io.github.mikip98.humilityafm.util.data_types.Color;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.File;

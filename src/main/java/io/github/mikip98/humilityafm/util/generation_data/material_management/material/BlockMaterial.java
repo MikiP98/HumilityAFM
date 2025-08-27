@@ -1,4 +1,4 @@
-package io.github.mikip98.humilityafm.util.generation_data.material_management.data_types;
+package io.github.mikip98.humilityafm.util.generation_data.material_management.material;
 
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import org.jetbrains.annotations.NotNull;

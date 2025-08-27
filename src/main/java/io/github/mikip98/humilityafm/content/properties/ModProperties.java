@@ -1,6 +1,6 @@
-package io.github.mikip98.humilityafm.content;
+package io.github.mikip98.humilityafm.content.properties;
 
-import io.github.mikip98.humilityafm.util.data_types.CandleColor;
+import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
 
