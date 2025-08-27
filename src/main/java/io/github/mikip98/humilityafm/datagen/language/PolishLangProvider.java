@@ -44,37 +44,33 @@ public class PolishLangProvider extends FabricLanguageProvider {
         Map<String, String> blockTranslations = categoryTranslations.get(TranslationCategory.BLOCKS);
         blockTranslations = new Hashtable<>(blockTranslations); // Without this line, fabric throws 'java.util.ConcurrentModificationException' exception
         for (Map.Entry<String, String> entry : blockTranslations.entrySet()) {
-            String key = entry.getKey();
-            Translation value = new Translation(entry.getValue());
-            blockTranslations.put(
-                    key,
-                    value
-                            // Test blocks
-                            .translate("Test", "Testowy")
-                            // Cabinet blocks
-                            .translate("Illuminated Cabinet", "Podświetlana Gablota")
-                            .translate("Cabinet", "Gablota")
-                            // Wooden Mosaics
-                            .translate("Wooden Mosaic", "Drewniana Mozaika")
-                            // Terracotta Tiles
-                            .translate("Terracotta Tiles", "Płytki z Terakoty")
-                            // Inner and outer stairs
-                            .translate("Inner Stairs", "Schody Wewnętrzne")
-                            .translate("Outer Stairs", "Schody Zewnętrzne")
-                            // LEDs
-                            .translate("Glowing Powder", "Świecący Proszek")
-                            // Candlesticks
-                            .translate("Candlestick", "Świecznik")
-                            .translate("With", "Z")
-                            .translate("Candle", "Świeczką")
-                            .getString()
+            final String key = entry.getKey();
+            final Translation valueTranslation = new Translation(entry.getValue())
+                    // Test blocks
+                    .translate("Test", "Testowy")
+                    // Cabinet blocks
+                    .translate("Illuminated Cabinet", "Podświetlana Gablota")
+                    .translate("Cabinet", "Gablota")
+                    // Wooden Mosaics
+                    .translate("Wooden Mosaic", "Drewniana Mozaika")
+                    // Terracotta Tiles
+                    .translate("Terracotta Tiles", "Płytki z Terakoty")
+                    // Inner and outer stairs
+                    .translate("Inner Stairs", "Schody Wewnętrzne")
+                    .translate("Outer Stairs", "Schody Zewnętrzne")
+                    // LEDs
+                    .translate("Glowing Powder", "Świecący Proszek")
+                    // Candlesticks
+                    .translate("Candlestick", "Świecznik")
+                    .translate("With", "Z")
+                    .translate("Candle", "Świeczką");
                     // TODO: Translate wood types, colours and 'block'
                     //  For cabinet blocks e.g. "Oak" -> "Dębowa", "Birch" -> "Brzozowa", etc.
                     //  For wooden mosaics the first wood type should end with 'owo' instead of 'owa'
                     //  As for colours
                     //  For cabinet blocks e.g. "White" -> "Biała", "Black" -> "Czarna", etc.
                     //  For terracotta tiles the first colour should end with 'o' , and the second one with 'e', instead of 'a'
-            );
+            blockTranslations.put(key, valueTranslation.getString());
         }
         // Submit the block translations
         categoryTranslations.put(TranslationCategory.BLOCKS, blockTranslations);  // required because of line 43
