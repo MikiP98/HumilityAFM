@@ -43,6 +43,7 @@ public class ActiveGenerationData extends RawGenerationData {
     /**
      * Made to trigger static initialisation of the class.
      * It also logs some info about the created generation data.
+     * The logging also performs some checks that ensure the proper workings of the generation.
      */
     public static void init() {
         // Log the number of generated materials
