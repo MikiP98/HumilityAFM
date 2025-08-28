@@ -3,7 +3,6 @@ package io.github.mikip98.humilityafm.datagen.language;
 import io.github.mikip98.humilityafm.datagen.language.util.TranslationCategory;
 import io.github.mikip98.humilityafm.datagen.language.util.TranslationHashMap;
 import io.github.mikip98.humilityafm.datagen.language.util.TranslatorBase;
-import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
@@ -100,8 +99,6 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
             enterTranslations(ActiveGenerationData.colouredFeatureSetMaterials, idPrefix, nameSuffix);
         }
         public void generateForcedCornerStairsTranslations() {
-            translations.put(BlockRegistry.INNER_STAIRS, "Test Inner Stairs");  // Manual testing block
-            translations.put(BlockRegistry.OUTER_STAIRS, "Test Outer Stairs");  // Manual testing block
             final String idPrefix1 = "inner_stairs_";
             final String idPrefix2 = "outer_stairs_";
             final String nameSuffix1 = " inner stairs";

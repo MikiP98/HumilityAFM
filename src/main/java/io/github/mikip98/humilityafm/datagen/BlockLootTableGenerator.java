@@ -1,11 +1,5 @@
 package io.github.mikip98.humilityafm.datagen;
 
-import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
-import io.github.mikip98.humilityafm.generators.CandlestickGenerator;
-import io.github.mikip98.humilityafm.generators.ColouredFeatureSetGenerator;
-import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
-import io.github.mikip98.humilityafm.generators.TerracottaTilesGenerator;
-import io.github.mikip98.humilityafm.generators.WoodenMosaicGenerator;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -27,60 +21,56 @@ public class BlockLootTableGenerator extends FabricBlockLootTableProvider {
         addDrop(BlockRegistry.ILLUMINATED_CABINET_BLOCK, ItemRegistry.ILLUMINATED_CABINET_ITEM);  // Manual testing block
         addDrop(BlockRegistry.FLOOR_CABINET_BLOCK, ItemRegistry.CABINET_ITEM);  // Manual testing block
         addDrop(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK, ItemRegistry.ILLUMINATED_CABINET_ITEM);  // Manual testing block
-        for (int i = 0; i < CabinetBlockGenerator.cabinetBlockVariants.length; ++i) {
+        for (int i = 0; i < BlockRegistry.WALL_CABINET_BLOCK_VARIANTS.length; ++i) {
             Item cabinetItem = ItemRegistry.CABINET_ITEM_VARIANTS[i];
             Item illuminatedCabinetItem = ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS[i];
 
-            addDrop(CabinetBlockGenerator.cabinetBlockVariants[i], cabinetItem);
-            addDrop(CabinetBlockGenerator.floorCabinetBlockVariants[i], cabinetItem);
+            addDrop(BlockRegistry.WALL_CABINET_BLOCK_VARIANTS[i], cabinetItem);
+            addDrop(BlockRegistry.FLOOR_CABINET_BLOCK_VARIANTS[i], cabinetItem);
 
-            addDrop(CabinetBlockGenerator.illuminatedCabinetBlockVariants[i], illuminatedCabinetItem);
-            addDrop(CabinetBlockGenerator.floorIlluminatedCabinetBlockVariants[i], illuminatedCabinetItem);
+            addDrop(BlockRegistry.WALL_ILLUMINATED_CABINET_BLOCK_VARIANTS[i], illuminatedCabinetItem);
+            addDrop(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_VARIANTS[i], illuminatedCabinetItem);
         }
-
         // Wooden Mosaics
-        addDrop(BlockRegistry.WOODEN_MOSAIC);  // Manual testing block
-        for (Block block : WoodenMosaicGenerator.woodenMosaicVariants) {
-            addDrop(block);
-        }
-
+        Arrays.stream(BlockRegistry.WOODEN_MOSAIC_VARIANTS).forEach(this::addDrop);
         // Terracotta Tiles
-        for (Block block : TerracottaTilesGenerator.terracottaTilesVariants) {
-            addDrop(block);
-        }
-
+        Arrays.stream(BlockRegistry.TERRACOTTA_TILE_VARIANTS).forEach(this::addDrop);
         // Inner & Outer Stairs
-        addDrop(BlockRegistry.INNER_STAIRS);  // Manual testing block
-        addDrop(BlockRegistry.OUTER_STAIRS);  // Manual testing block
-        for (Block block : ForcedCornerStairsGenerator.innerStairsBlockVariants) {
-            addDrop(block);
-        }
-        for (Block block : ForcedCornerStairsGenerator.outerStairsBlockVariants) {
-            addDrop(block);
-        }
-
+        Arrays.stream(BlockRegistry.INNER_STAIRS_BLOCK_VARIANTS).forEach(this::addDrop);
+        Arrays.stream(BlockRegistry.OUTER_STAIRS_BLOCK_VARIANTS).forEach(this::addDrop);
         // Jack o'Lanterns
         addDrop(BlockRegistry.JACK_O_LANTERN_REDSTONE);
         addDrop(BlockRegistry.JACK_O_LANTERN_SOUL);
-        Arrays.stream(BlockRegistry.COLOURED_JACK_O_LANTERNS).forEach(this::addDrop);
 
+
+        // CANDLESTICK BETA
         // Candlesticks
         for (int i = 0; i < ItemRegistry.CANDLESTICK_ITEM_VARIANTS.length; ++i) {
             Item item = ItemRegistry.CANDLESTICK_ITEM_VARIANTS[i];
-            addDrop(CandlestickGenerator.candlestickClassicWallVariants[i], item);
-            addDrop(CandlestickGenerator.candlestickClassicStandingVariants[i], item);
+            addDrop(BlockRegistry.SIMPLE_CANDLESTICK_WALL_VARIANTS[i], item);
+            addDrop(BlockRegistry.SIMPLE_CANDLESTICK_FLOOR_VARIANTS[i], item);
         }
-        for (int i = 0; i < ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS.size(); ++i) {
-            Item[] itemSet = ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS.get(i);
-            Block[] wallSet = CandlestickGenerator.candlestickRustableWallVariants.get(i);
-            Block[] standingSet = CandlestickGenerator.candlestickRustableStandingVariants.get(i);
+        for (int i = 0; i < ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS.length; ++i) {
+            Item[] itemSet = ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS[i];
+            Block[] wallSet = BlockRegistry.RUSTABLE_CANDLESTICK_WALL_VARIANTS[i];
+            Block[] standingSet = BlockRegistry.RUSTABLE_CANDLESTICK_FLOOR_VARIANTS[i];
             for (int j = 0; j < itemSet.length; ++j) {
                 addDrop(wallSet[j], itemSet[j]);
                 addDrop(standingSet[j], itemSet[j]);
             }
         }
 
+
+        // COLOURED FEATURE SET BETA
         // Light Strips
-        Arrays.stream(ColouredFeatureSetGenerator.LightStripBlockVariants).forEach(this::addDrop);
+        Arrays.stream(BlockRegistry.LIGHT_STRIP_VARIANTS).forEach(this::addDrop);
+        // Coloured Torches
+        Arrays.stream(BlockRegistry.COLOURED_TORCH_WEAK_VARIANTS).forEach(this::addDrop);
+        Arrays.stream(BlockRegistry.COLOURED_TORCH_VARIANTS).forEach(this::addDrop);
+        Arrays.stream(BlockRegistry.COLOURED_TORCH_STRONG_VARIANTS).forEach(this::addDrop);
+        // Coloured Jack o'Lanterns
+        Arrays.stream(BlockRegistry.COLOURED_JACK_O_LANTERNS_WEAK).forEach(this::addDrop);
+        Arrays.stream(BlockRegistry.COLOURED_JACK_O_LANTERNS).forEach(this::addDrop);
+        Arrays.stream(BlockRegistry.COLOURED_JACK_O_LANTERNS_STRONG).forEach(this::addDrop);
     }
 }
