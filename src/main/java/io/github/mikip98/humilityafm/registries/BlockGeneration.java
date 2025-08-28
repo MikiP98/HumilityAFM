@@ -34,7 +34,7 @@ import java.util.function.BiFunction;
 
 import static io.github.mikip98.humilityafm.registries.BlockRegistry.*;
 
-public class BlockGeneration {
+public abstract class BlockGeneration {
     protected static CabinetBlockSet generateCabinetBlockSet() {
         final FabricBlockSettings fireproofCabinetSettings = CabinetBlock.defaultSettings;
         final FabricBlockSettings burnableCabinetSettings = FabricBlockSettings.copyOf(fireproofCabinetSettings).burnable();

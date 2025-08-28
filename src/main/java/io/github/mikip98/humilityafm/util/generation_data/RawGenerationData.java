@@ -12,7 +12,7 @@ import java.util.*;
 import static io.github.mikip98.humilityafm.util.mod_support.SupportedMods.*;
 
 // TODO: Make this stuff protected, so it can only be used in ActiveGenerationData
-public class RawGenerationData {
+public abstract class RawGenerationData {
     // --------- Vanilla Data ---------
 
     /***
