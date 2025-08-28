@@ -165,6 +165,18 @@ public class RecipeGenerator extends AFMRecipieProvider {
                     MOD_ID + "/wooden_mosaics",
                     "wooden_mosaics/rotation/"
             );
+
+            // Datapack alternative recipies
+            // The output of this should be moved from 'generated/data/humility-afm/recipies'
+            // to its own dedicated datapack folder
+            offerAlternateWoodenMosaicRecipe(
+                    exporter,
+                    BlockRegistry.WOODEN_MOSAIC_VARIANTS[i],
+                    plank1,
+                    plank2,
+                    "datapack/wooden_mosaics/alternative/"
+            );
+
             ++i;
         }
     }

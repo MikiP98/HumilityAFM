@@ -37,6 +37,19 @@ public abstract class AFMRecipieProvider extends FabricRecipeProvider {
                 .offerTo(exporter, path_prefix + getRecipeName(output));
     }
 
+    protected static void  offerAlternateWoodenMosaicRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible plank1, ItemConvertible plank2, String path_prefix) {
+        ShapedRecipeJsonBuilder
+                .create(RecipeCategory.MISC, output, 1)
+                .pattern("FS")
+                .pattern("  ")
+                .pattern("SF")
+                .input('F', plank1)
+                .input('S', plank2)
+                .group(MOD_ID + "/wooden_mosaics")
+                .criterion(hasItem(plank1), conditionsFromItem(plank1))
+                .criterion(hasItem(plank2), conditionsFromItem(plank2))
+                .offerTo(exporter, path_prefix + getRecipeName(output));
+    }
     protected static void offerWoodenMosaicRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible plank1, ItemConvertible plank2, String path_prefix) {
         offerCheckerPatternRecipe(exporter, output, plank1, plank2, MOD_ID + "/wooden_mosaics", path_prefix);
     }
