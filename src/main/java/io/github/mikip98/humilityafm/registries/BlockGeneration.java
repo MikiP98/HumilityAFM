@@ -195,19 +195,19 @@ public abstract class BlockGeneration {
 
             // Rustable Candlesticks
             int metalSetCount = ActiveGenerationData.rustingCandlestickMaterials.length;
-            Block[][] rustableCandlestickWallVariants = new Block[metalSetCount][];
-            Block[][] rustableCandlestickFloorVariants = new Block[metalSetCount][];
+            RustableCandlestick[][] rustableCandlestickWallVariants = new RustableCandlestick[metalSetCount][];
+            FloorRustableCandlestick[][] rustableCandlestickFloorVariants = new FloorRustableCandlestick[metalSetCount][];
             for (int i = 0; i < metalSetCount; i++) {
-                List<Block> metalSetWallVaraintList = new ArrayList<>();
-                List<Block> metalSetFloorVariantList = new ArrayList<>();
+                List<RustableCandlestick> metalSetWallVaraintList = new ArrayList<>();
+                List<FloorRustableCandlestick> metalSetFloorVariantList = new ArrayList<>();
                 for (BlockMaterial material : ActiveGenerationData.rustingCandlestickMaterials[i]) {
-                    metalSetWallVaraintList.add(register(new RustableCandlestick(), "candlestick_wall_" + material.getSafeName()));
-                    metalSetFloorVariantList.add(register(new FloorRustableCandlestick(), "candlestick_" + material.getSafeName()));
+                    metalSetWallVaraintList.add((RustableCandlestick) register(new RustableCandlestick(), "candlestick_wall_" + material.getSafeName()));
+                    metalSetFloorVariantList.add((FloorRustableCandlestick) register(new FloorRustableCandlestick(), "candlestick_" + material.getSafeName()));
                 }
-                rustableCandlestickWallVariants[i] = metalSetWallVaraintList.toArray(Block[]::new);
-                rustableCandlestickFloorVariants[i] = metalSetFloorVariantList.toArray(Block[]::new);
-                fillRustStages((RustableCandlestickLogic[]) rustableCandlestickWallVariants[i]);
-                fillRustStages((RustableCandlestickLogic[]) rustableCandlestickFloorVariants[i]);
+                rustableCandlestickWallVariants[i] = metalSetWallVaraintList.toArray(RustableCandlestick[]::new);
+                rustableCandlestickFloorVariants[i] = metalSetFloorVariantList.toArray(FloorRustableCandlestick[]::new);
+                fillRustStages(rustableCandlestickWallVariants[i]);
+                fillRustStages(rustableCandlestickFloorVariants[i]);
             }
 
             return new CandlestickBlockSet(
