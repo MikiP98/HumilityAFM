@@ -19,10 +19,10 @@ import static io.github.mikip98.humilityafm.HumilityAFM.getId;
 public class BlockRegistry extends BlockGeneration {
     // Cabinet blocks
     // Testing blocks (from petrified slabs)
-    public static final Block CABINET_BLOCK = init(new CabinetBlock(), "wall_cabinet_block");
-    public static final Block ILLUMINATED_CABINET_BLOCK = init(new IlluminatedCabinetBlock(), "wall_illuminated_cabinet_block");
-    public static final Block FLOOR_CABINET_BLOCK = init(new FloorCabinetBlock(), "cabinet_block");
-    public static final Block FLOOR_ILLUMINATED_CABINET_BLOCK = init(new FloorIlluminatedCabinetBlock(), "illuminated_cabinet_block");
+    public static final Block CABINET_BLOCK = register(new CabinetBlock(), "wall_cabinet_block");
+    public static final Block ILLUMINATED_CABINET_BLOCK = register(new IlluminatedCabinetBlock(), "wall_illuminated_cabinet_block");
+    public static final Block FLOOR_CABINET_BLOCK = register(new FloorCabinetBlock(), "cabinet_block");
+    public static final Block FLOOR_ILLUMINATED_CABINET_BLOCK = register(new FloorIlluminatedCabinetBlock(), "illuminated_cabinet_block");
     // Final variants
     public static final Block[] WALL_CABINET_BLOCK_VARIANTS;
     public static final Block[] WALL_ILLUMINATED_CABINET_BLOCK_VARIANTS;
