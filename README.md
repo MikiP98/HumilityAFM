@@ -5,10 +5,10 @@
 ## Description
 This is a simple and small mod that adds some simple decorative blocks such as cabinets (which are fancier types of item frames) as well as some vanilla block variations.
 <br>
-It specializes in procedurally generating variants of the same block so that you can always find the look you were searching for.
+It specialises in procedurally generating variants of the same block so that you can always find the look you were searching for.
 
 ### Download
-The only official downloads are from [**Modrinth**](https://modrinth.com/mod/humility-afm/versions) and [Github](https://github.com/MikiP98/HumilityAFM)  
+The only official downloads are from [**Modrinth**](https://modrinth.com/mod/humility-afm/versions) and [GitHub](https://github.com/MikiP98/HumilityAFM)  
 I can't ensure any other downloads are safe and don't include viruses  
 PLS download the mod from Modrinth if you can
 
@@ -96,10 +96,10 @@ Lighten up your builds with unobtrusive light source
   - BetterEnd
   - Biomes o' Plenty
 - Fix nether wood block variants burning
-- Move duplicated code to Interfaces
+- Move duplicated code to Interfaces (candlesticks)
 - Reworked the whole block generation system
-- Add an optional datapack with alternate, non crafting table colliding, wooden mosaic recipes
-  - This datapack wil exist only from 1.20.1 (included) to 1.21.4 (excluded)
+- Add an optional datapack with alternate, non crafting-table colliding, wooden mosaic recipes
+  - This datapack will exist only from 1.20.1 (included) to 1.21.4 (excluded)
   - From 1.21.4 onwards, the recipes will be included in the mod itself because of `polymorph` mod's absence
 
 ### High priority:
@@ -125,17 +125,18 @@ Lighten up your builds with unobtrusive light source
     - Optional resourcepacks for:
       - vanilla emission (full texture)
       - LabPBR emission (full texture)
-- Redo coloured torch textures using Jack o'Lantern palette system
-- Reduce the amount of coloured torches and jack o'Lanterns
+- Redo coloured torch textures using the Jack o'Lantern palette system
+- Reduce the number of coloured torches and jack o'Lanterns
   - Think of a system that can replace the current 3 blocks per colour with different light output levels
 - Improve the built-in mod support for:
   - BetterNether
   - BetterEnd
   - Biomes o' Plenty
-  - Add stone variants from teh above mods, and fix the missing wood variants
+  - Add stone variants from the above mods, and fix the missing wood variants
 - Add special built-in mod support for:
   - DivineRPG
   - Couple other mods with custom wood types
+- Move duplicated code to Interfaces (cabinet block entity renderers)
 
 ### Medium priority:
 
@@ -183,11 +184,11 @@ Lighten up your builds with unobtrusive light source
   - If the right-clicked block has a recipe that requires only itself and outputs only one other block, it will replace the right-clicked block with the output block from that recipe
 - Add variant choosing block?:
   - A GUI block that will show all the variants that can be crafted in the crafting table following the *crafting table on a stick* logic, and it will allow you to choose the variant you want to craft
-  - Should be really useful for candlesticks if they would get a lot of variants
+  - It Should be really useful for candlesticks if they get a lot of variants
 - Make Light Strips and Candlesticks into integrated datapacks?:
-  - Because of new tag system, the vanilla tool tags should no longer break, so at most this will fix the console spam with disabled features 
+  - Because of the new tag system, the vanilla tool tags should no longer break, so at most this will fix the console spam with disabled features 
 - Make BetterNether and BetterEnd support into integrated datapacks?
-  - Because of new tag system, the vanilla tool tags should no longer break, so at most this will fix the console spam with disabled features
+  - Because of the new tag system, the vanilla tool tags should no longer break, so at most this will fix the console spam with disabled features
 - Consider doing a HumilityLib library mod for config or such?
 - Improve Illuminated Cabinet Brightening rendering?
 - Add thin <sup>*(Blibiocraft style)*</sup> and short cabinets?
@@ -204,7 +205,7 @@ If you want support for specific MC version pls create an [issue on GitHub](http
 
 **Q:** Can you port to mod to forge?
 **A:** I wanted this to be a forge mod, but I just could get even the empty template to work and I gave up.  
-I'm not planing on porting the mod myself, but if you are interested in porting it yourself, you can, pls let me know of such projects on Github :)  
+I'm not planing on porting the mod myself, but if you are interested in porting it yourself, you can, pls let me know of such projects on GitHub :)  
 You can also use the mod [Kilt](https://github.com/KiltMC/Kilt) to run forge mods on fabric
 
 **Q:** Why don’t I see *Light Strips* / *Coloured Torches* / *Coloured Jack o'Lanterns* in my game?  
@@ -213,7 +214,7 @@ You can also use the mod [Kilt](https://github.com/KiltMC/Kilt) to run forge mod
 **Q:** Why don’t my *Light Strips* / *Coloured Torches* / *Coloured Jack o'Lanterns* emit coloured light?  
 **A:** For coloured lighting you need a separate compatible mod or shader. For now this includes [**Bliss** shader](https://github.com/MikiP98/Bliss-Shader) and [**Shimmer** mod](https://modrinth.com/mod/shimmer!)  
   If the light sources still don't emmit coloured light:  
-  When using Shimmer mod, there is probably some mod incompatibility. Try disabling the 'NVIDIUM' mod if present and it should start working again, if 'NVIDIUM' is not the causem try asking in Shimmer DC server for help  
+  When using Shimmer mod, there is probably some mod incompatibility. Try disabling the 'NVIDIUM' mod if present and it should start working again, if 'NVIDIUM' is not the cause try asking in Shimmer DC server for help  
   When using Bliss shader, make sure to load it via [Iris](https://modrinth.com/mod/iris) or [Oculus](https://modrinth.com/mod/oculus) and __***not***__ using **Optifine**! Then make sure floodfill option is enabled in the shader settings
 
 **Q:** Why is the inside of Cabinets transparent?  
