@@ -211,17 +211,13 @@ public class LightStripBlock extends StairsBlock implements BlockEntityProvider 
         return null;
     }
     protected static VoxelShape getVoxelShape(Direction dir, VoxelShape north, VoxelShape south, VoxelShape east, VoxelShape west) {
-        switch (dir) {
-            case NORTH:
-                return north;
-            case SOUTH:
-                return south;
-            case EAST:
-                return east;
-            case WEST:
-                return west;
-        }
-        return null;
+        return switch (dir) {
+            case NORTH -> north;
+            case SOUTH -> south;
+            case EAST -> east;
+            case WEST -> west;
+            default -> null;
+        };
     }
 
     @Nullable
