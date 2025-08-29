@@ -191,7 +191,7 @@ public class ActiveGenerationData extends RawGenerationData {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Metadata containing collection of vanilla wood types
+     * Metadata containing a collection of vanilla wood types
      * @return A pair of lists of vanilla wood types and their metadata
      */
     protected static Pair<List<String[]>, List<BlockMaterial.Metadata>> getGetActiveVanillaWood() {
