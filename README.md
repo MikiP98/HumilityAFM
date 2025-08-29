@@ -214,8 +214,8 @@ You can also use the mod [Kilt](https://github.com/KiltMC/Kilt) to run forge mod
 **Q:** Why don’t my *Light Strips* / *Coloured Torches* / *Coloured Jack o'Lanterns* emit coloured light?  
 **A:** For coloured lighting you need a separate compatible mod or shader. For now this includes [**Bliss** shader](https://github.com/MikiP98/Bliss-Shader) and [**Shimmer** mod](https://modrinth.com/mod/shimmer!)  
   If the light sources still don't emmit coloured light:  
-  When using Shimmer mod, there is probably some mod incompatibility. Try disabling the 'NVIDIUM' mod if present and it should start working again, if 'NVIDIUM' is not the cause try asking in Shimmer DC server for help  
-  When using Bliss shader, make sure to load it via [Iris](https://modrinth.com/mod/iris) or [Oculus](https://modrinth.com/mod/oculus) and __***not***__ using **Optifine**! Then make sure floodfill option is enabled in the shader settings
+  When using **Shimmer** mod, there is probably some mod incompatibility. Try disabling the 'NVIDIUM' mod if present and it should start working again, if 'NVIDIUM' is not the cause try asking in Shimmer DC server for help  
+  When using **Bliss** shader, make sure to load it via [Iris](https://modrinth.com/mod/iris) or [Oculus](https://modrinth.com/mod/oculus) and __***not***__ using **Optifine**! Then make sure floodfill option is enabled in the shader settings
 
 **Q:** Why is the inside of Cabinets transparent?  
 **A:** Sodium <0.6.0 has issues with rendering transparency. You can try replacing it with Embeddium or installing other mods, like NVIDIUM, may help fix the problem. If that doesn't help, you can disable partial Cabinet transparency in the configuration (you will still be able to see the items inside)
