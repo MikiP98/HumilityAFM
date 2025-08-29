@@ -235,7 +235,7 @@ You can also use the mod [Kilt](https://github.com/KiltMC/Kilt) to run forge mod
    - [**Biomes o' Plenty**](https://modrinth.com/mod/biomes-o-plenty)
    - *Dependencies of the above mods*
 3. Run command `./gradlew runDatagen` or `gradlew runDatagen` in the terminal
-    - If the command fails try to enable `datagenMode` in the config file under `./build/datagen/config/humility-afm.json`
+    - When the command fails, enable `datagenMode` in the config file under `./build/datagen/config/humility-afm.json`
 4. Move the content *(the inside of the folder)* of `src/main/generated/data/humility-afm/recipies/datagen` to `src/main/resources/resourcepacks/alternate_wooden_mosaics_recipes/data/humility-afm/recipies/`
 5. Run command `./gradlew build` or `gradlew build` in the terminal
 6. The compiled mod jar should be located in `./build/libs/` folder
