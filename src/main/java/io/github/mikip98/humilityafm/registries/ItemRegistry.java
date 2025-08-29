@@ -85,7 +85,7 @@ public class ItemRegistry {
             for (SizedIterable<BlockMaterial> materialSet : ActiveGenerationData.rustingCandlestickMaterials) {
                 RUSTABLE_CANDLESTICK_ITEM_VARIANTS[i] = new Item[materialSet.size()];
                 int j = 0;
-                for (BlockMaterial material : materialSet) {;
+                for (BlockMaterial material : materialSet) {
                     RUSTABLE_CANDLESTICK_ITEM_VARIANTS[i][j] = register(
                             "candlestick_" + material.getSafeName(),
                             new ModVerticallyAttachableBlockItem(
@@ -109,11 +109,6 @@ public class ItemRegistry {
     }
 
 
-    protected static void registerArray(Item[] items, String[] names, String prefix) {
-        for (int i = 0; i < items.length; i++) {
-            register(items[i], prefix + names[i]);
-        }
-    }
     public static Item register(Item item, String name) {
         return register(name, item);
     }
