@@ -91,6 +91,16 @@ Lighten up your builds with unobtrusive light source
   - 1.21.6 <sup>*no `polymorph`! Some recipies are broken :(*</sup>
   - 1.21.7 <sup>*no `polymorph`! Some recipies are broken :(*</sup>
   - 1.21.8 <sup>*no `polymorph`! Some recipies are broken :(*</sup>
+- Add special built-in mod support for:
+  - BetterNether
+  - BetterEnd
+  - Biomes o' Plenty
+- Fix nether wood block variants burning
+- Move duplicated code to Interfaces
+- Reworked the whole block generation system
+- Add an optional datapack with alternate, non crafting table colliding, wooden mosaic recipes
+  - This datapack wil exist only from 1.20.1 (included) to 1.21.4 (excluded)
+  - From 1.21.4 onwards, the recipes will be included in the mod itself because of `polymorph` mod's absence
 
 ### High priority:
 
@@ -103,11 +113,6 @@ Lighten up your builds with unobtrusive light source
   - Coloured Torches
   - Coloured Jack o'Lanterns
   - Light Strips
-- Add special built-in mod support for:
-  - BetterNether
-  - BetterEnd
-  - Biomes o' Plenty
-- Fix nether wood block variants burning
 - Add Illuminated Cabinet Brightening to the config
 - Add PBR data to:
   - Cabinet front texture:
@@ -121,6 +126,16 @@ Lighten up your builds with unobtrusive light source
       - vanilla emission (full texture)
       - LabPBR emission (full texture)
 - Redo coloured torch textures using Jack o'Lantern palette system
+- Reduce the amount of coloured torches and jack o'Lanterns
+  - Think of a system that can replace the current 3 blocks per colour with different light output levels
+- Improve the built-in mod support for:
+  - BetterNether
+  - BetterEnd
+  - Biomes o' Plenty
+  - Add stone variants from teh above mods, and fix the missing wood variants
+- Add special built-in mod support for:
+  - DivineRPG
+  - Couple other mods with custom wood types
 
 ### Medium priority:
 
@@ -146,8 +161,8 @@ Lighten up your builds with unobtrusive light source
   - Fit multiple Light Strips in 1 block
 - Make coloured flame particles for coloured torches
 - Improve the sounds by varying the pitch and volume slightly
-- Move duplicated code to Interfaces
 - Optimise the model datagen
+- Convert the config from JSON to TOML
 
 ### Low/unknown priority:
 
@@ -165,7 +180,7 @@ Lighten up your builds with unobtrusive light source
   - 1.7.10?
   - 1.0?
 - Add crafting table on a stick?:
-  - If the right-clicked block has a recipie that requires only itself and output only 1 other block, it will replace the right-clicked block with the output block from that recipe
+  - If the right-clicked block has a recipe that requires only itself and outputs only one other block, it will replace the right-clicked block with the output block from that recipe
 - Add variant choosing block?:
   - A GUI block that will show all the variants that can be crafted in the crafting table following the *crafting table on a stick* logic, and it will allow you to choose the variant you want to craft
   - Should be really useful for candlesticks if they would get a lot of variants
@@ -211,15 +226,20 @@ You can also use the mod [Kilt](https://github.com/KiltMC/Kilt) to run forge mod
 
 
 ## Building instructions:
+
 1. Download the source code from [GitHub](https://github.com/MikiP98/HumilityAFM)
 2. Download the dependent mods for datagen and put them under `./build/datagen/mods/`
    - [**Better End**](https://modrinth.com/mod/betterend)
    - [**Better Nether**](https://modrinth.com/mod/betternether)
    - [**Biomes o' Plenty**](https://modrinth.com/mod/biomes-o-plenty)
+   - *Dependencies of the above mods*
 3. Run command `./gradlew runDatagen` or `gradlew runDatagen` in the terminal
     - If the command fails try to enable `datagenMode` in the config file under `./build/datagen/config/humility-afm.json`
-4. Run command `./gradlew build` or `gradlew build` in the terminal
-5. The compiled mod jar should be located in `./build/libs/` folder
+4. Move the content *(the inside of the folder)* of `src/main/generated/data/humility-afm/recipies/datagen` to `src/main/resources/resourcepacks/alternate_wooden_mosaics_recipes/data/humility-afm/recipies/`
+5. Run command `./gradlew build` or `gradlew build` in the terminal
+6. The compiled mod jar should be located in `./build/libs/` folder
+
+[//]: # (TODO: Create a script to automate the above steps, or at least step 4)
 
 <br>
 
