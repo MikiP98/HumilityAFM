@@ -24,7 +24,7 @@ public non-sealed interface RustableCandlestickLogic extends BaseCandlestickLogi
     void setRustPreviousLevel(BlockState rustPreviousLevel);
     void setRustNextLevel(BlockState rustNextLevel);
 
-    default boolean onUseLogic(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand) {
+    default boolean onUseRustableLogic(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand) {
         ItemStack heldItemStack = player.getStackInHand(hand);
         Item heldItem = heldItemStack.getItem();
         if (tryToWax(state, world, pos, player, heldItemStack, heldItem)) return true;

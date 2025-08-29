@@ -7,10 +7,15 @@ import lombok.Setter;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Waterloggable;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 @Getter
@@ -31,7 +36,7 @@ public class FloorRustableCandlestick extends FloorCandlestick implements Waterl
     public FloorRustableCandlestick(Settings settings) {
         this(settings, null, null);
     }
-    public FloorRustableCandlestick(Settings settings, BlockState rustPreviousLevel, BlockState rustNextLevel) {
+    public FloorRustableCandlestick(Settings settings, @Nullable BlockState rustPreviousLevel, @Nullable BlockState rustNextLevel) {
         super(settings);
         this.rustPreviousLevel = rustPreviousLevel;
         this.rustNextLevel = rustNextLevel;
@@ -49,5 +54,11 @@ public class FloorRustableCandlestick extends FloorCandlestick implements Waterl
     @Override
     public boolean hasRandomTicks(BlockState state) {
         return !state.get(ModProperties.WAXED) && rustNextLevel != null;
+    }
+
+    @Override
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        if (onUseRustableLogic(state, world, pos, player, hand)) return ActionResult.SUCCESS;
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 }

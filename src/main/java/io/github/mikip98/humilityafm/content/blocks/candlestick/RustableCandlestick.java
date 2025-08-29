@@ -6,11 +6,16 @@ import lombok.Getter;
 import lombok.Setter;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 @Getter
@@ -35,7 +40,7 @@ public class RustableCandlestick extends Candlestick implements RustableCandlest
     public RustableCandlestick(Settings settings) {
         this(settings, null, null);
     }
-    public RustableCandlestick(Settings settings, BlockState rustPreviousLevel, BlockState rustNextLevel) {
+    public RustableCandlestick(Settings settings, @Nullable BlockState rustPreviousLevel, @Nullable BlockState rustNextLevel) {
         super(settings);
         this.rustPreviousLevel = rustPreviousLevel;
         this.rustNextLevel = rustNextLevel;
@@ -53,5 +58,11 @@ public class RustableCandlestick extends Candlestick implements RustableCandlest
     @Override
     public boolean hasRandomTicks(BlockState state) {
         return !state.get(ModProperties.WAXED) && rustNextLevel != null;
+    }
+
+    @Override
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        if (onUseRustableLogic(state, world, pos, player, hand)) return ActionResult.SUCCESS;
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 }
