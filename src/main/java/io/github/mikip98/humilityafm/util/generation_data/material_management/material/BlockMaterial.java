@@ -42,7 +42,7 @@ public record BlockMaterial(@NotNull Layer[] layers) {
     }
     /**
      * Returns a safe name of the block material, which includes the source mod if present.
-     * Each layer's name is prefixed with its source mod, if it exists.
+     * Each layer's name is prefixed with its source mod if it exists.
      * This is useful for resource identifiers or similar purposes where uniqueness is required.
      * @return Safe name of the block material for use as an identifier or similar purpose.
      */
