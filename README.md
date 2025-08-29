@@ -99,8 +99,8 @@ Lighten up your builds with unobtrusive light source
 - Move duplicated code to Interfaces (candlesticks)
 - Reworked the whole block generation system
 - Add an optional datapack with alternate, non crafting-table colliding, wooden mosaic recipes
-  - This datapack will exist only from 1.20.1 (included) to 1.21.4 (excluded)
-  - From 1.21.4 onwards, the recipes will be included in the mod itself because of `polymorph` mod's absence
+  - This datapack will be disabled by default on MC versions from 1.20.1 (included) to 1.21.4 (excluded)
+  - From 1.21.4 onwards, the datapack wii be enabled by default because of `polymorph` mod's absence
 
 ### High priority:
 
