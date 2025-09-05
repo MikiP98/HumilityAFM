@@ -77,4 +77,10 @@ public class RustableCandlestick extends Candlestick implements RustableCandlest
         if (onUseRustableLogic(state, world, pos, player, hand, x, y, z)) return ActionResult.SUCCESS;
         return super.onUse(state, world, pos, player, hand, hit);
     }
+
+    @Override
+    public BlockState getChangedBlockState(BlockState newBase, BlockState state) {
+        return getChangedBlockStateUniversal(newBase, state)
+                .with(FACING, state.get(FACING));
+    }
 }

@@ -70,19 +70,19 @@ public non-sealed interface RustableCandlestickLogic extends BaseCandlestickLogi
         return false;
     }
 
-    default BlockState getChanagedBlockState(BlockState newBase, BlockState state) {
+    BlockState getChangedBlockState(BlockState newBase, BlockState state);
+    default BlockState getChangedBlockStateUniversal(BlockState newBase, BlockState state) {
         return newBase
-                .with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING))
                 .with(Properties.WATERLOGGED, state.get(Properties.WATERLOGGED))
                 .with(ModProperties.CANDLE_COLOR, state.get(ModProperties.CANDLE_COLOR))
                 .with(Properties.LIT, state.get(Properties.LIT))
                 .with(ModProperties.WAXED, state.get(ModProperties.WAXED));
     }
     default void rust(BlockState state, World world, BlockPos pos) {
-        world.setBlockState(pos, getChanagedBlockState(getRustNextLevel(), state), Block.NOTIFY_ALL);
+        world.setBlockState(pos, getChangedBlockState(getRustNextLevel(), state), Block.NOTIFY_ALL);
     }
     default void derust(BlockState state, World world, BlockPos pos) {
-        world.setBlockState(pos, getChanagedBlockState(getRustPreviousLevel(), state), Block.NOTIFY_ALL);
+        world.setBlockState(pos, getChangedBlockState(getRustPreviousLevel(), state), Block.NOTIFY_ALL);
     }
 
     default void emmitWaxingParticles(
