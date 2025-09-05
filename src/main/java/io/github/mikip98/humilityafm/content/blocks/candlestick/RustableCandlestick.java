@@ -62,7 +62,19 @@ public class RustableCandlestick extends Candlestick implements RustableCandlest
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (onUseRustableLogic(state, world, pos, player, hand)) return ActionResult.SUCCESS;
+        double x = pos.getX() + 0.5;
+        final double y = pos.getY() + 0.5;
+        double z = pos.getZ() + 0.5;
+
+        // Center of the candlestick, used for emitting particles and playing sounds
+        switch (state.get(FACING)) {
+            case NORTH -> z += 0.15;
+            case SOUTH -> z -= 0.15;
+            case EAST -> x -= 0.15;
+            case WEST -> x += 0.15;
+        }
+
+        if (onUseRustableLogic(state, world, pos, player, hand, x, y, z)) return ActionResult.SUCCESS;
         return super.onUse(state, world, pos, player, hand, hit);
     }
 }

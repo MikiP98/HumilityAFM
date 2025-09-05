@@ -31,7 +31,7 @@ public class FloorRustableCandlestick extends FloorCandlestick implements Waterl
     }
 
     public FloorRustableCandlestick() {
-        this(RustableCandlestick.defaultSettings, null, null);
+        this(RustableCandlestick.defaultSettings);
     }
     public FloorRustableCandlestick(Settings settings) {
         this(settings, null, null);
@@ -58,7 +58,10 @@ public class FloorRustableCandlestick extends FloorCandlestick implements Waterl
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (onUseRustableLogic(state, world, pos, player, hand)) return ActionResult.SUCCESS;
+        final double x = pos.getX() + 0.5;
+        final double y = pos.getY() + 0.5;
+        final double z = pos.getZ() + 0.5;
+        if (onUseRustableLogic(state, world, pos, player, hand, x, y, z)) return ActionResult.SUCCESS;
         return super.onUse(state, world, pos, player, hand, hit);
     }
 }
