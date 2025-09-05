@@ -59,9 +59,10 @@ public class FloorRustableCandlestick extends FloorCandlestick implements Waterl
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         final double x = pos.getX() + 0.5;
-        final double y = pos.getY() + 0.5;
+        final double y = pos.getY() + 0.35;
         final double z = pos.getZ() + 0.5;
-        if (onUseRustableLogic(state, world, pos, player, hand, x, y, z)) return ActionResult.SUCCESS;
+        final double randomSpread = 0.625;
+        if (onUseRustableLogic(state, world, pos, player, hand, x, y, z, randomSpread)) return ActionResult.SUCCESS;
         return super.onUse(state, world, pos, player, hand, hit);
     }
 

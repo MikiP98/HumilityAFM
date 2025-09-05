@@ -26,21 +26,22 @@ public non-sealed interface RustableCandlestickLogic extends BaseCandlestickLogi
 
     default boolean onUseRustableLogic(
             BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
-            double offsetX, double offsetY, double offsetZ
+            double offsetX, double offsetY, double offsetZ, double randomSpread
     ) {
         ItemStack heldItemStack = player.getStackInHand(hand);
         Item heldItem = heldItemStack.getItem();
-        if (tryToWax(state, world, pos, player, heldItemStack, heldItem, offsetX, offsetY, offsetZ)) return true;
-        return tryToDeWaxOrDeRust(state, world, pos, player, hand, heldItemStack, heldItem, offsetX, offsetY, offsetZ);
+        if (tryToWax(state, world, pos, player, heldItemStack, heldItem, offsetX, offsetY, offsetZ, randomSpread)) return true;
+        return tryToDeWaxOrDeRust(state, world, pos, player, hand, heldItemStack, heldItem, offsetX, offsetY, offsetZ, randomSpread);
     }
 
     default boolean tryToWax(
-            BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack heldItemStack, Item heldItem, double offsetX, double offsetY, double offsetZ
+            BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack heldItemStack, Item heldItem,
+            double offsetX, double offsetY, double offsetZ, double randomSpread
     ) {
         if (heldItem instanceof HoneycombItem && !state.get(ModProperties.WAXED)) {
             world.setBlockState(pos, state.with(ModProperties.WAXED, true), Block.NOTIFY_ALL);
             if (!player.isCreative()) heldItemStack.decrement(1);
-            emmitWaxOnParticles(world, offsetX, offsetY, offsetZ);
+            emmitWaxOnParticles(world, offsetX, offsetY, offsetZ, randomSpread);
             world.playSound(offsetX, offsetY, offsetZ, SoundEvents.ITEM_HONEYCOMB_WAX_ON, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
             return true;
         }
@@ -48,14 +49,14 @@ public non-sealed interface RustableCandlestickLogic extends BaseCandlestickLogi
     }
     default boolean tryToDeWaxOrDeRust(
             BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, ItemStack heldItemStack, Item heldItem,
-            double offsetX, double offsetY, double offsetZ
+            double offsetX, double offsetY, double offsetZ, double randomSpread
     ) {
         if (heldItem instanceof AxeItem) {
             // De-wax
             if (state.get(ModProperties.WAXED)) {
                 world.setBlockState(pos, state.with(ModProperties.WAXED, false), Block.NOTIFY_ALL);
                 if (!player.isCreative()) heldItemStack.damage(1, player, (p) -> p.sendToolBreakStatus(hand));
-                emmitWaxOffParticles(world, offsetX, offsetY, offsetZ);
+                emmitWaxOffParticles(world, offsetX, offsetY, offsetZ, randomSpread);
                 world.playSound(offsetX, offsetY, offsetZ, SoundEvents.ITEM_AXE_WAX_OFF, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
                 return true;
             }
@@ -87,22 +88,23 @@ public non-sealed interface RustableCandlestickLogic extends BaseCandlestickLogi
 
     default void emmitWaxingParticles(
             World world, DefaultParticleType particleType,
-            double offsetX, double offsetY, double offsetZ
+            double offsetX, double offsetY, double offsetZ,
+            double randomSpread
     ) {
         Random random = world.random;
 
         for (int i = 0; i < 5; i++) {
-            double randomX = offsetX + ((random.nextDouble() - 0.5) * 2 / 3);
-            double randomY = offsetY + ((random.nextDouble() - 0.5) * 2 / 3);
-            double randomZ = offsetZ + ((random.nextDouble() - 0.5) * 2 / 3);
-            world.addParticle(particleType, randomX, randomY, randomZ, 0.0, 0.0, 0.0);
+            double randomX = offsetX + ((random.nextDouble() - 0.5) * randomSpread);
+            double randomY = offsetY + ((random.nextDouble() - 0.5) * randomSpread);
+            double randomZ = offsetZ + ((random.nextDouble() - 0.5) * randomSpread);
+            world.addParticle(particleType, randomX, randomY, randomZ, 0, 0, 0);
         }
     }
 
-    default void emmitWaxOnParticles(World world, double offsetX, double offsetY, double offsetZ) {
-        emmitWaxingParticles(world, ParticleTypes.WAX_ON, offsetX, offsetY, offsetZ);
+    default void emmitWaxOnParticles(World world, double offsetX, double offsetY, double offsetZ, double randomSpread) {
+        emmitWaxingParticles(world, ParticleTypes.WAX_ON, offsetX, offsetY, offsetZ, randomSpread);
     }
-    default void emmitWaxOffParticles(World world, double offsetX, double offsetY, double offsetZ) {
-        emmitWaxingParticles(world, ParticleTypes.WAX_OFF, offsetX, offsetY, offsetZ);
+    default void emmitWaxOffParticles(World world, double offsetX, double offsetY, double offsetZ, double randomSpread) {
+        emmitWaxingParticles(world, ParticleTypes.WAX_OFF, offsetX, offsetY, offsetZ, randomSpread);
     }
 }

@@ -74,7 +74,9 @@ public class RustableCandlestick extends Candlestick implements RustableCandlest
             case WEST -> x += 0.15;
         }
 
-        if (onUseRustableLogic(state, world, pos, player, hand, x, y, z)) return ActionResult.SUCCESS;
+        final double randomSpread = 2.0 / 3.0;
+
+        if (onUseRustableLogic(state, world, pos, player, hand, x, y, z, randomSpread)) return ActionResult.SUCCESS;
         return super.onUse(state, world, pos, player, hand, hit);
     }
 
