@@ -38,6 +38,8 @@ public abstract class BlockGeneration {
     protected static CabinetBlockSet generateCabinetBlockSet() {
         final FabricBlockSettings fireproofCabinetSettings = CabinetBlock.defaultSettings;
         final FabricBlockSettings burnableCabinetSettings = FabricBlockSettings.copyOf(fireproofCabinetSettings).burnable();
+        final FabricBlockSettings fireproofIlluminatedCabinetSettings = IlluminatedCabinetBlock.defaultSettings;
+        final FabricBlockSettings burnableIlluminatedCabinetSettings = FabricBlockSettings.copyOf(fireproofIlluminatedCabinetSettings).burnable();
 
         List<Block> wallCabinetVariants = new ArrayList<>();
         List<Block> floorCabinetVariants = new ArrayList<>();
@@ -50,13 +52,14 @@ public abstract class BlockGeneration {
                 throw new IllegalStateException("Wood material layer for cabinets must have a valid material type");
 
             final boolean fireproof = woodMaterialType.isFireproof;
-            final FabricBlockSettings settingToUse = fireproof ? fireproofCabinetSettings : burnableCabinetSettings;
+            final FabricBlockSettings normalSettingToUse = fireproof ? fireproofCabinetSettings : burnableCabinetSettings;
+            final FabricBlockSettings illuminatedSettingToUse = fireproof ? fireproofIlluminatedCabinetSettings : burnableIlluminatedCabinetSettings;
 
             final String name = material.getSafeName();
-            final Block cabinetBlock = BlockRegistry.register(new CabinetBlock(settingToUse), "wall_cabinet_block_" + name);
-            final Block floorCabinetBlock = register(new FloorCabinetBlock(settingToUse), "cabinet_block_" + name);
-            final Block illuminatedCabinetBlock = register(new IlluminatedCabinetBlock(settingToUse), "wall_illuminated_cabinet_block_" + name);
-            final Block floorIlluminatedCabinetBlock = register(new FloorIlluminatedCabinetBlock(settingToUse), "illuminated_cabinet_block_" + name);
+            final Block cabinetBlock = BlockRegistry.register(new CabinetBlock(normalSettingToUse), "wall_cabinet_block_" + name);
+            final Block floorCabinetBlock = register(new FloorCabinetBlock(normalSettingToUse), "cabinet_block_" + name);
+            final Block illuminatedCabinetBlock = register(new IlluminatedCabinetBlock(illuminatedSettingToUse), "wall_illuminated_cabinet_block_" + name);
+            final Block floorIlluminatedCabinetBlock = register(new FloorIlluminatedCabinetBlock(illuminatedSettingToUse), "illuminated_cabinet_block_" + name);
 
             wallCabinetVariants.add(cabinetBlock);
             floorCabinetVariants.add(floorCabinetBlock);
