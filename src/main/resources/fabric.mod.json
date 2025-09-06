@@ -33,11 +33,12 @@
 		"minecraft": "~1.20",
 		"java": ">=17",
 		"fabric-api": "*",
-		"modmenu": "*",
 		"cloth-config2": "*",
 		"polymorph": "*"
 	},
 	"suggests": {
+		"jei": "*",
+		"modmenu": "*",
 		"shimmer": ">=0.2.0"
 	},
 	"configScreen": "io.github.mikip98.humilityafm.config.ModConfigScreen"

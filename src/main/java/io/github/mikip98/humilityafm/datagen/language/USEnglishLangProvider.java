@@ -1,21 +1,16 @@
 package io.github.mikip98.humilityafm.datagen.language;
 
-import io.github.mikip98.humilityafm.datagen.language.util.PrefixedHashMap;
 import io.github.mikip98.humilityafm.datagen.language.util.TranslationCategory;
 import io.github.mikip98.humilityafm.datagen.language.util.TranslationHashMap;
-import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
-import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
-import io.github.mikip98.humilityafm.generators.TerracottaTilesGenerator;
-import io.github.mikip98.humilityafm.generators.WoodenMosaicGenerator;
-import io.github.mikip98.humilityafm.registries.BlockRegistry;
+import io.github.mikip98.humilityafm.datagen.language.util.TranslatorBase;
 import io.github.mikip98.humilityafm.registries.ItemRegistry;
-import io.github.mikip98.humilityafm.util.GenerationData;
+import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
+import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.EnumMap;
 import java.util.Map;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.MOD_ID;
@@ -35,7 +30,7 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
     }
 
     public static Map<TranslationCategory, Map<String, String>> generateBaseUSEnglishTranslations() {
-        Map<TranslationCategory, Map<String, String>> categoryTranslations = new HashMap<>();
+        Map<TranslationCategory, Map<String, String>> categoryTranslations = new EnumMap<>(TranslationCategory.class);
 
         // Item groups
         categoryTranslations.put(TranslationCategory.ITEM_GROUPS, Map.of(
@@ -49,163 +44,120 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
                 "itemGroup.candlesticks", "Candlesticks"
         ));
 
-        // Blocks
-        TranslationHashMap blockTranslations = new TranslationHashMap("block." + MOD_ID + ".");
-        // Cabinet blocks
-        blockTranslations.put(ItemRegistry.CABINET_ITEM, "Test Cabinet Block");  // Manual testing block
-        blockTranslations.put(ItemRegistry.ILLUMINATED_CABINET_ITEM, "Test Illuminated Cabinet Block");  // Manual testing block
-        blockTranslations.putAll(generateCabinetTranslations());
-        // Wooden Mosaics
-        blockTranslations.put(BlockRegistry.WOODEN_MOSAIC, "Test Wooden Mosaic");  // Manual testing block
-        blockTranslations.putAll(generateWoodenMosaicTranslations());
-        // Terracotta Tiles
-        blockTranslations.putAll(generateTerracottaTilesTranslations());
-        // Inner and outer stairs
-        blockTranslations.put(BlockRegistry.INNER_STAIRS, "Test Inner Stairs");  // Manual testing block
-        blockTranslations.put(BlockRegistry.OUTER_STAIRS, "Test Outer Stairs");  // Manual testing block
-        blockTranslations.putAll(generateInnerOuterStairsTranslations());
-        // Miscellaneous blocks
-        blockTranslations.putAll(generateMiscTranslations());
-        // Coloured torches
-        blockTranslations.putAll(generateColouredTorchesTranslations());  // Manual testing block
-        // Light Strips
-        blockTranslations.putAll(generateLightStripTranslations());
-        // Candlesticks
-        blockTranslations.putAll(generateCandlestickTranslations());
         // Submit the block translations
-        categoryTranslations.put(TranslationCategory.BLOCKS, blockTranslations);
+        categoryTranslations.put(TranslationCategory.BLOCKS, new BlockTranslator().getBlockTranslations());
 
-        // Items
-        Map<String, String> itemTranslations = new PrefixedHashMap("item." + MOD_ID + ".");
-        // LED Powders
-        itemTranslations.putAll(generateGlowingPowderTranslations());
         // Submit the item translations
-        categoryTranslations.put(TranslationCategory.ITEMS, itemTranslations);
+        categoryTranslations.put(TranslationCategory.ITEMS, new ItemTranslator().getItemTranslations());
 
         return categoryTranslations;
     }
 
-    public static Map<String, String> generateCabinetTranslations() {
-        Map<String, String> translations = new HashMap<>();
-        for (String variant : CabinetBlockGenerator.cabinetBlockVariantsNames) {
-            String formattedName = formatName(variant);
-            translations.put("cabinet_block_" + variant, formattedName + " cabinet");
-            translations.put("illuminated_cabinet_block_" + variant, formattedName + " illuminated cabinet");
+    protected static class BlockTranslator extends TranslatorBase {
+        public BlockTranslator() {
+            super(new TranslationHashMap("block." + MOD_ID + "."));
         }
-        return translations;
+
+        public TranslationHashMap getBlockTranslations() {
+            // GENERAL
+            generateCabinetTranslations();
+            generateWoodenMosaicTranslations();
+            generateTerracottaTilesTranslations();
+            generateForcedCornerStairsTranslations();
+            generateSpecialJackOLanternTranslations();
+
+            // CANDLESTICK BETA
+            generateCandlestickTranslations();
+
+            // COLOURED FEATURE SET BETA
+            generateColouredTorchesTranslations();
+            generateLightStripTranslations();
+            generateColouredJackOLanternTranslations();
+
+            return translations;
+        }
+
+        // GENERAL
+        public void generateCabinetTranslations() {
+            translations.put(ItemRegistry.CABINET_ITEM, "Test Cabinet Block");  // Manual testing block
+            translations.put(ItemRegistry.ILLUMINATED_CABINET_ITEM, "Test Illuminated Cabinet Block");  // Manual testing block
+            final String idPrefix1 = "cabinet_block_";
+            final String idPrefix2 = "illuminated_cabinet_block_";
+            final String nameSuffix1 = " cabinet";
+            final String nameSuffix2 = " illuminated cabinet";
+            enterTranslations(ActiveGenerationData.cabinetVariantMaterials, idPrefix1, nameSuffix1);
+            enterTranslations(ActiveGenerationData.cabinetVariantMaterials, idPrefix2, nameSuffix2);
+        }
+        public void generateWoodenMosaicTranslations() {
+            final String idPrefix = "wooden_mosaic_";
+            final String nameSuffix = " wooden mosaic";
+            enterTranslations(ActiveGenerationData.woodenMosaicVariantMaterials, idPrefix, nameSuffix);
+        }
+        public void generateTerracottaTilesTranslations() {
+            final String idPrefix = "terracotta_tiles_";
+            final String nameSuffix = " terracotta tiles";
+            enterTranslations(ActiveGenerationData.terracottaTilesMaterials, idPrefix, nameSuffix);
+        }
+        public void generateForcedCornerStairsTranslations() {
+            final String idPrefix1 = "inner_stairs_";
+            final String idPrefix2 = "outer_stairs_";
+            final String nameSuffix1 = " inner stairs";
+            final String nameSuffix2 = " outer stairs";
+            enterTranslations(ActiveGenerationData.forcedCornerStairsVariantMaterials, idPrefix1, nameSuffix1);
+            enterTranslations(ActiveGenerationData.forcedCornerStairsVariantMaterials, idPrefix2, nameSuffix2);
+        }
+
+        // CANDLESTICK BETA
+        public void generateCandlestickTranslations() {
+            final String idPrefix = "candlestick_";
+            final String nameSuffix = " candlestick";
+            enterTranslations(ActiveGenerationData.simpleCandlestickMaterials, idPrefix, nameSuffix);
+            Arrays.stream(ActiveGenerationData.rustingCandlestickMaterials).forEach(
+                    (materialSet) -> enterTranslations(materialSet, idPrefix, nameSuffix)
+            );
+        }
+
+        // COLOURED FEATURE SET BETA
+        public void generateSpecialJackOLanternTranslations() {
+            translations.put("jack_o_lantern_redstone", "Redstone Jack o'Lantern");
+            translations.put("jack_o_lantern_soul", "Soul Jack o'Lantern");
+        }
+        public void generateColouredJackOLanternTranslations() {
+            final String idPrefix = "jack_o_lantern_";
+            final String nameSuffix = " Jack o'Lantern";
+            enterTranslations(ActiveGenerationData.colouredFeatureSetMaterials, idPrefix, nameSuffix);
+        }
+        // TODO: Figure out how to simplify this effectively
+        public void generateColouredTorchesTranslations() {
+            for (BlockMaterial material : ActiveGenerationData.colouredFeatureSetMaterials) {
+                String idPrefix = "coloured_torch_" + material.getSafeName();
+                String name = formatName(material.getRawName()).toLowerCase() + " torch";
+                translations.put(idPrefix + "_weak", "Weak " + name.toLowerCase());
+                translations.put(idPrefix, name);
+                translations.put(idPrefix + "_strong", "Strong " + name.toLowerCase());
+            }
+        }
+        public void generateLightStripTranslations() {
+            final String idPrefix = "light_strip_";
+            final String nameSuffix = " Light Strip";
+            enterTranslations(ActiveGenerationData.colouredFeatureSetMaterials, idPrefix, nameSuffix);
+        }
     }
 
-    public static Map<String, String> generateWoodenMosaicTranslations() {
-        Map<String, String> translations = new HashMap<>();
-        for (String variant : WoodenMosaicGenerator.woodenMosaicVariantsNames) {
-            String key = "wooden_mosaic_" + variant;
-            String value = formatName(variant) + " wooden mosaic";
-            translations.put(key, value);
+    protected static class ItemTranslator extends TranslatorBase {
+        public ItemTranslator() {
+            super(new TranslationHashMap("item." + MOD_ID + "."));
         }
-        return translations;
-    }
 
-    public static Map<String, String> generateTerracottaTilesTranslations() {
-        Map<String, String> translations = new HashMap<>();
-        for (String variant : TerracottaTilesGenerator.terracottaTilesVariantsNames) {
-            String key = "terracotta_tiles_" + variant;
-            String value = formatName(variant) + " terracotta tiles";
-            translations.put(key, value);
+        public TranslationHashMap getItemTranslations() {
+            generateGlowingPowderTranslations();
+            return translations;
         }
-        return translations;
-    }
 
-    public static Map<String, String> generateInnerOuterStairsTranslations() {
-        Map<String, String> translations = new HashMap<>();
-        for (String variant : ForcedCornerStairsGenerator.innerOuterStairsBlockVariantsNames) {
-            // Inner Stairs
-            String key = "inner_stairs_" + variant;
-            String value = formatName(variant) + " inner stairs";
-            translations.put(key, value);
-            // Outer Stairs
-            key = "outer_stairs_" + variant;
-            value = formatName(variant) + " outer stairs";
-            translations.put(key, value);
+        public void generateGlowingPowderTranslations() {
+            final String idPrefix = "glowing_powder_";
+            final String nameSuffix = " glowing powder";
+            enterTranslations(ActiveGenerationData.colouredFeatureSetMaterials, idPrefix, nameSuffix);
         }
-        return translations;
-    }
-
-    public static Map<String, String> generateMiscTranslations() {
-        Map<String, String> translations = new HashMap<>();
-        translations.put("jack_o_lantern_redstone", "Redstone Jack o'Lantern");
-        translations.put("jack_o_lantern_soul", "Soul Jack o'Lantern");
-        for (String color : GenerationData.vanillaColorPallet) {
-            translations.put("jack_o_lantern_" + color, formatName(color) + " Jack o'Lantern");
-        }
-        return translations;
-    }
-
-    public static Map<String, String> generateGlowingPowderTranslations() {
-        Map<String, String> translations = new HashMap<>();
-        for (String color : GenerationData.vanillaColorPallet) {
-            String key = "glowing_powder_" + color;
-            String value = formatName(color) + " glowing powder";
-            translations.put(key, value);
-        }
-        return translations;
-    }
-    public static Map<String, String> generateColouredTorchesTranslations() {
-        Map<String, String> translations = new HashMap<>();
-        for (String color : GenerationData.vanillaColorPallet) {
-            String key = "coloured_torch_" + color + "_weak";
-            String value = "Weak " + formatName(color).toLowerCase() + " torch";
-            translations.put(key, value);
-            key = "coloured_torch_" + color;
-            value = formatName(color) + " torch";
-            translations.put(key, value);
-            key = "coloured_torch_" + color + "_strong";
-            value = "Strong " + formatName(color).toLowerCase() + " torch";
-            translations.put(key, value);
-        }
-        return translations;
-    }
-    public static Map<String, String> generateLightStripTranslations() {
-        Map<String, String> translations = new HashMap<>();
-        for (String color : GenerationData.vanillaColorPallet) {
-            String key = "led_" + color;
-            String value = formatName(color) + " LED";
-            translations.put(key, value);
-        }
-        return translations;
-    }
-
-    public static Map<String, String> generateCandlestickTranslations() {
-        Map<String, String> translations = new HashMap<>();
-        for (String metal : GenerationData.vanillaCandlestickMetals) {
-            String key = "candlestick_" + metal;
-            String value = formatName(metal) + " candlestick";
-            translations.put(key, value);
-        }
-        GenerationData.vanillaRustableCandlestickMetals.forEach(
-                set -> Arrays.stream(set).forEach(
-                        metal -> translations.put(
-                                "candlestick_" + metal,
-                                formatName(metal) + " candlestick"
-                        )
-                )
-        );
-        return translations;
-    }
-
-    protected static String formatName(String name) {
-        String[] words = name.split("_");
-        Iterator<String> it = java.util.Arrays.stream(words).iterator();
-
-        StringBuilder formattedName = new StringBuilder();
-        String firstWord = it.next();
-        formattedName.append(Character.toUpperCase(firstWord.charAt(0)))
-                .append(firstWord.substring(1).toLowerCase())
-                .append(" ");
-
-        while (it.hasNext()) {
-            String word = it.next();
-            formattedName.append(word.toLowerCase()).append(" ");
-        }
-        return formattedName.toString().trim();
     }
 }

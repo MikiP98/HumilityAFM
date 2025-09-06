@@ -10,6 +10,8 @@ import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.MOD_ID;
@@ -33,6 +35,19 @@ public abstract class AFMRecipieProvider extends FabricRecipeProvider {
                 .offerTo(exporter, path_prefix + getRecipeName(output));
     }
 
+    protected static void  offerAlternateWoodenMosaicRecipe(RecipeExporter exporter, ItemConvertible output, ItemConvertible plank1, ItemConvertible plank2, String path_prefix) {
+        ShapedRecipeJsonBuilder
+                .create(RecipeCategory.MISC, output, 1)
+                .pattern("FS")
+                .pattern("  ")
+                .pattern("SF")
+                .input('F', plank1)
+                .input('S', plank2)
+                .group(MOD_ID + "/wooden_mosaics")
+                .criterion(hasItem(plank1), conditionsFromItem(plank1))
+                .criterion(hasItem(plank2), conditionsFromItem(plank2))
+                .offerTo(exporter, path_prefix + getRecipeName(output));
+    }
     protected static void offerWoodenMosaicRecipe(RecipeExporter exporter, ItemConvertible output, ItemConvertible plank1, ItemConvertible plank2, String path_prefix) {
         offerCheckerPatternRecipe(exporter, output, plank1, plank2, MOD_ID + "/wooden_mosaics", path_prefix);
     }
@@ -176,5 +191,11 @@ public abstract class AFMRecipieProvider extends FabricRecipeProvider {
                 .criterion(hasItem(glowingPowder), conditionsFromItem(glowingPowder))
                 .criterion(hasItem(Blocks.GLASS_PANE), conditionsFromItem(Blocks.GLASS_PANE))
                 .offerTo(exporter, path_prefix + "reversed/" + getRecipeName(output));
+    }
+
+    // Override for the vanilla method to be mod safe
+    public static String hasItem(ItemConvertible item) {
+        final Identifier itemId = Registries.ITEM.getId(item.asItem());
+        return "has_" + itemId.getNamespace() + ":" + itemId.getPath();
     }
 }

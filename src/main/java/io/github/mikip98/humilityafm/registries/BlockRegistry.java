@@ -1,248 +1,109 @@
 package io.github.mikip98.humilityafm.registries;
 
-import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.CabinetBlock;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.FloorCabinetBlock;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.FloorIlluminatedCabinetBlock;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.IlluminatedCabinetBlock;
-import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.JackOLantern;
 import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.JackOLanternRedStone;
 import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.JackOLanternSoul;
-import io.github.mikip98.humilityafm.content.blocks.stairs.InnerStairs;
-import io.github.mikip98.humilityafm.content.blocks.stairs.OuterStairs;
-import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
-import io.github.mikip98.humilityafm.generators.ColouredFeatureSetGenerator;
-import io.github.mikip98.humilityafm.generators.CandlestickGenerator;
-import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
-import io.github.mikip98.humilityafm.generators.TerracottaTilesGenerator;
-import io.github.mikip98.humilityafm.generators.WoodenMosaicGenerator;
-import io.github.mikip98.humilityafm.util.GenerationData;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 
-import java.util.Arrays;
-
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
-import static io.github.mikip98.humilityafm.registries.ItemGroupRegistry.putIntoItemGroup;
 
-public class BlockRegistry {
-
+public class BlockRegistry extends BlockGeneration {
     // Cabinet blocks
-    public static final CabinetBlock CABINET_BLOCK = new CabinetBlock();
-    public static final IlluminatedCabinetBlock ILLUMINATED_CABINET_BLOCK = new IlluminatedCabinetBlock();
-    public static final FloorCabinetBlock FLOOR_CABINET_BLOCK = new FloorCabinetBlock();
-    public static final FloorIlluminatedCabinetBlock FLOOR_ILLUMINATED_CABINET_BLOCK = new FloorIlluminatedCabinetBlock();
+    // Testing blocks (from petrified slabs)
+    public static final Block CABINET_BLOCK = register(new CabinetBlock(), "wall_cabinet_block");
+    public static final Block ILLUMINATED_CABINET_BLOCK = register(new IlluminatedCabinetBlock(), "wall_illuminated_cabinet_block");
+    public static final Block FLOOR_CABINET_BLOCK = register(new FloorCabinetBlock(), "cabinet_block");
+    public static final Block FLOOR_ILLUMINATED_CABINET_BLOCK = register(new FloorIlluminatedCabinetBlock(), "illuminated_cabinet_block");
+    // Final variants
+    public static final Block[] WALL_CABINET_BLOCK_VARIANTS;
+    public static final Block[] WALL_ILLUMINATED_CABINET_BLOCK_VARIANTS;
+    public static final Block[] FLOOR_CABINET_BLOCK_VARIANTS;
+    public static final Block[] FLOOR_ILLUMINATED_CABINET_BLOCK_VARIANTS;
+    static {
+        CabinetBlockSet cabinetBlockSet = generateCabinetBlockSet();
+        WALL_CABINET_BLOCK_VARIANTS = cabinetBlockSet.wallCabinets();
+        WALL_ILLUMINATED_CABINET_BLOCK_VARIANTS = cabinetBlockSet.wallIlluminatedCabinets();
+        FLOOR_CABINET_BLOCK_VARIANTS = cabinetBlockSet.floorCabinets();
+        FLOOR_ILLUMINATED_CABINET_BLOCK_VARIANTS = cabinetBlockSet.floorIlluminatedCabinets();
+    }
 
     // Stairs
-    private static final float WoodenStairsBlockStrength = 2.0f;
-    private static final FabricBlockSettings StairsBlockSettings = FabricBlockSettings.create().strength(WoodenStairsBlockStrength).requiresTool();
-    public static final Block OUTER_STAIRS = new OuterStairs(StairsBlockSettings);
-    public static final Block INNER_STAIRS = new InnerStairs(StairsBlockSettings);
+    public static final Block[] INNER_STAIRS_BLOCK_VARIANTS;
+    public static final Block[] OUTER_STAIRS_BLOCK_VARIANTS;
+    static {
+        ForcedCornerStairsBlockSet forcedCornerStairsBlockSet = generateForcedCornerStairsBlockSet();
+        INNER_STAIRS_BLOCK_VARIANTS = forcedCornerStairsBlockSet.innerStairs();
+        OUTER_STAIRS_BLOCK_VARIANTS = forcedCornerStairsBlockSet.outerStairs();
+    }
 
     // Wooden mosaics
-    private static final float WoodenMosaicStrength = 3.0f * 1.5f;
-    private static final FabricBlockSettings WoodenMosaicSettings = FabricBlockSettings.create().strength(WoodenMosaicStrength).requiresTool().sounds(BlockSoundGroup.WOOD);
-    public static final Block WOODEN_MOSAIC = new Block(WoodenMosaicSettings);
-
+    public static final Block[] WOODEN_MOSAIC_VARIANTS = generateWoodenMosaicVariants();
+    // Terracotta tiles
+    public static final Block[] TERRACOTTA_TILE_VARIANTS = generateTerracottaTilesVariants();
     // Jack o'Lanterns
-    public static final Block JACK_O_LANTERN_REDSTONE = new JackOLanternRedStone();
-    public static final Block JACK_O_LANTERN_SOUL = new JackOLanternSoul();
-    public static Block[] COLOURED_WEAK_JACK_O_LANTERNS;
-    public static Block[] COLOURED_JACK_O_LANTERNS;
-    public static Block[] COLOURED_STRONG_JACK_O_LANTERNS;
+    public static final Block JACK_O_LANTERN_REDSTONE = registerWithItem(new JackOLanternRedStone(), "jack_o_lantern_redstone");
+    public static final Block JACK_O_LANTERN_SOUL = registerWithItem(new JackOLanternSoul(), "jack_o_lantern_soul");
 
+    // CANDLESTICK BETA
+    public static final Block[] SIMPLE_CANDLESTICK_WALL_VARIANTS;
+    public static final Block[] SIMPLE_CANDLESTICK_FLOOR_VARIANTS;
+    public static final Block[][] RUSTABLE_CANDLESTICK_WALL_VARIANTS;
+    public static final Block[][] RUSTABLE_CANDLESTICK_FLOOR_VARIANTS;
+    static {
+        CandlestickBlockSet candlestickBlockSet = generateCandlestickBlockSet();
+        SIMPLE_CANDLESTICK_WALL_VARIANTS = candlestickBlockSet.simpleCandlestickWallVariants();
+        SIMPLE_CANDLESTICK_FLOOR_VARIANTS = candlestickBlockSet.simpleCandlestickFloorVariants();
+        RUSTABLE_CANDLESTICK_WALL_VARIANTS = candlestickBlockSet.rustableCandlestickWallVariants();
+        RUSTABLE_CANDLESTICK_FLOOR_VARIANTS = candlestickBlockSet.rustableCandlestickFloorVariants();
+    }
 
-    public static void register() {
-        // ............ TEST BLOCKS & BLOCK ITEMS ............
-        // Register Cabinets
-        register(CABINET_BLOCK, "wall_cabinet_block");
-        register(ILLUMINATED_CABINET_BLOCK, "wall_illuminated_cabinet_block");
-        register(FLOOR_CABINET_BLOCK, "cabinet_block");
-        register(FLOOR_ILLUMINATED_CABINET_BLOCK, "illuminated_cabinet_block");
-        // Register Stairs
-        registerWithItem(OUTER_STAIRS, "outer_stairs");
-        registerWithItem(INNER_STAIRS, "inner_stairs");
-        // Register Wooden Mosaic
-        registerWithItem(WOODEN_MOSAIC, "wooden_mosaic");
-
-
-        // ............ FINAL BLOCKS & BLOCK ITEMS ............
-        // Special Jack-O-Lanterns
-        registerWithItem(JACK_O_LANTERN_REDSTONE, "jack_o_lantern_redstone");
-        registerWithItem(JACK_O_LANTERN_SOUL, "jack_o_lantern_soul");
-        putIntoItemGroup(JACK_O_LANTERN_REDSTONE, ItemGroups.COLORED_BLOCKS);
-        putIntoItemGroup(JACK_O_LANTERN_REDSTONE, ItemGroups.REDSTONE);
-        putIntoItemGroup(JACK_O_LANTERN_SOUL, ItemGroups.COLORED_BLOCKS);
-
-        // Register cabinets
-        registerArray(
-                CabinetBlockGenerator.cabinetBlockVariants,
-                CabinetBlockGenerator.cabinetBlockVariantsNames,
-                "wall_cabinet_block_"
-        );
-        registerFlammable(CabinetBlockGenerator.cabinetBlockVariants, ModConfig.cabinetBlockBurnTime, ModConfig.cabinetBlockFireSpread);
-
-        // Register illuminated cabinets
-        registerArray(
-                CabinetBlockGenerator.illuminatedCabinetBlockVariants,
-                CabinetBlockGenerator.cabinetBlockVariantsNames,
-                "wall_illuminated_cabinet_block_"
-        );
-        registerFlammable(CabinetBlockGenerator.illuminatedCabinetBlockVariants, ModConfig.cabinetBlockBurnTime, ModConfig.cabinetBlockFireSpread);
-
-        // Register floor cabinets
-        registerArray(
-                CabinetBlockGenerator.floorCabinetBlockVariants,
-                CabinetBlockGenerator.cabinetBlockVariantsNames,
-                "cabinet_block_"
-        );
-        registerFlammable(CabinetBlockGenerator.floorCabinetBlockVariants, ModConfig.cabinetBlockBurnTime, ModConfig.cabinetBlockFireSpread);
-
-        // Register floor illuminated cabinets
-        registerArray(
-                CabinetBlockGenerator.floorIlluminatedCabinetBlockVariants,
-                CabinetBlockGenerator.cabinetBlockVariantsNames,
-                "illuminated_cabinet_block_"
-        );
-        registerFlammable(CabinetBlockGenerator.floorIlluminatedCabinetBlockVariants, ModConfig.cabinetBlockBurnTime, ModConfig.cabinetBlockFireSpread);
-
-        // Register coloured feature set
-        if (ModConfig.enableColouredFeatureSetBeta) {
-            // Register Coloured Torches
-            registerArrayWithItems(
-                    ColouredFeatureSetGenerator.colouredTorchWeakVariants,
-                    GenerationData.vanillaColorPallet,
-                    "coloured_torch_",
-                    "_weak"
-            );
-            registerArrayWithItems(
-                    ColouredFeatureSetGenerator.colouredTorchVariants,
-                    GenerationData.vanillaColorPallet,
-                    "coloured_torch_"
-            );
-            registerArrayWithItems(
-                    ColouredFeatureSetGenerator.colouredTorchStrongVariants,
-                    GenerationData.vanillaColorPallet,
-                    "coloured_torch_",
-                    "_strong"
-            );
-            putIntoItemGroup(ColouredFeatureSetGenerator.colouredTorchWeakVariants, ItemGroups.COLORED_BLOCKS);
-            putIntoItemGroup(ColouredFeatureSetGenerator.colouredTorchVariants, ItemGroups.COLORED_BLOCKS);
-            putIntoItemGroup(ColouredFeatureSetGenerator.colouredTorchStrongVariants, ItemGroups.COLORED_BLOCKS);
-
-            // Register Light Strips
-            registerArrayWithItems(
-                    ColouredFeatureSetGenerator.LightStripBlockVariants,
-                    GenerationData.vanillaColorPallet,
-                    "light_strip_"
-            );
-            putIntoItemGroup(ColouredFeatureSetGenerator.LightStripBlockVariants, ItemGroups.COLORED_BLOCKS);
-
-            // Register coloured Jack o'Lanterns
-            COLOURED_WEAK_JACK_O_LANTERNS = Arrays.stream(GenerationData.vanillaColorPallet).map(s -> registerWithItem(new JackOLantern(), "coloured_weak_jack_o_lantern_" + s)).toArray(Block[]::new);
-            COLOURED_JACK_O_LANTERNS = Arrays.stream(GenerationData.vanillaColorPallet).map(s -> registerWithItem(new JackOLantern(), "coloured_jack_o_lantern_" + s)).toArray(Block[]::new);
-            COLOURED_STRONG_JACK_O_LANTERNS = Arrays.stream(GenerationData.vanillaColorPallet).map(s -> registerWithItem(new JackOLantern(), "coloured_strong_jack_o_lantern_" + s)).toArray(Block[]::new);
-
-        }
-
-        // Register Forced corner stairs
-        registerArrayWithItems(
-                ForcedCornerStairsGenerator.innerStairsBlockVariants,
-                ForcedCornerStairsGenerator.innerOuterStairsBlockVariantsNames,
-                "inner_stairs_"
-        );
-        putIntoItemGroup(ForcedCornerStairsGenerator.innerStairsBlockVariants, ItemGroups.BUILDING_BLOCKS);
-        registerArrayWithItems(
-                ForcedCornerStairsGenerator.outerStairsBlockVariants,
-                ForcedCornerStairsGenerator.innerOuterStairsBlockVariantsNames,
-                "outer_stairs_"
-        );
-        putIntoItemGroup(ForcedCornerStairsGenerator.outerStairsBlockVariants, ItemGroups.BUILDING_BLOCKS);
-
-        // Register Wooden Mosaics
-        registerArrayWithItems(
-                WoodenMosaicGenerator.woodenMosaicVariants,
-                WoodenMosaicGenerator.woodenMosaicVariantsNames,
-                "wooden_mosaic_"
-        );
-        byte burn = (byte) Math.round(5 * ModConfig.mosaicsAndTilesStrengthMultiplayer);  // TODO: Find correct vanilla values
-        byte spread = (byte) Math.round(20 / ModConfig.mosaicsAndTilesStrengthMultiplayer);
-        registerFlammable(WoodenMosaicGenerator.woodenMosaicVariants, burn, spread);
-        putIntoItemGroup(WoodenMosaicGenerator.woodenMosaicVariants, ItemGroups.BUILDING_BLOCKS);
-
-        // Register Terracotta Tiles
-        registerArrayWithItems(
-                TerracottaTilesGenerator.terracottaTilesVariants,
-                TerracottaTilesGenerator.terracottaTilesVariantsNames,
-                "terracotta_tiles_"
-        );
-        putIntoItemGroup(TerracottaTilesGenerator.terracottaTilesVariants, ItemGroups.BUILDING_BLOCKS);
-
-        // Register Candlestick variants
-        if (ModConfig.enableCandlestickBeta) {
-            registerArray(
-                    CandlestickGenerator.candlestickClassicStandingVariants,
-                    GenerationData.vanillaCandlestickMetals,
-                    "candlestick_"
-            );
-            registerArray(
-                    CandlestickGenerator.candlestickClassicWallVariants,
-                    GenerationData.vanillaCandlestickMetals,
-                    "candlestick_wall_"
-            );
-            for (int i = 0; i < CandlestickGenerator.candlestickRustableStandingVariants.size(); i++) {
-                registerArray(
-                        CandlestickGenerator.candlestickRustableStandingVariants.get(i),
-                        GenerationData.vanillaRustableCandlestickMetals.get(i),
-                        "candlestick_"
-                );
-                registerArray(
-                        CandlestickGenerator.candlestickRustableWallVariants.get(i),
-                        GenerationData.vanillaRustableCandlestickMetals.get(i),
-                        "candlestick_wall_"
-                );
-            }
-        }
+    // COLOURED FEATURES BETA
+    public static final Block[] LIGHT_STRIP_VARIANTS;
+    public static final Block[] COLOURED_TORCH_WEAK_VARIANTS;
+    public static final Block[] COLOURED_TORCH_VARIANTS;
+    public static final Block[] COLOURED_TORCH_STRONG_VARIANTS;
+    public static final Block[] COLOURED_JACK_O_LANTERNS_WEAK;
+    public static final Block[] COLOURED_JACK_O_LANTERNS;
+    public static final Block[] COLOURED_JACK_O_LANTERNS_STRONG;
+    static {
+        ColouredFeatureBlockSet colouredFeatureBlockSet = generateColouredFeatureBlockSet();
+        LIGHT_STRIP_VARIANTS = colouredFeatureBlockSet.lightStripVariants();
+        COLOURED_TORCH_WEAK_VARIANTS = colouredFeatureBlockSet.colouredTorchWeakVariants();
+        COLOURED_TORCH_VARIANTS = colouredFeatureBlockSet.colouredTorchVariants();
+        COLOURED_TORCH_STRONG_VARIANTS = colouredFeatureBlockSet.colouredTorchStrongVariants();
+        COLOURED_JACK_O_LANTERNS_WEAK = colouredFeatureBlockSet.colouredJackOLanternWeakVariants();
+        COLOURED_JACK_O_LANTERNS = colouredFeatureBlockSet.colouredJackOLanternVariants();
+        COLOURED_JACK_O_LANTERNS_STRONG = colouredFeatureBlockSet.colouredJackOLanternStrongVariants();
     }
 
 
-    protected static void registerArrayWithItems(Block[] blocks, String[] names, String prefix) {
-        for (int i = 0; i < blocks.length; i++) {
-            registerWithItem(blocks[i], prefix + names[i]);
-        }
-    }
-    protected static void registerArrayWithItems(Block[] blocks, String[] names, String prefix, String suffix) {
-        for (int i = 0; i < blocks.length; i++) {
-            registerWithItem(blocks[i], prefix + names[i] + suffix);
-        }
-    }
+    /**
+     * This method is called from the main mod class to ensure the static initialisation of this class.
+     */
+    public static void init() {}
+
+
     protected static Block registerWithItem(Block block, String name) {
         Identifier id = getId(name);
         Registry.register(Registries.BLOCK, id, block);
         Registry.register(Registries.ITEM, id, new BlockItem(block, new FabricItemSettings()));
         return block;
     }
-    protected static void registerArray(Block[] blocks, String[] names, String prefix) {
-        for (int i = 0; i < blocks.length; i++) {
-            register(blocks[i], prefix + names[i]);
-        }
-    }
-    protected static void register(Block block, String name) {
+    protected static Block register(Block block, String name) {
         Registry.register(Registries.BLOCK, getId(name), block);
+        return block;
     }
 
-
-    protected static void registerFlammable(Block[] blocks, int burnTime, int spreadSpeed) {
-        for (Block block : blocks) {
-            FlammableBlockRegistry.getDefaultInstance().add(block, burnTime, spreadSpeed);
-        }
+    protected static void registerFlammable(Block block, int burnTime, int spreadSpeed) {
+        FlammableBlockRegistry.getDefaultInstance().add(block, burnTime, spreadSpeed);
     }
 }
