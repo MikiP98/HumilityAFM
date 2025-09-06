@@ -30,7 +30,6 @@ public sealed interface BaseCandlestickLogic permits SimpleCandlestickLogic, Rus
                     // if it's a different candle, drop the already held candle
                     player.getInventory().offerOrDrop(new ItemStack(state.get(ModProperties.CANDLE_COLOR).asCandle()));
                 }
-
                 world.setBlockState(pos, state.with(ModProperties.CANDLE_COLOR, CandleColor.getColor(heldItem)), Block.NOTIFY_ALL);
                 if (!player.isCreative()) heldItemStack.decrement(1);
                 world.playSoundAtBlockCenter(pos, SoundEvents.ENTITY_ITEM_FRAME_REMOVE_ITEM, SoundCategory.BLOCKS, 0.9f, 1.1f, true);
