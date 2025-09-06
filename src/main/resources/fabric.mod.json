@@ -37,6 +37,7 @@
 		"polymorph": "*"
 	},
 	"suggests": {
+		"jei": "*",
 		"modmenu": "*",
 		"shimmer": ">=0.2.0"
 	},
