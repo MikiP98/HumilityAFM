@@ -26,7 +26,7 @@ public sealed interface BaseCandlestickLogic permits SimpleCandlestickLogic, Rus
                 // Check if the candlestick is already holding a candle
                 if (state.get(ModProperties.CANDLE_COLOR) != CandleColor.NONE) {
                     // If the already inserted candle is the same as the one being inserted, do nothing
-                    if (heldItem != state.get(ModProperties.CANDLE_COLOR).asCandle()) return false;
+                    if (heldItem == state.get(ModProperties.CANDLE_COLOR).asCandle()) return false;
                     // if it's a different candle, drop the already held candle
                     player.getInventory().offerOrDrop(new ItemStack(state.get(ModProperties.CANDLE_COLOR).asCandle()));
                 }
