@@ -95,7 +95,7 @@ Lighten up your builds with unobtrusive light source
 - Reworked the whole block generation system
 - Add an optional datapack with alternate, non crafting-table colliding, wooden mosaic recipes
   - This datapack will be disabled by default on MC versions from 1.20.1 (included) to 1.21.4 (excluded)
-  - From 1.21.4 onwards, the datapack wii be enabled by default because of `polymorph` mod's absence
+  - From 1.21.4 onwards, the datapack will be enabled by default because of `polymorph` mod's absence
 
 ### High priority:
 
