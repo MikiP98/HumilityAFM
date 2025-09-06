@@ -91,20 +91,20 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
         public void generateWoodenMosaicTranslations() {
             final String idPrefix = "wooden_mosaic_";
             final String nameSuffix = " wooden mosaic";
-            enterTranslations(ActiveGenerationData.colouredFeatureSetMaterials, idPrefix, nameSuffix);
+            enterTranslations(ActiveGenerationData.woodenMosaicVariantMaterials, idPrefix, nameSuffix);
         }
         public void generateTerracottaTilesTranslations() {
             final String idPrefix = "terracotta_tiles_";
             final String nameSuffix = " terracotta tiles";
-            enterTranslations(ActiveGenerationData.colouredFeatureSetMaterials, idPrefix, nameSuffix);
+            enterTranslations(ActiveGenerationData.terracottaTilesMaterials, idPrefix, nameSuffix);
         }
         public void generateForcedCornerStairsTranslations() {
             final String idPrefix1 = "inner_stairs_";
             final String idPrefix2 = "outer_stairs_";
             final String nameSuffix1 = " inner stairs";
             final String nameSuffix2 = " outer stairs";
-            enterTranslations(ActiveGenerationData.colouredFeatureSetMaterials, idPrefix1, nameSuffix1);
-            enterTranslations(ActiveGenerationData.colouredFeatureSetMaterials, idPrefix2, nameSuffix2);
+            enterTranslations(ActiveGenerationData.forcedCornerStairsVariantMaterials, idPrefix1, nameSuffix1);
+            enterTranslations(ActiveGenerationData.forcedCornerStairsVariantMaterials, idPrefix2, nameSuffix2);
         }
 
         // CANDLESTICK BETA
