@@ -86,11 +86,6 @@ Lighten up your builds with unobtrusive light source
 
 ### Done:
 
-- Port to newer MC versions:
-  - 1.21.4 <sup>*no `polymorph`! Some recipies are broken :(*</sup>
-  - 1.21.6 <sup>*no `polymorph`! Some recipies are broken :(*</sup>
-  - 1.21.7 <sup>*no `polymorph`! Some recipies are broken :(*</sup>
-  - 1.21.8 <sup>*no `polymorph`! Some recipies are broken :(*</sup>
 - Add special built-in mod support for:
   - BetterNether
   - BetterEnd
@@ -141,6 +136,9 @@ Lighten up your builds with unobtrusive light source
 ### Medium priority:
 
 - Improve the speciality of Soul Jack o'Lantern :/
+  - Make them work as bookshelves for enchanting?
+  - Make them boost monster spawners?
+  - Make them scare away Endermen or other mobs?
 - Add Fancy carpets
 - Add hanging pots
 - Add hanging candlesticks
@@ -185,10 +183,6 @@ Lighten up your builds with unobtrusive light source
 - Add variant choosing block?:
   - A GUI block that will show all the variants that can be crafted in the crafting table following the *crafting table on a stick* logic, and it will allow you to choose the variant you want to craft
   - It Should be really useful for candlesticks if they get a lot of variants
-- Make Light Strips and Candlesticks into integrated datapacks?:
-  - Because of the new tag system, the vanilla tool tags should no longer break, so at most this will fix the console spam with disabled features 
-- Make BetterNether and BetterEnd support into integrated datapacks?
-  - Because of the new tag system, the vanilla tool tags should no longer break, so at most this will fix the console spam with disabled features
 - Consider doing a HumilityLib library mod for config or such?
 - Improve Illuminated Cabinet Brightening rendering?
 - Add thin <sup>*(Blibiocraft style)*</sup> and short cabinets?
