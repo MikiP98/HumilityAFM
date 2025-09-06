@@ -11,7 +11,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
@@ -84,8 +83,7 @@ public class FloorCandlestick extends Block implements SimpleCandlestickLogic, W
     @SuppressWarnings("deprecation")
     @Override
     public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-        if (state.getBlock() != newState.getBlock() && state.get(CANDLE_COLOR) != CandleColor.NONE)
-            Block.dropStack(world, pos, new ItemStack(state.get(CANDLE_COLOR).asCandle()));
+        onStateReplacedLogic(state, world, pos, newState);
         super.onStateReplaced(state, world, pos, newState, moved);
     }
 

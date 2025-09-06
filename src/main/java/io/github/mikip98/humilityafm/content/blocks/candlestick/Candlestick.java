@@ -196,10 +196,7 @@ public class Candlestick extends HorizontalFacingBlock implements SimpleCandlest
     @SuppressWarnings("deprecation")
     @Override
     public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-        // If the block is replaced with a different block, drop the candle if present
-        if (state.get(CANDLE_COLOR) != CandleColor.NONE)
-            Block.dropStack(world, pos, new ItemStack(state.get(CANDLE_COLOR).asCandle()));
-
+        onStateReplacedLogic(state, world, pos, newState);
         super.onStateReplaced(state, world, pos, newState, moved);
     }
 
