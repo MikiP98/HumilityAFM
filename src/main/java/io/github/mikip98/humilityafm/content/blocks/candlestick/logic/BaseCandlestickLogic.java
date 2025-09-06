@@ -21,12 +21,15 @@ import net.minecraft.world.World;
 
 public sealed interface BaseCandlestickLogic permits SimpleCandlestickLogic, RustableCandlestickLogic {
     default boolean tryToInsertCandle(BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack heldItemStack, Item heldItem) {
-        if (heldItem instanceof BlockItem) {
-            if (((BlockItem) heldItemStack.getItem()).getBlock() instanceof CandleBlock) {
+        if (heldItem instanceof BlockItem blockItem) {
+            if (blockItem.getBlock() instanceof CandleBlock) {
                 // Check if the candlestick is already holding a candle
-                // If so, give it to the player before placing the new one
-                if (state.get(ModProperties.CANDLE_COLOR) != CandleColor.NONE)
+                if (state.get(ModProperties.CANDLE_COLOR) != CandleColor.NONE) {
+                    // If the already inserted candle is the same as the one being inserted, do nothing
+                    if (heldItem != state.get(ModProperties.CANDLE_COLOR).asCandle()) return false;
+                    // if it's a different candle, drop the already held candle
                     player.getInventory().offerOrDrop(new ItemStack(state.get(ModProperties.CANDLE_COLOR).asCandle()));
+                }
 
                 world.setBlockState(pos, state.with(ModProperties.CANDLE_COLOR, CandleColor.getColor(heldItem)), Block.NOTIFY_ALL);
                 if (!player.isCreative()) heldItemStack.decrement(1);
