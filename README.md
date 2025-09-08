@@ -162,6 +162,7 @@ Lighten up your builds with unobtrusive light source
 - Improve the sounds by varying the pitch and volume slightly
 - Optimise the model datagen
 - Convert the config from JSON to TOML
+- Consider making Polymorph an optional dependency, now with the alternative wooden mosaic recipie datapack it is no longer needed, that said people might still be confused if they didn't have either enabled/installed
 
 ### Low/unknown priority:
 
@@ -220,6 +221,20 @@ You can also use the mod [Kilt](https://github.com/KiltMC/Kilt) to run forge mod
 <br>
 
 
+## Versioning:
+
+### `{major}.{minor}.{patch}.{mc_version_specific_patch}`
+- `major` - Big changes, possibly breaking backward compatibility
+- `minor` - New features, but backward compatible
+- `patch` - Bug fixes, optimizations, small changes
+- `mc_version_specific_patch` - Patches (see above) exclusive to specific to a Minecraft version release
+
+Note that features marked as *beta* may change or be removed even in minor updates,
+breaking their backward compatibility
+
+<br>
+
+
 ## Building instructions:
 
 1. Download the source code from [GitHub](https://github.com/MikiP98/HumilityAFM)
@@ -230,9 +245,10 @@ You can also use the mod [Kilt](https://github.com/KiltMC/Kilt) to run forge mod
    - *Dependencies of the above mods*
 3. Run command `./gradlew runDatagen` or `gradlew runDatagen` in the terminal
     - When the command fails, enable `datagenMode` in the config file under `./build/datagen/config/humility-afm.json`
-4. Move the content *(the inside of the folder)* of `src/main/generated/data/humility-afm/recipies/datagen` to `src/main/resources/resourcepacks/alternate_wooden_mosaics_recipes/data/humility-afm/recipies/`
-5. Run command `./gradlew build` or `gradlew build` in the terminal
-6. The compiled mod jar should be located in `./build/libs/` folder
+4. Move the content *(the inside of the folder)* of `src/main/generated/data/humility-afm/recipies/datapack` to `src/main/resources/resourcepacks/alternate_wooden_mosaics_recipes/data/humility-afm/recipies/`
+5. Move the content *(the inside of the folder)* of `src/main/generated/data/humility-afm/advancements/recipes/misc/datapack` to `src/main/resources/resourcepacks/alternate_wooden_mosaics_recipes/data/humility-afm/advancements/recipes/misc/`
+6. Run command `./gradlew build` or `gradlew build` in the terminal
+7. The compiled mod jar should be located in `./build/libs/` folder
 
 [//]: # (TODO: Create a script to automate the above steps, or at least step 4)
 
