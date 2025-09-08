@@ -130,8 +130,12 @@ Lighten up your builds with unobtrusive light source
   - Add stone variants from the above mods, and fix the missing wood variants
 - Add special built-in mod support for:
   - DivineRPG
+  - Sundries
   - Couple other mods with custom wood types
 - Move duplicated code to Interfaces (cabinet block entity renderers)
+- Custom renderer for wooden mosaics to reduce file size?
+  - https://discord.com/channels/507304429255393322/507982478276034570/1414634100610044004
+- Runtime resourcepack generation? (datapacks) 
 
 ### Medium priority:
 
