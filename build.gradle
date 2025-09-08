@@ -1,3 +1,7 @@
+// Imports required for the 'doLast' entry in 'processResources'
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+
 plugins {
 	id 'fabric-loom' version "${loom_version}"
 	id 'maven-publish'
@@ -87,6 +91,16 @@ processResources {
 
 	filesMatching("fabric.mod.json") {
 		expand "version": inputs.properties.version
+	}
+
+	doLast {
+		// Minify JSON files to reduce the mod size a bit
+		fileTree("$buildDir/resources/main")
+				.matching { include "**/*.json" }
+				.forEach { File f ->
+					def json = new JsonSlurper().parse(f)
+					f.text = JsonOutput.toJson(json) // minified form
+				}
 	}
 }
 
