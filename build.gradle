@@ -32,11 +32,11 @@ repositories {
 		}
 	}
 
-	// Required for 'polymorph'
-	maven {
-		name = 'Ladysnake Mods'
-		url = 'https://maven.ladysnake.org/releases'
-	}
+	// Required for 'polymorph' (see 'dependencies' to know why commented out)
+//	maven {
+//		name = 'Ladysnake Mods'
+//		url = 'https://maven.ladysnake.org/releases'
+//	}
 }
 
 loom {
@@ -52,7 +52,7 @@ loom {
 
 fabricApi {
 	configureDataGeneration() {
-		modId = "humility-afm"
+		client = true
 	}
 }
 
@@ -120,7 +120,7 @@ jar {
 // configure the maven publication
 publishing {
 	publications {
-		mavenJava(MavenPublication) {
+		create("mavenJava", MavenPublication) {
 			artifactId = project.archives_base_name
 			from components.java
 		}
