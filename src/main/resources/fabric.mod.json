@@ -9,7 +9,8 @@
 	],
 	"contact": {
 		"homepage": "https://modrinth.com/mod/humility-afm",
-		"sources": "https://github.com/MikiP98/HumilityAFM"
+		"sources": "https://github.com/MikiP98/HumilityAFM",
+		"issues": "https://github.com/MikiP98/HumilityAFM/issues"
 	},
 	"license": "GPLv3",
 	"icon": "assets/humility-afm/icon.png",
