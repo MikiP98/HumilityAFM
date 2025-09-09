@@ -62,8 +62,8 @@ fabricApi {
 
 dependencies {
 	// Lombok for annotations like @Getter, @Setter, etc.
-	compileOnly 'org.projectlombok:lombok:1.18.32'
-	annotationProcessor 'org.projectlombok:lombok:1.18.32'
+	compileOnly 'org.projectlombok:lombok:1.18.34'
+	annotationProcessor 'org.projectlombok:lombok:1.18.34'
 
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -95,7 +95,7 @@ processResources {
 
 	doLast {
 		// Minify JSON files to reduce the mod size a bit
-		fileTree("$buildDir/resources/main")
+		fileTree("$layout.buildDirectory/resources/main")
 				.matching { include "**/*.json" }
 				.forEach { File f ->
 					def json = new JsonSlurper().parse(f)
