@@ -5,10 +5,10 @@
 ## Description
 This is a simple and small mod that adds some simple decorative blocks such as cabinets (which are fancier types of item frames) as well as some vanilla block variations.
 <br>
-It specializes in procedurally generating variants of the same block so that you can always find the look you were searching for.
+It specialises in procedurally generating variants of the same block so that you can always find the look you were searching for.
 
 ### Download
-The only official downloads are from [**Modrinth**](https://modrinth.com/mod/humility-afm/versions) and [Github](https://github.com/MikiP98/HumilityAFM)  
+The only official downloads are from [**Modrinth**](https://modrinth.com/mod/humility-afm/versions) and [GitHub](https://github.com/MikiP98/HumilityAFM)  
 I can't ensure any other downloads are safe and don't include viruses  
 PLS download the mod from Modrinth if you can
 
@@ -84,83 +84,31 @@ Lighten up your builds with unobtrusive light source
 
 ## Roadmap:
 
-### Done in the development version:
+### Done:
 
-- ~~Fix long block breaking caused by mining tag failure when not all features are enabled~~
-- ~~Add Standing Candlestick variants~~
-- ~~Add floor and ceiling variants of the cabinets~~
-- ~~Convert all the Python code to Java Fabric Datagen~~
-- ~~Restructure the code a bit *(e.g. dedicated registry files)*~~
-- ~~Add `Fully resourcepack compatible!` to the `Features` section in the readme~~
-- ~~Compress candlesticks into 4 items for each metal type~~
-- ~~Move VoxelShapes from switches to maps or variables~~
-- ~~Fix Light Strips loosing their Block Entity~~
-- ~~Fix Light Strip brightening breaking on corner pieces~~
-- ~~Fix Light Strip voxel shape~~
-- ~~Fix candlestick waterlog ability~~
-- ~~Improve Cabinet rendering~~
-- ~~Improve config logic~~
-- ~~Fix Cabinet open and close models not matching and cabinet inside texture stretch~~
-- ~~De-separate the particle texture from the block texture in cabinets and others~~
-- ~~Make Redstone Jack o'Lanterns to turn off when powered~~
-- ~~Make Soul Jack o'Lanterns special in some way (for now particles)~~
-- ~~Port to newer MC versions:~~
-  - ~~1.20.4~~
-  - ~~1.20.6~~
-  - ~~1.21.1~~
-- ~~Add coloured torches:~~
-  - ~~`LED powder` into `Glowing powder`~~
-  - ~~1 powder - weak torch; 2 powders - torch; 3 powders - strong torch~~
-  - ~~Move LEDs to misc tab, alongside the powders~~
-  - ~~Rename LEDs to light strips, consider enabling them by default?~~
-  - ~~Make coloured Jack o'Lanterns~~
-  - ~~Finish coloured torches and jack o'Lanterns textures~~
-  - ~~Fix built-in cabinet resourcepacks~~
+- Add special built-in mod support for:
+  - BetterNether
+  - BetterEnd
+  - Biomes o' Plenty
+- Fix nether wood block variants burning
+- Move duplicated code to Interfaces (candlesticks)
+- Reworked the whole block generation system
+- Add an optional datapack with alternate, non crafting-table colliding, wooden mosaic recipes
+  - This datapack will be disabled by default on MC versions from 1.20.1 (included) to 1.21.4 (excluded)
+  - From 1.21.4 onwards, the datapack will be enabled by default because of `polymorph` mod's absence
 
 ### High priority:
 
-- Rethink the README structure
 - Redo the window capture screenshots or at least crop the window app bar
-- Fix Cabinet breaking animation being invisible:
+- Fix Cabinet breaking animation being invisible
   - Make sure all other breaking animations are also visible
-
-
-### Medium priority:
-
 - Finish built-in jack o'Lantern rp compat resourcepack
 - Finish built-in coloured torches rp compat resourcepack
-- Improve the speciality of Soul Jack o'Lantern :/
 - Add 'Shimmer' and 'Bliss' support for all the blocks from coloured feature set:
   - Coloured Torches
   - Coloured Jack o'Lanterns
   - Light Strips
-- Add Fancy carpets
-- Add hanging pots
-- Add hanging candlesticks
-- Add more candlestick variants:
-  - small, medium, large, etc.
-- Re-add Better Nether built-in support
-- Add Better End built-in support
-- Add Biomes o' Plenty built-in support
-- Add correct map colours to generated blocks:
-  - Cabinets and Illuminated Cabinets
-  - Candlesticks
-  - Wooden Mosaics
-  - Terracotta Tiles
-  - Light Strips
-  - Coloured Torches
-  - Jack o'Lanterns
-  - Forced Corner Stairs
-- Rethink cabinet opening, item insertion and removal, and such
-- Add the ability to rotate items displayed in the cabinets
-- Fix nether wood block variants burning
 - Add Illuminated Cabinet Brightening to the config
-- Port to newer MC versions:
-  - 1.21.4 *(need to wait for 'polymorph')*
-- Expand Light Stips:
-  - Vertical mount
-  - Fit multiple Light Strips in 1 block
-- Make coloured flame particles for coloured torches
 - Add PBR data to:
   - Cabinet front texture:
     - LabPBR specular (pixels only)
@@ -172,8 +120,49 @@ Lighten up your builds with unobtrusive light source
     - Optional resourcepacks for:
       - vanilla emission (full texture)
       - LabPBR emission (full texture)
-- Redo coloured torch textures using Jack o'Lantern palette system
+- Redo coloured torch textures using the Jack o'Lantern palette system
+- Reduce the number of coloured torches and jack o'Lanterns
+  - Think of a system that can replace the current 3 blocks per colour with different light output levels
+- Improve the built-in mod support for:
+  - BetterNether
+  - BetterEnd
+  - Biomes o' Plenty
+  - Add stone variants from the above mods, and fix the missing wood variants
+- Add special built-in mod support for:
+  - DivineRPG
+  - Couple other mods with custom wood types
+- Move duplicated code to Interfaces (cabinet block entity renderers)
 
+### Medium priority:
+
+- Improve the speciality of Soul Jack o'Lantern :/
+  - Make them work as bookshelves for enchanting?
+  - Make them boost monster spawners?
+  - Make them scare away Endermen or other mobs?
+- Add Fancy carpets
+- Add hanging pots
+- Add hanging candlesticks
+- Add more candlestick variants:
+  - small, medium, large, etc.
+- Add correct map colours to generated blocks:
+  - Cabinets and Illuminated Cabinets
+  - Candlesticks
+  - Wooden Mosaics
+  - Terracotta Tiles
+  - Light Strips
+  - Coloured Torches
+  - Jack o'Lanterns
+  - Forced Corner Stairs
+- Rethink cabinet opening, item insertion and removal, and such
+- Add the ability to rotate items displayed in the cabinets
+- Expand Light Stips:
+  - Vertical mount
+  - Fit multiple Light Strips in 1 block
+- Make coloured flame particles for coloured torches
+- Improve the sounds by varying the pitch and volume slightly
+- Optimise the model datagen
+- Convert the config from JSON to TOML
+- Consider making Polymorph an optional dependency, now with the alternative wooden mosaic recipie datapack it is no longer needed, that said people might still be confused if they didn't have either enabled/installed
 
 ### Low/unknown priority:
 
@@ -182,8 +171,6 @@ Lighten up your builds with unobtrusive light source
 - Add carpet covered stairs?
 - Server feature sync?
   - If done through a datapack, the blocks can be enabled by default on the client?
-- Port to newer MC versions:
-  - 1.21.5? *(need to wait for 'polymorph')*
 - Backport to older MC versions?:
   - 1.19.2?
   - 1.18.2?
@@ -193,14 +180,10 @@ Lighten up your builds with unobtrusive light source
   - 1.7.10?
   - 1.0?
 - Add crafting table on a stick?:
-  - If the right-clicked block has a recipie that requires only itself and output only 1 other block, it will replace the right-clicked block with the output block from that recipe
+  - If the right-clicked block has a recipe that requires only itself and outputs only one other block, it will replace the right-clicked block with the output block from that recipe
 - Add variant choosing block?:
   - A GUI block that will show all the variants that can be crafted in the crafting table following the *crafting table on a stick* logic, and it will allow you to choose the variant you want to craft
-  - Should be really useful for candlesticks if they would get a lot of variants
-- Make Light Strips and Candlesticks into integrated datapacks?:
-  - Because of new tag system, the vanilla tool tags should no longer break, so at most this will fix the console spam with disabled features 
-- Make BetterNether and BetterEnd support into integrated datapacks?
-  - Because of new tag system, the vanilla tool tags should no longer break, so at most this will fix the console spam with disabled features
+  - It Should be really useful for candlesticks if they get a lot of variants
 - Consider doing a HumilityLib library mod for config or such?
 - Improve Illuminated Cabinet Brightening rendering?
 - Add thin <sup>*(Blibiocraft style)*</sup> and short cabinets?
@@ -215,9 +198,9 @@ Lighten up your builds with unobtrusive light source
 **A:** Depends, I'm interested in supporting multiple MC versions, but can't support all of them.  
 If you want support for specific MC version pls create an [issue on GitHub](https://github.com/MikiP98/HumilityAFM/issues)
 
-**Q:** Can you port to mod to forge?
+**Q:** Can you port to mod to forge?  
 **A:** I wanted this to be a forge mod, but I just could get even the empty template to work and I gave up.  
-I'm not planing on porting the mod myself, but if you are interested in porting it yourself, you can, pls let me know of such projects on Github :)  
+I'm not planing on porting the mod myself, but if you are interested in porting it yourself, you can, pls let me know of such projects on GitHub :)  
 You can also use the mod [Kilt](https://github.com/KiltMC/Kilt) to run forge mods on fabric
 
 **Q:** Why don’t I see *Light Strips* / *Coloured Torches* / *Coloured Jack o'Lanterns* in my game?  
@@ -226,14 +209,48 @@ You can also use the mod [Kilt](https://github.com/KiltMC/Kilt) to run forge mod
 **Q:** Why don’t my *Light Strips* / *Coloured Torches* / *Coloured Jack o'Lanterns* emit coloured light?  
 **A:** For coloured lighting you need a separate compatible mod or shader. For now this includes [**Bliss** shader](https://github.com/MikiP98/Bliss-Shader) and [**Shimmer** mod](https://modrinth.com/mod/shimmer!)  
   If the light sources still don't emmit coloured light:  
-  When using Shimmer mod, there is probably some mod incompatibility. Try disabling the 'NVIDIUM' mod if present and it should start working again, if 'NVIDIUM' is not the causem try asking in Shimmer DC server for help  
-  When using Bliss shader, make sure to load it via [Iris](https://modrinth.com/mod/iris) or [Oculus](https://modrinth.com/mod/oculus) and __***not***__ using **Optifine**! Then make sure floodfill option is enabled in the shader settings
+  When using **Shimmer** mod, there is probably some mod incompatibility. Try disabling the 'NVIDIUM' mod if present and it should start working again, if 'NVIDIUM' is not the cause try asking in Shimmer DC server for help  
+  When using **Bliss** shader, make sure to load it via [Iris](https://modrinth.com/mod/iris) or [Oculus](https://modrinth.com/mod/oculus) and __***not***__ using **Optifine**! Then make sure floodfill option is enabled in the shader settings
 
 **Q:** Why is the inside of Cabinets transparent?  
 **A:** Sodium <0.6.0 has issues with rendering transparency. You can try replacing it with Embeddium or installing other mods, like NVIDIUM, may help fix the problem. If that doesn't help, you can disable partial Cabinet transparency in the configuration (you will still be able to see the items inside)
 
 **Q** Why do the edges become transparent when I look at a Cabinet?  
 **A:** I have no idea... probably another transparency issue :/
+
+<br>
+
+
+## Versioning:
+
+### `{major}.{minor}.{patch}.{mc_version_specific_patch}`
+- `major` - Big changes, possibly breaking backward compatibility
+- `minor` - New features, but backward compatible
+- `patch` - Bug fixes, optimizations, small changes
+- `mc_version_specific_patch` - Patches (see above) exclusive to specific to a Minecraft version release
+
+Note that features marked as *beta* may change or be removed even in minor updates,
+breaking their backward compatibility
+
+<br>
+
+
+## Building instructions:
+
+1. Download the source code from [GitHub](https://github.com/MikiP98/HumilityAFM)
+2. Download the dependent mods for datagen and put them under `./build/datagen/mods/`
+   - [**Better End**](https://modrinth.com/mod/betterend)
+   - [**Better Nether**](https://modrinth.com/mod/betternether)
+   - [**Biomes o' Plenty**](https://modrinth.com/mod/biomes-o-plenty)
+   - *Dependencies of the above mods*
+3. Run command `./gradlew runDatagen` or `gradlew runDatagen` in the terminal
+    - When the command fails, enable `datagenMode` in the config file under `./build/datagen/config/humility-afm.json`
+4. Move the content *(the inside of the folder)* of `src/main/generated/data/humility-afm/recipies/datapack` to `src/main/resources/resourcepacks/alternate_wooden_mosaics_recipes/data/humility-afm/recipies/`
+5. Move the content *(the inside of the folder)* of `src/main/generated/data/humility-afm/advancements/recipes/misc/datapack` to `src/main/resources/resourcepacks/alternate_wooden_mosaics_recipes/data/humility-afm/advancements/recipes/misc/`
+6. Run command `./gradlew build` or `gradlew build` in the terminal
+7. The compiled mod jar should be located in `./build/libs/` folder
+
+[//]: # (TODO: Create a script to automate the above steps, or at least step 4)
 
 <br>
 

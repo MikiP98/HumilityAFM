@@ -6,14 +6,11 @@ import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetB
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorCabinetBlockEntity;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorIlluminatedCabinetBlockEntity;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.IlluminatedCabinetBlockEntity;
-import io.github.mikip98.humilityafm.generators.CabinetBlockGenerator;
-import io.github.mikip98.humilityafm.generators.ColouredFeatureSetGenerator;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
@@ -23,12 +20,12 @@ import static io.github.mikip98.humilityafm.registries.BlockRegistry.CABINET_BLO
 import static io.github.mikip98.humilityafm.registries.BlockRegistry.ILLUMINATED_CABINET_BLOCK;
 
 public class BlockEntityRegistry {
-    //Cabinet block entity
+    // Cabinet block entity
     public static BlockEntityType<CabinetBlockEntity> CABINET_BLOCK_ENTITY;
     public static BlockEntityType<IlluminatedCabinetBlockEntity> ILLUMINATED_CABINET_BLOCK_ENTITY;
     public static BlockEntityType<FloorCabinetBlockEntity> FLOOR_CABINET_BLOCK_ENTITY;
     public static BlockEntityType<FloorIlluminatedCabinetBlockEntity> FLOOR_ILLUMINATED_CABINET_BLOCK_ENTITY;
-    // LED block entity
+    // Light strip block entity
     public static BlockEntityType<LightStripBlockEntity> LIGHT_STRIP_BLOCK_ENTITY;
 
     public static void register() {
@@ -38,7 +35,7 @@ public class BlockEntityRegistry {
                 getId("cabinet_block_entity"),
                 BlockEntityType.Builder.create(
                         CabinetBlockEntity::new,
-                        concat(CABINET_BLOCK, CabinetBlockGenerator.cabinetBlockVariants)
+                        concat(CABINET_BLOCK, BlockRegistry.WALL_CABINET_BLOCK_VARIANTS)
                 ).build()
         );
         //Register illuminated cabinet block entity
@@ -47,7 +44,7 @@ public class BlockEntityRegistry {
                 getId("illuminated_cabinet_block_entity"),
                 BlockEntityType.Builder.create(
                         IlluminatedCabinetBlockEntity::new,
-                        concat(ILLUMINATED_CABINET_BLOCK, CabinetBlockGenerator.illuminatedCabinetBlockVariants)
+                        concat(ILLUMINATED_CABINET_BLOCK, BlockRegistry.WALL_ILLUMINATED_CABINET_BLOCK_VARIANTS)
                 ).build()
         );
         //Register floor cabinet block entity
@@ -56,7 +53,7 @@ public class BlockEntityRegistry {
                 getId("floor_cabinet_block_entity"),
                 BlockEntityType.Builder.create(
                         FloorCabinetBlockEntity::new,
-                        CabinetBlockGenerator.floorCabinetBlockVariants
+                        BlockRegistry.FLOOR_CABINET_BLOCK_VARIANTS
                 ).build()
         );
         //Register floor illuminated cabinet block entity
@@ -65,18 +62,18 @@ public class BlockEntityRegistry {
                 getId("floor_illuminated_cabinet_block_entity"),
                 BlockEntityType.Builder.create(
                         FloorIlluminatedCabinetBlockEntity::new,
-                        CabinetBlockGenerator.floorIlluminatedCabinetBlockVariants
+                        BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_VARIANTS
                 ).build()
         );
 
         //Register LED block entity
-        if (ModConfig.enableColouredFeatureSetBeta) {
+        if (ModConfig.getEnableColouredFeatureSetBeta()) {
             LIGHT_STRIP_BLOCK_ENTITY = Registry.register(
                     Registries.BLOCK_ENTITY_TYPE,
                     getId("light_strip_block_entity"),
                     BlockEntityType.Builder.create(
                             LightStripBlockEntity::new,
-                            ColouredFeatureSetGenerator.LightStripBlockVariants
+                            BlockRegistry.LIGHT_STRIP_VARIANTS
                     ).build()
             );
         }

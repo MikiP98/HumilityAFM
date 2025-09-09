@@ -2,28 +2,24 @@ package io.github.mikip98.humilityafm.registries;
 
 import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.content.items.DoubleVerticallyAttachableBlockItem;
-import io.github.mikip98.humilityafm.util.GenerationData;
+import io.github.mikip98.humilityafm.content.items.ModVerticallyAttachableBlockItem;
+import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
+import io.github.mikip98.humilityafm.util.generation_data.RawGenerationData;
+import io.github.mikip98.humilityafm.util.generation_data.material_management.SizedIterable;
+import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.util.math.Direction;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
 import static io.github.mikip98.humilityafm.registries.ItemGroupRegistry.putIntoItemGroup;
 
 public class ItemRegistry {
-    public static final Item[] GLOWING_POWDER_VARIANTS = Arrays.stream(GenerationData.vanillaColorPallet).map(color -> register("glowing_powder_" + color)).toArray(Item[]::new);
-
-    public static Item[] CABINET_ITEM_VARIANTS;
-    public static Item[] ILLUMINATED_CABINET_ITEM_VARIANTS;
-
-    public static Item[] CANDLESTICK_ITEM_VARIANTS = new Item[GenerationData.vanillaCandlestickMetals.length];
-    public static List<Item[]> RUSTABLE_CANDLESTICK_ITEM_VARIANTS = new ArrayList<>();
-
+    public static final Item[] GLOWING_POWDER_VARIANTS = Arrays.stream(RawGenerationData.vanillaColorPallet).map(color -> register("glowing_powder_" + color)).toArray(Item[]::new);
 
     public static final Item CABINET_ITEM = register(
             new DoubleVerticallyAttachableBlockItem(BlockRegistry.FLOOR_CABINET_BLOCK, BlockRegistry.CABINET_BLOCK, new Item.Settings()),
@@ -33,26 +29,85 @@ public class ItemRegistry {
             new DoubleVerticallyAttachableBlockItem(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK, BlockRegistry.ILLUMINATED_CABINET_BLOCK, new Item.Settings()),
             "illuminated_cabinet_block"
     );
+    public static Item[] CABINET_ITEM_VARIANTS;
+    public static Item[] ILLUMINATED_CABINET_ITEM_VARIANTS;
+
+    public static Item[] CANDLESTICK_ITEM_VARIANTS;
+    public static Item[][] RUSTABLE_CANDLESTICK_ITEM_VARIANTS;
 
 
     public static void register() {
+        int cabinetAmount = BlockRegistry.WALL_CABINET_BLOCK_VARIANTS.length;
+        CABINET_ITEM_VARIANTS = new Item[cabinetAmount];
+        ILLUMINATED_CABINET_ITEM_VARIANTS = new Item[cabinetAmount];
+        int i = 0;
+        for (BlockMaterial material : ActiveGenerationData.cabinetVariantMaterials) {
+            CABINET_ITEM_VARIANTS[i] = register(
+                    new DoubleVerticallyAttachableBlockItem(
+                            BlockRegistry.FLOOR_CABINET_BLOCK_VARIANTS[i],
+                            BlockRegistry.WALL_CABINET_BLOCK_VARIANTS[i],
+                            new Item.Settings()
+                    ),
+                    "cabinet_" + material.getSafeName()
+            );
+            ILLUMINATED_CABINET_ITEM_VARIANTS[i] = register(
+                    new DoubleVerticallyAttachableBlockItem(
+                            BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_VARIANTS[i],
+                            BlockRegistry.WALL_ILLUMINATED_CABINET_BLOCK_VARIANTS[i],
+                            new Item.Settings()
+                    ),
+                    "illuminated_cabinet_" + material.getSafeName()
+            );
+            ++i;
+        }
         putIntoItemGroup(CABINET_ITEM_VARIANTS, ItemGroups.COLORED_BLOCKS);
         putIntoItemGroup(ILLUMINATED_CABINET_ITEM_VARIANTS, ItemGroups.COLORED_BLOCKS);
-        if (ModConfig.enableCandlestickBeta) {
+
+        // CANDLESTICK BETA
+        if (ModConfig.getEnableCandlestickBeta()) {
+            CANDLESTICK_ITEM_VARIANTS = new Item[ActiveGenerationData.simpleCandlestickMaterials.size()];
+            i = 0;
+            for (BlockMaterial material : ActiveGenerationData.simpleCandlestickMaterials) {
+                CANDLESTICK_ITEM_VARIANTS[i] = register(
+                        "candlestick_" + material.getSafeName(),
+                        new ModVerticallyAttachableBlockItem(
+                                BlockRegistry.SIMPLE_CANDLESTICK_FLOOR_VARIANTS[i],
+                                BlockRegistry.SIMPLE_CANDLESTICK_WALL_VARIANTS[i],
+                                new Item.Settings(),
+                                Direction.DOWN
+                        )
+                );
+                ++i;
+            }
+            RUSTABLE_CANDLESTICK_ITEM_VARIANTS = new Item[ActiveGenerationData.rustingCandlestickMaterials.length][];
+            i = 0;
+            for (SizedIterable<BlockMaterial> materialSet : ActiveGenerationData.rustingCandlestickMaterials) {
+                RUSTABLE_CANDLESTICK_ITEM_VARIANTS[i] = new Item[materialSet.size()];
+                int j = 0;
+                for (BlockMaterial material : materialSet) {
+                    RUSTABLE_CANDLESTICK_ITEM_VARIANTS[i][j] = register(
+                            "candlestick_" + material.getSafeName(),
+                            new ModVerticallyAttachableBlockItem(
+                                    BlockRegistry.RUSTABLE_CANDLESTICK_FLOOR_VARIANTS[i][j],
+                                    BlockRegistry.RUSTABLE_CANDLESTICK_WALL_VARIANTS[i][j],
+                                    new Item.Settings(),
+                                    Direction.DOWN
+                            )
+                    );
+                    if (RUSTABLE_CANDLESTICK_ITEM_VARIANTS[i][j] == null) throw new NullPointerException();
+                    ++j;
+                }
+                ++i;
+            }
             putIntoItemGroup(CANDLESTICK_ITEM_VARIANTS, ItemGroups.FUNCTIONAL);
-            RUSTABLE_CANDLESTICK_ITEM_VARIANTS.forEach(s -> putIntoItemGroup(s, ItemGroups.FUNCTIONAL));
+            Arrays.stream(RUSTABLE_CANDLESTICK_ITEM_VARIANTS).forEach(s -> putIntoItemGroup(s, ItemGroups.FUNCTIONAL));
         }
-        if (ModConfig.enableColouredFeatureSetBeta) {
+        if (ModConfig.getEnableColouredFeatureSetBeta()) {
             putIntoItemGroup(GLOWING_POWDER_VARIANTS, ItemGroups.INGREDIENTS);
         }
     }
 
 
-    protected static void registerArray(Item[] items, String[] names, String prefix) {
-        for (int i = 0; i < items.length; i++) {
-            register(items[i], prefix + names[i]);
-        }
-    }
     public static Item register(Item item, String name) {
         return register(name, item);
     }

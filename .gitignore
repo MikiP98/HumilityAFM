@@ -3,6 +3,12 @@
 generated/
 src/main/generated/
 
+src/main/resources/resourcepacks/alternate_wooden_mosaic_recipies/data
+src/main/resources/resourcepacks/alternate_wooden_mosaic_recipies/data/*
+src/main/resources/resourcepacks/alternate_wooden_mosaic_recipies/data/**
+src/main/resources/resourcepacks/alternate_wooden_mosaic_recipies/data/humility-afm/recipes
+src/main/resources/resourcepacks/alternate_wooden_mosaic_recipies/data/humility-afm/recipes/*
+src/main/resources/resourcepacks/alternate_wooden_mosaic_recipies/data/humility-afm/recipes/**
 
 
 # Python

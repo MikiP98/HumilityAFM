@@ -49,7 +49,7 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(OPEN);
-        builder.add(Properties.HORIZONTAL_FACING);
+        builder.add(FACING);
         builder.add(WATERLOGGED);
     }
 
@@ -70,8 +70,8 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
         super(settings);
         setDefaultState(getStateManager().getDefaultState()
                 .with(OPEN, false)
-                .with(Properties.HORIZONTAL_FACING, Direction.SOUTH)
-                .with(Properties.WATERLOGGED, false));
+                .with(FACING, Direction.SOUTH)
+                .with(WATERLOGGED, false));
     }
 
     @Override
@@ -167,8 +167,8 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
     @Override
     public @NotNull BlockState getPlacementState(ItemPlacementContext ctx) {
         return this.getDefaultState()
-                .with(Properties.HORIZONTAL_FACING, ctx.getHorizontalPlayerFacing().getOpposite())
-                .with(Properties.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER);
+                .with(FACING, ctx.getHorizontalPlayerFacing().getOpposite())
+                .with(WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER);
     }
 
     @Override

@@ -1,11 +1,11 @@
 package io.github.mikip98.humilityafm.registries;
 
 import io.github.mikip98.humilityafm.config.ModConfig;
-import io.github.mikip98.humilityafm.generators.*;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -29,26 +29,26 @@ public class ItemGroupRegistry {
 
     // InnerOuterStairs item group
     final static ItemGroup INNER_OUTER_STAIRS_ITEM_GROUP = FabricItemGroup.builder()
-            .icon(() -> new ItemStack(BlockRegistry.OUTER_STAIRS))
+            .icon(() -> new ItemStack(BlockRegistry.OUTER_STAIRS_BLOCK_VARIANTS[0]))
             .displayName(Text.translatable("itemGroup.innerOuterStairs"))
             .entries((displayContext, entries) -> {
-                Arrays.stream(ForcedCornerStairsGenerator.innerStairsBlockVariants).forEach(entries::add);
-                Arrays.stream(ForcedCornerStairsGenerator.outerStairsBlockVariants).forEach(entries::add);
+                Arrays.stream(BlockRegistry.INNER_STAIRS_BLOCK_VARIANTS).forEach(entries::add);
+                Arrays.stream(BlockRegistry.OUTER_STAIRS_BLOCK_VARIANTS).forEach(entries::add);
             })
             .build();
 
     // WoodenMosaic item group
     final static ItemGroup WOODEN_MOSAIC_ITEM_GROUP = FabricItemGroup.builder()
-            .icon(() -> new ItemStack(WoodenMosaicGenerator.woodenMosaicVariants[0]))
+            .icon(() -> new ItemStack(BlockRegistry.WOODEN_MOSAIC_VARIANTS[0]))
             .displayName(Text.translatable("itemGroup.woodenMosaics"))
-            .entries((displayContext, entries) -> Arrays.stream(WoodenMosaicGenerator.woodenMosaicVariants).forEach(entries::add))
+            .entries((displayContext, entries) -> Arrays.stream(BlockRegistry.WOODEN_MOSAIC_VARIANTS).forEach(entries::add))
             .build();
 
     // TerracottaTiles item group
     final static ItemGroup TERRACOTTA_TILES_ITEM_GROUP = FabricItemGroup.builder()
-            .icon(() -> new ItemStack(TerracottaTilesGenerator.terracottaTilesVariants[0]))
+            .icon(() -> new ItemStack(BlockRegistry.TERRACOTTA_TILE_VARIANTS[0]))
             .displayName(Text.translatable("itemGroup.terracottaTiles"))
-            .entries((displayContext, entries) -> Arrays.stream(TerracottaTilesGenerator.terracottaTilesVariants).forEach(entries::add))
+            .entries((displayContext, entries) -> Arrays.stream(BlockRegistry.TERRACOTTA_TILE_VARIANTS).forEach(entries::add))
             .build();
 
     // Miscellaneous (Humility Misc) item group
@@ -58,19 +58,19 @@ public class ItemGroupRegistry {
             .entries((displayContext, entries) -> {
                 entries.add(BlockRegistry.JACK_O_LANTERN_REDSTONE);
                 entries.add(BlockRegistry.JACK_O_LANTERN_SOUL);
-                if (ModConfig.enableColouredFeatureSetBeta) {
-                    Arrays.stream(BlockRegistry.COLOURED_WEAK_JACK_O_LANTERNS).forEach(entries::add);
-                    Arrays.stream(BlockRegistry.COLOURED_JACK_O_LANTERNS).forEach(entries::add);
-                    Arrays.stream(BlockRegistry.COLOURED_STRONG_JACK_O_LANTERNS).forEach(entries::add);
+                if (ModConfig.getEnableColouredFeatureSetBeta()) {
                     Arrays.stream(ItemRegistry.GLOWING_POWDER_VARIANTS).forEach(entries::add);
-                    Arrays.stream(ColouredFeatureSetGenerator.colouredTorchWeakVariants).forEach(entries::add);
-                    Arrays.stream(ColouredFeatureSetGenerator.colouredTorchVariants).forEach(entries::add);
-                    Arrays.stream(ColouredFeatureSetGenerator.colouredTorchStrongVariants).forEach(entries::add);
-                    Arrays.stream(ColouredFeatureSetGenerator.LightStripBlockVariants).forEach(entries::add);
+                    Arrays.stream(BlockRegistry.LIGHT_STRIP_VARIANTS).forEach(entries::add);
+                    Arrays.stream(BlockRegistry.COLOURED_TORCH_WEAK_VARIANTS).forEach(entries::add);
+                    Arrays.stream(BlockRegistry.COLOURED_TORCH_VARIANTS).forEach(entries::add);
+                    Arrays.stream(BlockRegistry.COLOURED_TORCH_STRONG_VARIANTS).forEach(entries::add);
+                    Arrays.stream(BlockRegistry.COLOURED_JACK_O_LANTERNS_WEAK).forEach(entries::add);
+                    Arrays.stream(BlockRegistry.COLOURED_JACK_O_LANTERNS).forEach(entries::add);
+                    Arrays.stream(BlockRegistry.COLOURED_JACK_O_LANTERNS_STRONG).forEach(entries::add);
                 }
-                if (ModConfig.enableCandlestickBeta) {
+                if (ModConfig.getEnableCandlestickBeta()) {
                     Arrays.stream(ItemRegistry.CANDLESTICK_ITEM_VARIANTS).forEach(entries::add);
-                    ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS.forEach(set -> Arrays.stream(set).forEach(entries::add));
+                    Arrays.stream(ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS).forEach(set -> Arrays.stream(set).forEach(entries::add));
                 }
             }).build();
 
@@ -81,13 +81,62 @@ public class ItemGroupRegistry {
         Registry.register(Registries.ITEM_GROUP, getId("wooden_mosaics_group"), WOODEN_MOSAIC_ITEM_GROUP);
         Registry.register(Registries.ITEM_GROUP, getId("terracotta_tiles_group"), TERRACOTTA_TILES_ITEM_GROUP);
         Registry.register(Registries.ITEM_GROUP, getId("humility_misc_group"), HUMILITY_MISCELLANEOUS_GROUP);
+
+
+        // -------------------------------------------------------------------------------------------------------------
+        // --------- PUT BLOCKS AND ITEMS INTO VANILLA ITEM GROUPS -----------------------------------------------------
+        // -------------------------------------------------------------------------------------------------------------
+
+        // Special Jack-O-Lanterns
+        putIntoItemGroup(BlockRegistry.JACK_O_LANTERN_REDSTONE, ItemGroups.COLORED_BLOCKS, ItemGroups.REDSTONE);
+        putIntoItemGroup(BlockRegistry.JACK_O_LANTERN_SOUL, ItemGroups.COLORED_BLOCKS);
+
+        // Forced corner stairs
+        putIntoItemGroup(BlockRegistry.INNER_STAIRS_BLOCK_VARIANTS, ItemGroups.BUILDING_BLOCKS);
+        putIntoItemGroup(BlockRegistry.OUTER_STAIRS_BLOCK_VARIANTS, ItemGroups.BUILDING_BLOCKS);
+
+        // Wooden Mosaics
+        putIntoItemGroup(BlockRegistry.WOODEN_MOSAIC_VARIANTS, ItemGroups.BUILDING_BLOCKS);
+
+        // Terracotta Tiles
+        putIntoItemGroup(BlockRegistry.TERRACOTTA_TILE_VARIANTS, ItemGroups.BUILDING_BLOCKS);
+
+        // --- Candlestick beta ---
+        if (ModConfig.getEnableCandlestickBeta()) {
+            // Simple Candlesticks
+            putIntoItemGroup(BlockRegistry.SIMPLE_CANDLESTICK_WALL_VARIANTS, ItemGroups.FUNCTIONAL);
+            putIntoItemGroup(BlockRegistry.SIMPLE_CANDLESTICK_FLOOR_VARIANTS, ItemGroups.FUNCTIONAL);
+            // Rustable Candlesticks
+            Arrays.stream(BlockRegistry.RUSTABLE_CANDLESTICK_WALL_VARIANTS).forEach(blocks -> putIntoItemGroup(blocks, ItemGroups.FUNCTIONAL));
+            Arrays.stream(BlockRegistry.RUSTABLE_CANDLESTICK_FLOOR_VARIANTS).forEach(blocks -> putIntoItemGroup(blocks, ItemGroups.FUNCTIONAL));
+        }
+
+        // --- Coloured feature set beta ---
+        if (ModConfig.getEnableColouredFeatureSetBeta()) {
+            // Light Strips
+            putIntoItemGroup(BlockRegistry.LIGHT_STRIP_VARIANTS, ItemGroups.COLORED_BLOCKS);
+
+            // Coloured Torches
+            putIntoItemGroup(BlockRegistry.COLOURED_TORCH_WEAK_VARIANTS, ItemGroups.COLORED_BLOCKS);
+            putIntoItemGroup(BlockRegistry.COLOURED_TORCH_VARIANTS, ItemGroups.COLORED_BLOCKS);
+            putIntoItemGroup(BlockRegistry.COLOURED_TORCH_STRONG_VARIANTS, ItemGroups.COLORED_BLOCKS);
+
+            // Coloured Jack o'Lanterns
+            putIntoItemGroup(BlockRegistry.COLOURED_JACK_O_LANTERNS_WEAK, ItemGroups.COLORED_BLOCKS);
+            putIntoItemGroup(BlockRegistry.COLOURED_JACK_O_LANTERNS, ItemGroups.COLORED_BLOCKS);
+            putIntoItemGroup(BlockRegistry.COLOURED_JACK_O_LANTERNS_STRONG, ItemGroups.COLORED_BLOCKS);
+        }
     }
 
 
-    public static void putIntoItemGroup(ItemConvertible[] items, RegistryKey<ItemGroup> group) {
-        ItemGroupEvents.modifyEntriesEvent(group).register(content -> Arrays.stream(items).forEach(content::add));
+    @SafeVarargs
+    public static void putIntoItemGroup(ItemConvertible[] items, RegistryKey<ItemGroup>... itemGroups) {
+        for (RegistryKey<ItemGroup> itemGroup : itemGroups)
+            ItemGroupEvents.modifyEntriesEvent(itemGroup).register(content -> Arrays.stream(items).forEach(content::add));
     }
-    public static void putIntoItemGroup(ItemConvertible item, RegistryKey<ItemGroup> group) {
-        ItemGroupEvents.modifyEntriesEvent(group).register(content -> content.add(item));
+    @SafeVarargs
+    public static void putIntoItemGroup(ItemConvertible item, RegistryKey<ItemGroup>... itemGroups) {
+        for (RegistryKey<ItemGroup> itemGroup : itemGroups)
+            ItemGroupEvents.modifyEntriesEvent(itemGroup).register(content -> content.add(item));
     }
 }
