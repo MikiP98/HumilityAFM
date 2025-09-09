@@ -147,3 +147,18 @@ publishing {
 		// retrieving dependencies.
 	}
 }
+
+// Additional task that recompresses the generated JARs using python-zopfli to reduce the file size
+tasks.register("recompressJars", Exec) {
+	group = "build"
+	description = "Recompress JARs in ./build/libs using python-zopfli"
+
+	workingDir = projectDir
+	executable = "python"
+	args = ["jar_recompressor.py"]
+}
+
+// Run the 'recompressJars' task after the 'build' task
+tasks.named("build") {
+	finalizedBy("recompressJars")
+}
