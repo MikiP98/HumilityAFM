@@ -269,7 +269,7 @@ public abstract class BlockGeneration {
                 // Coloured Torches
                 colouredTorchWeakVariants.add(registerWithItem(new TorchBlock(weakTorchSettings, torchParticle), "coloured_torch_" + name + "_weak"));
                 colouredTorchVariants.add(registerWithItem(new TorchBlock(normalTorchSettings, torchParticle), "coloured_torch_" + name));
-                colouredTorchStrongVariants.add(registerWithItem(new TorchBlock(strongTorchSettings, torchParticle), "torch_strong" + name));
+                colouredTorchStrongVariants.add(registerWithItem(new TorchBlock(strongTorchSettings, torchParticle), "coloured_torch_" + name + "_strong"));
                 // Coloured Jack O'Lanterns
                 colouredJackOLanternsWeak.add(registerWithItem(new JackOLantern(), "coloured_weak_jack_o_lantern_" + name));
                 colouredJackOLanterns.add(registerWithItem(new JackOLantern(), "coloured_jack_o_lantern_" + name));
