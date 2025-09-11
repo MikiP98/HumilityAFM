@@ -91,10 +91,10 @@ public abstract class RawGenerationData {
      * All burnable modded wood types, sorted by the mod they come from.
      */
     public static final Map<SupportedMods, String[]> moddedBurnableWoodTypes = Map.of(
-//            BETTER_END, new String[]{
-//                    "mossy_glowshroom", "pythadendron"/*, "endlotus"*/, "lacugrove", "dragon_tree", // TODO: 'endlotus' misses its texture
-//                    "tenanea", "helix_tree", "umbrella_tree", "jellyshroom", "lucernia"
-//            },  // No 1.20.6 version
+            BETTER_END, new String[]{
+                    "mossy_glowshroom", "pythadendron"/*, "endlotus"*/, "lacugrove", "dragon_tree", // TODO: 'endlotus' misses its texture
+                    "tenanea", "helix_tree", "umbrella_tree", "jellyshroom", "lucernia"
+            },
             BIOMES_O_PLENTY, new String[]{
                     "fir", "pine", "maple", "redwood", "mahogany", "jacaranda", "palm",
                     "willow", "dead", "magic", "umbran", "hellbark", "empyreal"
@@ -104,9 +104,9 @@ public abstract class RawGenerationData {
      * All fireproof modded wood types, sorted by the mod they come from.
      */
     public static final Map<SupportedMods, String[]> moddedFireProofWoodTypes = Map.of(
-//            BETTER_NETHER, new String[]{  // TODO: 'mushroom' and 'reeds' miss their textures
-//                    "anchor_tree"/*, "mushroom"*/, "mushroom_fir", "nether_sakura"/*, "reeds"*/, "rubeus", "stalagnate", "wart", "willow"
-//            }   // No 1.20.6 version
+            BETTER_NETHER, new String[]{  // TODO: 'mushroom' and 'reeds' miss their textures
+                    "anchor_tree"/*, "mushroom"*/, "mushroom_fir", "nether_sakura"/*, "reeds"*/, "rubeus", "stalagnate", "wart", "willow"
+            }
     );
     /***
      * A single iterable containing all modded wood types, both burnable and fireproof.
