@@ -9,13 +9,11 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -43,14 +41,13 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
 
     protected static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
     protected static final BooleanProperty OPEN = Properties.OPEN;
-    protected static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
 
     protected static final MapCodec<CabinetBlock> CODEC = createCodec(CabinetBlock::new);
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(OPEN);
-        builder.add(Properties.HORIZONTAL_FACING);
+        builder.add(FACING);
         builder.add(WATERLOGGED);
     }
 
@@ -68,8 +65,8 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
         super(settings);
         setDefaultState(getStateManager().getDefaultState()
                 .with(OPEN, false)
-                .with(Properties.HORIZONTAL_FACING, Direction.SOUTH)
-                .with(Properties.WATERLOGGED, false));
+                .with(FACING, Direction.SOUTH)
+                .with(WATERLOGGED, false));
     }
 
     @Override
@@ -165,8 +162,8 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
     @Override
     public @NotNull BlockState getPlacementState(ItemPlacementContext ctx) {
         return this.getDefaultState()
-                .with(Properties.HORIZONTAL_FACING, ctx.getHorizontalPlayerFacing().getOpposite())
-                .with(Properties.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER);
+                .with(FACING, ctx.getHorizontalPlayerFacing().getOpposite())
+                .with(WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER);
     }
 
     @Override
@@ -175,7 +172,7 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
     }
 
     @Override
-    protected void onStateReplaced(BlockState state, ServerWorld world, BlockPos pos, boolean moved) {
+    protected void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
         if (state.getBlock() != this) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof CabinetBlockEntity cabinetEntity) {
@@ -187,7 +184,7 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
                     }
                 }
             }
-            super.onStateReplaced(state, world, pos, moved);
+            super.onStateReplaced(state, world, pos, newState, moved);
         }
     }
 

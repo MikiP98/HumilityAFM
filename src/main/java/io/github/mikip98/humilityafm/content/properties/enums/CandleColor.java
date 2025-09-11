@@ -1,10 +1,11 @@
-package io.github.mikip98.humilityafm.util.data_types;
+package io.github.mikip98.humilityafm.content.properties.enums;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.StringIdentifiable;
 
 public enum CandleColor implements StringIdentifiable {
+    NONE,
     PLAIN,
     // Vanilla colors
     WHITE,
@@ -31,6 +32,7 @@ public enum CandleColor implements StringIdentifiable {
 
     public Item asCandle() {
         return switch (this) {
+            case NONE -> throw new IllegalStateException("No candle item for color NONE");
             case PLAIN -> Items.CANDLE;
             case WHITE -> Items.WHITE_CANDLE;
             case ORANGE -> Items.ORANGE_CANDLE;
@@ -51,19 +53,31 @@ public enum CandleColor implements StringIdentifiable {
         };
     }
 
+    public static CandleColor getColor(Item item) {
+        if (item == Items.CANDLE) return PLAIN;
+        else if (item == Items.WHITE_CANDLE) return WHITE;
+        else if (item == Items.ORANGE_CANDLE) return ORANGE;
+        else if (item == Items.MAGENTA_CANDLE) return MAGENTA;
+        else if (item == Items.LIGHT_BLUE_CANDLE) return LIGHT_BLUE;
+        else if (item == Items.YELLOW_CANDLE) return YELLOW;
+        else if (item == Items.LIME_CANDLE) return LIME;
+        else if (item == Items.PINK_CANDLE) return PINK;
+        else if (item == Items.GRAY_CANDLE) return GRAY;
+        else if (item == Items.LIGHT_GRAY_CANDLE) return LIGHT_GRAY;
+        else if (item == Items.CYAN_CANDLE) return CYAN;
+        else if (item == Items.PURPLE_CANDLE) return PURPLE;
+        else if (item == Items.BLUE_CANDLE) return BLUE;
+        else if (item == Items.BROWN_CANDLE) return BROWN;
+        else if (item == Items.GREEN_CANDLE) return GREEN;
+        else if (item == Items.RED_CANDLE) return RED;
+        else if (item == Items.BLACK_CANDLE) return BLACK;
+        else throw new IllegalArgumentException("No candle colour for item: " + item);
+    }
     public static CandleColor getColor(String name) {
         try {
             return CandleColor.valueOf(name.toUpperCase());
         } catch (IllegalArgumentException e) {
-            return null;
+            throw new IllegalArgumentException("No candle colour for name: " + name);
         }
-    }
-    public static CandleColor getColor(Item item) {
-        for (CandleColor color : CandleColor.values()) {
-            if (item == color.asCandle()) {
-                return color;
-            }
-        }
-        return null;
     }
 }

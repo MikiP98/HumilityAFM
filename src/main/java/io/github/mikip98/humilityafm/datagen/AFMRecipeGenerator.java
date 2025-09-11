@@ -1,12 +1,13 @@
 package io.github.mikip98.humilityafm.datagen;
 
-import io.github.mikip98.humilityafm.generators.ColouredFeatureSetGenerator;
-import io.github.mikip98.humilityafm.generators.ForcedCornerStairsGenerator;
-import io.github.mikip98.humilityafm.generators.TerracottaTilesGenerator;
-import io.github.mikip98.humilityafm.generators.WoodenMosaicGenerator;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.registries.ItemRegistry;
-import io.github.mikip98.humilityafm.util.GenerationData;
+import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
+import io.github.mikip98.humilityafm.util.generation_data.RawGenerationData;
+import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
+import io.github.mikip98.humilityafm.util.Pair;
+import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
+import io.github.mikip98.humilityafm.util.generation_data.material_management.material.MaterialType;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.data.recipe.RecipeExporter;
@@ -56,133 +57,166 @@ public class AFMRecipeGenerator extends FabricRecipeProvider {
                 );
 
                 // ............ FINAL BLOCKS & BLOCK ITEMS ............
-                generateCabinetRecipies(itemLookup, exporter);
-                generateWoodenMosaicRecipies(itemLookup, exporter);
-                generateTerracottaTileRecipies(itemLookup, exporter);
-                generateForcedCornerStairsRecipies(itemLookup, exporter);
-                generateJackOLanternRecipies(itemLookup, exporter);
-                generateGlowingPowderRecipies(itemLookup, exporter);
-                generateColouredTorchRecipies(itemLookup, exporter);
+                generateCabinetRecipies(itemLookup);
+                generateWoodenMosaicRecipies(itemLookup);
+                generateTerracottaTileRecipies(itemLookup);
+                generateForcedCornerStairsRecipies(itemLookup);
+                generateJackOLanternRecipies(itemLookup);
+                generateGlowingPowderRecipies(itemLookup);
+                generateColouredTorchRecipies(itemLookup);
                 // Optional
-                generateCandlestickRecipies(itemLookup, exporter);
-                generateLightStripRecipies(itemLookup, exporter);
+                generateCandlestickRecipies(itemLookup);
+                generateLightStripRecipies(itemLookup);
             }
 
-            private void generateCabinetRecipies(RegistryWrapper.Impl<Item> itemLookup, RecipeExporter exporter) {
+            private void generateCabinetRecipies(RegistryWrapper.Impl<Item> itemLookup) {
+                Map<Pair<SupportedMods, String>, List<Pair<ItemConvertible, String>>> perWoodCabinets = new HashMap<>();
+                Map<Pair<SupportedMods, String>, List<Pair<ItemConvertible, String>>> perWoodIlluminatedCabinets = new HashMap<>();
                 int i = 0;
-                for (String woodType : GenerationData.vanillaWoodTypes) {
-                    ItemConvertible[] currentWoodTypeCabinets = Arrays.copyOfRange(ItemRegistry.CABINET_ITEM_VARIANTS, i, i + GenerationData.vanillaColorPallet.length);
-                    ItemConvertible[] currentWoodTypeIlluminatedCabinets = Arrays.copyOfRange(ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS, i, i + GenerationData.vanillaColorPallet.length);
+                for (BlockMaterial material : ActiveGenerationData.cabinetVariantMaterials) {
+                    Pair<SupportedMods, String> key = new Pair<>(material.layers()[0].metadata().sourceMod(), material.layers()[0].name());
+                    String colourName = material.layers()[1].name();
+                    perWoodCabinets
+                            .computeIfAbsent(key, k -> new ArrayList<>())
+                            .add(Pair.of(ItemRegistry.CABINET_ITEM_VARIANTS[i], colourName));
+                    perWoodIlluminatedCabinets
+                            .computeIfAbsent(key, k -> new ArrayList<>())
+                            .add(Pair.of(ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS[i], colourName));
+                    ++i;
+                }
 
-                    for (String color : GenerationData.vanillaColorPallet) {
-                        ItemConvertible cabinetBlockItemVariant = ItemRegistry.CABINET_ITEM_VARIANTS[i];
-                        ItemConvertible illuminatedCabinetBlockItemVariant = ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS[i];
+                i = 0;
+                for (BlockMaterial material : ActiveGenerationData.cabinetVariantMaterials) {
+                    if (material.layers().length != 2)
+                        throw new IllegalStateException("Cabinet material must have exactly two layers, but found: " + Arrays.toString(material.layers()));
 
-                        offerCabinetRecipe(
-                                itemLookup, exporter,
-                                cabinetBlockItemVariant,
-                                getItemFromName(woodType + "_slab"),
-                                getItemFromName(color + "_carpet"),
-                                "cabinets/"
-                        );
+                    final BlockMaterial.Layer woodLayer = material.layers()[0];
+                    final String colourName = material.layers()[1].name();
+                    final SupportedMods woodSourceMod = woodLayer.metadata().sourceMod();
 
-                        offerIlluminatedCabinetRecipe(
-                                itemLookup, exporter,
-                                illuminatedCabinetBlockItemVariant,
-                                cabinetBlockItemVariant
-                        );
+                    final Pair<SupportedMods, String> key = new Pair<>(woodSourceMod, woodLayer.name());
+                    final ItemConvertible[] sameWoodOtherColourCabinets = perWoodCabinets
+                            .get(key)
+                            .stream()
+                            .filter(entry -> !entry.second().equals(colourName))
+                            .map(Pair::first).toArray(ItemConvertible[]::new);
+                    final ItemConvertible[] sameWoodOtherColourIlluminatedCabinets = perWoodIlluminatedCabinets
+                            .get(key)
+                            .stream()
+                            .filter(entry -> !entry.second().equals(colourName))
+                            .map(Pair::first).toArray(ItemConvertible[]::new);
 
-                        // Color change recipies
-                        Item currentDye = getItemFromName(color + "_dye");
+                    final ItemConvertible cabinetBlockItemVariant = ItemRegistry.CABINET_ITEM_VARIANTS[i];
+                    final ItemConvertible illuminatedCabinetBlockItemVariant = ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS[i];
 
-                        List<ItemConvertible> currentWoodTypeCabinetsWithoutCurrentColor = new ArrayList<>(List.of(currentWoodTypeCabinets));
-                        currentWoodTypeCabinetsWithoutCurrentColor.remove(i % GenerationData.vanillaColorPallet.length);
+                    // Normal recipies
+                    offerCabinetRecipe(
+                            itemLookup, exporter,
+                            cabinetBlockItemVariant,
+                            getItemFromName(woodLayer.name() + "_slab", woodSourceMod),
+                            getItemFromName(colourName + "_carpet"),
+                            "cabinets/"
+                    );
+                    offerIlluminatedCabinetRecipe(
+                            itemLookup, exporter,
+                            illuminatedCabinetBlockItemVariant,
+                            cabinetBlockItemVariant
+                    );
 
-                        offerColorChangeRecipie(
-                                itemLookup, exporter,
-                                cabinetBlockItemVariant,
-                                Ingredient.ofItems(currentWoodTypeCabinetsWithoutCurrentColor.toArray(new ItemConvertible[0])),
-                                currentDye,
-                                MOD_ID + "/cabinets",
-                                "cabinets/color_change/"
-                        );
+                    // Colour change recipies
+                    final Item currentDye = getItemFromName(colourName + "_dye");
 
-                        List<ItemConvertible> currentWoodTypeIlluminatedCabinetsWithoutCurrentColor = new ArrayList<>(List.of(currentWoodTypeIlluminatedCabinets));
-                        currentWoodTypeIlluminatedCabinetsWithoutCurrentColor.remove(i % GenerationData.vanillaColorPallet.length);
-
-                        offerColorChangeRecipie(
-                                itemLookup, exporter,
-                                illuminatedCabinetBlockItemVariant,
-                                Ingredient.ofItems(currentWoodTypeIlluminatedCabinetsWithoutCurrentColor.toArray(new ItemConvertible[0])),
-                                currentDye,
-                                MOD_ID + "/illuminated_cabinets",
-                                "illuminated_cabinets/color_change/"
-                        );
-
-                        ++i;
-                    }
+                    offerColorChangeRecipie(
+                            itemLookup, exporter,
+                            cabinetBlockItemVariant,
+                            Ingredient.ofItems(sameWoodOtherColourCabinets),
+                            currentDye,
+                            MOD_ID + "/cabinets",
+                            "cabinets/color_change/"
+                    );
+                    offerColorChangeRecipie(
+                            itemLookup, exporter,
+                            illuminatedCabinetBlockItemVariant,
+                            Ingredient.ofItems(sameWoodOtherColourIlluminatedCabinets),
+                            currentDye,
+                            MOD_ID + "/illuminated_cabinets",
+                            "illuminated_cabinets/color_change/"
+                    );
+                    ++i;
                 }
             }
 
-            private void generateWoodenMosaicRecipies(RegistryWrapper.Impl<Item> itemLookup, RecipeExporter exporter) {
+            private void generateWoodenMosaicRecipies(RegistryWrapper.Impl<Item> itemLookup) {
+                Iterable<BlockMaterial> woodenMosaicMaterials = ActiveGenerationData.woodenMosaicVariantMaterials;
                 int i = 0;
-                for (String woodType : GenerationData.vanillaWoodTypes) {
-                    Item plank = getItemFromName(woodType + "_planks");
-                    for (String woodType2 : GenerationData.vanillaWoodTypes) {
-                        if (woodType.equals(woodType2)) continue;
+                for (BlockMaterial material : woodenMosaicMaterials) {
+                    BlockMaterial.Layer woodMaterial1 = material.layers()[0];
+                    BlockMaterial.Layer woodMaterial2 = material.layers()[1];
 
-                        Item plank2 = getItemFromName(woodType2 + "_planks");
+                    SupportedMods sourceMod1 = woodMaterial1.metadata().sourceMod();
+                    SupportedMods sourceMod2 = woodMaterial2.metadata().sourceMod();
 
-                        offerWoodenMosaicRecipe(
-                                itemLookup, exporter,
-                                WoodenMosaicGenerator.woodenMosaicVariants[i],
-                                plank,
-                                plank2,
-                                "wooden_mosaics/"
-                        );
-                        int j = getMirrorIndex(i, GenerationData.vanillaWoodTypes.length);
-                        offerChangeRecipie(
-                                itemLookup, exporter,
-                                WoodenMosaicGenerator.woodenMosaicVariants[i],
-                                WoodenMosaicGenerator.woodenMosaicVariants[j],
-                                MOD_ID + "/wooden_mosaics",
-                                "wooden_mosaics/rotation/"
-                        );
+                    Item plank1 = getItemFromName(woodMaterial1.name() + "_planks", sourceMod1);
+                    Item plank2 = getItemFromName(woodMaterial2.name() + "_planks", sourceMod2);
 
-                        ++i;
-                    }
+                    offerWoodenMosaicRecipe(
+                            itemLookup, exporter,
+                            BlockRegistry.WOODEN_MOSAIC_VARIANTS[i],
+                            plank1,
+                            plank2,
+                            "wooden_mosaics/"
+                    );
+                    // TODO: Double check this still works
+                    final int j = getMirrorIndex(i, RawGenerationData.allWoodTypes.size());
+                    offerChangeRecipie(
+                            itemLookup, exporter,
+                            BlockRegistry.WOODEN_MOSAIC_VARIANTS[i],
+                            BlockRegistry.WOODEN_MOSAIC_VARIANTS[j],
+                            MOD_ID + "/wooden_mosaics",
+                            "wooden_mosaics/rotation/"
+                    );
+
+                    // Datapack alternative recipies
+                    // The output of this should be moved from 'generated/data/humility-afm/recipies'
+                    // to its own dedicated datapack folder
+                    offerAlternateWoodenMosaicRecipe(
+                            itemLookup, exporter,
+                            BlockRegistry.WOODEN_MOSAIC_VARIANTS[i],
+                            plank1,
+                            plank2,
+                            "datapack/wooden_mosaics/alternative/"
+                    );
+
+                    ++i;
                 }
             }
-            private void generateTerracottaTileRecipies(RegistryWrapper.Impl<Item> itemLookup, RecipeExporter exporter) {
+
+            private void generateTerracottaTileRecipies(RegistryWrapper.Impl<Item> itemLookup) {
                 int i = 0;
-                for (String color : GenerationData.vanillaColorPallet) {
-                    Item terracotta = getItemFromName(color + "_terracotta");
-                    for (String color2 : GenerationData.vanillaColorPallet) {
-                        if (color.equals(color2)) continue;
+                for (BlockMaterial material : ActiveGenerationData.terracottaTilesMaterials) {
+                    Item terracotta1 = getItemFromName(material.layers()[0].name() + "_terracotta");
+                    Item terracotta2 = getItemFromName(material.layers()[1].name() + "_terracotta");
 
-                        Item terracotta2 = getItemFromName(color2 + "_terracotta");
-
-                        offerTerracottaTileRecipe(
-                                itemLookup, exporter,
-                                TerracottaTilesGenerator.terracottaTilesVariants[i],
-                                terracotta,
-                                terracotta2,
-                                "terracotta_tiles/"
-                        );
-                        int j = getMirrorIndex(i, GenerationData.vanillaColorPallet.length);
-                        offerChangeRecipie(
-                                itemLookup, exporter,
-                                TerracottaTilesGenerator.terracottaTilesVariants[i],
-                                TerracottaTilesGenerator.terracottaTilesVariants[j],
-                                MOD_ID + "/terracotta_tiles",
-                                "terracotta_tiles/rotation/"
-                        );
-
-                        ++i;
-                    }
+                    offerTerracottaTileRecipe(
+                            itemLookup, exporter,
+                            BlockRegistry.TERRACOTTA_TILE_VARIANTS[i],
+                            terracotta1,
+                            terracotta2,
+                            "terracotta_tiles/"
+                    );
+                    final int j = getMirrorIndex(i, RawGenerationData.vanillaColorPallet.length);
+                    offerChangeRecipie(
+                            itemLookup, exporter,
+                            BlockRegistry.TERRACOTTA_TILE_VARIANTS[i],
+                            BlockRegistry.TERRACOTTA_TILE_VARIANTS[j],
+                            MOD_ID + "/terracotta_tiles",
+                            "terracotta_tiles/rotation/"
+                    );
+                    ++i;
                 }
             }
-            private int getMirrorIndex(int index, int n) {
+
+            private static int getMirrorIndex(int index, int n) {
                 int i = index / (n - 1);
                 int j_offset = index % (n - 1);
                 int j = (j_offset >= i) ? j_offset + 1 : j_offset;
@@ -190,23 +224,44 @@ public class AFMRecipeGenerator extends FabricRecipeProvider {
                 int mirrorOffset = (i < j) ? i : i - 1;
 
                 // Return the mirrored index
-                return j * (n - 1) + mirrorOffset;
+                int result = j * (n - 1) + mirrorOffset;
+                if (result >= n * (n - 1)) {
+                    throw new IllegalStateException("Calculated mirror index out of bounds: " + result + " for index: " + index + " and n: " + n);
+                }
+                return result;
             }
 
-            private void generateForcedCornerStairsRecipies(RegistryWrapper.Impl<Item> itemLookup, RecipeExporter exporter) {
+            private void generateForcedCornerStairsRecipies(RegistryWrapper.Impl<Item> itemLookup) {
                 int i = 0;
-                for (String woodType : GenerationData.vanillaWoodTypes) {
-                    Item stairs = getItemFromName(woodType + "_stairs");
-                    ItemConvertible inner_stairs = ForcedCornerStairsGenerator.innerStairsBlockVariants[i];
-                    ItemConvertible outer_stairs = ForcedCornerStairsGenerator.outerStairsBlockVariants[i];
-                    offerChangeRecipie(itemLookup, exporter, inner_stairs, stairs, MOD_ID + "/stairs", "stairs/inner/");
-                    offerChangeRecipie(itemLookup, exporter, outer_stairs, inner_stairs, MOD_ID + "/stairs", "stairs/outer/");
-                    offerChangeRecipie(itemLookup, exporter, stairs, outer_stairs, MOD_ID + "/stairs", "stairs/normal/");
+                for (BlockMaterial stairMaterial : ActiveGenerationData.forcedCornerStairsVariantMaterials) {
+                    if (stairMaterial.layers().length != 1)
+                        throw new IllegalArgumentException("Forced corner stairs material must have exactly one layer, but found: " + Arrays.toString(stairMaterial.layers()));
+                    final BlockMaterial.Layer materialLayer = stairMaterial.layers()[0];
+                    final MaterialType materialType = materialLayer.metadata().type();
+
+                    String materialName = materialLayer.name();
+                    if (materialType == MaterialType.STONY) {
+                        // If the matarial ends in "bricks", chnage it to "brick"
+                        if (materialName.endsWith("bricks")) {
+                            materialName = materialName.substring(0, materialName.length() - 6) + "brick";
+                        }
+                    }
+
+                    final SupportedMods sourceMod = materialLayer.metadata().sourceMod();
+                    final Item stairs = getItemFromName(materialName + "_stairs", sourceMod);
+                    final String modId = sourceMod != null ? sourceMod.modId : "vanilla";
+
+                    final ItemConvertible inner_stairs = BlockRegistry.INNER_STAIRS_BLOCK_VARIANTS[i];
+                    final ItemConvertible outer_stairs = BlockRegistry.OUTER_STAIRS_BLOCK_VARIANTS[i];
+
+                    offerChangeRecipie(itemLookup, exporter, inner_stairs, stairs, MOD_ID + "/stairs", "stairs/" + modId + "/inner/");
+                    offerChangeRecipie(itemLookup, exporter, outer_stairs, inner_stairs, MOD_ID + "/stairs", "stairs/" + modId + "/outer/");
+                    offerChangeRecipie(itemLookup, exporter, stairs, outer_stairs, MOD_ID + "/stairs", "stairs/" + modId + "/normal/");
                     ++i;
                 }
             }
 
-            private void generateJackOLanternRecipies(RegistryWrapper.Impl<Item> itemLookup, RecipeExporter exporter) {
+            private void generateJackOLanternRecipies(RegistryWrapper.Impl<Item> itemLookup) {
                 Item carved_pumpkin = getItemFromName("carved_pumpkin");
                 offerDoubleInputShapelessRecipe(
                         itemLookup, exporter,
@@ -227,14 +282,14 @@ public class AFMRecipeGenerator extends FabricRecipeProvider {
                         "jack_o_lanterns/"
                 );
 
-                for (int i = 0; i < GenerationData.vanillaColorPallet.length; ++i) {
-                    ItemConvertible weakJackOLantern = BlockRegistry.COLOURED_WEAK_JACK_O_LANTERNS[i];
+                for (int i = 0; i < RawGenerationData.vanillaColorPallet.length; ++i) {
+                    ItemConvertible weakJackOLantern = BlockRegistry.COLOURED_JACK_O_LANTERNS_WEAK[i];
                     ItemConvertible jackOLantern = BlockRegistry.COLOURED_JACK_O_LANTERNS[i];
-                    ItemConvertible strongJackOLantern = BlockRegistry.COLOURED_STRONG_JACK_O_LANTERNS[i];
+                    ItemConvertible strongJackOLantern = BlockRegistry.COLOURED_JACK_O_LANTERNS_STRONG[i];
 
-                    ItemConvertible weakTorch = ColouredFeatureSetGenerator.colouredTorchWeakVariants[i];
-                    ItemConvertible torch = ColouredFeatureSetGenerator.colouredTorchVariants[i];
-                    ItemConvertible strongTorch = ColouredFeatureSetGenerator.colouredTorchStrongVariants[i];
+                    ItemConvertible weakTorch = BlockRegistry.COLOURED_TORCH_WEAK_VARIANTS[i];
+                    ItemConvertible torch = BlockRegistry.COLOURED_TORCH_VARIANTS[i];
+                    ItemConvertible strongTorch = BlockRegistry.COLOURED_TORCH_WEAK_VARIANTS[i];
 
                     offerDoubleInputShapelessRecipe(
                             itemLookup, exporter,
@@ -266,11 +321,11 @@ public class AFMRecipeGenerator extends FabricRecipeProvider {
                 }
             }
 
-            private void generateGlowingPowderRecipies(RegistryWrapper.Impl<Item> itemLookup, RecipeExporter exporter) {
+            private void generateGlowingPowderRecipies(RegistryWrapper.Impl<Item> itemLookup) {
                 Item glowstoneDust = Items.GLOWSTONE_DUST;
                 Item redstone = Items.REDSTONE;
                 int i = 0;
-                for (String color : GenerationData.vanillaColorPallet) {
+                for (String color : RawGenerationData.vanillaColorPallet) {
                     Item glowingPowder = ItemRegistry.GLOWING_POWDER_VARIANTS[i];
                     Item dye = getItemFromName(color + "_dye");
                     offerTripleInputShapelessRecipe(
@@ -287,11 +342,12 @@ public class AFMRecipeGenerator extends FabricRecipeProvider {
                 }
             }
 
-            private void generateColouredTorchRecipies(RegistryWrapper.Impl<Item> itemLookup, RecipeExporter exporter) {
-                for (int i = 0; i < GenerationData.vanillaColorPallet.length; i++) {
-                    ItemConvertible weakColouredTorch = ColouredFeatureSetGenerator.colouredTorchWeakVariants[i];
-                    ItemConvertible colouredTorch = ColouredFeatureSetGenerator.colouredTorchVariants[i];
-                    ItemConvertible strongColouredTorch = ColouredFeatureSetGenerator.colouredTorchStrongVariants[i];
+            private void generateColouredTorchRecipies(RegistryWrapper.Impl<Item> itemLookup) {
+                final int length = ActiveGenerationData.colouredFeatureSetMaterials.size();
+                for (int i = 0; i < length; i++) {
+                    ItemConvertible weakColouredTorch = BlockRegistry.COLOURED_TORCH_WEAK_VARIANTS[i];
+                    ItemConvertible colouredTorch = BlockRegistry.COLOURED_TORCH_VARIANTS[i];
+                    ItemConvertible strongColouredTorch = BlockRegistry.COLOURED_TORCH_STRONG_VARIANTS[i];
 
                     Item glowingPowder = ItemRegistry.GLOWING_POWDER_VARIANTS[i];
 
@@ -348,36 +404,51 @@ public class AFMRecipeGenerator extends FabricRecipeProvider {
                 }
             }
 
-            private void generateCandlestickRecipies(RegistryWrapper.Impl<Item> itemLookup, RecipeExporter exporter) {
+            private void generateCandlestickRecipies(RegistryWrapper.Impl<Item> itemLookup) {
                 int i = 0;
-                for (String metal : GenerationData.vanillaCandlestickMetals) {
-                    Item ingot = getItemFromName(metal + "_ingot");
+                for (BlockMaterial material : ActiveGenerationData.simpleCandlestickMaterials) {
+                    final String metal = material.layers()[0].name();
+                    final Item ingot = getItemFromName(metal + "_ingot");
                     offerCandlestickRecipie(itemLookup, exporter, ItemRegistry.CANDLESTICK_ITEM_VARIANTS[i], ingot, "candlesticks/");
                     ++i;
                 }
                 i = 0;
-                for (String[] metals : GenerationData.vanillaRustableCandlestickMetals) {
-                    Item ingot = getItemFromName(metals[0] + "_ingot");
-                    offerCandlestickRecipie(itemLookup, exporter, ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS.get(i)[0], ingot, "candlesticks/");
+                for (Iterable<BlockMaterial> meterials : ActiveGenerationData.rustingCandlestickMaterials) {
+                    final String metal = meterials.iterator().next().layers()[0].name();
+                    final Item ingot = getItemFromName(metal + "_ingot");
+                    offerCandlestickRecipie(itemLookup, exporter, ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS[i][0], ingot, "candlesticks/");
                     ++i;
                 }
             }
 
-            private void generateLightStripRecipies(RegistryWrapper.Impl<Item> itemLookup, RecipeExporter exporter) {
-                for (int i = 0; i < GenerationData.vanillaColorPallet.length; ++i) {
+            private void generateLightStripRecipies(RegistryWrapper.Impl<Item> itemLookup) {
+                for (int i = 0; i < RawGenerationData.vanillaColorPallet.length; ++i) {
                     offerLightStripRecipie(
                             itemLookup, exporter,
-                            ColouredFeatureSetGenerator.LightStripBlockVariants[i],
+                            BlockRegistry.LIGHT_STRIP_VARIANTS[i],
                             ItemRegistry.GLOWING_POWDER_VARIANTS[i],
                             "light_strips/"
                     );
                 }
             }
+
         };
     }
 
     protected static Item getItemFromName(String name) {
         return Registries.ITEM.get(Identifier.of(name));
+    }
+    protected static Item getItemFromName(String name, SupportedMods mod) {
+        Item item;
+        if (mod == null) {
+            item = Registries.ITEM.get(Identifier.of(name));
+        } else {
+            item = Registries.ITEM.get(Identifier.of(mod.modId, name));
+        }
+        if (item == Items.AIR) {
+            throw new IllegalStateException("Item not found: " + name + " in mod: " + (mod != null ? mod.modId : "vanilla"));
+        }
+        return item;
     }
 
     @Override

@@ -1,103 +1,68 @@
 package io.github.mikip98.humilityafm.content.blocks.candlestick;
 
-import io.github.mikip98.humilityafm.content.ModProperties;
-import io.github.mikip98.humilityafm.util.data_types.CandleColor;
+import io.github.mikip98.humilityafm.content.properties.ModProperties;
+import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.RustableCandlestickLogic;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.tag.FluidTags;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.block.Waterloggable;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.Properties;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
-public class FloorRustableCandlestick extends RustableCandlestick {
-    protected static final VoxelShape voxelShape = Block.createCuboidShape(6, 0, 6, 10, 6, 10);
-    protected static final VoxelShape voxelShapeCandle = Block.createCuboidShape(6, 0, 6, 10, 10, 10);
+@Getter
+@Setter
+public class FloorRustableCandlestick extends FloorCandlestick implements Waterloggable, RustableCandlestickLogic {
+    protected @Nullable BlockState rustPreviousLevel;
+    protected @Nullable BlockState rustNextLevel;
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(Properties.WATERLOGGED);
-        builder.add(ModProperties.CANDLE);
-        builder.add(CANDLE_COLOR);
-        builder.add(Properties.LIT);
+        super.appendProperties(builder);
         builder.add(ModProperties.WAXED);
     }
-
 
     public FloorRustableCandlestick(Settings settings) {
         this(settings, null, null);
     }
-
-    public FloorRustableCandlestick(Settings settings, BlockState rustPreviousLevel, BlockState rustNextLevel) {
-        super(settings, rustPreviousLevel, rustNextLevel, false);
-        setDefaultState(getStateManager().getDefaultState()
-                .with(Properties.WATERLOGGED, false)
-                .with(ModProperties.CANDLE, false)
-                .with(CANDLE_COLOR, CandleColor.PLAIN)
-                .with(Properties.LIT, false)
+    public FloorRustableCandlestick(Settings settings, @Nullable BlockState rustPreviousLevel, @Nullable BlockState rustNextLevel) {
+        super(settings);
+        this.rustPreviousLevel = rustPreviousLevel;
+        this.rustNextLevel = rustNextLevel;
+        setDefaultState(getDefaultState()
                 .with(ModProperties.WAXED, false)
         );
     }
 
-
     @Override
-    protected BlockState getChanagedBlockState(BlockState newBase, BlockState state) {
-        return newBase
-                .with(Properties.WATERLOGGED, state.get(Properties.WATERLOGGED))
-                .with(CANDLE_COLOR, state.get(CANDLE_COLOR))
-                .with(Properties.LIT, state.get(Properties.LIT))
-                .with(ModProperties.WAXED, state.get(ModProperties.WAXED));
-    }
-
-
-    @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return this.getDefaultState()
-                .with(Properties.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).isIn(FluidTags.WATER));
+    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        if (random.nextDouble() >= 0.96) this.rust(state, world, pos);
     }
 
     @Override
-    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-        // Check if the block is lit (property LIT is true)
-        if (state.get(Properties.LIT)) {
-            double x = pos.getX() + 0.5;
-            double y = pos.getY() + 0.7;
-            double z = pos.getZ() + 0.5;
-            if (random.nextInt(1) == 0) {
-                float velocityPlaneMultiplayer = 0.001953125f;
-                double velocityY = random.nextDouble() * 0.001953125;
-                double velocityX = (random.nextDouble() - 0.5) * velocityPlaneMultiplayer;
-                double velocityZ = (random.nextDouble() - 0.5) * velocityPlaneMultiplayer;
-                world.addParticleClient(ParticleTypes.SMALL_FLAME, x, y, z, velocityX, velocityY, velocityZ);
-
-                if (random.nextInt(4) == 0) {
-                    velocityPlaneMultiplayer = 0.00390625f;
-                    velocityY = random.nextDouble() * 0.00390625;
-                    velocityX = (random.nextDouble() - 0.5) * velocityPlaneMultiplayer;
-                    velocityZ = (random.nextDouble() - 0.5) * velocityPlaneMultiplayer;
-                    world.addParticleClient(ParticleTypes.SMOKE, x, y, z, velocityX, velocityY, velocityZ);
-                }
-            }
-            if (random.nextInt(4) == 0) {
-                world.playSound(null, x, y, z, SoundEvents.BLOCK_CANDLE_AMBIENT, SoundCategory.BLOCKS, 1.0f, 1.0f);
-            }
-        }
-        super.randomDisplayTick(state, world, pos, random, false);
+    public boolean hasRandomTicks(BlockState state) {
+        return !state.get(ModProperties.WAXED) && rustNextLevel != null;
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
-        if (state.get(ModProperties.CANDLE)) {
-            return voxelShapeCandle;
-        }
-        return voxelShape;
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+        final double x = pos.getX() + 0.5;
+        final double y = pos.getY() + 0.35;
+        final double z = pos.getZ() + 0.5;
+        final double randomSpread = 0.625;
+        if (onUseRustableLogic(state, world, pos, player, x, y, z, randomSpread)) return ActionResult.SUCCESS;
+        return super.onUse(state, world, pos, player, hit);
+    }
+
+    @Override
+    public BlockState getChangedBlockState(BlockState newBase, BlockState state) {
+        return getChangedBlockStateUniversal(newBase, state);
     }
 }
