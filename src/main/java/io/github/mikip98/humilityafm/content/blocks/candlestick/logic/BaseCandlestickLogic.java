@@ -13,6 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
@@ -113,9 +114,9 @@ public sealed interface BaseCandlestickLogic permits SimpleCandlestickLogic, Rus
         if (!player.isCreative() && !world.isClient)
             heldItemStack.damage(
                     1,
-                    world.getRandom(),
+                    (ServerWorld) world,
                     (ServerPlayerEntity) player,
-                    () -> player.sendEquipmentBreakStatus(LivingEntity.getSlotForHand(hand))
+                    (item) -> player.sendEquipmentBreakStatus(item, LivingEntity.getSlotForHand(hand))
             );
     }
 }
