@@ -8,7 +8,7 @@ import net.minecraft.item.AxeItem;
 import net.minecraft.item.HoneycombItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -25,9 +25,10 @@ public non-sealed interface RustableCandlestickLogic extends BaseCandlestickLogi
     void setRustNextLevel(BlockState rustNextLevel);
 
     default boolean onUseRustableLogic(
-            BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
+            BlockState state, World world, BlockPos pos, PlayerEntity player,
             double offsetX, double offsetY, double offsetZ, double randomSpread
     ) {
+        Hand hand = player.getActiveHand();
         ItemStack heldItemStack = player.getStackInHand(hand);
         Item heldItem = heldItemStack.getItem();
         if (tryToWax(state, world, pos, player, heldItemStack, heldItem, offsetX, offsetY, offsetZ, randomSpread)) return true;
@@ -55,14 +56,14 @@ public non-sealed interface RustableCandlestickLogic extends BaseCandlestickLogi
             // De-wax
             if (state.get(ModProperties.WAXED)) {
                 world.setBlockState(pos, state.with(ModProperties.WAXED, false), Block.NOTIFY_ALL);
-                if (!player.isCreative()) heldItemStack.damage(1, player, (p) -> p.sendToolBreakStatus(hand));
+                damageItem(heldItemStack, player, world, hand);
                 emmitWaxOffParticles(world, offsetX, offsetY, offsetZ, randomSpread);
                 world.playSound(offsetX, offsetY, offsetZ, SoundEvents.ITEM_AXE_WAX_OFF, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
                 return true;
             }
             // De-rust
             else if (getRustPreviousLevel() != null) {
-                if (!player.isCreative()) heldItemStack.damage(1, player, (p) -> p.sendToolBreakStatus(hand));
+                damageItem(heldItemStack, player, world, hand);
                 // ServerWorld check is required to be spam proof
                 if (!world.isClient) derust(state, world, pos);
                 return true;
@@ -87,7 +88,7 @@ public non-sealed interface RustableCandlestickLogic extends BaseCandlestickLogi
     }
 
     default void emmitWaxingParticles(
-            World world, DefaultParticleType particleType,
+            World world, ParticleEffect particleEffect,
             double offsetX, double offsetY, double offsetZ,
             double randomSpread
     ) {
@@ -97,7 +98,7 @@ public non-sealed interface RustableCandlestickLogic extends BaseCandlestickLogi
             double randomX = offsetX + ((random.nextDouble() - 0.5) * randomSpread);
             double randomY = offsetY + ((random.nextDouble() - 0.5) * randomSpread);
             double randomZ = offsetZ + ((random.nextDouble() - 0.5) * randomSpread);
-            world.addParticle(particleType, randomX, randomY, randomZ, 0, 0, 0);
+            world.addParticle(particleEffect, randomX, randomY, randomZ, 0, 0, 0);
         }
     }
 

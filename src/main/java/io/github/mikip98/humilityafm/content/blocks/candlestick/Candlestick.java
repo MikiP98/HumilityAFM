@@ -4,21 +4,17 @@ import com.mojang.serialization.MapCodec;
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.SimpleCandlestickLogic;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.*;
 import net.minecraft.registry.tag.FluidTags;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -29,12 +25,15 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 public class Candlestick extends HorizontalFacingBlock implements SimpleCandlestickLogic, Waterloggable {
-    public static final Settings defaultSettings = Settings.create()
-            .strength(0.5f)
-            .requiresTool()
-            .nonOpaque()
-            .sounds(BlockSoundGroup.METAL)
-            .luminance(state -> state.get(Properties.LIT) ? 4 : 0);
+    protected static final Settings defaultSettings = getDefaultSettings();
+    public static Settings getDefaultSettings() {
+        return Settings.create()
+                .strength(0.5f)
+                .requiresTool()
+                .nonOpaque()
+                .sounds(BlockSoundGroup.METAL)
+                .luminance(state -> state.get(Properties.LIT) ? 4 : 0);
+    }
 
     // The below commented-out shapes are a simplified variants of the voxel shapes
     // They look more vanilla-like, but are in my opinion more ugly
@@ -153,11 +152,10 @@ public class Candlestick extends HorizontalFacingBlock implements SimpleCandlest
                 .with(Properties.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).isIn(FluidTags.WATER));
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (onUseLogic(state, world, pos, player, hand, hit)) return ActionResult.SUCCESS;
-        return super.onUse(state, world, pos, player, hand, hit);
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+        if (onUseLogic(state, world, pos, player)) return ActionResult.SUCCESS;
+        return super.onUse(state, world, pos, player, hit);
     }
 
     @Override

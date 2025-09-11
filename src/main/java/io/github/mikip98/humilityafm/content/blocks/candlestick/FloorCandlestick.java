@@ -16,7 +16,6 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
@@ -55,11 +54,10 @@ public class FloorCandlestick extends Block implements SimpleCandlestickLogic, W
                 .with(Properties.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).isIn(FluidTags.WATER));
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (onUseLogic(state, world, pos, player, hand, hit)) return ActionResult.SUCCESS;
-        return super.onUse(state, world, pos, player, hand, hit);
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+        if (onUseLogic(state, world, pos, player)) return ActionResult.SUCCESS;
+        return super.onUse(state, world, pos, player, hit);
     }
 
     @Override
@@ -74,20 +72,17 @@ public class FloorCandlestick extends Block implements SimpleCandlestickLogic, W
         super.randomDisplayTick(state, world, pos, random);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
         return (state.get(CANDLE_COLOR) != CandleColor.NONE) ? voxelShapeCandle : voxelShape;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
         onStateReplacedLogic(state, world, pos, newState);
         super.onStateReplaced(state, world, pos, newState, moved);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public FluidState getFluidState(BlockState state) {
         return state.get(Properties.WATERLOGGED) ? Fluids.WATER.getStill(false) : Fluids.EMPTY.getDefaultState();

@@ -20,26 +20,27 @@ import io.github.mikip98.humilityafm.util.generation_data.material_management.ma
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockStrength;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.MaterialType;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.TorchBlock;
-import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.particle.SimpleParticleType;
 import net.minecraft.sound.BlockSoundGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 import static io.github.mikip98.humilityafm.registries.BlockRegistry.*;
 
 public abstract class BlockGeneration {
     protected static CabinetBlockSet generateCabinetBlockSet() {
-        final FabricBlockSettings fireproofCabinetSettings = CabinetBlock.defaultSettings;
-        final FabricBlockSettings burnableCabinetSettings = FabricBlockSettings.copyOf(fireproofCabinetSettings).burnable();
-        final FabricBlockSettings fireproofIlluminatedCabinetSettings = IlluminatedCabinetBlock.defaultSettings;
-        final FabricBlockSettings burnableIlluminatedCabinetSettings = FabricBlockSettings.copyOf(fireproofIlluminatedCabinetSettings).burnable();
+        final AbstractBlock.Settings fireproofCabinetSettings = CabinetBlock.getDefaultSettings();
+        final AbstractBlock.Settings burnableCabinetSettings = CabinetBlock.getDefaultSettings().burnable();
+        final AbstractBlock.Settings fireproofIlluminatedCabinetSettings = IlluminatedCabinetBlock.getDefaultSettings();
+        final AbstractBlock.Settings burnableIlluminatedCabinetSettings = IlluminatedCabinetBlock.getDefaultSettings().burnable();
 
         List<Block> wallCabinetVariants = new ArrayList<>();
         List<Block> floorCabinetVariants = new ArrayList<>();
@@ -52,8 +53,8 @@ public abstract class BlockGeneration {
                 throw new IllegalStateException("Wood material layer for cabinets must have a valid material type");
 
             final boolean fireproof = woodMaterialType.isFireproof;
-            final FabricBlockSettings normalSettingToUse = fireproof ? fireproofCabinetSettings : burnableCabinetSettings;
-            final FabricBlockSettings illuminatedSettingToUse = fireproof ? fireproofIlluminatedCabinetSettings : burnableIlluminatedCabinetSettings;
+            final AbstractBlock.Settings normalSettingToUse = fireproof ? fireproofCabinetSettings : burnableCabinetSettings;
+            final AbstractBlock.Settings illuminatedSettingToUse = fireproof ? fireproofIlluminatedCabinetSettings : burnableIlluminatedCabinetSettings;
 
             final String name = material.getSafeName();
             final Block cabinetBlock = BlockRegistry.register(new CabinetBlock(normalSettingToUse), "wall_cabinet_block_" + name);
@@ -84,13 +85,14 @@ public abstract class BlockGeneration {
 
 
     protected static ForcedCornerStairsBlockSet generateForcedCornerStairsBlockSet() {
-        FabricBlockSettings woodStairsBlockSettings = FabricBlockSettings.create()
+        Supplier<AbstractBlock.Settings> getWoodStairsBlockSettings = () -> AbstractBlock.Settings.create()
                 .strength(RawGenerationData.vanillaWoodHardness, RawGenerationData.vanillaWoodResistance)
                 .requiresTool()
                 .sounds(BlockSoundGroup.WOOD);
-        FabricBlockSettings burnableWoodStairsBlockSettings = FabricBlockSettings.copyOf(woodStairsBlockSettings).burnable();
-        BiFunction<Float, Float, FabricBlockSettings> stonyStairsBlockSettingsGenerator =
-                (hardness, resistance) -> FabricBlockSettings.create()
+        AbstractBlock.Settings woodStairsBlockSettings = getWoodStairsBlockSettings.get();
+        AbstractBlock.Settings burnableWoodStairsBlockSettings = getWoodStairsBlockSettings.get().burnable();
+        BiFunction<Float, Float, AbstractBlock.Settings> stonyStairsBlockSettingsGenerator =
+                (hardness, resistance) -> AbstractBlock.Settings.create()
                         .strength(hardness, resistance)
                         .requiresTool()
                         .sounds(BlockSoundGroup.STONE);  // TODO: Consider adding a custom sound group for stony materials
@@ -106,7 +108,7 @@ public abstract class BlockGeneration {
             if (materialType == null) throw new IllegalStateException("Material type cannot be null for variant: " + variant.name());
             String variantName = variant.name();
 
-            FabricBlockSettings settingsToUse = switch (materialType) {
+            AbstractBlock.Settings settingsToUse = switch (materialType) {
                 case BURNABLE_WOOD -> burnableWoodStairsBlockSettings;
                 case FIREPROOF_WOOD -> woodStairsBlockSettings;
                 case STONY -> {
@@ -128,14 +130,15 @@ public abstract class BlockGeneration {
 
 
     protected static Block[] generateWoodenMosaicVariants() {
-        final FabricBlockSettings fireproofWoodenMosaicSettings = FabricBlockSettings.create()
+        final Supplier<AbstractBlock.Settings> getFireproofWoodenMosaicSettings = () -> AbstractBlock.Settings.create()
                 .strength(
                         RawGenerationData.vanillaWoodHardness * ModConfig.mosaicsAndTilesStrengthMultiplayer,
                         RawGenerationData.vanillaWoodResistance * ModConfig.mosaicsAndTilesStrengthMultiplayer
                 )
                 .sounds(BlockSoundGroup.WOOD)
                 .requiresTool();
-        final FabricBlockSettings burnableWoodenMosaicSettings = FabricBlockSettings.copyOf(fireproofWoodenMosaicSettings).burnable();
+        final AbstractBlock.Settings fireproofWoodenMosaicSettings = getFireproofWoodenMosaicSettings.get();
+        final AbstractBlock.Settings burnableWoodenMosaicSettings = getFireproofWoodenMosaicSettings.get().burnable();
 
         final byte burn = (byte) Math.round(RawGenerationData.vanillaWoodBurnTime * ModConfig.mosaicsAndTilesStrengthMultiplayer);
         final byte spread = (byte) Math.round(RawGenerationData.vanillaWoodSpreadSpeed / ModConfig.mosaicsAndTilesStrengthMultiplayer);
@@ -166,7 +169,7 @@ public abstract class BlockGeneration {
 
 
     protected static Block[] generateTerracottaTilesVariants() {
-        final FabricBlockSettings terracottaTilesSettings = FabricBlockSettings.create()
+        final AbstractBlock.Settings terracottaTilesSettings = AbstractBlock.Settings.create()
                 .strength(
                         RawGenerationData.vanillaTerracottaHardness * ModConfig.mosaicsAndTilesStrengthMultiplayer,
                         RawGenerationData.vanillaTerracottaResistance * ModConfig.mosaicsAndTilesStrengthMultiplayer
@@ -249,10 +252,10 @@ public abstract class BlockGeneration {
                     null, null, null
             );
         } else {
-            final FabricBlockSettings weakTorchSettings = FabricBlockSettings.copyOf(Blocks.TORCH).luminance(7);
-            final FabricBlockSettings normalTorchSettings = FabricBlockSettings.copyOf(Blocks.TORCH).luminance(11);
-            final FabricBlockSettings strongTorchSettings = FabricBlockSettings.copyOf(Blocks.TORCH).luminance(15);
-            final DefaultParticleType torchParticle = ParticleTypes.FLAME;
+            final AbstractBlock.Settings weakTorchSettings = AbstractBlock.Settings.copy(Blocks.TORCH).luminance((ignored) -> 7);
+            final AbstractBlock.Settings normalTorchSettings = AbstractBlock.Settings.copy(Blocks.TORCH).luminance((ignored) -> 11);
+            final AbstractBlock.Settings strongTorchSettings = AbstractBlock.Settings.copy(Blocks.TORCH).luminance((ignored) -> 15);
+            final SimpleParticleType torchParticle = ParticleTypes.FLAME;
 
             List<Block> lightStripVariants = new ArrayList<>();
             List<Block> colouredTorchWeakVariants = new ArrayList<>();
@@ -307,12 +310,12 @@ public abstract class BlockGeneration {
 //            Function<AbstractBlock.Settings, Block> blockFunction,
 //            Integer defaultBurnTime,
 //            Integer defaultSpreadSpeed,
-//            Map<MaterialType, FabricBlockSettings> materialType2BlockSettingsMap
+//            Map<MaterialType, AbstractBlock.Settings> materialType2BlockSettingsMap
 //    ) {
 //        if (materialType2BlockSettingsMap.containsKey(MaterialType.FIREPROOF_WOOD) && !materialType2BlockSettingsMap.containsKey(MaterialType.BURNABLE_WOOD)) {
 //            materialType2BlockSettingsMap.put(
 //                    MaterialType.BURNABLE_WOOD,
-//                    FabricBlockSettings.copyOf(materialType2BlockSettingsMap.get(MaterialType.FIREPROOF_WOOD)).burnable()
+//                    AbstractBlock.Settings.copyOf(materialType2BlockSettingsMap.get(MaterialType.FIREPROOF_WOOD)).burnable()
 //            );
 //        }
 //
@@ -348,7 +351,7 @@ public abstract class BlockGeneration {
 //            float stonyRatio = stonyLayerCount == 0 ? 0 : (float) layerCount / (float) stonyLayerCount;
 //            float woodenRatio = woodenLayerCount == 0 ? 0 : (float) layerCount / (float) woodenLayerCount;
 //
-//            FabricBlockSettings settingToUse;
+//            AbstractBlock.Settings settingToUse;
 //            if (fireproofLayerCount != layerCount) {
 //                settingToUse = materialType2BlockSettingsMap.get(MaterialType.BURNABLE_WOOD);
 //            } else if (stonyRatio > woodenRatio) {

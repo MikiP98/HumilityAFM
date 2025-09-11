@@ -3,8 +3,8 @@ package io.github.mikip98.humilityafm.util.mod_support;
 import org.jetbrains.annotations.NotNull;
 
 public enum SupportedMods {
-    BETTER_NETHER("Better Nether", "betternether"),
-    BETTER_END("Better End", "betterend"),
+//    BETTER_NETHER("Better Nether", "betternether"),  // No 1.20.6 version
+//    BETTER_END("Better End", "betterend"),  // No 1.20.6 version
     BIOMES_O_PLENTY("Biomes o' Plenty", "biomesoplenty"),
 
     SHIMMER("Shimmer", "shimmer");

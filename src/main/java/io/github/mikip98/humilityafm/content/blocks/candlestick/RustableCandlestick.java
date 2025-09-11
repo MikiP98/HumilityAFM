@@ -10,7 +10,6 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
@@ -20,8 +19,7 @@ import org.jetbrains.annotations.Nullable;
 @Getter
 @Setter
 public class RustableCandlestick extends Candlestick implements RustableCandlestickLogic {
-    // TODO: Mixin that adds copy(Settings settings)
-    public static final Settings defaultSettings = (Settings) Settings.copy(Candlestick.defaultSettings)
+    public static final Settings defaultSettings = Candlestick.getDefaultSettings()
             .sounds(BlockSoundGroup.COPPER)
             .ticksRandomly();
 
@@ -60,7 +58,7 @@ public class RustableCandlestick extends Candlestick implements RustableCandlest
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         double x = pos.getX() + 0.5;
         final double y = pos.getY() + 0.5;
         double z = pos.getZ() + 0.5;
@@ -75,8 +73,8 @@ public class RustableCandlestick extends Candlestick implements RustableCandlest
 
         final double randomSpread = 2.0 / 3.0;
 
-        if (onUseRustableLogic(state, world, pos, player, hand, x, y, z, randomSpread)) return ActionResult.SUCCESS;
-        return super.onUse(state, world, pos, player, hand, hit);
+        if (onUseRustableLogic(state, world, pos, player, x, y, z, randomSpread)) return ActionResult.SUCCESS;
+        return super.onUse(state, world, pos, player, hit);
     }
 
     @Override

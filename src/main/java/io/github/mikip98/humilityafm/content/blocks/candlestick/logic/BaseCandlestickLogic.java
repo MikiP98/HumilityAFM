@@ -5,12 +5,14 @@ import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CandleBlock;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.FlintAndSteelItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
@@ -64,7 +66,7 @@ public sealed interface BaseCandlestickLogic permits SimpleCandlestickLogic, Rus
                         && !state.get(Properties.WATERLOGGED)
         ) {
             world.setBlockState(pos, state.with(Properties.LIT, true), Block.NOTIFY_ALL);
-            if (!player.isCreative()) heldItemStack.damage(1, player, (p) -> p.sendToolBreakStatus(hand));
+            damageItem(heldItemStack, player, world, hand);
             world.playSoundAtBlockCenter(pos, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
             return true;
         }
@@ -106,4 +108,14 @@ public sealed interface BaseCandlestickLogic permits SimpleCandlestickLogic, Rus
         return new Velocity(velocityX, velocityY, velocityZ);
     }
     record Velocity(double x, double y, double z) {}
+
+    default void damageItem(ItemStack heldItemStack, PlayerEntity player, World world, Hand hand) {
+        if (!player.isCreative() && !world.isClient)
+            heldItemStack.damage(
+                    1,
+                    world.getRandom(),
+                    (ServerPlayerEntity) player,
+                    () -> player.sendEquipmentBreakStatus(LivingEntity.getSlotForHand(hand))
+            );
+    }
 }

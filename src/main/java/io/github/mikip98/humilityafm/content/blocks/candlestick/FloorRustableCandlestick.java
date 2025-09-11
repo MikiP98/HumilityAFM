@@ -11,7 +11,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
@@ -45,7 +44,6 @@ public class FloorRustableCandlestick extends FloorCandlestick implements Waterl
         );
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         if (random.nextDouble() >= 0.96) this.rust(state, world, pos);
@@ -57,13 +55,13 @@ public class FloorRustableCandlestick extends FloorCandlestick implements Waterl
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         final double x = pos.getX() + 0.5;
         final double y = pos.getY() + 0.35;
         final double z = pos.getZ() + 0.5;
         final double randomSpread = 0.625;
-        if (onUseRustableLogic(state, world, pos, player, hand, x, y, z, randomSpread)) return ActionResult.SUCCESS;
-        return super.onUse(state, world, pos, player, hand, hit);
+        if (onUseRustableLogic(state, world, pos, player, x, y, z, randomSpread)) return ActionResult.SUCCESS;
+        return super.onUse(state, world, pos, player, hit);
     }
 
     @Override
