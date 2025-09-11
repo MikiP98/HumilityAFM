@@ -9,7 +9,17 @@
 	],
 	"contact": {
 		"homepage": "https://modrinth.com/mod/humility-afm",
-		"sources": "https://github.com/MikiP98/HumilityAFM"
+		"sources": "https://github.com/MikiP98/HumilityAFM",
+		"issues": "https://github.com/MikiP98/HumilityAFM/issues"
+	},
+	"custom": {
+		"modmenu": {
+			"links": {
+				"modmenu.modrinth": "https://modrinth.com/mod/humility-afm",
+				"modmenu.github_releases": "https://github.com/MikiP98/HumilityAFM/releases",
+				"modmenu.kofi": "https://ko-fi.com/miki277733"
+			}
+		}
 	},
 	"license": "GPLv3",
 	"icon": "assets/humility-afm/icon.png",
@@ -33,11 +43,12 @@
 		"minecraft": "~1.21",
 		"java": ">=21",
 		"fabric-api": "*",
-		"modmenu": "*",
 		"cloth-config2": "*",
 		"polymorph": "*"
 	},
 	"suggests": {
+		"jei": "*",
+		"modmenu": "*",
 		"shimmer": ">=0.2.0"
 	},
 	"configScreen": "io.github.mikip98.humilityafm.config.ModConfigScreen"
