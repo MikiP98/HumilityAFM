@@ -11,7 +11,7 @@ import io.github.mikip98.humilityafm.content.blocks.candlestick.FloorCandlestick
 import io.github.mikip98.humilityafm.content.blocks.candlestick.FloorRustableCandlestick;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.RustableCandlestick;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.RustableCandlestickLogic;
-import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.JackOLanternRedStone;
+import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.JackOLantern;
 import io.github.mikip98.humilityafm.content.blocks.stairs.InnerStairs;
 import io.github.mikip98.humilityafm.content.blocks.stairs.OuterStairs;
 import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
@@ -271,9 +271,9 @@ public abstract class BlockGeneration {
                 colouredTorchVariants.add(registerWithItem(new TorchBlock(normalTorchSettings, torchParticle), "coloured_torch_" + name));
                 colouredTorchStrongVariants.add(registerWithItem(new TorchBlock(strongTorchSettings, torchParticle), "torch_strong" + name));
                 // Coloured Jack O'Lanterns
-                colouredJackOLanternsWeak.add(registerWithItem(new JackOLanternRedStone(), "coloured_weak_jack_o_lantern_" + name));
-                colouredJackOLanterns.add(registerWithItem(new JackOLanternRedStone(), "coloured_jack_o_lantern_" + name));
-                colouredJackOLanternsStrong.add(registerWithItem(new JackOLanternRedStone(), "coloured_strong_jack_o_lantern_" + name));
+                colouredJackOLanternsWeak.add(registerWithItem(new JackOLantern(), "coloured_weak_jack_o_lantern_" + name));
+                colouredJackOLanterns.add(registerWithItem(new JackOLantern(), "coloured_jack_o_lantern_" + name));
+                colouredJackOLanternsStrong.add(registerWithItem(new JackOLantern(), "coloured_strong_jack_o_lantern_" + name));
             }
             return new ColouredFeatureBlockSet(
                     lightStripVariants.toArray(Block[]::new),
