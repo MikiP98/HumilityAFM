@@ -15,6 +15,11 @@ import net.minecraft.world.World;
 import static net.minecraft.block.enums.BlockHalf.TOP;
 
 public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightStripBlockEntity> {
+    protected static RenderFunction renderFunction = LightStripBlockEntityRenderer::fakeRunnable;
+    public static void enableBrightening() {
+        renderFunction = LightStripBlockEntityRenderer::renderBrightening;
+    }
+
     @SuppressWarnings("unused")
     public LightStripBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {}
 
@@ -23,45 +28,31 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
         renderFunction.execute(entity, matrices, vertexConsumers, overlay);
     }
 
-
-    @FunctionalInterface
-    protected interface RenderFunction {
-        void execute(LightStripBlockEntity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int overlay);
-    }
-
-    protected static RenderFunction renderFunction = LightStripBlockEntityRenderer::fakeRunnable;
-    public static void enableBrightening() {
-        renderFunction = LightStripBlockEntityRenderer::renderBrightening;
-    }
-
     protected static void fakeRunnable(LightStripBlockEntity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int overlay) {}
     protected static void renderBrightening(LightStripBlockEntity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int overlay) {
         World world = entity.getWorld();
         BlockPos pos = entity.getPos();
-        if (world == null || pos == null) {
-            return;
-        }
+        if (world == null || pos == null) return;
 
         BlockState blockState = world.getBlockState(pos);
-        if (blockState == null || !(blockState.getBlock() instanceof LightStripBlock)) {
-            return;
-        }
+        if (blockState == null || !(blockState.getBlock() instanceof LightStripBlock)) return;
 
 
         matrices.push();
 
-        // Scale the rendered block by a configurable factor
+        // Scale of the brightened model
         final float scale = 1.01111f;
 
-        // Calculate a pixel shift constant for centering the block
+        // Calculate a pixel shift constant for centering of the brightened model
         final float pixelShift = (1f/32f)*(1-scale);
 
-        // Move the block up or down depending on the block's half, and center it
+        // Move the block up or down depending on the block's half, and centre it
         final float deltaY = blockState.get(StairsBlock.HALF) == TOP ? (1-scale)-pixelShift : pixelShift;
 
         // Move the rendered block half of the difference between the original and the scaled size
         final float deltaLongAxis = 0.5f*(1-scale);
 
+        // Calculate correct model offsets
         float deltaX = 0f;
         float deltaZ = 0f;
         switch (blockState.get(Properties.STAIR_SHAPE)) {
@@ -202,5 +193,10 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
         );
 
         matrices.pop();
+    }
+
+    @FunctionalInterface
+    protected interface RenderFunction {
+        void execute(LightStripBlockEntity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int overlay);
     }
 }
