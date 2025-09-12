@@ -254,4 +254,5 @@ breaking their backward compatibility
 <br>
 
 
+*If you like this mod, consider supporting me on [Ko-fi](https://ko-fi.com/miki277733) (ᵔ◡ᵔ)*  
 *Checkout my [other mods](https://modrinth.com/user/Miki-Liki) :)*
