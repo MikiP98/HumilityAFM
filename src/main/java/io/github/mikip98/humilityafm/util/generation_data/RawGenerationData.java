@@ -29,7 +29,7 @@ public abstract class RawGenerationData {
      * All vanilla wood types
      */
     public static final String[] vanillaOverworldWoodTypes = {
-            "oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "bamboo"
+            "oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "bamboo", "pale_oak"
     };
     public static final String[] vanillaNetherWoodTypes = {"crimson", "warped"};
     public static final MultiArrayIterable<String> vanillaWoodTypes = MultiArrayIterable.of(vanillaOverworldWoodTypes, vanillaNetherWoodTypes);
