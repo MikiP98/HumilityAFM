@@ -125,6 +125,8 @@ java {
 jar {
 	inputs.property "archivesName", project.base.archivesName
 
+	entryCompression = ZipEntryCompression.STORED
+
 	from("LICENSE") {
 		rename { "${it}_${project.base.archivesName}"}
 	}
