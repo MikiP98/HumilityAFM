@@ -15,7 +15,7 @@ public class JackOLanternSoul extends JackOLantern {
     @Override
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
         if (random.nextInt(4) == 0) {
-            world.addParticle(
+            world.addParticleClient(
                     ParticleTypes.SOUL,
                     pos.getX() + 0.5 + (random.nextDouble() - 0.5) * (random.nextInt(4) + 1),
                     pos.getY() + 0.5 + (random.nextDouble() - 0.5) * (random.nextInt(4) + 1),
@@ -24,7 +24,7 @@ public class JackOLanternSoul extends JackOLantern {
             );
         }
         if (random.nextInt(12) == 0) {
-            world.addParticle(
+            world.addParticleClient(
                     ParticleTypes.SOUL_FIRE_FLAME,
                     pos.getX() + random.nextDouble() * random.nextInt(3),
                     pos.getY() + random.nextDouble() * random.nextInt(3),

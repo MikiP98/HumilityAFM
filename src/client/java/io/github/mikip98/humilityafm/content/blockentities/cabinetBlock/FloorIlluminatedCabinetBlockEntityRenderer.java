@@ -9,6 +9,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 @Environment(EnvType.CLIENT)
@@ -17,16 +18,16 @@ public class FloorIlluminatedCabinetBlockEntityRenderer implements BlockEntityRe
     public FloorIlluminatedCabinetBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {}
 
     @Override
-    public void render(FloorIlluminatedCabinetBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        World world = entity.getWorld();
-        BlockPos pos = entity.getPos();
+    public void render(FloorIlluminatedCabinetBlockEntity blockEntity, float tickProgress, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, Vec3d cameraPos) {
+        World world = blockEntity.getWorld();
+        BlockPos pos = blockEntity.getPos();
         if (world == null || pos == null) return;
 
         BlockState blockState = world.getBlockState(pos);
         if (blockState == null || !(blockState.getBlock() instanceof FloorIlluminatedCabinetBlock)) return;
 
 
-        FloorCabinetBlockEntityRenderer.renderItem(entity, blockState, matrices, vertexConsumers, 255, overlay);
+        FloorCabinetBlockEntityRenderer.renderItem(blockEntity, blockState, matrices, vertexConsumers, 255, overlay);
 
 
         final float blockSizeYZ = 0.875f;

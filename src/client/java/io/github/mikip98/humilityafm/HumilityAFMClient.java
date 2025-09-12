@@ -11,12 +11,12 @@ import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import net.fabricmc.api.ClientModInitializer;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetBlockEntityRenderer;
 import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntityRenderer;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 
 import java.util.function.Consumer;
@@ -32,14 +32,14 @@ public class HumilityAFMClient implements ClientModInitializer {
 		BlockEntityRendererFactories.register(BlockEntityRegistry.FLOOR_CABINET_BLOCK_ENTITY, FloorCabinetBlockEntityRenderer::new);
 		BlockEntityRendererFactories.register(BlockEntityRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_ENTITY, FloorIlluminatedCabinetBlockEntityRenderer::new);
 
-		RenderLayer renderLayer = ModConfig.transparentCabinetBlocks ? RenderLayer.getTranslucent() : RenderLayer.getCutout();
+		BlockRenderLayer renderLayer = ModConfig.transparentCabinetBlocks ? BlockRenderLayer.TRANSLUCENT : BlockRenderLayer.CUTOUT;
 
-		BlockRenderLayerMap.INSTANCE.putBlock(BlockRegistry.CABINET_BLOCK, renderLayer);
-		BlockRenderLayerMap.INSTANCE.putBlock(BlockRegistry.ILLUMINATED_CABINET_BLOCK, renderLayer);
-		BlockRenderLayerMap.INSTANCE.putBlock(BlockRegistry.FLOOR_CABINET_BLOCK, renderLayer);
-		BlockRenderLayerMap.INSTANCE.putBlock(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK, renderLayer);
+		BlockRenderLayerMap.putBlock(BlockRegistry.CABINET_BLOCK, renderLayer);
+		BlockRenderLayerMap.putBlock(BlockRegistry.ILLUMINATED_CABINET_BLOCK, renderLayer);
+		BlockRenderLayerMap.putBlock(BlockRegistry.FLOOR_CABINET_BLOCK, renderLayer);
+		BlockRenderLayerMap.putBlock(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK, renderLayer);
 
-		Consumer<Block[]> applyCabinetRenderLayer = (blocks) -> BlockRenderLayerMap.INSTANCE.putBlocks(renderLayer, blocks);
+		Consumer<Block[]> applyCabinetRenderLayer = (blocks) -> BlockRenderLayerMap.putBlocks(renderLayer, blocks);
 		applyCabinetRenderLayer.accept(BlockRegistry.WALL_CABINET_BLOCK_VARIANTS);
 		applyCabinetRenderLayer.accept(BlockRegistry.WALL_ILLUMINATED_CABINET_BLOCK_VARIANTS);
 		applyCabinetRenderLayer.accept(BlockRegistry.FLOOR_CABINET_BLOCK_VARIANTS);

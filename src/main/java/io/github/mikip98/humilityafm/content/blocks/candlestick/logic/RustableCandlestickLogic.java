@@ -43,7 +43,7 @@ public non-sealed interface RustableCandlestickLogic extends BaseCandlestickLogi
             world.setBlockState(pos, state.with(ModProperties.WAXED, true), Block.NOTIFY_ALL);
             if (!player.isCreative()) heldItemStack.decrement(1);
             emmitWaxOnParticles(world, offsetX, offsetY, offsetZ, randomSpread);
-            world.playSound(offsetX, offsetY, offsetZ, SoundEvents.ITEM_HONEYCOMB_WAX_ON, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
+            world.playSound(player, offsetX, offsetY, offsetZ, SoundEvents.ITEM_HONEYCOMB_WAX_ON, SoundCategory.BLOCKS, 1.0f, 1.0f);
             return true;
         }
         return false;
@@ -58,7 +58,7 @@ public non-sealed interface RustableCandlestickLogic extends BaseCandlestickLogi
                 world.setBlockState(pos, state.with(ModProperties.WAXED, false), Block.NOTIFY_ALL);
                 damageItem(heldItemStack, player, world, hand);
                 emmitWaxOffParticles(world, offsetX, offsetY, offsetZ, randomSpread);
-                world.playSound(offsetX, offsetY, offsetZ, SoundEvents.ITEM_AXE_WAX_OFF, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
+                world.playSound(player, offsetX, offsetY, offsetZ, SoundEvents.ITEM_AXE_WAX_OFF, SoundCategory.BLOCKS, 1.0f, 1.0f);
                 return true;
             }
             // De-rust
@@ -98,7 +98,7 @@ public non-sealed interface RustableCandlestickLogic extends BaseCandlestickLogi
             double randomX = offsetX + ((random.nextDouble() - 0.5) * randomSpread);
             double randomY = offsetY + ((random.nextDouble() - 0.5) * randomSpread);
             double randomZ = offsetZ + ((random.nextDouble() - 0.5) * randomSpread);
-            world.addParticle(particleEffect, randomX, randomY, randomZ, 0, 0, 0);
+            world.addParticleClient(particleEffect, randomX, randomY, randomZ, 0, 0, 0);
         }
     }
 

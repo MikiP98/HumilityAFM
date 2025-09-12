@@ -20,9 +20,9 @@ public non-sealed interface SimpleCandlestickLogic extends BaseCandlestickLogic 
         if (tryToExtinguishOrRemove(state, world, pos, player, heldItemStack)) return true;
         return tryToLightTheCandle(state, world, pos, player, hand, heldItemStack, heldItem);
     }
-    default void onStateReplacedLogic(BlockState state, World world, BlockPos pos, BlockState newState) {
+    default void onStateReplacedLogic(BlockState state, World world, BlockPos pos, BaseCandlestickLogic candlestick) {
         // If the block is replaced with a different block, drop the candle if present
-        if (newState.getBlock() != state.getBlock() && state.get(ModProperties.CANDLE_COLOR) != CandleColor.NONE)
+        if (state.getBlock() != candlestick && state.get(ModProperties.CANDLE_COLOR) != CandleColor.NONE)
             Block.dropStack(world, pos, new ItemStack(state.get(ModProperties.CANDLE_COLOR).asCandle()));
     }
 }

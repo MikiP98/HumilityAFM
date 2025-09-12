@@ -12,6 +12,8 @@ import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -37,15 +39,15 @@ public class CabinetBlockEntity extends BlockEntity implements ImplementedInvent
     }
 
     @Override
-    public void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
-        super.readNbt(nbt, registryLookup);
-        Inventories.readNbt(nbt, items, registryLookup);
+    protected void readData(ReadView view) {
+        super.readData(view);
+        Inventories.readData(view, items);
     }
 
     @Override
-    public void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
-        Inventories.writeNbt(nbt, items, registryLookup);
-        super.writeNbt(nbt, registryLookup);
+    public void writeData(WriteView view) {
+        Inventories.writeData(view, items);
+        super.writeData(view);
     }
 
     @Nullable
