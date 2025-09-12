@@ -151,11 +151,24 @@ publishing {
 // Additional task that recompresses the generated JARs using python-zopfli to reduce the file size
 tasks.register("recompressJars", Exec) {
 	group = "build"
-	description = "Recompress JARs in ./build/libs using python-zopfli"
+	description = "Recompress the built JAR with advzip"
 
-	workingDir = projectDir
-	executable = "python"
-	args = ["jar_recompressor.py"]
+	// Ensure the jar is built before running advzip
+	dependsOn(tasks.named("jar"))
+
+	// Build the jar name based on project properties
+	def jarFile = layout.buildDirectory.file("libs/${project.archivesBaseName}-${project.version}.jar").get().asFile
+
+	// Configure the command
+	workingDir projectDir
+	commandLine "./advzip", "-z", jarFile.absolutePath, "-3", "-i", "5"
+
+	doFirst {
+		if (!jarFile.exists()) {
+			throw new GradleException("JAR file not found: ${jarFile}")
+		}
+		println "Recompressing ${jarFile.name} with advzip..."
+	}
 }
 
 // Run the 'recompressJars' task after the 'build' task
