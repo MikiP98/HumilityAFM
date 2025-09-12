@@ -49,7 +49,8 @@ public class ModSupportManager {
             return;
         }
 
-        // Backup check if the mod is present in case the mod is not loaded (IDK how this really works)
+        // Backup check if the mod is present, but not yet loaded
+        // (IDK if this is required, but it should not hurt)
         for (ModContainer modContainer : fabricLoader.getAllMods()) {
             if (modContainer.getMetadata().getId().equals(mod.modId)) {
                 addMod(mod);
