@@ -86,16 +86,11 @@ Lighten up your builds with unobtrusive light source
 
 ### Done:
 
-- Add special built-in mod support for:
-  - BetterNether
-  - BetterEnd
-  - Biomes o' Plenty
-- Fix nether wood block variants burning
-- Move duplicated code to Interfaces (candlesticks)
-- Reworked the whole block generation system
-- Add an optional datapack with alternate, non crafting-table colliding, wooden mosaic recipes
-  - This datapack will be disabled by default on MC versions from 1.20.1 (included) to 1.21.4 (excluded)
-  - From 1.21.4 onwards, the datapack will be enabled by default because of `polymorph` mod's absence
+- Reduced the jar size:
+  - Minified the included JSON files
+  - Recompressed the jar with ZOPFLI
+- Fixed coloured jack o'Lanterns being based on the redstone jack o'Lantern block variant
+- Code clean-up (block entity registry)
 
 ### High priority:
 
