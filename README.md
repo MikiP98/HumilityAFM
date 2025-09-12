@@ -244,10 +244,11 @@ breaking their backward compatibility
    - *Dependencies of the above mods*
 3. Run command `./gradlew runDatagen` or `gradlew runDatagen` in the terminal
     - When the command fails, enable `datagenMode` in the config file under `./build/datagen/config/humility-afm.json`
-4. Move the content *(the inside of the folder)* of `src/main/generated/data/humility-afm/recipies/datapack` to `src/main/resources/resourcepacks/alternate_wooden_mosaics_recipes/data/humility-afm/recipies/`
-5. Move the content *(the inside of the folder)* of `src/main/generated/data/humility-afm/advancements/recipes/misc/datapack` to `src/main/resources/resourcepacks/alternate_wooden_mosaics_recipes/data/humility-afm/advancements/recipes/misc/`
-6. Run command `./gradlew build` or `gradlew build` in the terminal
-7. The compiled mod jar should be located in `./build/libs/` folder
+4. Move the content *(the inside of the folder)* of `src/main/generated/data/humility-afm/recipie(s)/datapack` to `src/main/resources/resourcepacks/alternate_wooden_mosaics_recipes/data/humility-afm/recipie(s)/`
+5. Move the content *(the inside of the folder)* of `src/main/generated/data/humility-afm/advancement(s)/recipes/misc/datapack` to `src/main/resources/resourcepacks/alternate_wooden_mosaics_recipes/data/humility-afm/advancement(s)/recipes/misc/`
+6. Download the `advzip` utility, you can find it [here](https://www.advancemame.it/download) under `AdvanceCOMP` package and move the `advzip.exe` executable to the main project folder
+7. Run command `./gradlew build` or `gradlew build` in the terminal
+8. The compiled mod jar should be located in `./build/libs/` folder
 
 [//]: # (TODO: Create a script to automate the above steps, or at least step 4)
 
