@@ -100,7 +100,6 @@ Lighten up your builds with unobtrusive light source
 
 - Redo the window capture screenshots or at least crop the window app bar
 - Fix Cabinet breaking animation being invisible
-  - Make sure all other breaking animations are also visible
 - Finish built-in jack o'Lantern rp compat resourcepack
 - Finish built-in coloured torches rp compat resourcepack
 - Add 'Shimmer' and 'Bliss' support for all the blocks from coloured feature set:
@@ -126,15 +125,11 @@ Lighten up your builds with unobtrusive light source
   - BetterNether
   - BetterEnd
   - Biomes o' Plenty
-  - Add stone variants from the above mods, and fix the missing wood variants
+  - *(Add stone variants from the above mods, and fix the missing wood variants)*
 - Add special built-in mod support for:
   - DivineRPG
   - Sundries
   - Couple other mods with custom wood types
-- Move duplicated code to Interfaces (cabinet block entity renderers)
-- Custom renderer for wooden mosaics to reduce file size?
-  - https://discord.com/channels/507304429255393322/507982478276034570/1414634100610044004
-- Runtime resourcepack generation? (datapacks) 
 
 ### Medium priority:
 
@@ -191,6 +186,9 @@ Lighten up your builds with unobtrusive light source
 - Improve Illuminated Cabinet Brightening rendering?
 - Add thin <sup>*(Blibiocraft style)*</sup> and short cabinets?
 - Add a feature to connect 2 neighboring Cabinets into a big one?
+- Custom renderer for wooden mosaics to reduce file size?
+  - [Message on Fabric DC server](https://discord.com/channels/507304429255393322/507982478276034570/1414634100610044004)
+- Runtime resourcepack generation? (datapacks)
 
 <br>
 
