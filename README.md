@@ -88,9 +88,13 @@ Lighten up your builds with unobtrusive light source
 
 - Reduced the jar size:
   - Minified the included JSON files
-  - Recompressed the jar with ZOPFLI
+  - Recompressed the jar with `advzip -3 -i 5`
 - Fixed coloured jack o'Lanterns being based on the redstone jack o'Lantern block variant
-- Code clean-up (block entity registry)
+- Code clean-up:
+  - BlockEntityRegistry
+  - CabinetBlock
+- Fixed Cabinets displaying the items after it got removed
+- Improved Cabinet sound a bit
 
 ### High priority:
 
