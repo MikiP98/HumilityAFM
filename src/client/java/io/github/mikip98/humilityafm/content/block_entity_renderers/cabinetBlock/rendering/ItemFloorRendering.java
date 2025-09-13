@@ -1,4 +1,4 @@
-package io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.rendering;
+package io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.BlockHalf;

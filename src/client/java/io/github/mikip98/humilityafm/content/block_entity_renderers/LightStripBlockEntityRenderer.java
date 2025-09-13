@@ -1,5 +1,6 @@
-package io.github.mikip98.humilityafm.content.blockentities;
+package io.github.mikip98.humilityafm.content.block_entity_renderers;
 
+import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntity;
 import io.github.mikip98.humilityafm.content.blocks.LightStripBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.StairsBlock;

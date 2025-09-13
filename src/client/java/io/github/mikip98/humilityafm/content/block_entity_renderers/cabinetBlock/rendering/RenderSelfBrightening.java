@@ -1,6 +1,6 @@
-package io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.rendering;
+package io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering;
 
-import io.github.mikip98.humilityafm.helpers.BlockEntityRendererHelper;
+import io.github.mikip98.humilityafm.content.block_entity_renderers.util.LightManipulation;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -47,8 +47,8 @@ public interface RenderSelfBrightening {
         );
         matrices.scale(scale, scale, scale);
 
-        int outsideLight = BlockEntityRendererHelper.multiplyLight(light, lightMultiplayer);
-        outsideLight = BlockEntityRendererHelper.addLight(outsideLight, lightAddition);
+        int outsideLight = LightManipulation.multiplyLight(light, lightMultiplayer);
+        outsideLight = LightManipulation.addLight(outsideLight, lightAddition);
 
         MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(
                 blockState, matrices, vertexConsumers, outsideLight, overlay

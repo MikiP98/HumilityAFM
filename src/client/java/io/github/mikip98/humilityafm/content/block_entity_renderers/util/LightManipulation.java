@@ -1,6 +1,6 @@
-package io.github.mikip98.humilityafm.helpers;
+package io.github.mikip98.humilityafm.content.block_entity_renderers.util;
 
-public class BlockEntityRendererHelper {
+public class LightManipulation {
     // Max block light (15) and max skylight (15)
 
     // Helper method to calculate combined light with brightness adjustment

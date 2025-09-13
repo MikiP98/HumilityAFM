@@ -1,4 +1,4 @@
-package io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.rendering;
+package io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering;
 
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.ImplementedInventory;
 import net.minecraft.block.BlockState;

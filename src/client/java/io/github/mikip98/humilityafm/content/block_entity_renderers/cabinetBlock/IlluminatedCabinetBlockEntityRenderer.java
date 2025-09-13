@@ -1,7 +1,8 @@
-package io.github.mikip98.humilityafm.content.blockentities.cabinetBlock;
+package io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock;
 
-import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.rendering.ItemWallRendering;
-import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.rendering.RenderSelfBrightening;
+import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering.ItemWallRendering;
+import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering.RenderSelfBrightening;
+import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.IlluminatedCabinetBlockEntity;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.IlluminatedCabinetBlock;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
