@@ -29,7 +29,6 @@ public class FloorCabinetBlock extends CabinetBlock implements Waterloggable, Bl
         builder.add(HALF);
     }
 
-
     public FloorCabinetBlock() {
         this(defaultSettings);
     }
@@ -40,22 +39,11 @@ public class FloorCabinetBlock extends CabinetBlock implements Waterloggable, Bl
         );
     }
 
-
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
-        if (state.get(OPEN)) {
-            if (state.get(HALF) == BlockHalf.BOTTOM) {
-                return voxelShapeOpenBottom;
-            } else {
-                return voxelShapeOpenTop;
-            }
-        } else {
-            if (state.get(HALF) == BlockHalf.BOTTOM) {
-                return voxelShapeBottom;
-            } else {
-                return voxelShapeTop;
-            }
-        }
+        final boolean isBottom = state.get(HALF) == BlockHalf.BOTTOM;
+        if (state.get(OPEN)) return isBottom ? voxelShapeOpenBottom : voxelShapeOpenTop;
+        else return isBottom ? voxelShapeBottom : voxelShapeTop;
     }
 
     @Override
@@ -63,7 +51,6 @@ public class FloorCabinetBlock extends CabinetBlock implements Waterloggable, Bl
         return super.getPlacementState(ctx)
                 .with(HALF, ctx.getSide() == Direction.UP ? BlockHalf.BOTTOM : BlockHalf.TOP);
     }
-
 
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
