@@ -13,6 +13,11 @@ src/main/resources/resourcepacks/alternate_wooden_mosaic_recipies/data/humility-
 advzip.exe
 advzip.exe.lnk
 
+server/
+server/*
+server/**
+server/**/*
+
 
 # Python
 
