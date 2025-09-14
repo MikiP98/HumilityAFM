@@ -93,8 +93,12 @@ Lighten up your builds with unobtrusive light source
 - Code clean-up:
   - BlockEntityRegistry
   - CabinetBlock
+  - Client side code
 - Fixed Cabinets displaying the items after it got removed
 - Improved Cabinet sound a bit
+- Server feature sync:
+  - If the client config differs from the server one, display a warning message with the differences
+  - ~~Add a 1 time config override feature~~ *(Fabric will prevent the server connection, so all I can do is log the differences)*
 
 ### High priority:
 
@@ -127,12 +131,13 @@ Lighten up your builds with unobtrusive light source
   - Biomes o' Plenty
   - *(Add stone variants from the above mods, and fix the missing wood variants)*
 - Add special built-in mod support for:
-  - DivineRPG
   - Sundries
   - Couple other mods with custom wood types
 
 ### Medium priority:
 
+- Add special built-in mod support for:
+  - DivineRPG
 - Improve the speciality of Soul Jack o'Lantern :/
   - Make them work as bookshelves for enchanting?
   - Make them boost monster spawners?
@@ -167,8 +172,6 @@ Lighten up your builds with unobtrusive light source
 - Add leather variants of the cabinets?
 - Make the leather cabinets dyable?
 - Add carpet covered stairs?
-- Server feature sync?
-  - If done through a datapack, the blocks can be enabled by default on the client?
 - Backport to older MC versions?:
   - 1.19.2?
   - 1.18.2?
@@ -200,7 +203,7 @@ Lighten up your builds with unobtrusive light source
 If you want support for specific MC version pls create an [issue on GitHub](https://github.com/MikiP98/HumilityAFM/issues)
 
 **Q:** Can you port to mod to forge?  
-**A:** I wanted this to be a forge mod, but I just could get even the empty template to work and I gave up.  
+**A:** I wanted this to be a forge mod, but I just couldn't get even the empty forge template to work and I gave up.  
 I'm not planing on porting the mod myself, but if you are interested in porting it yourself, you can, pls let me know of such projects on GitHub :)  
 You can also use the mod [Kilt](https://github.com/KiltMC/Kilt) to run forge mods on fabric
 
