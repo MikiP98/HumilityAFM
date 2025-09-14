@@ -1,10 +1,7 @@
 package io.github.mikip98.humilityafm;
 
 import io.github.mikip98.humilityafm.config.ConfigJSON;
-import io.github.mikip98.humilityafm.registries.BlockEntityRegistry;
-import io.github.mikip98.humilityafm.registries.BlockRegistry;
-import io.github.mikip98.humilityafm.registries.ItemGroupRegistry;
-import io.github.mikip98.humilityafm.registries.ItemRegistry;
+import io.github.mikip98.humilityafm.registries.*;
 import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
 import io.github.mikip98.humilityafm.util.mod_support.ModSupportManager;
 import net.fabricmc.api.ModInitializer;
@@ -47,11 +44,15 @@ public class HumilityAFM implements ModInitializer {
 		ItemRegistry.register();
 		// ............ ITEM GROUPS ............
 		ItemGroupRegistry.registerItemGroups();
+		// ............ NETWORK ............
+		NetworkRegistry.registerNetworkServerMessage();
 
 
 		// ------------------------------------ CLEANUP -------------------------------------------
 		ActiveGenerationData.clear();
 	}
+
+
 
 	/**
 	 * Returns a new identifier for the given name, in this mod's namespace

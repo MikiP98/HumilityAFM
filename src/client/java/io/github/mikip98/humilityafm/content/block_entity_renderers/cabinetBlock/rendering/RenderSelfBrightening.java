@@ -1,6 +1,6 @@
 package io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering;
 
-import io.github.mikip98.humilityafm.content.block_entity_renderers.util.LightManipulation;
+import io.github.mikip98.humilityafm.content.block_entity_renderers.rendering_utils.LightManipulation;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;

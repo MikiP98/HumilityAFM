@@ -16,7 +16,6 @@ import static io.github.mikip98.humilityafm.HumilityAFM.LOGGER;
 
 // TODO: Move to TOML
 public class ConfigJSON {
-
     // Save the configuration to a JSON file in the Minecraft configuration folder
     public static void saveConfigToFile() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();

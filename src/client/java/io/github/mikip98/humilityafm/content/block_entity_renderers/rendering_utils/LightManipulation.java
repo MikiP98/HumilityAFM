@@ -1,4 +1,4 @@
-package io.github.mikip98.humilityafm.content.block_entity_renderers.util;
+package io.github.mikip98.humilityafm.content.block_entity_renderers.rendering_utils;
 
 public class LightManipulation {
     // Max block light (15) and max skylight (15)
