@@ -98,18 +98,12 @@ Lighten up your builds with unobtrusive light source
 - Improved Cabinet sound a bit
 - Server feature sync:
   - If the client config differs from the server one, display a warning message with the differences
-  - ~~Add a 1 time config override feature~~ *(Fabric will prevent the server connection, so all I can do is log the differences)*
+- Finish built-in jack o'Lantern rp compat resourcepack
 
 ### High priority:
 
 - Redo the window capture screenshots or at least crop the window app bar
 - Fix Cabinet breaking animation being invisible
-- Finish built-in jack o'Lantern rp compat resourcepack
-- Finish built-in coloured torches rp compat resourcepack
-- Add 'Shimmer' and 'Bliss' support for all the blocks from coloured feature set:
-  - Coloured Torches
-  - Coloured Jack o'Lanterns
-  - Light Strips
 - Add Illuminated Cabinet Brightening to the config
 - Add PBR data to:
   - Cabinet front texture:
@@ -125,6 +119,11 @@ Lighten up your builds with unobtrusive light source
 - Redo coloured torch textures using the Jack o'Lantern palette system
 - Reduce the number of coloured torches and jack o'Lanterns
   - Think of a system that can replace the current 3 blocks per colour with different light output levels
+- Finish built-in coloured torches rp compat resourcepack
+- Add 'Shimmer' and 'Bliss' support for all the blocks from coloured feature set:
+  - Coloured Torches
+  - Coloured Jack o'Lanterns
+  - Light Strips
 - Improve the built-in mod support for:
   - BetterNether
   - BetterEnd
