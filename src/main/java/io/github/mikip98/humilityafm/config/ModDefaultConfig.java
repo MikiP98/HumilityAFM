@@ -21,6 +21,7 @@ public class ModDefaultConfig {
     public static final int defaultCabinetBlockFireSpread = 9;
 
     public static final boolean defaultDatagenMode = false;
+    public static final boolean defaultPrintInChatServerClientMissmatch = true;
 
     public static final short defaultLightStripColoredLightStrength = 85;
     public static final short defaultLightStripColoredLightRadius = 9;

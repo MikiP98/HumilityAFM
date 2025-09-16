@@ -5,10 +5,13 @@ import io.github.mikip98.humilityafm.config.ModSupport;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.LOGGER;
 
@@ -37,6 +40,7 @@ public class ClientNetworkRegistry {
                         ModConfig.getEnableColouredFeatureSetBeta()
                 );
             for (SupportedMods mod : SupportedMods.values()) {
+                if (mod == SupportedMods.SHIMMER) continue;
                 ModSupport serverModSupportSetting = serverConfigModSupport.get(mod);
                 ModSupport clientModSupportSetting = ModConfig.modSupport.get(mod);
                 if (clientModSupportSetting != serverModSupportSetting)
@@ -50,19 +54,33 @@ public class ClientNetworkRegistry {
             // Log the differences
             if (!differences.isEmpty()) {
                 client.execute(() -> {
-                    PlayerEntity player = client.player;
-                    assert player != null;
-                    LOGGER.error("Humility AFM mod detected server-client config mismatch!");
-                    LOGGER.error("Your client config of Humility AFM differs from the server config!");
-                    LOGGER.error("You should match the configs for optimal multiplayer experience");
-                    LOGGER.error("Detected differences:");
-                    differences.forEach((msg) -> LOGGER.error("  - {}", msg));
-                    LOGGER.error("BE CAREFUL TO NOT BREAK YOUR SINGLE PLAYER WORLDS BY JOINING THEM WITH BLOCKS THAT WERE PREVIOUSLY ENABLED, NOW DISABLED!!!");
+                    printDiffs(LOGGER::error, differences, new String[]{"","",""});
+                    if (ModConfig.printInChatServerClientMissmatch) {
+                        PlayerEntity player = client.player;
+                        assert player != null;
+                        Consumer<String> message = (msg) -> sendMessage(player, msg);
+                        printDiffs(message, differences, new String[]{"§e", "§7", "§c"});
+                    }
                 });
             }
         });
     }
-    static class DiffList extends ArrayList<String> {
+
+    protected static void printDiffs(Consumer<String> printer, DiffList differences, String[] c) {
+        printer.accept(c[0] + "Humility AFM mod detected server-client config mismatch!");
+        printer.accept(c[0] + "Your client config of Humility AFM differs from the server config!");
+        printer.accept(c[1] + "You should match the configs for optimal multiplayer experience");
+        printer.accept(c[1] + "Detected differences:");
+        differences.forEach((msg) -> printer.accept(c[1] + "  - " + msg));
+        printer.accept(c[2] + "BE CAREFUL TO NOT BREAK YOUR SINGLE PLAYER WORLDS BY JOINING THEM WITH BLOCKS THAT WERE PREVIOUSLY ENABLED, NOW DISABLED!!!");
+        printer.accept(c[1] + "As long as you can join the server, you can just ignore this message if you want");
+    }
+
+    protected static void sendMessage(PlayerEntity player, String message) {
+        player.sendMessage(Text.literal(message));
+    }
+
+    protected static class DiffList extends ArrayList<String> {
         void add(String name, Enum<?> server, Enum<?> client) {
             add(name, server.name(), client.name());
         }

@@ -24,6 +24,7 @@ public class ModConfig extends ModDefaultConfig {
     public static int cabinetBlockFireSpread = defaultCabinetBlockFireSpread;
 
     public static boolean datagenMode = defaultDatagenMode;
+    public static boolean printInChatServerClientMissmatch = defaultPrintInChatServerClientMissmatch;
 
     public static short lightStripColoredLightStrength = defaultLightStripColoredLightStrength;
     public static short lightStripColoredLightRadius = defaultLightStripColoredLightRadius;

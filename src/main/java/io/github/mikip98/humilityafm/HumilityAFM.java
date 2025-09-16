@@ -44,8 +44,6 @@ public class HumilityAFM implements ModInitializer {
 		ItemRegistry.register();
 		// ............ ITEM GROUPS ............
 		ItemGroupRegistry.registerItemGroups();
-		// ............ NETWORK ............
-		NetworkRegistry.registerNetworkServerMessage();
 
 
 		// ------------------------------------ CLEANUP -------------------------------------------

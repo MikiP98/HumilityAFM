@@ -35,6 +35,7 @@ public class ConfigJSON {
         configJson.addProperty("cabinetBlockFireSpread", ModConfig.cabinetBlockFireSpread);
 
         configJson.addProperty("datagenMode", ModConfig.datagenMode);
+        configJson.addProperty("printInChatServerClientMissmatch", ModConfig.printInChatServerClientMissmatch);
 
         configJson.addProperty("lightStripColoredLightStrength", ModConfig.lightStripColoredLightStrength);
         configJson.addProperty("lightStripColoredLightRadius", ModConfig.lightStripColoredLightRadius);
@@ -102,6 +103,7 @@ public class ConfigJSON {
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsInt, "cabinetBlockFireSpread");
 
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "datagenMode");
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "printInChatServerClientMissmatch");
 
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, "lightStripColoredLightStrength");
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsShort, "lightStripColoredLightRadius");

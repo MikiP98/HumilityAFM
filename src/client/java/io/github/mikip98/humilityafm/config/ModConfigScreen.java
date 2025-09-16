@@ -69,6 +69,13 @@ public class ModConfigScreen {
                 .setSaveConsumer(value -> ModConfig.datagenMode = value)
                 .build()
         );
+        rootCategory.addEntry(ConfigEntryBuilder.create()
+                .startBooleanToggle(Text.literal("Print Server Client Config Missmatch In Chat"), ModConfig.printInChatServerClientMissmatch)
+                .setDefaultValue(ModConfig.defaultPrintInChatServerClientMissmatch)
+                .setTooltip(Text.of("If true, when you join a server with different config, the differences will be printed in chat"))
+                .setSaveConsumer(value -> ModConfig.printInChatServerClientMissmatch = value)
+                .build()
+        );
 
         ConfigCategory modSupportCategory = builder.getOrCreateCategory(Text.literal("Mod Support"));
 
