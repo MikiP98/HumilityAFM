@@ -17,9 +17,8 @@ import static net.minecraft.block.enums.BlockHalf.TOP;
 
 public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightStripBlockEntity> {
     protected static RenderFunction renderFunction = LightStripBlockEntityRenderer::fakeRunnable;
-    public static void enableBrightening() {
-        renderFunction = LightStripBlockEntityRenderer::renderBrightening;
-    }
+    public static void enableBrightening() { renderFunction = LightStripBlockEntityRenderer::renderBrightening; }
+    public static void disableBrightening() { renderFunction = LightStripBlockEntityRenderer::fakeRunnable; }
 
     @SuppressWarnings("unused")
     public LightStripBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {}

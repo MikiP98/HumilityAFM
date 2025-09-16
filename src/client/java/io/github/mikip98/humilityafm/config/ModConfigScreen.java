@@ -1,5 +1,6 @@
 package io.github.mikip98.humilityafm.config;
 
+import io.github.mikip98.humilityafm.content.block_entity_renderers.LightStripBlockEntityRenderer;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -38,7 +39,11 @@ public class ModConfigScreen {
                 .startBooleanToggle(Text.literal("Enable Light Strip Brightening"), ModConfig.enableLightStripBrightening)
                 .setDefaultValue(ModConfig.defaultEnableLightStripBrightening)
                 .setTooltip(Text.of("Enables Light Strips Brightening, better looking, small performance impact.\n(Auto disabled when Shimmer is installed)"))
-                .setSaveConsumer(value -> ModConfig.enableLightStripBrightening = value)
+                .setSaveConsumer(value -> {
+                    ModConfig.enableLightStripBrightening = value;
+                    if (value) LightStripBlockEntityRenderer.enableBrightening();
+                    else LightStripBlockEntityRenderer.disableBrightening();
+                })
                 .build()
         );
         rootCategory.addEntry(ConfigEntryBuilder.create()
