@@ -3,20 +3,19 @@
 generated/
 src/main/generated/
 
-src/main/resources/resourcepacks/alternate_wooden_mosaic_recipies/data
-src/main/resources/resourcepacks/alternate_wooden_mosaic_recipies/data/*
-src/main/resources/resourcepacks/alternate_wooden_mosaic_recipies/data/**
-src/main/resources/resourcepacks/alternate_wooden_mosaic_recipies/data/humility-afm/recipes
-src/main/resources/resourcepacks/alternate_wooden_mosaic_recipies/data/humility-afm/recipes/*
-src/main/resources/resourcepacks/alternate_wooden_mosaic_recipies/data/humility-afm/recipes/**
+
+src/main/resources/resourcepacks/coloured_jack_o_lanterns_labpbr_emission_face/assets/
+src/main/resources/resourcepacks/special_jack_o_lanterns_labpbr_emission_face/assets/
+src/main/resources/resourcepacks/coloured_jack_o_lanterns_labpbr_full/assets/
+src/main/resources/resourcepacks/special_jack_o_lanterns_labpbr_full/assets/
+
+src/main/resources/resourcepacks/alternate_wooden_mosaic_recipies/data/
+
 
 advzip.exe
 advzip.exe.lnk
 
 server/
-server/*
-server/**
-server/**/*
 
 
 # Python
