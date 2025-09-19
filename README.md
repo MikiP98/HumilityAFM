@@ -99,23 +99,26 @@ Lighten up your builds with unobtrusive light source
 - Server feature sync:
   - If the client config differs from the server one, display a warning message with the differences
 - Finish built-in jack o'Lantern rp compat resourcepack
+- Light Strip Brightening option no longer requires a game restart to take effect
+- Add PBR data to:
+  - Light Strip models (vanilla emission)
+  - Jack o'Lanterns textures:
+    - Optional resource packs for:
+      - Optifine emission (coloured face only)
+      - LabPBR metadata (emission included) (sharp face)
+      - TODO: LabPBR metadata (emission included) (smooth)
 
 ### High priority:
 
 - Redo the window capture screenshots or at least crop the window app bar
+- Fix Outer Light String brightening rendering
 - Fix Cabinet breaking animation being invisible
 - Add Illuminated Cabinet Brightening to the config
 - Add PBR data to:
   - Cabinet front texture:
     - LabPBR specular (pixels only)
-    - Optional resourcepacks for:
+    - Optional resource packs for:
       - LabPBR specular (full texture)
-  - Jack o'Lanterns textures:
-    - vanilla emission (coloured face only)
-    - LabPBR emission (coloured face only)
-    - Optional resourcepacks for:
-      - vanilla emission (full texture)
-      - LabPBR emission (full texture)
 - Redo coloured torch textures using the Jack o'Lantern palette system
 - Reduce the number of coloured torches and jack o'Lanterns
   - Think of a system that can replace the current 3 blocks per colour with different light output levels
@@ -241,18 +244,19 @@ breaking their backward compatibility
 ## Building instructions:
 
 1. Download the source code from [GitHub](https://github.com/MikiP98/HumilityAFM)
-2. Download the dependent mods for datagen and put them under `./build/datagen/mods/`
+2. Download the `advzip` utility, you can find it [here](https://www.advancemame.it/download) under `AdvanceCOMP` package and move the `advzip.exe` executable to the main project folder
+3. Download the dependent mods for datagen and put them under `./build/datagen/mods/`
    - [**Better End**](https://modrinth.com/mod/betterend)
    - [**Better Nether**](https://modrinth.com/mod/betternether)
    - [**Biomes o' Plenty**](https://modrinth.com/mod/biomes-o-plenty)
    - *Dependencies of the above mods*
-3. Run command `./gradlew runDatagen` or `gradlew runDatagen` in the terminal
+4. Run the `pbr_redistributor.py` scripts using the command `python pbr_redistributor.py`
+5. Run command `./gradlew runDatagen` or `gradlew runDatagen` in the terminal
     - When the command fails, enable `datagenMode` in the config file under `./build/datagen/config/humility-afm.json`
-4. Move the content *(the inside of the folder)* of `src/main/generated/data/humility-afm/recipie(s)/datapack` to `src/main/resources/resourcepacks/alternate_wooden_mosaics_recipes/data/humility-afm/recipie(s)/`
-5. Move the content *(the inside of the folder)* of `src/main/generated/data/humility-afm/advancement(s)/recipes/misc/datapack` to `src/main/resources/resourcepacks/alternate_wooden_mosaics_recipes/data/humility-afm/advancement(s)/recipes/misc/`
-6. Download the `advzip` utility, you can find it [here](https://www.advancemame.it/download) under `AdvanceCOMP` package and move the `advzip.exe` executable to the main project folder
-7. Run command `./gradlew build` or `gradlew build` in the terminal
-8. The compiled mod jar should be located in `./build/libs/` folder
+6. Move the content *(the inside of the folder)* of `src/main/generated/data/humility-afm/recipie(s)/datapack` to `src/main/resources/resourcepacks/alternate_wooden_mosaics_recipes/data/humility-afm/recipie(s)/`
+7. Move the content *(the inside of the folder)* of `src/main/generated/data/humility-afm/advancement(s)/recipes/misc/datapack` to `src/main/resources/resourcepacks/alternate_wooden_mosaics_recipes/data/humility-afm/advancement(s)/recipes/misc/`
+8. Run command `./gradlew build` or `gradlew build` in the terminal
+9. The compiled mod jar should be located in `./build/libs/` folder
 
 [//]: # (TODO: Create a script to automate the above steps, or at least step 4)
 
