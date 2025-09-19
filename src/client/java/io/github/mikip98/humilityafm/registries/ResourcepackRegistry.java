@@ -19,7 +19,14 @@ public class ResourcepackRegistry {
             register("cabinet_vanilla_rp_compat", container, "Cabinets Vanilla RP Compat Improvement", ResourcePackActivationType.NORMAL);
             register("low_quality_cabinet", container, "Low Quality Cabinets", ResourcePackActivationType.NORMAL);
             // Jack o'Lanterns
-            register("jack_o_lanterns_vanilla_rp_compat", container, "Jack o'Lanterns Vanilla RP Compat Improvement", ResourcePackActivationType.NORMAL);
+            register("jack_o_lantern_vanilla_rp_compat", container, "Jack o'Lanterns Vanilla RP Compat Improvement", ResourcePackActivationType.NORMAL);
+            register("special_jack_o_lanterns_optifine_emission", container, "Special Jack o'Lanterns Optifine Emission", ResourcePackActivationType.NORMAL);
+            register("coloured_jack_o_lanterns_optifine_emission", container, "Coloured Jack o'Lanterns Optifine Emission", ResourcePackActivationType.NORMAL);
+            register("special_jack_o_lanterns_labpbr_emission_face", container, "Special Jack o'Lanterns LabPBR Emission Sharp Face", ResourcePackActivationType.DEFAULT_ENABLED);
+            register("coloured_jack_o_lanterns_labpbr_emission_face", container, "Coloured Jack o'Lanterns LabPBR Emission Sharp Face", ResourcePackActivationType.DEFAULT_ENABLED);
+//            register("special_jack_o_lanterns_labpbr_emission_smooth", container, "Special Jack o'Lanterns LabPBR Smooth", ResourcePackActivationType.NORMAL);
+//            register("coloured_jack_o_lanterns_labpbr_emission_smooth", container, "Coloured Jack o'Lanterns LabPBR Smooth", ResourcePackActivationType.NORMAL);
+
             // ......... DATA PACKS .........
             register("alternate_wooden_mosaic_recipies", container, "Alternate Wooden Mosaic Recipies", ResourcePackActivationType.NORMAL);
         });
