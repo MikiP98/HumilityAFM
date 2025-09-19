@@ -9,7 +9,6 @@ import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -19,7 +18,8 @@ public class ClientNetworkRegistry {
     public static void register() {
         ClientPlayNetworking.registerGlobalReceiver(NetworkRegistry.CONFIG_SYNC, (client, handler, buf, responseSender) -> {
             boolean serverConfigEnableCandlestickBeta = buf.readBoolean();
-            boolean serverConfigEnableColouredFeatureSetBeta  = buf.readBoolean();
+            boolean serverConfigEnableColouredFeatureSetBeta = buf.readBoolean();
+            float serverMosaicsAndTilesStrengthMultiplayer = buf.readFloat();
             Map<SupportedMods, ModSupport> serverConfigModSupport = new EnumMap<>(SupportedMods.class);
             for (SupportedMods mod : SupportedMods.values()) {
                 if (mod == SupportedMods.SHIMMER) continue;
@@ -38,6 +38,12 @@ public class ClientNetworkRegistry {
                         "Coloured Feature Set BETA",
                         serverConfigEnableColouredFeatureSetBeta,
                         ModConfig.getEnableColouredFeatureSetBeta()
+                );
+            if (ModConfig.mosaicsAndTilesStrengthMultiplayer != serverMosaicsAndTilesStrengthMultiplayer)
+                differences.add(
+                        "Mosaics & Tiles Strength Multiplayer",
+                        serverMosaicsAndTilesStrengthMultiplayer,
+                        ModConfig.mosaicsAndTilesStrengthMultiplayer
                 );
             for (SupportedMods mod : SupportedMods.values()) {
                 if (mod == SupportedMods.SHIMMER) continue;
@@ -81,14 +87,18 @@ public class ClientNetworkRegistry {
     }
 
     protected static class DiffList extends ArrayList<String> {
-        void add(String name, Enum<?> server, Enum<?> client) {
-            add(name, server.name(), client.name());
-        }
         void add(String name, boolean server, boolean client) {
             add(name, String.valueOf(server), String.valueOf(client));
+        }
+        public void add(String name, float server, float client) {
+            add(name, String.valueOf(server), String.valueOf(client));
+        }
+        void add(String name, Enum<?> server, Enum<?> client) {
+            add(name, server.name(), client.name());
         }
         void add(String name, String server, String client) {
             super.add(name + " -> server: " + server + " (yours: " + client + ")");
         }
+
     }
 }

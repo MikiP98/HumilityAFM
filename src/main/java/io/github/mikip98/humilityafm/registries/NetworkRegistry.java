@@ -21,6 +21,7 @@ public class NetworkRegistry {
 
             buf.writeBoolean(ModConfig.getEnableCandlestickBeta());
             buf.writeBoolean(ModConfig.getEnableColouredFeatureSetBeta());
+            buf.writeFloat(ModConfig.mosaicsAndTilesStrengthMultiplayer);
             for (SupportedMods mod : SupportedMods.values()) {
                 if (mod == SupportedMods.SHIMMER) continue;
                 buf.writeByte(ModConfig.modSupport.get(mod).ordinal());
