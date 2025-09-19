@@ -9,7 +9,8 @@ import net.minecraft.world.World;
 
 public class JackOLanternSoul extends JackOLantern {
     public JackOLanternSoul() {
-        super(FabricBlockSettings.copyOf(defaultSettings).luminance(8));
+        // Luminance of Soul Torch boosted by 1 as it was too dark
+        super(FabricBlockSettings.copyOf(defaultSettings).luminance(8+1));
     }
 
     @Override
