@@ -107,11 +107,11 @@ Lighten up your builds with unobtrusive light source
       - Optifine emission (coloured face only)
       - LabPBR metadata (emission included) (sharp face)
       - TODO: LabPBR metadata (emission included) (smooth)
+- Fix Outer Light String brightening rendering
 
 ### High priority:
 
 - Redo the window capture screenshots or at least crop the window app bar
-- Fix Outer Light String brightening rendering
 - Fix Cabinet breaking animation being invisible
 - Add Illuminated Cabinet Brightening to the config
 - Add PBR data to:
