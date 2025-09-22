@@ -137,18 +137,20 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
                         break;
                     case SOUTH:
                         // Center the block on the X and Z axis
-                        deltaX = 2*deltaLongAxis;
-                        deltaZ = 2*deltaLongAxis;
+                        // 1.9375 -> 1.875 z-fight, 2.0 z-fight on the other side
+                        deltaX = 1.9375f * deltaLongAxis;
+                        deltaZ = 1.9375f * deltaLongAxis;
                         break;
                     case EAST:
                         // Center the block on the X and Z axis
-                        deltaX = 2*deltaLongAxis;
+                        deltaX = 1.9375f * deltaLongAxis;
                         deltaZ = pixelShift;
                         break;
                     case WEST:
                         // Center the block on the X and Z axis
+                        // 1.9375 -> 1.875 z-fight, 2.0 z-fight on the other side
                         deltaX = pixelShift;
-                        deltaZ = 2*deltaLongAxis;
+                        deltaZ = 1.9375f * deltaLongAxis;
                         break;
                 }
                 break;
@@ -156,18 +158,18 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
                 switch (blockState.get(Properties.HORIZONTAL_FACING)) {
                     case NORTH:
                         // Center the block on the X and Z axis
-                        deltaX = 2*deltaLongAxis;
+                        deltaX = 1.9375f * deltaLongAxis;
                         deltaZ = pixelShift;
                         break;
                     case SOUTH:
                         // Center the block on the X and Z axis
                         deltaX = pixelShift;
-                        deltaZ = 2*deltaLongAxis;
+                        deltaZ = 1.9375f * deltaLongAxis;
                         break;
                     case EAST:
                         // Center the block on the X and Z axis
-                        deltaX = 2*deltaLongAxis;
-                        deltaZ = 2*deltaLongAxis;
+                        deltaX = 1.9375f * deltaLongAxis;
+                        deltaZ = 1.9375f * deltaLongAxis;
                         break;
                     case WEST:
                         // Center the block on the X and Z axis
