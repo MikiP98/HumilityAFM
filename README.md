@@ -98,16 +98,22 @@ Lighten up your builds with unobtrusive light source
 - Improved Cabinet sound a bit
 - Server feature sync:
   - If the client config differs from the server one, display a warning message with the differences
-- Finish built-in jack o'Lantern rp compat resourcepack
+- Finished built-in jack o'Lantern rp compat resourcepack
 - Light Strip Brightening option no longer requires a game restart to take effect
-- Add PBR data to:
+- Added PBR data to:
   - Light Strip models (vanilla emission)
   - Jack o'Lanterns textures:
     - Optional resource packs for:
       - Optifine emission (coloured face only)
       - LabPBR metadata (emission included) (sharp face)
-      - TODO: LabPBR metadata (emission included) (smooth)
-- Fix Outer Light String brightening rendering
+      - LabPBR metadata (emission included) (smooth)
+    - Coloured Torches:
+      - Optifine emission
+      - LabPBR (sharp)
+      - LabPBR (smooth)
+- Fixed Outer Light String brightening rendering
+- Fixed Coloured Feature set translations
+- Reduced the number of blocks in the Coloured Feature Set to 1 per type per colour
 
 ### High priority:
 
@@ -120,8 +126,6 @@ Lighten up your builds with unobtrusive light source
     - Optional resource packs for:
       - LabPBR specular (full texture)
 - Redo coloured torch textures using the Jack o'Lantern palette system
-- Reduce the number of coloured torches and jack o'Lanterns
-  - Think of a system that can replace the current 3 blocks per colour with different light output levels
 - Finish built-in coloured torches rp compat resourcepack
 - Add 'Shimmer' and 'Bliss' support for all the blocks from coloured feature set:
   - Coloured Torches
