@@ -4,16 +4,24 @@ generated/
 src/main/generated/
 
 
+# Jack o'Lanterns
 src/main/resources/resourcepacks/coloured_jack_o_lanterns_labpbr_emission_face/assets/
 src/main/resources/resourcepacks/special_jack_o_lanterns_labpbr_emission_face/assets/
-src/main/resources/resourcepacks/coloured_jack_o_lanterns_labpbr_full/assets/
-src/main/resources/resourcepacks/special_jack_o_lanterns_labpbr_full/assets/
+src/main/resources/resourcepacks/coloured_jack_o_lanterns_labpbr_emission_smooth/assets/
+src/main/resources/resourcepacks/special_jack_o_lanterns_labpbr_emission_smooth/assets/
+# Coloured Torches
+src/main/resources/resourcepacks/coloured_torch_labpbr_sharp/assets/
+src/main/resources/resourcepacks/coloured_torch_labpbr_smooth/assets/
+# Cabinets
+src/main/resources/resourcepacks/cabinet_labpbr_full/assets/
 
 src/main/resources/resourcepacks/alternate_wooden_mosaic_recipies/data/
 
 
 advzip.exe
 advzip.exe.lnk
+
+image_recompressor.py
 
 server/
 
