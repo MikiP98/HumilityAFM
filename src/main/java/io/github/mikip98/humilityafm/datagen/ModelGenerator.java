@@ -41,6 +41,7 @@ public class ModelGenerator extends FabricModelProvider {
     protected static final Model OUTER_CORNER_STAIRS_MODEL = getModel("block/stairs_outer");
     // Coloured Torch Model
     protected static final Model TORCH_TEMPLATE_MODEL = getModel("block/torch_template");
+    protected static final Model TORCH_WALL_TEMPLATE_MODEL = getModel("block/torch_wall_template");
     // Candlestick Models
     protected static final Model CANDLESTICK_STANDING_MODEL = getModel("block/candlestick");
     protected static final Model CANDLESTICK_STANDING_WITH_CANDLE_MODEL = getModel("block/candlestick_candle");
@@ -126,6 +127,27 @@ public class ModelGenerator extends FabricModelProvider {
                         )
                 );
     }
+    protected static VariantsBlockStateSupplier getTorchOrientableBlockState(Block block, Identifier modelId) {
+        return VariantsBlockStateSupplier.create(block)
+                .coordinate(BlockStateVariantMap.create(Properties.HORIZONTAL_FACING)
+                        .register(
+                                Direction.NORTH,
+                                getUVLockedVariantY(modelId, VariantSettings.Rotation.R270)
+                        )
+                        .register(
+                                Direction.SOUTH,
+                                getUVLockedVariantY(modelId, VariantSettings.Rotation.R90)
+                        )
+                        .register(
+                                Direction.WEST,
+                                getUVLockedVariantY(modelId, VariantSettings.Rotation.R180)
+                        )
+                        .register(
+                                Direction.EAST,
+                                getVariant(modelId)
+                        )
+                );
+    }
 
     protected static void generateColouredTorchModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
         int i = 0;
@@ -139,12 +161,15 @@ public class ModelGenerator extends FabricModelProvider {
                     textureMap,
                     blockStateModelGenerator.modelCollector
             );
-            blockStateModelGenerator.registerParentedItemModel(BlockRegistry.COLOURED_TORCH_WEAK_VARIANTS[i], torchModelId);
-            blockStateModelGenerator.registerParentedItemModel(BlockRegistry.COLOURED_TORCH_VARIANTS[i], torchModelId);
-            blockStateModelGenerator.registerParentedItemModel(BlockRegistry.COLOURED_TORCH_STRONG_VARIANTS[i], torchModelId);
-            blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(BlockRegistry.COLOURED_TORCH_WEAK_VARIANTS[i], torchModelId));
+            final Identifier wallTorchModelId = TORCH_WALL_TEMPLATE_MODEL.upload(
+                    getId("block/coloured_torch/coloured_torch_wall_" + color),
+                    textureMap,
+                    blockStateModelGenerator.modelCollector
+            );
+
+            blockStateModelGenerator.registerParentedItemModel(ItemRegistry.COLOURED_TORCH_ITEM_VARIANTS[i], torchModelId);
             blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(BlockRegistry.COLOURED_TORCH_VARIANTS[i], torchModelId));
-            blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(BlockRegistry.COLOURED_TORCH_STRONG_VARIANTS[i], torchModelId));
+            blockStateModelGenerator.blockStateCollector.accept(getTorchOrientableBlockState(BlockRegistry.COLOURED_WALL_TORCH_VARIANTS[i], wallTorchModelId));
             ++i;
         }
     }
