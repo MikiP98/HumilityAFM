@@ -169,6 +169,7 @@ Lighten up your builds with unobtrusive light source
 - Optimise the model datagen
 - Convert the config from JSON to TOML
 - Consider making Polymorph an optional dependency, now with the alternative wooden mosaic recipie datapack it is no longer needed, that said people might still be confused if they didn't have either enabled/installed
+- Add proper translations for the Resource Packs
 
 ### Low/unknown priority:
 
