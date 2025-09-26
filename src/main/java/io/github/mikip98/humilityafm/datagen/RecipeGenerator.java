@@ -51,12 +51,13 @@ public class RecipeGenerator extends AFMRecipieProvider {
         generateWoodenMosaicRecipies(exporter);
         generateTerracottaTileRecipies(exporter);
         generateForcedCornerStairsRecipies(exporter);
-        generateJackOLanternRecipies(exporter);
-        generateGlowingPowderRecipies(exporter);
-        generateColouredTorchRecipies(exporter);
+        generateSpecialJackOLanternRecipies(exporter);
         // Optional
         generateCandlestickRecipies(exporter);
+        generateGlowingPowderRecipies(exporter);
         generateLightStripRecipies(exporter);
+        generateColouredTorchRecipies(exporter);
+        generateColouredJackOLanternRecipies(exporter);
     }
 
     protected static void generateCabinetRecipies(RecipeExporter exporter) {
@@ -227,9 +228,9 @@ public class RecipeGenerator extends AFMRecipieProvider {
 
             String materialName = materialLayer.name();
             if (materialType == MaterialType.STONY) {
-                // If the matarial ends in "bricks", chnage it to "brick"
+                // If the material ends in 'bricks', cut the 's'
                 if (materialName.endsWith("bricks")) {
-                    materialName = materialName.substring(0, materialName.length() - 6) + "brick";
+                    materialName = materialName.substring(0, materialName.length() - 1);
                 }
             }
 
@@ -247,13 +248,13 @@ public class RecipeGenerator extends AFMRecipieProvider {
         }
     }
 
-    protected static void generateJackOLanternRecipies(RecipeExporter exporter) {
-        Item carved_pumpkin = getItemFromName("carved_pumpkin");
+    protected static void generateSpecialJackOLanternRecipies(RecipeExporter exporter) {
+        Item carved_pumpkin = Items.CARVED_PUMPKIN;
         offerDoubleInputShapelessRecipe(
                 exporter,
                 BlockRegistry.JACK_O_LANTERN_REDSTONE,
                 carved_pumpkin,
-                getItemFromName("redstone_torch"),
+                Items.REDSTONE_TORCH,
                 MOD_ID + "/jack_o_lanterns",
                 1,
                 "jack_o_lanterns/"
@@ -262,30 +263,19 @@ public class RecipeGenerator extends AFMRecipieProvider {
                 exporter,
                 BlockRegistry.JACK_O_LANTERN_SOUL,
                 carved_pumpkin,
-                getItemFromName("soul_torch"),
+                Items.SOUL_TORCH,
                 MOD_ID + "/jack_o_lanterns",
                 1,
                 "jack_o_lanterns/"
         );
+    }
+    protected static void generateColouredJackOLanternRecipies(Consumer<RecipeJsonProvider> exporter) {
+        Item carved_pumpkin = Items.CARVED_PUMPKIN;
 
         for (int i = 0; i < RawGenerationData.vanillaColorPallet.length; ++i) {
-            ItemConvertible weakJackOLantern = BlockRegistry.COLOURED_JACK_O_LANTERNS_WEAK[i];
             ItemConvertible jackOLantern = BlockRegistry.COLOURED_JACK_O_LANTERNS[i];
-            ItemConvertible strongJackOLantern = BlockRegistry.COLOURED_JACK_O_LANTERNS_STRONG[i];
-
-            ItemConvertible weakTorch = BlockRegistry.COLOURED_TORCH_WEAK_VARIANTS[i];
             ItemConvertible torch = BlockRegistry.COLOURED_TORCH_VARIANTS[i];
-            ItemConvertible strongTorch = BlockRegistry.COLOURED_TORCH_WEAK_VARIANTS[i];
 
-            offerDoubleInputShapelessRecipe(
-                    exporter,
-                    weakJackOLantern,
-                    carved_pumpkin,
-                    weakTorch,
-                    MOD_ID + "/jack_o_lanterns",
-                    1,
-                    "jack_o_lanterns/weak/"
-            );
             offerDoubleInputShapelessRecipe(
                     exporter,
                     jackOLantern,
@@ -294,15 +284,6 @@ public class RecipeGenerator extends AFMRecipieProvider {
                     MOD_ID + "/jack_o_lanterns",
                     1,
                     "jack_o_lanterns/normal/"
-            );
-            offerDoubleInputShapelessRecipe(
-                    exporter,
-                    strongJackOLantern,
-                    carved_pumpkin,
-                    strongTorch,
-                    MOD_ID + "/jack_o_lanterns",
-                    1,
-                    "jack_o_lanterns/strong/"
             );
         }
     }
@@ -331,61 +312,14 @@ public class RecipeGenerator extends AFMRecipieProvider {
     protected static void generateColouredTorchRecipies(RecipeExporter exporter) {
         final int length = ActiveGenerationData.colouredFeatureSetMaterials.size();
         for (int i = 0; i < length; i++) {
-            ItemConvertible weakColouredTorch = BlockRegistry.COLOURED_TORCH_WEAK_VARIANTS[i];
             ItemConvertible colouredTorch = BlockRegistry.COLOURED_TORCH_VARIANTS[i];
-            ItemConvertible strongColouredTorch = BlockRegistry.COLOURED_TORCH_STRONG_VARIANTS[i];
-
             Item glowingPowder = ItemRegistry.GLOWING_POWDER_VARIANTS[i];
-
-            // Weak Coloured Torch
-            offerColouredTorchRecipe(
-                    exporter,
-                    weakColouredTorch,
-                    glowingPowder, 1,
-                    MOD_ID + "/coloured_torches",
-                    "coloured_torches/weak/"
-            );
-
-            // Coloured Torch
             offerColouredTorchRecipe(
                     exporter,
                     colouredTorch,
-                    glowingPowder, 2,
-                    MOD_ID + "/coloured_torches",
-                    "coloured_torches/normal/"
-            );
-            offerColouredTorchUpgradeRecipe(
-                    exporter,
-                    colouredTorch,
-                    weakColouredTorch,
-                    glowingPowder, 1,
-                    MOD_ID + "/coloured_torches",
-                    "coloured_torches/normal/upgrade/"
-            );
-
-            // Strong Coloured Torch
-            offerColouredTorchRecipe(
-                    exporter,
-                    strongColouredTorch,
                     glowingPowder, 3,
                     MOD_ID + "/coloured_torches",
                     "coloured_torches/strong/"
-            );
-            offerColouredTorchUpgradeRecipe(
-                    exporter,
-                    strongColouredTorch,
-                    weakColouredTorch,
-                    glowingPowder, 2,
-                    MOD_ID + "/coloured_torches",
-                    "coloured_torches/strong/upgrade_weak/"
-            );
-            offerColouredTorchUpgradeRecipe(
-                    exporter,
-                    strongColouredTorch,
-                    colouredTorch,
-                    glowingPowder, 1,
-                    MOD_ID + "/coloured_torches",
-                    "coloured_torches/strong/upgrade_normal/"
             );
         }
     }

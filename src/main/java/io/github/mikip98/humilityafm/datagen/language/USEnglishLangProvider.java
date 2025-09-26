@@ -123,19 +123,14 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
             translations.put("jack_o_lantern_soul", "Soul Jack o'Lantern");
         }
         public void generateColouredJackOLanternTranslations() {
-            final String idPrefix = "jack_o_lantern_";
+            final String idPrefix = "coloured_jack_o_lantern_";
             final String nameSuffix = " Jack o'Lantern";
             enterTranslations(ActiveGenerationData.colouredFeatureSetMaterials, idPrefix, nameSuffix);
         }
-        // TODO: Figure out how to simplify this effectively
         public void generateColouredTorchesTranslations() {
-            for (BlockMaterial material : ActiveGenerationData.colouredFeatureSetMaterials) {
-                String idPrefix = "coloured_torch_" + material.getSafeName();
-                String name = formatName(material.getRawName()).toLowerCase() + " torch";
-                translations.put(idPrefix + "_weak", "Weak " + name.toLowerCase());
-                translations.put(idPrefix, name);
-                translations.put(idPrefix + "_strong", "Strong " + name.toLowerCase());
-            }
+            final String idPrefix = "coloured_torch_";
+            final String nameSuffix = " torch";
+            enterTranslations(ActiveGenerationData.colouredFeatureSetMaterials, idPrefix, nameSuffix);
         }
         public void generateLightStripTranslations() {
             final String idPrefix = "light_strip_";

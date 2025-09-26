@@ -34,6 +34,9 @@
 		"client": [
             "io.github.mikip98.humilityafm.HumilityAFMClient"
 		],
+		"server": [
+			"io.github.mikip98.humilityafm.HumilityAFMServer"
+		],
 		"fabric-datagen": [
 			"io.github.mikip98.humilityafm.HumilityAFMDataGenerator"
 		]

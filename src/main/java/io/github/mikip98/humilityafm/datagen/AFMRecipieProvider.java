@@ -35,7 +35,7 @@ public abstract class AFMRecipieProvider extends FabricRecipeProvider {
                 .offerTo(exporter, path_prefix + getRecipeName(output));
     }
 
-    protected static void  offerAlternateWoodenMosaicRecipe(RecipeExporter exporter, ItemConvertible output, ItemConvertible plank1, ItemConvertible plank2, String path_prefix) {
+    protected static void offerAlternateWoodenMosaicRecipe(RecipeExporter exporter, ItemConvertible output, ItemConvertible plank1, ItemConvertible plank2, String path_prefix) {
         ShapedRecipeJsonBuilder
                 .create(RecipeCategory.MISC, output, 1)
                 .pattern("FS")
@@ -48,7 +48,7 @@ public abstract class AFMRecipieProvider extends FabricRecipeProvider {
                 .criterion(hasItem(plank2), conditionsFromItem(plank2))
                 .offerTo(exporter, path_prefix + getRecipeName(output));
     }
-    protected static void offerWoodenMosaicRecipe(RecipeExporter exporter, ItemConvertible output, ItemConvertible plank1, ItemConvertible plank2, String path_prefix) {
+    protected static void offerWoodenMosaicRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible plank1, ItemConvertible plank2, String path_prefix) {
         offerCheckerPatternRecipe(exporter, output, plank1, plank2, MOD_ID + "/wooden_mosaics", path_prefix);
     }
     protected static void offerTerracottaTileRecipe(RecipeExporter exporter, ItemConvertible output, ItemConvertible terracotta1, ItemConvertible terracotta2, String path_prefix) {
@@ -131,16 +131,6 @@ public abstract class AFMRecipieProvider extends FabricRecipeProvider {
                 .group(group)
                 .criterion(hasItem(Items.STICK), conditionsFromItem(Items.STICK))
                 .criterion(hasItem(Items.QUARTZ), conditionsFromItem(Items.QUARTZ))
-                .criterion(hasItem(glowingPowder), conditionsFromItem(glowingPowder))
-                .offerTo(exporter, path_prefix + getRecipeName(output));
-    }
-    protected static void offerColouredTorchUpgradeRecipe(RecipeExporter exporter, ItemConvertible output, ItemConvertible weakerColouredTorch, ItemConvertible glowingPowder, int glowingPowderAmount, @Nullable String group, String path_prefix) {
-        ShapelessRecipeJsonBuilder
-                .create(RecipeCategory.MISC, output)
-                .input(weakerColouredTorch)
-                .input(glowingPowder, glowingPowderAmount)
-                .group(group)
-                .criterion(hasItem(weakerColouredTorch), conditionsFromItem(weakerColouredTorch))
                 .criterion(hasItem(glowingPowder), conditionsFromItem(glowingPowder))
                 .offerTo(exporter, path_prefix + getRecipeName(output));
     }
