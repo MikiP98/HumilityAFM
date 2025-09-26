@@ -3,11 +3,11 @@ package io.github.mikip98.humilityafm.config;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 public class ModConfig extends ModDefaultConfig {
     public static boolean transparentCabinetBlocks = defaultTransparentCabinetBlocks;
+    public static boolean illuminatedCabinetBlockBrightening = defaultIlluminatedCabinetBlockBrightening;
     public static boolean enableLightStripBrightening = defaultEnableLightStripBrightening;
     public static boolean enableLightStripRadiusColorCompensation = defaultEnableLightStripRadiusColorCompensation;
     @Setter
@@ -25,13 +25,6 @@ public class ModConfig extends ModDefaultConfig {
 
     public static boolean datagenMode = defaultDatagenMode;
     public static boolean printInChatServerClientMissmatch = defaultPrintInChatServerClientMissmatch;
-
-    public static short lightStripColoredLightStrength = defaultLightStripColoredLightStrength;
-    public static short lightStripColoredLightRadius = defaultLightStripColoredLightRadius;
-    public static short lightStripRadiusColorCompensationBias = defaultLightStripRadiusColorCompensationBias;
-
-    public static ArrayList<Color> lightStripColors = defaultLightStripColors;
-    public static Map<String, Color> pumpkinColors = defaultPumpkinColors;
 
     public static Map<SupportedMods, ModSupport> modSupport = defaultModSupport;
 }

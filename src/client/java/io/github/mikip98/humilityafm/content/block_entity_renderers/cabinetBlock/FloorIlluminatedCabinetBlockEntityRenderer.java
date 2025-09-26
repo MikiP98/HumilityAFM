@@ -1,7 +1,9 @@
 package io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock;
 
+import io.github.mikip98.humilityafm.content.block_entity_renderers.LightStripBlockEntityRenderer;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering.ItemFloorRendering;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering.RenderSelfBrightening;
+import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntity;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorIlluminatedCabinetBlockEntity;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.FloorIlluminatedCabinetBlock;
 import net.fabricmc.api.EnvType;
@@ -15,7 +17,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 @Environment(EnvType.CLIENT)
-public class FloorIlluminatedCabinetBlockEntityRenderer implements BlockEntityRenderer<FloorIlluminatedCabinetBlockEntity>, ItemFloorRendering, RenderSelfBrightening {
+public class FloorIlluminatedCabinetBlockEntityRenderer implements BlockEntityRenderer<FloorIlluminatedCabinetBlockEntity>, ItemFloorRendering {
+    protected static RenderFunction renderFunction = FloorIlluminatedCabinetBlockEntityRenderer::fakeRunnable;
+    public static void enableBrightening() { renderFunction = RenderSelfBrightening::renderSelfBrightening; }
+    public static void disableBrightening() { renderFunction = FloorIlluminatedCabinetBlockEntityRenderer::fakeRunnable; }
+
     @SuppressWarnings("unused")
     public FloorIlluminatedCabinetBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {}
 
@@ -30,6 +36,23 @@ public class FloorIlluminatedCabinetBlockEntityRenderer implements BlockEntityRe
 
         renderItem(blockEntity, blockState, matrices, vertexConsumers, 255, overlay);
         final float posisionConstant = 1.15f;
-        renderSelfBrightening(blockState, posisionConstant, posisionConstant, posisionConstant, matrices, vertexConsumers, light, overlay);
+        renderFunction.execute(blockState, posisionConstant, posisionConstant, posisionConstant, matrices, vertexConsumers, light, overlay);
+    }
+    @SuppressWarnings("unused")
+    static void fakeRunnable(
+            BlockState blockState,
+            float posisionConstant, float posisionConstantX, float posisionConstantZ,
+            MatrixStack matrices, VertexConsumerProvider vertexConsumers,
+            int light, int overlay
+    ) {}
+
+    @FunctionalInterface
+    protected interface RenderFunction {
+        void execute(
+                BlockState blockState,
+                float posisionConstant, float posisionConstantX, float posisionConstantZ,
+                MatrixStack matrices, VertexConsumerProvider vertexConsumers,
+                int light, int overlay
+        );
     }
 }

@@ -7,7 +7,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 
 public interface RenderSelfBrightening {
-    default void renderSelfBrightening(
+    static void renderSelfBrightening(
             BlockState blockState,
             float posisionConstant, float posisionConstantX, float posisionConstantZ,
             MatrixStack matrices, VertexConsumerProvider vertexConsumers,
@@ -31,7 +31,7 @@ public interface RenderSelfBrightening {
         );
     }
 
-    default void renderSelf(
+    static void renderSelf(
             float lightMultiplayer, int lightAddition,
             float blockSizeX, float blockSizeYZ,
             float posisionConstant, float posisionConstantX, float posisionConstantZ, float scale,

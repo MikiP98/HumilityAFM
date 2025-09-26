@@ -1,6 +1,6 @@
 package io.github.mikip98.humilityafm.config;
 
-public class Color {
+public class Colour {
     public String name;
     public short r;
     public short g;
@@ -10,7 +10,7 @@ public class Color {
     public final short defaultG;
     public final short defaultB;
 
-    public Color(String name, short r, short g, short b) {
+    public Colour(String name, short r, short g, short b) {
         this.name = name;
         this.r = r;
         this.g = g;
@@ -19,7 +19,7 @@ public class Color {
         this.defaultG = g;
         this.defaultB = b;
     }
-    public Color(String name, int r, int g, int b) {
+    public Colour(String name, int r, int g, int b) {
         this(name, (short) r, (short) g, (short) b);
     }
 

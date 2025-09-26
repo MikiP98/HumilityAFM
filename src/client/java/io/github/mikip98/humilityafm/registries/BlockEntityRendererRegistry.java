@@ -20,6 +20,11 @@ public class BlockEntityRendererRegistry {
         register(BlockEntityRegistry.FLOOR_CABINET_BLOCK_ENTITY, FloorCabinetBlockEntityRenderer::new);
         register(BlockEntityRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_ENTITY, FloorIlluminatedCabinetBlockEntityRenderer::new);
 
+        if (ModConfig.illuminatedCabinetBlockBrightening) {
+            IlluminatedCabinetBlockEntityRenderer.enableBrightening();
+            FloorIlluminatedCabinetBlockEntityRenderer.enableBrightening();
+        }
+
         if (ModConfig.getEnableColouredFeatureSetBeta()) {
             register(BlockEntityRegistry.LIGHT_STRIP_BLOCK_ENTITY, LightStripBlockEntityRenderer::new);
 

@@ -1,15 +1,15 @@
 package io.github.mikip98.humilityafm.config;
 
 import io.github.mikip98.humilityafm.content.block_entity_renderers.LightStripBlockEntityRenderer;
+import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.FloorIlluminatedCabinetBlockEntityRenderer;
+import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.IlluminatedCabinetBlockEntityRenderer;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
-import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +36,22 @@ public class ModConfigScreen {
                 .build()
         );
         rootCategory.addEntry(ConfigEntryBuilder.create()
+                .startBooleanToggle(Text.literal("Enable Illuminated Cabinet Brightening"), ModConfig.illuminatedCabinetBlockBrightening)
+                .setDefaultValue(ModConfig.defaultIlluminatedCabinetBlockBrightening)
+                .setTooltip(Text.of("Enables Light Strips Brightening, better looking, small performance impact.\n(Auto disabled when Shimmer is installed)"))
+                .setSaveConsumer(value -> {
+                    ModConfig.illuminatedCabinetBlockBrightening = value;
+                    if (value) {
+                        IlluminatedCabinetBlockEntityRenderer.enableBrightening();
+                        FloorIlluminatedCabinetBlockEntityRenderer.enableBrightening();
+                    } else {
+                        IlluminatedCabinetBlockEntityRenderer.disableBrightening();
+                        FloorIlluminatedCabinetBlockEntityRenderer.disableBrightening();
+                    }
+                })
+                .build()
+        );
+        rootCategory.addEntry(ConfigEntryBuilder.create()
                 .startBooleanToggle(Text.literal("Enable Light Strip Brightening"), ModConfig.enableLightStripBrightening)
                 .setDefaultValue(ModConfig.defaultEnableLightStripBrightening)
                 .setTooltip(Text.of("Enables Light Strips Brightening, better looking, small performance impact.\n(Auto disabled when Shimmer is installed)"))
@@ -44,13 +60,6 @@ public class ModConfigScreen {
                     if (value) LightStripBlockEntityRenderer.enableBrightening();
                     else LightStripBlockEntityRenderer.disableBrightening();
                 })
-                .build()
-        );
-        rootCategory.addEntry(ConfigEntryBuilder.create()
-                .startBooleanToggle(Text.literal("Enable Light Strip Radius Color Compensation"), ModConfig.enableLightStripRadiusColorCompensation)
-                .setDefaultValue(ModConfig.defaultEnableLightStripRadiusColorCompensation)
-                .setTooltip(Text.of("Enables Light Strip Radius Color Compensation\nTries to increase brightness without losing out on saturation\n(Requires Shimmer to be installed)"))
-                .setSaveConsumer(value -> ModConfig.enableLightStripRadiusColorCompensation = value)
                 .build()
         );
         rootCategory.addEntry(ConfigEntryBuilder.create()
@@ -105,85 +114,24 @@ public class ModConfigScreen {
         ConfigCategory customizationCategory = builder.getOrCreateCategory(Text.literal("Blocks Customization"));
 
         customizationCategory.addEntry(ConfigEntryBuilder.create()
-                .startIntSlider(Text.literal("Light Strip Colored Light Strength"), ModConfig.lightStripColoredLightStrength, 0, 255)
-                .setDefaultValue(85)
-                .setTooltip(Text.of("The strength of the Light Strip Colored Light.\n(Requires Shimmer to be installed)"))
-                .setSaveConsumer(value -> ModConfig.lightStripColoredLightStrength = value.shortValue())
-                .build()
-        );
-        customizationCategory.addEntry(ConfigEntryBuilder.create()
-                .startIntSlider(Text.literal("Light Strip Colored Light Radius"), ModConfig.lightStripColoredLightRadius, 0, 63)
-                .setDefaultValue(9)
-                .setTooltip(Text.of("The radius of the Light Strip Colored Light.\n(Requires Shimmer to be installed)"))
-                .setSaveConsumer(value -> ModConfig.lightStripColoredLightRadius = value.shortValue())
-                .build()
-        );
-        customizationCategory.addEntry(ConfigEntryBuilder.create()
-                .startIntSlider(Text.literal("Light Strip Radius Color Compensation Bias"), ModConfig.lightStripRadiusColorCompensationBias, -1, 1)
-                .setDefaultValue(0)
-                .setTooltip(Text.of("The bias of the Light Strip Radius Color Compensation.\n(Requires Shimmer to be installed)"))
-                .setSaveConsumer(value -> ModConfig.lightStripRadiusColorCompensationBias = value.shortValue())
-                .build()
-        );
-        customizationCategory.addEntry(ConfigEntryBuilder.create()
                 .startIntSlider(Text.literal("Cabinet Block Burn Time"), ModConfig.cabinetBlockBurnTime, 0, 64)
-                .setDefaultValue(24)
+                .setDefaultValue(ModConfig.defaultCabinetBlockBurnTime)
                 .setSaveConsumer(value -> ModConfig.cabinetBlockBurnTime = value)
                 .build()
         );
         customizationCategory.addEntry(ConfigEntryBuilder.create()
                 .startIntSlider(Text.literal("Cabinet Block Fire Spread"), ModConfig.cabinetBlockFireSpread, 0, 64)
-                .setDefaultValue(9)
+                .setDefaultValue(ModConfig.defaultCabinetBlockFireSpread)
                 .setSaveConsumer(value -> ModConfig.cabinetBlockFireSpread = value)
                 .build()
         );
         customizationCategory.addEntry(ConfigEntryBuilder.create()
                 .startFloatField(Text.literal("Mosaics and Tiles Strength Multiplayer"), ModConfig.mosaicsAndTilesStrengthMultiplayer)
-                .setDefaultValue(1.5f)
+                .setDefaultValue(ModConfig.defaultMosaicsAndTilesStrengthMultiplayer)
                 .setSaveConsumer(value -> ModConfig.mosaicsAndTilesStrengthMultiplayer = value)
                 .build()
         );
 
-        ConfigCategory lightStripColorsCategory = builder.getOrCreateCategory(Text.literal("Light Strip Colors"));
-
-        for (Color color : ModConfig.lightStripColors) {
-            lightStripColorsCategory.addEntry(ConfigEntryBuilder.create()
-                    .startSubCategory(Text.of(color.name), createColorEntries(color))
-                    .build());
-        }
-
-        ConfigCategory pumpkinColorsCategory = builder.getOrCreateCategory(Text.literal("Pumpkin Colors"));
-
-        for (Color color : ModConfig.pumpkinColors.values()) {
-            pumpkinColorsCategory.addEntry(ConfigEntryBuilder.create()
-                    .startSubCategory(Text.of(color.name), createColorEntries(color))
-                    .build());
-        }
-
         return builder.build();
-    }
-
-    @SuppressWarnings("rawtypes")
-    private static List<AbstractConfigListEntry> createColorEntries(Color color) {
-        List<AbstractConfigListEntry> entries = new ArrayList<>();
-        entries.add(ConfigEntryBuilder.create()
-                .startIntSlider(Text.literal("Red"), color.r, 0, 255)
-                .setDefaultValue(color.defaultR)
-                .setSaveConsumer(value -> color.r = value.shortValue())
-                .build()
-        );
-        entries.add(ConfigEntryBuilder.create()
-                .startIntSlider(Text.literal("Green"), color.g, 0, 255)
-                .setDefaultValue(color.defaultG)
-                .setSaveConsumer(value -> color.g = value.shortValue())
-                .build()
-        );
-        entries.add(ConfigEntryBuilder.create()
-                .startIntSlider(Text.literal("Blue"), color.b, 0, 255)
-                .setDefaultValue(color.defaultB)
-                .setSaveConsumer(value -> color.b = value.shortValue())
-                .build()
-        );
-        return entries;
     }
 }
