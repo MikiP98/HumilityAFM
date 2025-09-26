@@ -89,6 +89,7 @@ Lighten up your builds with unobtrusive light source
 - Reduced the jar size:
   - Minified the included JSON files
   - Recompressed the jar with `advzip -3 -i 5`
+  - Recompressed all the image files
 - Fixed coloured jack o'Lanterns being based on the redstone jack o'Lantern block variant
 - Code clean-up:
   - BlockEntityRegistry
@@ -103,47 +104,43 @@ Lighten up your builds with unobtrusive light source
 - Added PBR data to:
   - Light Strip models (vanilla emission)
   - Jack o'Lanterns textures:
-    - Optional resource packs for:
-      - Optifine emission (coloured face only)
-      - LabPBR metadata (emission included) (sharp face)
-      - LabPBR metadata (emission included) (smooth)
-    - Coloured Torches:
-      - Optifine emission
-      - LabPBR (sharp)
-      - LabPBR (smooth)
+    - Optifine emission (coloured face only)
+    - LabPBR metadata (emission included) (sharp face)
+    - LabPBR metadata (emission included) (smooth)
+  - Coloured Torches:
+    - Optifine emission
+    - LabPBR (sharp)
+    - LabPBR (smooth)
+  - Cabinets
 - Fixed Outer Light String brightening rendering
 - Fixed Coloured Feature set translations
 - Reduced the number of blocks in the Coloured Feature Set to 1 per type per colour
+- Added Illuminated Cabinet Brightening to the config
+- Removed Shimmer Colour configuration from the config  
+  The colours should be handled by Shimmer, Shimmer Support Layer, user and/or respective shaders
 
 ### High priority:
 
 - Redo the window capture screenshots or at least crop the window app bar
 - Fix Cabinet breaking animation being invisible
-- Add Illuminated Cabinet Brightening to the config
-- Add PBR data to:
-  - Cabinet front texture:
-    - LabPBR specular (pixels only)
-    - Optional resource packs for:
-      - LabPBR specular (full texture)
 - Redo coloured torch textures using the Jack o'Lantern palette system
-- Finish built-in coloured torches rp compat resourcepack
-- Add 'Shimmer' and 'Bliss' support for all the blocks from coloured feature set:
-  - Coloured Torches
-  - Coloured Jack o'Lanterns
-  - Light Strips
 - Improve the built-in mod support for:
   - BetterNether
   - BetterEnd
   - Biomes o' Plenty
   - *(Add stone variants from the above mods, and fix the missing wood variants)*
-- Add special built-in mod support for:
-  - Sundries
-  - Couple other mods with custom wood types
 
 ### Medium priority:
 
+- Add 'Bliss' support for all the blocks from coloured feature set:
+  - Coloured Torches
+  - Coloured Jack o'Lanterns
+  - Light Strips
+- Finish built-in coloured torches rp compat resourcepack
 - Add special built-in mod support for:
+  - Sundries
   - DivineRPG
+  - Couple other mods with custom wood types
 - Improve the speciality of Soul Jack o'Lantern :/
   - Make them work as bookshelves for enchanting?
   - Make them boost monster spawners?
