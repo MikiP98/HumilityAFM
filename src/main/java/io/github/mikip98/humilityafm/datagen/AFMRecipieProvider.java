@@ -48,7 +48,7 @@ public abstract class AFMRecipieProvider extends FabricRecipeProvider {
                 .criterion(hasItem(plank2), conditionsFromItem(plank2))
                 .offerTo(exporter, path_prefix + getRecipeName(output));
     }
-    protected static void offerWoodenMosaicRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible plank1, ItemConvertible plank2, String path_prefix) {
+    protected static void offerWoodenMosaicRecipe(RecipeExporter exporter, ItemConvertible output, ItemConvertible plank1, ItemConvertible plank2, String path_prefix) {
         offerCheckerPatternRecipe(exporter, output, plank1, plank2, MOD_ID + "/wooden_mosaics", path_prefix);
     }
     protected static void offerTerracottaTileRecipe(RecipeExporter exporter, ItemConvertible output, ItemConvertible terracotta1, ItemConvertible terracotta2, String path_prefix) {

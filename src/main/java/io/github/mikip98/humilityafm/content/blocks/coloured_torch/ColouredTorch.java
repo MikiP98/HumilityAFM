@@ -6,8 +6,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.TorchBlock;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particle.ParticleEffect;
-import net.minecraft.sound.SoundEvent;
+import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
@@ -22,9 +21,9 @@ public class ColouredTorch extends TorchBlock {
     public static final IntProperty POWER = Properties.POWER;
 
     public static final Settings defaultSettings = Settings.copy(Blocks.TORCH);
-    public ColouredTorch(ParticleEffect particle) { this(defaultSettings, particle); }
-    public ColouredTorch(Settings settings, ParticleEffect particle) {
-        super(settings.luminance((state) -> state.get(POWER)), particle);
+    public ColouredTorch(DefaultParticleType particle) { this(defaultSettings, particle); }
+    public ColouredTorch(Settings settings, DefaultParticleType particle) {
+        super(particle, settings.luminance((state) -> state.get(POWER)));
         setDefaultState(getDefaultState().with(POWER, 15));
     }
 

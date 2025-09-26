@@ -269,7 +269,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
                 "jack_o_lanterns/"
         );
     }
-    protected static void generateColouredJackOLanternRecipies(Consumer<RecipeJsonProvider> exporter) {
+    protected static void generateColouredJackOLanternRecipies(RecipeExporter exporter) {
         Item carved_pumpkin = Items.CARVED_PUMPKIN;
 
         for (int i = 0; i < RawGenerationData.vanillaColorPallet.length; ++i) {
