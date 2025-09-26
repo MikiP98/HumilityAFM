@@ -132,15 +132,15 @@ public class ModelGenerator extends FabricModelProvider {
                 .coordinate(BlockStateVariantMap.create(Properties.HORIZONTAL_FACING)
                         .register(
                                 Direction.NORTH,
-                                getUVLockedVariantY(modelId, VariantSettings.Rotation.R270)
+                                getVariantY(modelId, VariantSettings.Rotation.R270)
                         )
                         .register(
                                 Direction.SOUTH,
-                                getUVLockedVariantY(modelId, VariantSettings.Rotation.R90)
+                                getVariantY(modelId, VariantSettings.Rotation.R90)
                         )
                         .register(
                                 Direction.WEST,
-                                getUVLockedVariantY(modelId, VariantSettings.Rotation.R180)
+                                getVariantY(modelId, VariantSettings.Rotation.R180)
                         )
                         .register(
                                 Direction.EAST,
