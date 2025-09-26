@@ -61,12 +61,8 @@ public class ItemGroupRegistry {
                 if (ModConfig.getEnableColouredFeatureSetBeta()) {
                     Arrays.stream(ItemRegistry.GLOWING_POWDER_VARIANTS).forEach(entries::add);
                     Arrays.stream(BlockRegistry.LIGHT_STRIP_VARIANTS).forEach(entries::add);
-                    Arrays.stream(BlockRegistry.COLOURED_TORCH_WEAK_VARIANTS).forEach(entries::add);
-                    Arrays.stream(BlockRegistry.COLOURED_TORCH_VARIANTS).forEach(entries::add);
-                    Arrays.stream(BlockRegistry.COLOURED_TORCH_STRONG_VARIANTS).forEach(entries::add);
-                    Arrays.stream(BlockRegistry.COLOURED_JACK_O_LANTERNS_WEAK).forEach(entries::add);
+                    Arrays.stream(ItemRegistry.COLOURED_TORCH_ITEM_VARIANTS).forEach(entries::add);
                     Arrays.stream(BlockRegistry.COLOURED_JACK_O_LANTERNS).forEach(entries::add);
-                    Arrays.stream(BlockRegistry.COLOURED_JACK_O_LANTERNS_STRONG).forEach(entries::add);
                 }
                 if (ModConfig.getEnableCandlestickBeta()) {
                     Arrays.stream(ItemRegistry.CANDLESTICK_ITEM_VARIANTS).forEach(entries::add);
@@ -115,16 +111,10 @@ public class ItemGroupRegistry {
         if (ModConfig.getEnableColouredFeatureSetBeta()) {
             // Light Strips
             putIntoItemGroup(BlockRegistry.LIGHT_STRIP_VARIANTS, ItemGroups.COLORED_BLOCKS);
-
             // Coloured Torches
-            putIntoItemGroup(BlockRegistry.COLOURED_TORCH_WEAK_VARIANTS, ItemGroups.COLORED_BLOCKS);
-            putIntoItemGroup(BlockRegistry.COLOURED_TORCH_VARIANTS, ItemGroups.COLORED_BLOCKS);
-            putIntoItemGroup(BlockRegistry.COLOURED_TORCH_STRONG_VARIANTS, ItemGroups.COLORED_BLOCKS);
-
+            putIntoItemGroup(ItemRegistry.COLOURED_TORCH_ITEM_VARIANTS, ItemGroups.COLORED_BLOCKS);
             // Coloured Jack o'Lanterns
-            putIntoItemGroup(BlockRegistry.COLOURED_JACK_O_LANTERNS_WEAK, ItemGroups.COLORED_BLOCKS);
             putIntoItemGroup(BlockRegistry.COLOURED_JACK_O_LANTERNS, ItemGroups.COLORED_BLOCKS);
-            putIntoItemGroup(BlockRegistry.COLOURED_JACK_O_LANTERNS_STRONG, ItemGroups.COLORED_BLOCKS);
         }
     }
 
