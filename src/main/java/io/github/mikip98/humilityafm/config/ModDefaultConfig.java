@@ -2,7 +2,6 @@ package io.github.mikip98.humilityafm.config;
 
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
