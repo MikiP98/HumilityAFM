@@ -73,7 +73,6 @@ def main() -> None:
         input_path = pbr_folder_prefix + key
         print("Distributing:", input_path)
 
-        grayscaleify(input_path)
         input_img = combine_channels(input_path)
 
         # Save once into memory
@@ -121,18 +120,6 @@ def combine_channels(path):
 
     # Merge into RGBA
     return Image.merge("RGBA", (red, green, blue, alpha))
-
-
-def grayscaleify(path):
-    red = Image.open(path + "red.png").convert("L")
-    red.save(path + "red.png", format="PNG", optimize=True, compress_level=9)
-    green = Image.open(path + "green.png").convert("L")
-    green.save(path + "green.png", format="PNG", optimize=True, compress_level=9)
-    blue = Image.open(path + "blue.png").convert("L")
-    blue.save(path + "blue.png", format="PNG", optimize=True, compress_level=9)
-    if os.path.exists(path + "alpha.png"):
-        alpha = Image.open(path + "alpha.png").convert("L")
-        alpha.save(path + "alpha.png", format="PNG", optimize=True, compress_level=9)
 
 
 if __name__ == "__main__":
