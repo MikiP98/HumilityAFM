@@ -97,11 +97,25 @@ def main() -> None:
 
 def combine_channels(path):
     # Open each image in grayscale mode (L = 8-bit pixels, black and white)
-    red = Image.open(path + "red.png").convert("L")
-    green = Image.open(path + "green.png").convert("L")
-    blue = Image.open(path + "blue.png").convert("L")
+    if os.path.exists(path + "red.png"):
+        red = Image.open(path + "red.png").convert("L")
+    else:
+        red = Image.open(path + "red.webp").convert("L")
+
+    if os.path.exists(path + "green.png"):
+        green = Image.open(path + "green.png").convert("L")
+    else:
+        green = Image.open(path + "green.webp").convert("L")
+
+    if os.path.exists(path + "blue.png"):
+        blue = Image.open(path + "blue.png").convert("L")
+    else:
+        blue = Image.open(path + "blue.webp").convert("L")
+
     if os.path.exists(path + "alpha.png"):
         alpha = Image.open(path + "alpha.png").convert("L")
+    elif os.path.exists(path + "alpha.webp"):
+        alpha = Image.open(path + "alpha.webp").convert("L")
     else:
         alpha = Image.new("L", (16, 16), color=255)
 
