@@ -6,7 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.render.RenderLayer;
 
 public class RenderLayerRegistry {
-    protected static final RenderLayer cabinetRenderLayer = ModConfig.transparentCabinetBlocks ? RenderLayer.getTranslucent() : RenderLayer.getCutout();
+    protected static final RenderLayer cabinetRenderLayer = ModConfig.transparentCabinetBlocks ? RenderLayer.getTranslucent() : RenderLayer.getCutoutMipped();
     public static void register() {
         applyCabinetRenderLayer(BlockRegistry.CABINET_BLOCK);
         applyCabinetRenderLayer(BlockRegistry.ILLUMINATED_CABINET_BLOCK);
