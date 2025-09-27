@@ -98,9 +98,11 @@ public interface ImplementedInventory extends Inventory {
     @Override
     default void setStack(int slot, ItemStack stack) {
         getItems().set(slot, stack);
-        if (stack.getCount() > stack.getMaxCount()) {
-            stack.setCount(stack.getMaxCount());
-        }
+        // The below code was part of the template used
+        // but as Builderb0y noticed, I don't think this is a correct place for such check
+//        if (stack.getCount() > stack.getMaxCount()) {
+//            stack.setCount(stack.getMaxCount());
+//        }
     }
     
     /**

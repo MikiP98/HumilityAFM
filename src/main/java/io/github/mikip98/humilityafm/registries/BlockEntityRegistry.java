@@ -7,6 +7,7 @@ import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorCab
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorIlluminatedCabinetBlockEntity;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.IlluminatedCabinetBlockEntity;
 import net.minecraft.block.Block;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -15,8 +16,6 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
-import static io.github.mikip98.humilityafm.registries.BlockRegistry.CABINET_BLOCK;
-import static io.github.mikip98.humilityafm.registries.BlockRegistry.ILLUMINATED_CABINET_BLOCK;
 
 public class BlockEntityRegistry {
     // Cabinet block entity
@@ -29,59 +28,55 @@ public class BlockEntityRegistry {
 
     public static void register() {
         //Register cabinet block entity
-        CABINET_BLOCK_ENTITY = Registry.register(
-                Registries.BLOCK_ENTITY_TYPE,
-                getId("cabinet_block_entity"),
-                BlockEntityType.Builder.create(
-                        CabinetBlockEntity::new,
-                        concat(CABINET_BLOCK, BlockRegistry.WALL_CABINET_BLOCK_VARIANTS)
-                ).build()
+        CABINET_BLOCK_ENTITY = register(
+                "cabinet_block_entity",
+                CabinetBlockEntity::new,
+                concat(BlockRegistry.CABINET_BLOCK, BlockRegistry.WALL_CABINET_BLOCK_VARIANTS)
         );
         //Register illuminated cabinet block entity
-        ILLUMINATED_CABINET_BLOCK_ENTITY = Registry.register(
-                Registries.BLOCK_ENTITY_TYPE,
-                getId("illuminated_cabinet_block_entity"),
-                BlockEntityType.Builder.create(
-                        IlluminatedCabinetBlockEntity::new,
-                        concat(ILLUMINATED_CABINET_BLOCK, BlockRegistry.WALL_ILLUMINATED_CABINET_BLOCK_VARIANTS)
-                ).build()
+        ILLUMINATED_CABINET_BLOCK_ENTITY = register(
+                "illuminated_cabinet_block_entity",
+                IlluminatedCabinetBlockEntity::new,
+                concat(BlockRegistry.ILLUMINATED_CABINET_BLOCK, BlockRegistry.WALL_ILLUMINATED_CABINET_BLOCK_VARIANTS)
         );
         //Register floor cabinet block entity
-        FLOOR_CABINET_BLOCK_ENTITY = Registry.register(
-                Registries.BLOCK_ENTITY_TYPE,
-                getId("floor_cabinet_block_entity"),
-                BlockEntityType.Builder.create(
-                        FloorCabinetBlockEntity::new,
-                        BlockRegistry.FLOOR_CABINET_BLOCK_VARIANTS
-                ).build()
+        FLOOR_CABINET_BLOCK_ENTITY = register(
+                "floor_cabinet_block_entity",
+                FloorCabinetBlockEntity::new,
+                concat(BlockRegistry.FLOOR_CABINET_BLOCK, BlockRegistry.FLOOR_CABINET_BLOCK_VARIANTS)
         );
         //Register floor illuminated cabinet block entity
-        FLOOR_ILLUMINATED_CABINET_BLOCK_ENTITY = Registry.register(
-                Registries.BLOCK_ENTITY_TYPE,
-                getId("floor_illuminated_cabinet_block_entity"),
-                BlockEntityType.Builder.create(
-                        FloorIlluminatedCabinetBlockEntity::new,
-                        BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_VARIANTS
-                ).build()
+        FLOOR_ILLUMINATED_CABINET_BLOCK_ENTITY = register(
+                "floor_illuminated_cabinet_block_entity",
+                FloorIlluminatedCabinetBlockEntity::new,
+                concat(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK, BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_VARIANTS)
         );
 
         //Register LED block entity
         if (ModConfig.getEnableColouredFeatureSetBeta()) {
-            LIGHT_STRIP_BLOCK_ENTITY = Registry.register(
-                    Registries.BLOCK_ENTITY_TYPE,
-                    getId("light_strip_block_entity"),
-                    BlockEntityType.Builder.create(
-                            LightStripBlockEntity::new,
-                            BlockRegistry.LIGHT_STRIP_VARIANTS
-                    ).build()
+            LIGHT_STRIP_BLOCK_ENTITY = register(
+                    "light_strip_block_entity",
+                    LightStripBlockEntity::new,
+                    BlockRegistry.LIGHT_STRIP_VARIANTS
             );
         }
     }
 
-    protected static Block[] concat(Block block, Block[] blocks) {
+    protected static Block[] concat(Block block, Block... blocks) {
         return Stream.concat(
                 Stream.of(block),
                 Arrays.stream(blocks)
         ).toArray(Block[]::new);
+    }
+
+    protected static <T extends BlockEntity> BlockEntityType<T> register(
+            String name,
+            BlockEntityType.BlockEntityFactory<T> entityFactory,
+            Block... blocks
+    ) {
+        return Registry.register(
+                Registries.BLOCK_ENTITY_TYPE, getId(name),
+                BlockEntityType.Builder.create(entityFactory, blocks).build()
+        );
     }
 }

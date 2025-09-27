@@ -67,12 +67,8 @@ public class BlockLootTableGenerator extends FabricBlockLootTableProvider {
         // Light Strips
         Arrays.stream(BlockRegistry.LIGHT_STRIP_VARIANTS).forEach(this::addDrop);
         // Coloured Torches
-        Arrays.stream(BlockRegistry.COLOURED_TORCH_WEAK_VARIANTS).forEach(this::addDrop);
         Arrays.stream(BlockRegistry.COLOURED_TORCH_VARIANTS).forEach(this::addDrop);
-        Arrays.stream(BlockRegistry.COLOURED_TORCH_STRONG_VARIANTS).forEach(this::addDrop);
         // Coloured Jack o'Lanterns
-        Arrays.stream(BlockRegistry.COLOURED_JACK_O_LANTERNS_WEAK).forEach(this::addDrop);
         Arrays.stream(BlockRegistry.COLOURED_JACK_O_LANTERNS).forEach(this::addDrop);
-        Arrays.stream(BlockRegistry.COLOURED_JACK_O_LANTERNS_STRONG).forEach(this::addDrop);
     }
 }

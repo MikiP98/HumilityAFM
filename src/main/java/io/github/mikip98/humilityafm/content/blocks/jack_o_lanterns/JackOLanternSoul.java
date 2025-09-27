@@ -8,6 +8,7 @@ import net.minecraft.world.World;
 
 public class JackOLanternSoul extends JackOLantern {
     public JackOLanternSoul() {
+        // Luminance of Soul Torch boosted by 1 as it was too dark
         super(getDefaultSettings().luminance((ignored) -> 8));
     }
 

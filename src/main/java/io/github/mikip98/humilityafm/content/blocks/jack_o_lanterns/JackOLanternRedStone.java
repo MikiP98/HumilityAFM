@@ -23,6 +23,7 @@ public class JackOLanternRedStone extends JackOLantern {
 
 
     public JackOLanternRedStone() {
+        // Luminance of Redstone Torch boosted by 1 as it was too dark
         super(getDefaultSettings().luminance((state) -> state.get(LIT) ? 7 : 0));
         setDefaultState(getDefaultState().with(LIT, true));
     }

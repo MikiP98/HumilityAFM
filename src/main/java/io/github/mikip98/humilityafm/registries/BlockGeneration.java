@@ -1,6 +1,7 @@
 package io.github.mikip98.humilityafm.registries;
 
 import io.github.mikip98.humilityafm.config.ModConfig;
+import io.github.mikip98.humilityafm.content.blocks.coloured_torch.ColouredTorch;
 import io.github.mikip98.humilityafm.content.blocks.LightStripBlock;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.CabinetBlock;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.FloorCabinetBlock;
@@ -11,7 +12,8 @@ import io.github.mikip98.humilityafm.content.blocks.candlestick.FloorCandlestick
 import io.github.mikip98.humilityafm.content.blocks.candlestick.FloorRustableCandlestick;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.RustableCandlestick;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.RustableCandlestickLogic;
-import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.JackOLanternRedStone;
+import io.github.mikip98.humilityafm.content.blocks.coloured_torch.ColouredWallTorch;
+import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.ColouredJackOLantern;
 import io.github.mikip98.humilityafm.content.blocks.stairs.InnerStairs;
 import io.github.mikip98.humilityafm.content.blocks.stairs.OuterStairs;
 import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
@@ -22,8 +24,6 @@ import io.github.mikip98.humilityafm.util.generation_data.material_management.ma
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.TorchBlock;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.particle.SimpleParticleType;
 import net.minecraft.sound.BlockSoundGroup;
@@ -248,55 +248,41 @@ public abstract class BlockGeneration {
             // If Coloured Feature Set is disabled, return an empty set
             return new ColouredFeatureBlockSet(
                     null,
-                    null, null, null,
-                    null, null, null
+                    null,
+                    null,
+                    null
             );
         } else {
-            final AbstractBlock.Settings weakTorchSettings = AbstractBlock.Settings.copy(Blocks.TORCH).luminance((ignored) -> 7);
-            final AbstractBlock.Settings normalTorchSettings = AbstractBlock.Settings.copy(Blocks.TORCH).luminance((ignored) -> 11);
-            final AbstractBlock.Settings strongTorchSettings = AbstractBlock.Settings.copy(Blocks.TORCH).luminance((ignored) -> 15);
             final SimpleParticleType torchParticle = ParticleTypes.FLAME;
 
             List<Block> lightStripVariants = new ArrayList<>();
-            List<Block> colouredTorchWeakVariants = new ArrayList<>();
             List<Block> colouredTorchVariants = new ArrayList<>();
-            List<Block> colouredTorchStrongVariants = new ArrayList<>();
-            List<Block> colouredJackOLanternsWeak = new ArrayList<>();
+            List<Block> colouredWallTorchVariants = new ArrayList<>();
             List<Block> colouredJackOLanterns = new ArrayList<>();
-            List<Block> colouredJackOLanternsStrong = new ArrayList<>();
 
             for (BlockMaterial material : ActiveGenerationData.colouredFeatureSetMaterials) {
                 final String name = material.getSafeName();
                 // Light Strip
                 lightStripVariants.add(registerWithItem(new LightStripBlock(), "light_strip_" + name));
-                // Coloured Torches
-                colouredTorchWeakVariants.add(registerWithItem(new TorchBlock(torchParticle, weakTorchSettings), "coloured_torch_" + name + "_weak"));
-                colouredTorchVariants.add(registerWithItem(new TorchBlock(torchParticle, normalTorchSettings), "coloured_torch_" + name));
-                colouredTorchStrongVariants.add(registerWithItem(new TorchBlock(torchParticle, strongTorchSettings), "torch_strong" + name));
-                // Coloured Jack O'Lanterns
-                colouredJackOLanternsWeak.add(registerWithItem(new JackOLanternRedStone(), "coloured_weak_jack_o_lantern_" + name));
-                colouredJackOLanterns.add(registerWithItem(new JackOLanternRedStone(), "coloured_jack_o_lantern_" + name));
-                colouredJackOLanternsStrong.add(registerWithItem(new JackOLanternRedStone(), "coloured_strong_jack_o_lantern_" + name));
+                // Coloured Torch
+                colouredTorchVariants.add(register(new ColouredTorch(torchParticle), "coloured_torch_" + name));
+                colouredWallTorchVariants.add(register(new ColouredWallTorch(torchParticle), "coloured_wall_torch_" + name));
+                // Coloured Jack O'Lantern
+                colouredJackOLanterns.add(registerWithItem(new ColouredJackOLantern(), "coloured_jack_o_lantern_" + name));
             }
             return new ColouredFeatureBlockSet(
                     lightStripVariants.toArray(Block[]::new),
-                    colouredTorchWeakVariants.toArray(Block[]::new),
                     colouredTorchVariants.toArray(Block[]::new),
-                    colouredTorchStrongVariants.toArray(Block[]::new),
-                    colouredJackOLanternsWeak.toArray(Block[]::new),
-                    colouredJackOLanterns.toArray(Block[]::new),
-                    colouredJackOLanternsStrong.toArray(Block[]::new)
+                    colouredWallTorchVariants.toArray(Block[]::new),
+                    colouredJackOLanterns.toArray(Block[]::new)
             );
         }
     }
     protected record ColouredFeatureBlockSet(
             Block[] lightStripVariants,
-            Block[] colouredTorchWeakVariants,
             Block[] colouredTorchVariants,
-            Block[] colouredTorchStrongVariants,
-            Block[] colouredJackOLanternWeakVariants,
-            Block[] colouredJackOLanternVariants,
-            Block[] colouredJackOLanternStrongVariants
+            Block[] colouredWallTorchVariants,
+            Block[] colouredJackOLanternVariants
     ) {}
 
 

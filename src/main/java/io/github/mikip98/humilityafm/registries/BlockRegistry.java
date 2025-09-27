@@ -68,21 +68,15 @@ public class BlockRegistry extends BlockGeneration {
 
     // COLOURED FEATURES BETA
     public static final Block[] LIGHT_STRIP_VARIANTS;
-    public static final Block[] COLOURED_TORCH_WEAK_VARIANTS;
     public static final Block[] COLOURED_TORCH_VARIANTS;
-    public static final Block[] COLOURED_TORCH_STRONG_VARIANTS;
-    public static final Block[] COLOURED_JACK_O_LANTERNS_WEAK;
+    public static final Block[] COLOURED_WALL_TORCH_VARIANTS;
     public static final Block[] COLOURED_JACK_O_LANTERNS;
-    public static final Block[] COLOURED_JACK_O_LANTERNS_STRONG;
     static {
         ColouredFeatureBlockSet colouredFeatureBlockSet = generateColouredFeatureBlockSet();
         LIGHT_STRIP_VARIANTS = colouredFeatureBlockSet.lightStripVariants();
-        COLOURED_TORCH_WEAK_VARIANTS = colouredFeatureBlockSet.colouredTorchWeakVariants();
         COLOURED_TORCH_VARIANTS = colouredFeatureBlockSet.colouredTorchVariants();
-        COLOURED_TORCH_STRONG_VARIANTS = colouredFeatureBlockSet.colouredTorchStrongVariants();
-        COLOURED_JACK_O_LANTERNS_WEAK = colouredFeatureBlockSet.colouredJackOLanternWeakVariants();
+        COLOURED_WALL_TORCH_VARIANTS = colouredFeatureBlockSet.colouredWallTorchVariants();
         COLOURED_JACK_O_LANTERNS = colouredFeatureBlockSet.colouredJackOLanternVariants();
-        COLOURED_JACK_O_LANTERNS_STRONG = colouredFeatureBlockSet.colouredJackOLanternStrongVariants();
     }
 
 

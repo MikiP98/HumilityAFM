@@ -86,55 +86,61 @@ Lighten up your builds with unobtrusive light source
 
 ### Done:
 
-- Add special built-in mod support for:
-  - BetterNether
-  - BetterEnd
-  - Biomes o' Plenty
-- Fix nether wood block variants burning
-- Move duplicated code to Interfaces (candlesticks)
-- Reworked the whole block generation system
-- Add an optional datapack with alternate, non crafting-table colliding, wooden mosaic recipes
-  - This datapack will be disabled by default on MC versions from 1.20.1 (included) to 1.21.4 (excluded)
-  - From 1.21.4 onwards, the datapack will be enabled by default because of `polymorph` mod's absence
+- Reduced the jar size:
+  - Minified the included JSON files
+  - Recompressed the jar with `advzip -3 -i 5`
+  - Recompressed all the image files
+- Fixed coloured jack o'Lanterns being based on the redstone jack o'Lantern block variant
+- Code clean-up:
+  - BlockEntityRegistry
+  - CabinetBlock
+  - Client side code
+- Fixed Cabinets displaying the items after it got removed
+- Improved Cabinet sound a bit
+- Server feature sync:
+  - If the client config differs from the server one, display a warning message with the differences
+- Finished built-in jack o'Lantern rp compat resourcepack
+- Light Strip Brightening option no longer requires a game restart to take effect
+- Added PBR data to:
+  - Light Strip models (vanilla emission)
+  - Jack o'Lanterns textures:
+    - Optifine emission (coloured face only)
+    - LabPBR metadata (emission included) (sharp face)
+    - LabPBR metadata (emission included) (smooth)
+  - Coloured Torches:
+    - Optifine emission
+    - LabPBR (sharp)
+    - LabPBR (smooth)
+  - Cabinets
+- Fixed Outer Light String brightening rendering
+- Fixed Coloured Feature set translations
+- Reduced the number of blocks in the Coloured Feature Set to 1 per type per colour
+- Added Illuminated Cabinet Brightening to the config
+- Removed Shimmer Colour configuration from the config  
+  The colours should be handled by Shimmer, Shimmer Support Layer, user and/or respective shaders
 
 ### High priority:
 
 - Redo the window capture screenshots or at least crop the window app bar
 - Fix Cabinet breaking animation being invisible
-  - Make sure all other breaking animations are also visible
-- Finish built-in jack o'Lantern rp compat resourcepack
-- Finish built-in coloured torches rp compat resourcepack
-- Add 'Shimmer' and 'Bliss' support for all the blocks from coloured feature set:
-  - Coloured Torches
-  - Coloured Jack o'Lanterns
-  - Light Strips
-- Add Illuminated Cabinet Brightening to the config
-- Add PBR data to:
-  - Cabinet front texture:
-    - LabPBR specular (pixels only)
-    - Optional resourcepacks for:
-      - LabPBR specular (full texture)
-  - Jack o'Lanterns textures:
-    - vanilla emission (coloured face only)
-    - LabPBR emission (coloured face only)
-    - Optional resourcepacks for:
-      - vanilla emission (full texture)
-      - LabPBR emission (full texture)
 - Redo coloured torch textures using the Jack o'Lantern palette system
-- Reduce the number of coloured torches and jack o'Lanterns
-  - Think of a system that can replace the current 3 blocks per colour with different light output levels
 - Improve the built-in mod support for:
   - BetterNether
   - BetterEnd
   - Biomes o' Plenty
-  - Add stone variants from the above mods, and fix the missing wood variants
-- Add special built-in mod support for:
-  - DivineRPG
-  - Couple other mods with custom wood types
-- Move duplicated code to Interfaces (cabinet block entity renderers)
+  - *(Add stone variants from the above mods, and fix the missing wood variants)*
 
 ### Medium priority:
 
+- Add 'Bliss' support for all the blocks from coloured feature set:
+  - Coloured Torches
+  - Coloured Jack o'Lanterns
+  - Light Strips
+- Finish built-in coloured torches rp compat resourcepack
+- Add special built-in mod support for:
+  - Sundries
+  - DivineRPG
+  - Couple other mods with custom wood types
 - Improve the speciality of Soul Jack o'Lantern :/
   - Make them work as bookshelves for enchanting?
   - Make them boost monster spawners?
@@ -163,14 +169,13 @@ Lighten up your builds with unobtrusive light source
 - Optimise the model datagen
 - Convert the config from JSON to TOML
 - Consider making Polymorph an optional dependency, now with the alternative wooden mosaic recipie datapack it is no longer needed, that said people might still be confused if they didn't have either enabled/installed
+- Add proper translations for the Resource Packs
 
 ### Low/unknown priority:
 
 - Add leather variants of the cabinets?
 - Make the leather cabinets dyable?
 - Add carpet covered stairs?
-- Server feature sync?
-  - If done through a datapack, the blocks can be enabled by default on the client?
 - Backport to older MC versions?:
   - 1.19.2?
   - 1.18.2?
@@ -188,6 +193,9 @@ Lighten up your builds with unobtrusive light source
 - Improve Illuminated Cabinet Brightening rendering?
 - Add thin <sup>*(Blibiocraft style)*</sup> and short cabinets?
 - Add a feature to connect 2 neighboring Cabinets into a big one?
+- Custom renderer for wooden mosaics to reduce file size?
+  - [Message on Fabric DC server](https://discord.com/channels/507304429255393322/507982478276034570/1414634100610044004)
+- Runtime resourcepack generation? (datapacks)
 
 <br>
 
@@ -199,7 +207,7 @@ Lighten up your builds with unobtrusive light source
 If you want support for specific MC version pls create an [issue on GitHub](https://github.com/MikiP98/HumilityAFM/issues)
 
 **Q:** Can you port to mod to forge?  
-**A:** I wanted this to be a forge mod, but I just could get even the empty template to work and I gave up.  
+**A:** I wanted this to be a forge mod, but I just couldn't get even the empty forge template to work and I gave up.  
 I'm not planing on porting the mod myself, but if you are interested in porting it yourself, you can, pls let me know of such projects on GitHub :)  
 You can also use the mod [Kilt](https://github.com/KiltMC/Kilt) to run forge mods on fabric
 
@@ -238,21 +246,24 @@ breaking their backward compatibility
 ## Building instructions:
 
 1. Download the source code from [GitHub](https://github.com/MikiP98/HumilityAFM)
-2. Download the dependent mods for datagen and put them under `./build/datagen/mods/`
+2. Download the `advzip` utility, you can find it [here](https://www.advancemame.it/download) under `AdvanceCOMP` package and move the `advzip.exe` executable to the main project folder
+3. Download the dependent mods for datagen and put them under `./build/datagen/mods/`
    - [**Better End**](https://modrinth.com/mod/betterend)
    - [**Better Nether**](https://modrinth.com/mod/betternether)
    - [**Biomes o' Plenty**](https://modrinth.com/mod/biomes-o-plenty)
    - *Dependencies of the above mods*
-3. Run command `./gradlew runDatagen` or `gradlew runDatagen` in the terminal
+4. Run the `pbr_redistributor.py` scripts using the command `python pbr_redistributor.py`
+5. Run command `./gradlew runDatagen` or `gradlew runDatagen` in the terminal
     - When the command fails, enable `datagenMode` in the config file under `./build/datagen/config/humility-afm.json`
-4. Move the content *(the inside of the folder)* of `src/main/generated/data/humility-afm/recipies/datapack` to `src/main/resources/resourcepacks/alternate_wooden_mosaics_recipes/data/humility-afm/recipies/`
-5. Move the content *(the inside of the folder)* of `src/main/generated/data/humility-afm/advancements/recipes/misc/datapack` to `src/main/resources/resourcepacks/alternate_wooden_mosaics_recipes/data/humility-afm/advancements/recipes/misc/`
-6. Run command `./gradlew build` or `gradlew build` in the terminal
-7. The compiled mod jar should be located in `./build/libs/` folder
+6. Move the content *(the inside of the folder)* of `src/main/generated/data/humility-afm/recipie(s)/datapack` to `src/main/resources/resourcepacks/alternate_wooden_mosaics_recipes/data/humility-afm/recipie(s)/`
+7. Move the content *(the inside of the folder)* of `src/main/generated/data/humility-afm/advancement(s)/recipes/misc/datapack` to `src/main/resources/resourcepacks/alternate_wooden_mosaics_recipes/data/humility-afm/advancement(s)/recipes/misc/`
+8. Run command `./gradlew build` or `gradlew build` in the terminal
+9. The compiled mod jar should be located in `./build/libs/` folder
 
 [//]: # (TODO: Create a script to automate the above steps, or at least step 4)
 
 <br>
 
 
+*If you like this mod, consider supporting me on [Ko-fi](https://ko-fi.com/miki277733) (ᵔ◡ᵔ)*  
 *Checkout my [other mods](https://modrinth.com/user/Miki-Liki) :)*
