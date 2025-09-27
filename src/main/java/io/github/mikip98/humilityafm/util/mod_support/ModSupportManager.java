@@ -2,7 +2,6 @@ package io.github.mikip98.humilityafm.util.mod_support;
 
 import io.github.mikip98.humilityafm.config.ModConfig;
 import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -45,20 +44,8 @@ public class ModSupportManager {
 
         // Ask fabric if the mod is loaded
         if (fabricLoader.isModLoaded(mod.modId)) {
-            addMod(mod);
-            return;
+            loadedMods.add(mod);
+            LOGGER.info("Supported mod '{}' ({}) has been found present {}", mod.modName, mod.modId, getRandomFunSymbol());
         }
-
-        // Backup check if the mod is present in case the mod is not loaded (IDK how this really works)
-        for (ModContainer modContainer : fabricLoader.getAllMods()) {
-            if (modContainer.getMetadata().getId().equals(mod.modId)) {
-                addMod(mod);
-                return;
-            }
-        }
-    }
-    public static void addMod(SupportedMods mod) {
-        loadedMods.add(mod);
-        LOGGER.info("Supported mod '{}' ({}) has been found present {}", mod.modName, mod.modId, getRandomFunSymbol());
     }
 }

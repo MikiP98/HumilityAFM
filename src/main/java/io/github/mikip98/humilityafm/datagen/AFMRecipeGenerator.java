@@ -61,12 +61,13 @@ public class AFMRecipeGenerator extends FabricRecipeProvider {
                 generateWoodenMosaicRecipies(itemLookup);
                 generateTerracottaTileRecipies(itemLookup);
                 generateForcedCornerStairsRecipies(itemLookup);
-                generateJackOLanternRecipies(itemLookup);
-                generateGlowingPowderRecipies(itemLookup);
-                generateColouredTorchRecipies(itemLookup);
+                generateSpecialJackOLanternRecipies(itemLookup);
                 // Optional
                 generateCandlestickRecipies(itemLookup);
+                generateGlowingPowderRecipies(itemLookup);
                 generateLightStripRecipies(itemLookup);
+                generateColouredTorchRecipies(itemLookup);
+                generateColouredJackOLanternRecipies(itemLookup);
             }
 
             private void generateCabinetRecipies(RegistryWrapper.Impl<Item> itemLookup) {
@@ -261,13 +262,13 @@ public class AFMRecipeGenerator extends FabricRecipeProvider {
                 }
             }
 
-            private void generateJackOLanternRecipies(RegistryWrapper.Impl<Item> itemLookup) {
-                Item carved_pumpkin = getItemFromName("carved_pumpkin");
+            private void generateSpecialJackOLanternRecipies(RegistryWrapper.Impl<Item> itemLookup) {
+                Item carved_pumpkin = Items.CARVED_PUMPKIN;
                 offerDoubleInputShapelessRecipe(
                         itemLookup, exporter,
                         BlockRegistry.JACK_O_LANTERN_REDSTONE,
                         carved_pumpkin,
-                        getItemFromName("redstone_torch"),
+                        Items.REDSTONE_TORCH,
                         MOD_ID + "/jack_o_lanterns",
                         1,
                         "jack_o_lanterns/"
@@ -276,30 +277,19 @@ public class AFMRecipeGenerator extends FabricRecipeProvider {
                         itemLookup, exporter,
                         BlockRegistry.JACK_O_LANTERN_SOUL,
                         carved_pumpkin,
-                        getItemFromName("soul_torch"),
+                        Items.SOUL_TORCH,
                         MOD_ID + "/jack_o_lanterns",
                         1,
                         "jack_o_lanterns/"
                 );
+            }
+            private void generateColouredJackOLanternRecipies(RegistryWrapper.Impl<Item> itemLookup) {
+                Item carved_pumpkin = Items.CARVED_PUMPKIN;
 
                 for (int i = 0; i < RawGenerationData.vanillaColorPallet.length; ++i) {
-                    ItemConvertible weakJackOLantern = BlockRegistry.COLOURED_JACK_O_LANTERNS_WEAK[i];
                     ItemConvertible jackOLantern = BlockRegistry.COLOURED_JACK_O_LANTERNS[i];
-                    ItemConvertible strongJackOLantern = BlockRegistry.COLOURED_JACK_O_LANTERNS_STRONG[i];
-
-                    ItemConvertible weakTorch = BlockRegistry.COLOURED_TORCH_WEAK_VARIANTS[i];
                     ItemConvertible torch = BlockRegistry.COLOURED_TORCH_VARIANTS[i];
-                    ItemConvertible strongTorch = BlockRegistry.COLOURED_TORCH_WEAK_VARIANTS[i];
 
-                    offerDoubleInputShapelessRecipe(
-                            itemLookup, exporter,
-                            weakJackOLantern,
-                            carved_pumpkin,
-                            weakTorch,
-                            MOD_ID + "/jack_o_lanterns",
-                            1,
-                            "jack_o_lanterns/weak/"
-                    );
                     offerDoubleInputShapelessRecipe(
                             itemLookup, exporter,
                             jackOLantern,
@@ -308,15 +298,6 @@ public class AFMRecipeGenerator extends FabricRecipeProvider {
                             MOD_ID + "/jack_o_lanterns",
                             1,
                             "jack_o_lanterns/normal/"
-                    );
-                    offerDoubleInputShapelessRecipe(
-                            itemLookup, exporter,
-                            strongJackOLantern,
-                            carved_pumpkin,
-                            strongTorch,
-                            MOD_ID + "/jack_o_lanterns",
-                            1,
-                            "jack_o_lanterns/strong/"
                     );
                 }
             }
@@ -345,61 +326,15 @@ public class AFMRecipeGenerator extends FabricRecipeProvider {
             private void generateColouredTorchRecipies(RegistryWrapper.Impl<Item> itemLookup) {
                 final int length = ActiveGenerationData.colouredFeatureSetMaterials.size();
                 for (int i = 0; i < length; i++) {
-                    ItemConvertible weakColouredTorch = BlockRegistry.COLOURED_TORCH_WEAK_VARIANTS[i];
                     ItemConvertible colouredTorch = BlockRegistry.COLOURED_TORCH_VARIANTS[i];
-                    ItemConvertible strongColouredTorch = BlockRegistry.COLOURED_TORCH_STRONG_VARIANTS[i];
-
                     Item glowingPowder = ItemRegistry.GLOWING_POWDER_VARIANTS[i];
-
-                    // Weak Coloured Torch
-                    offerColouredTorchRecipe(
-                            itemLookup, exporter,
-                            weakColouredTorch,
-                            glowingPowder, 1,
-                            MOD_ID + "/coloured_torches",
-                            "coloured_torches/weak/"
-                    );
-
                     // Coloured Torch
                     offerColouredTorchRecipe(
                             itemLookup, exporter,
                             colouredTorch,
-                            glowingPowder, 2,
-                            MOD_ID + "/coloured_torches",
-                            "coloured_torches/normal/"
-                    );
-                    offerColouredTorchUpgradeRecipe(
-                            itemLookup, exporter,
-                            colouredTorch,
-                            weakColouredTorch,
-                            glowingPowder, 1,
-                            MOD_ID + "/coloured_torches",
-                            "coloured_torches/normal/upgrade/"
-                    );
-
-                    // Strong Coloured Torch
-                    offerColouredTorchRecipe(
-                            itemLookup, exporter,
-                            strongColouredTorch,
                             glowingPowder, 3,
                             MOD_ID + "/coloured_torches",
-                            "coloured_torches/strong/"
-                    );
-                    offerColouredTorchUpgradeRecipe(
-                            itemLookup, exporter,
-                            strongColouredTorch,
-                            weakColouredTorch,
-                            glowingPowder, 2,
-                            MOD_ID + "/coloured_torches",
-                            "coloured_torches/strong/upgrade_weak/"
-                    );
-                    offerColouredTorchUpgradeRecipe(
-                            itemLookup, exporter,
-                            strongColouredTorch,
-                            colouredTorch,
-                            glowingPowder, 1,
-                            MOD_ID + "/coloured_torches",
-                            "coloured_torches/strong/upgrade_normal/"
+                            "coloured_torches/"
                     );
                 }
             }

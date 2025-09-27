@@ -1,10 +1,7 @@
 package io.github.mikip98.humilityafm;
 
 import io.github.mikip98.humilityafm.config.ConfigJSON;
-import io.github.mikip98.humilityafm.registries.BlockEntityRegistry;
-import io.github.mikip98.humilityafm.registries.BlockRegistry;
-import io.github.mikip98.humilityafm.registries.ItemGroupRegistry;
-import io.github.mikip98.humilityafm.registries.ItemRegistry;
+import io.github.mikip98.humilityafm.registries.*;
 import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
 import io.github.mikip98.humilityafm.util.mod_support.ModSupportManager;
 import net.fabricmc.api.ModInitializer;
@@ -12,8 +9,6 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.stream.Stream;
 
 import static io.github.mikip98.humilityafm.util.FunUtils.*;
 
@@ -28,14 +23,11 @@ public class HumilityAFM implements ModInitializer {
 		// ------------------------------------ INITIALIZATION ------------------------------------
 		LOGGER.info(MOD_NAME + " is initializing! {}", getRandomFunSymbol());
 		if (Math.random() < 0.05) printPumpkin();
-
 		// Ensure correct loading order of the first crucial static classes
 		// Those 3 have to be loaded in this order before anything else
 		ConfigJSON.loadConfigFromFile();  // Load the config file
 		ModSupportManager.init();  // Check for supported mods (if datagen mode is enabled, all will be marked as preset)
 		ActiveGenerationData.init();  // Initialize active generation data according to which of the supported mods are loaded
-
-		ConfigJSON.checkShimmerSupportConfig();
 
 
 		// ------------------------------------ REGISTRATION --------------------------------------
@@ -47,6 +39,8 @@ public class HumilityAFM implements ModInitializer {
 		ItemRegistry.register();
 		// ............ ITEM GROUPS ............
 		ItemGroupRegistry.registerItemGroups();
+		// ............ NETWORKING ............
+		NetworkRegistry.registerPayload();
 
 
 		// ------------------------------------ CLEANUP -------------------------------------------
@@ -54,16 +48,9 @@ public class HumilityAFM implements ModInitializer {
 	}
 
 	/**
-	 * Returns a new identifier for the given name, in this mod's namespace
+	 * Returns a new identifier for the given name, in 'humility-afm' namespace
 	 */
 	public static Identifier getId(String name) {
 		return Identifier.of(MOD_ID, name);
-	}
-
-	/**
-	 * Returns an array of new identifiers for the given names, in this mod's namespace
-	 */
-	public static Identifier[] getIds(Stream<String> names) {
-		return names.map(HumilityAFM::getId).toArray(Identifier[]::new);
 	}
 }

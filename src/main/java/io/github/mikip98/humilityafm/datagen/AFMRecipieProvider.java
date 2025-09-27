@@ -137,16 +137,6 @@ public abstract class AFMRecipieProvider extends RecipeGenerator {
                 .criterion(hasItem(glowingPowder), conditionsFromItem(glowingPowder))
                 .offerTo(exporter, path_prefix + getRecipeName(output));
     }
-    protected void offerColouredTorchUpgradeRecipe(RegistryWrapper.Impl<Item> itemLookup, RecipeExporter exporter, ItemConvertible output, ItemConvertible weakerColouredTorch, ItemConvertible glowingPowder, int glowingPowderAmount, @Nullable String group, String path_prefix) {
-        ShapelessRecipeJsonBuilder
-                .create(itemLookup, RecipeCategory.MISC, output)
-                .input(weakerColouredTorch)
-                .input(glowingPowder, glowingPowderAmount)
-                .group(group)
-                .criterion(hasItem(weakerColouredTorch), conditionsFromItem(weakerColouredTorch))
-                .criterion(hasItem(glowingPowder), conditionsFromItem(glowingPowder))
-                .offerTo(exporter, path_prefix + getRecipeName(output));
-    }
 
     protected void offerCandlestickRecipie(RegistryWrapper.Impl<Item> itemLookup, RecipeExporter exporter, ItemConvertible output, ItemConvertible ingot, String path_prefix) {
         ShapedRecipeJsonBuilder

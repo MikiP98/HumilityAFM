@@ -1,6 +1,7 @@
 package io.github.mikip98.humilityafm.content.blocks.cabinet;
 
 import com.mojang.serialization.MapCodec;
+import io.github.mikip98.humilityafm.util.SoundUtils;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -10,14 +11,12 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -77,57 +76,41 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-        Hand hand = player.getActiveHand();
-        world.playSound(player, pos, SoundEvents.BLOCK_BAMBOO_BREAK, SoundCategory.BLOCKS, 1, 1);
-
-        if (world.getBlockState(pos).get(OPEN)){
-            if (world.isClient) return ActionResult.SUCCESS;
+        final Hand hand = player.getActiveHand();
+        if (state.get(OPEN)) {
             Inventory cabinetBlockEntity = (Inventory) world.getBlockEntity(pos);
+            assert cabinetBlockEntity != null;
 
-            if (!player.getStackInHand(hand).isEmpty()) {
+            ItemStack playerItemStack = player.getStackInHand(hand);
+            if (!playerItemStack.isEmpty()) {
+                if (playerItemStack.getItem() != cabinetBlockEntity.getStack(0).getItem()) {
+                    // Take from the player the new ItemStack to insert into the Cabinet
+                    ItemStack newCabinetItemStack = player.getStackInHand(hand).split(1);
 
-                assert cabinetBlockEntity != null;
-                if (!cabinetBlockEntity.getStack(0).isEmpty()) {
-                    // Give the player the stack in the inventory
-                    player.getInventory().offerOrDrop(cabinetBlockEntity.getStack(0));
-                    // Remove the stack from the inventory
-                    cabinetBlockEntity.removeStack(0);
+                    // If the Cabinet already holds an item, give it to the player
+                    if (!cabinetBlockEntity.getStack(0).isEmpty())
+                        player.getInventory().offerOrDrop(cabinetBlockEntity.getStack(0));
+
+                    // Put the new ItemStack inside the Cabinet
+                    cabinetBlockEntity.setStack(0, newCabinetItemStack);
                 }
-
-                ItemStack stack = player.getStackInHand(hand).copy();
-
-                // Remove the stack from the player's hand
-                player.getStackInHand(hand).setCount(stack.getCount() - 1);
-
-                stack.setCount(1);
-
-                // Put one item from the stack the player is holding into the inventory
-                cabinetBlockEntity.setStack(0, stack.copy());
-
-                //Update block state?
-                world.setBlockState(pos, state.with(OPEN, false));
-                world.setBlockState(pos, state.with(OPEN, true));
-
+                else return ActionResult.FAIL;
             } else {
                 if (player.isSneaking()) {
-                    // Give the player the stack in the inventory
-                    assert cabinetBlockEntity != null;
+                    // Give the player the stack from the Cabinet inventory
                     player.getInventory().offerOrDrop(cabinetBlockEntity.getStack(0));
-                    // Remove the stack from the inventory
+                    // Remove the stack from Cabinet the inventory
                     cabinetBlockEntity.clear();
-
-                    //Update block state?
-                    world.setBlockState(pos, state.with(OPEN, false));
-                    world.setBlockState(pos, state.with(OPEN, true));
                 }
-
                 world.setBlockState(pos, state.with(OPEN, false));
             }
-        } else {
-            world.setBlockState(pos, state.with(OPEN, true));
-        }
+        } else world.setBlockState(pos, state.with(OPEN, true));
 
+        playCabinetSound(world, pos);
         return ActionResult.SUCCESS;
+    }
+    protected void playCabinetSound(World world, BlockPos pos) {
+        SoundUtils.playSoundAtBlockCenter(world, pos, SoundEvents.BLOCK_BAMBOO_BREAK, 0.35f);
     }
 
     @Override
@@ -135,25 +118,17 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
         Direction dir = state.get(FACING);
         if (state.get(OPEN)) {
             switch (dir) {
-                case NORTH:
-                    return voxelShapeOpenNorth;
-                case SOUTH:
-                    return voxelShapeOpenSouth;
-                case EAST:
-                    return voxelShapeOpenEast;
-                case WEST:
-                    return voxelShapeOpenWest;
+                case NORTH: return voxelShapeOpenNorth;
+                case SOUTH: return voxelShapeOpenSouth;
+                case EAST: return voxelShapeOpenEast;
+                case WEST: return voxelShapeOpenWest;
             }
         } else {
             switch (dir) {
-                case NORTH:
-                    return voxelShapeClosedNorth;
-                case SOUTH:
-                    return voxelShapeClosedSouth;
-                case EAST:
-                    return voxelShapeClosedEast;
-                case WEST:
-                    return voxelShapeClosedWest;
+                case NORTH: return voxelShapeClosedNorth;
+                case SOUTH: return voxelShapeClosedSouth;
+                case EAST: return voxelShapeClosedEast;
+                case WEST: return voxelShapeClosedWest;
             }
         }
         return null;
@@ -176,13 +151,9 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
         if (state.getBlock() != this) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof CabinetBlockEntity cabinetEntity) {
-                // Handle item drops and block entity clean-up here
-                DefaultedList<ItemStack> inventory = cabinetEntity.getItems();
-                for (ItemStack stack : inventory) {
-                    if (!stack.isEmpty()) {
-                        Block.dropStack(world, pos, stack);
-                    }
-                }
+                // Drop the item withing the Cabinet
+                ItemStack stack = cabinetEntity.getItems().getFirst();
+                if (!stack.isEmpty()) Block.dropStack(world, pos, stack);
             }
             super.onStateReplaced(state, world, pos, newState, moved);
         }
