@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class JackOLanternRedStone extends JackOLantern {
     public static final BooleanProperty LIT = Properties.LIT;
+    // Luminance of Redstone Torch boosted by 1 as it was too dark
     public static final Settings defaultSettings = getDefaultSettings().luminance((state) -> state.get(LIT) ? 7 : 0);
 
     @Override

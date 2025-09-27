@@ -37,6 +37,8 @@ public class ItemRegistry {
     public static Item[] CANDLESTICK_ITEM_VARIANTS;
     public static Item[][] RUSTABLE_CANDLESTICK_ITEM_VARIANTS;
 
+    public static Item[] COLOURED_TORCH_ITEM_VARIANTS;
+
 
     public static void register() {
         int cabinetAmount = BlockRegistry.WALL_CABINET_BLOCK_VARIANTS.length;
@@ -110,6 +112,22 @@ public class ItemRegistry {
         }
         if (ModConfig.getEnableColouredFeatureSetBeta()) {
             putIntoItemGroup(GLOWING_POWDER_VARIANTS, ItemGroups.INGREDIENTS);
+
+            COLOURED_TORCH_ITEM_VARIANTS = new Item[BlockRegistry.COLOURED_TORCH_VARIANTS.length];
+            i = 0;
+            for (BlockMaterial material : ActiveGenerationData.colouredFeatureSetMaterials) {
+                final int finalI = i;
+                COLOURED_TORCH_ITEM_VARIANTS[i] = register(
+                        "coloured_torch_" + material.getRawName(),
+                        (settings) -> new ModVerticallyAttachableBlockItem(
+                                BlockRegistry.COLOURED_TORCH_VARIANTS[finalI],
+                                BlockRegistry.COLOURED_WALL_TORCH_VARIANTS[finalI],
+                                settings,
+                                Direction.DOWN
+                        )
+                );
+                ++i;
+            }
         }
     }
 

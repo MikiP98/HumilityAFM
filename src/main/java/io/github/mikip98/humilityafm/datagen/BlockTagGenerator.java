@@ -48,9 +48,7 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
                 .add(BlockRegistry.JACK_O_LANTERN_SOUL)
                 .add(BlockRegistry.JACK_O_LANTERN_REDSTONE);
         valueLookupBuilder(ModBlockTags.COLOURED_JACK_O_LANTERNS)
-                .add(BlockRegistry.COLOURED_JACK_O_LANTERNS_WEAK)
-                .add(BlockRegistry.COLOURED_JACK_O_LANTERNS_WEAK)
-                .add(BlockRegistry.COLOURED_JACK_O_LANTERNS_STRONG);
+                .add(BlockRegistry.COLOURED_JACK_O_LANTERNS);
 
         // Candlesticks
         final ProvidedTagBuilder<Block, Block> tag = valueLookupBuilder(ModBlockTags.CANDLESTICKS)

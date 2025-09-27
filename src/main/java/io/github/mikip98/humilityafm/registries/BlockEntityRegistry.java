@@ -17,8 +17,6 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
-import static io.github.mikip98.humilityafm.registries.BlockRegistry.CABINET_BLOCK;
-import static io.github.mikip98.humilityafm.registries.BlockRegistry.ILLUMINATED_CABINET_BLOCK;
 
 public class BlockEntityRegistry {
     // Cabinet block entity
@@ -34,13 +32,13 @@ public class BlockEntityRegistry {
         CABINET_BLOCK_ENTITY = register(
                 "cabinet_block_entity",
                 CabinetBlockEntity::new,
-                concat(CABINET_BLOCK, BlockRegistry.WALL_CABINET_BLOCK_VARIANTS)
+                concat(BlockRegistry.CABINET_BLOCK, BlockRegistry.WALL_CABINET_BLOCK_VARIANTS)
         );
         //Register illuminated cabinet block entity
         ILLUMINATED_CABINET_BLOCK_ENTITY = register(
                 "illuminated_cabinet_block_entity",
                 IlluminatedCabinetBlockEntity::new,
-                concat(ILLUMINATED_CABINET_BLOCK, BlockRegistry.WALL_ILLUMINATED_CABINET_BLOCK_VARIANTS)
+                concat(BlockRegistry.ILLUMINATED_CABINET_BLOCK, BlockRegistry.WALL_ILLUMINATED_CABINET_BLOCK_VARIANTS)
         );
         //Register floor cabinet block entity
         FLOOR_CABINET_BLOCK_ENTITY = register(
@@ -65,7 +63,7 @@ public class BlockEntityRegistry {
         }
     }
 
-    protected static Block[] concat(Block block, Block[] blocks) {
+    protected static Block[] concat(Block block, Block... blocks) {
         return Stream.concat(
                 Stream.of(block),
                 Arrays.stream(blocks)
@@ -78,12 +76,8 @@ public class BlockEntityRegistry {
             Block... blocks
     ) {
         return Registry.register(
-                Registries.BLOCK_ENTITY_TYPE,
-                getId(name),
-                FabricBlockEntityTypeBuilder.<T>create(
-                        entityFactory,
-                        blocks
-                ).build()
+                Registries.BLOCK_ENTITY_TYPE, getId(name),
+                FabricBlockEntityTypeBuilder.<T>create(entityFactory, blocks).build()
         );
     }
 }

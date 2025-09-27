@@ -1,3 +1,7 @@
+// Imports required for the 'doLast' entry in 'processResources'
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+
 plugins {
 	id 'fabric-loom' version "${loom_version}"
 	id 'maven-publish'
@@ -58,8 +62,8 @@ fabricApi {
 
 dependencies {
 	// Lombok for annotations like @Getter, @Setter, etc.
-	compileOnly 'org.projectlombok:lombok:1.18.32'
-	annotationProcessor 'org.projectlombok:lombok:1.18.32'
+	compileOnly 'org.projectlombok:lombok:1.18.34'
+	annotationProcessor 'org.projectlombok:lombok:1.18.34'
 
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -90,6 +94,16 @@ processResources {
 	filesMatching("fabric.mod.json") {
 		expand "version": inputs.properties.version
 	}
+
+	doLast {
+		// Minify JSON files to reduce the mod size a bit
+		fileTree("$layout.buildDirectory/resources/main")
+				.matching { include "**/*.json" }
+				.forEach { File f ->
+					def json = new JsonSlurper().parse(f)
+					f.text = JsonOutput.toJson(json) // minified form
+				}
+	}
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -113,6 +127,8 @@ java {
 jar {
 	inputs.property "archivesName", project.base.archivesName
 
+	entryCompression = ZipEntryCompression.STORED
+
 	from("LICENSE") {
 		rename { "${it}_${inputs.properties.archivesName}"}
 	}
@@ -134,4 +150,32 @@ publishing {
 		// The repositories here will be used for publishing your artifact, not for
 		// retrieving dependencies.
 	}
+}
+
+// Additional task that recompresses the generated JARs using python-zopfli to reduce the file size
+tasks.register("recompressJars", Exec) {
+	group = "build"
+	description = "Recompress the built JAR with advzip"
+
+	// Ensure the jar is built before running advzip
+	dependsOn(tasks.named("jar"))
+
+	// Build the jar name based on project properties
+	def jarFile = layout.buildDirectory.file("libs/${project.archivesBaseName}-${project.version}.jar").get().asFile
+
+	// Configure the command
+	workingDir projectDir
+	commandLine "./advzip", "-z", jarFile.absolutePath, "-3", "-i", "5"
+
+	doFirst {
+		if (!jarFile.exists()) {
+			throw new GradleException("JAR file not found: ${jarFile}")
+		}
+		println "Recompressing ${jarFile.name} with advzip..."
+	}
+}
+
+// Run the 'recompressJars' task after the 'build' task
+tasks.named("build") {
+	finalizedBy("recompressJars")
 }
