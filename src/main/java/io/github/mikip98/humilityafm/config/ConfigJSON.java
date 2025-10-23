@@ -39,7 +39,7 @@ public class ConfigJSON {
 
         // Add the mod support configuration
         JsonObject modSupportJson = new JsonObject();
-        for (Map.Entry<SupportedMods, ModSupport> entry : ModConfig.modSupport.entrySet()) {
+        for (Map.Entry<SupportedMods, ModSupportState> entry : ModConfig.modSupport.entrySet()) {
             modSupportJson.addProperty(entry.getKey().modId, entry.getValue().toString());
         }
         configJson.add("modSupport", modSupportJson);
@@ -83,7 +83,7 @@ public class ConfigJSON {
                         JsonObject modSupportJson = configJson.getAsJsonObject("modSupport");
                         for (Map.Entry<String, JsonElement> entry : modSupportJson.entrySet()) {
                             SupportedMods mod = SupportedMods.fromModId(entry.getKey());
-                            ModSupport support = ModSupport.valueOf(entry.getValue().getAsString());
+                            ModSupportState support = ModSupportState.valueOf(entry.getValue().getAsString());
                             ModConfig.modSupport.put(mod, support);
                         }
                     } catch (Exception e) {

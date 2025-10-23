@@ -26,6 +26,6 @@ public class ModConfig extends ModDefaultConfig {
     public static boolean datagenMode = defaultDatagenMode;
     public static boolean printInChatServerClientMissmatch = defaultPrintInChatServerClientMissmatch;
 
-    public static Map<SupportedMods, ModSupport> modSupport = defaultModSupport;
+    public static Map<SupportedMods, ModSupportState> modSupport = defaultModSupport;
 }
 

@@ -93,17 +93,17 @@ public class ModConfigScreen {
 
         ConfigCategory modSupportCategory = builder.getOrCreateCategory(Text.literal("Mod Support"));
 
-        List<Map.Entry<SupportedMods, ModSupport>> sortedModSupport = ModConfig.modSupport.entrySet()
+        List<Map.Entry<SupportedMods, ModSupportState>> sortedModSupport = ModConfig.modSupport.entrySet()
                 .stream()
                 .sorted(Comparator.comparing(entry -> entry.getKey().modName)).toList();
 
-        for (Map.Entry<SupportedMods, ModSupport> entry : sortedModSupport) {
+        for (Map.Entry<SupportedMods, ModSupportState> entry : sortedModSupport) {
             SupportedMods mod = entry.getKey();
-            ModSupport support = entry.getValue();
+            ModSupportState support = entry.getValue();
 
             modSupportCategory.addEntry(ConfigEntryBuilder.create()
-                    .startEnumSelector(Text.literal(mod.modName), ModSupport.class, support)
-                    .setDefaultValue(ModSupport.AUTO)
+                    .startEnumSelector(Text.literal(mod.modName), ModSupportState.class, support)
+                    .setDefaultValue(ModSupportState.AUTO)
                     .setTooltip(Text.of("Enable or disable support for " + mod.modName + ".\n" +
                             "Auto will enable the support if the mod is present."))
                     .setSaveConsumer(value -> ModConfig.modSupport.put(mod, value))

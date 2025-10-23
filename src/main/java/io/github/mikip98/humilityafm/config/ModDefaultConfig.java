@@ -23,7 +23,7 @@ public class ModDefaultConfig {
     public static final boolean defaultDatagenMode = false;
     public static final boolean defaultPrintInChatServerClientMissmatch = true;
 
-    public static final Map<SupportedMods, ModSupport> defaultModSupport = Arrays.stream(SupportedMods.values()).map(
-            mod -> Map.entry(mod, ModSupport.AUTO)
+    public static final Map<SupportedMods, ModSupportState> defaultModSupport = Arrays.stream(SupportedMods.values()).map(
+            mod -> Map.entry(mod, ModSupportState.AUTO)
     ).collect(HashMap::new, (map, entry) -> map.put(entry.getKey(), entry.getValue()), HashMap::putAll);
 }
