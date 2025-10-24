@@ -1,5 +1,6 @@
 package io.github.mikip98.humilityafm.config;
 
+import io.github.mikip98.humilityafm.config.enums.CreativeItemGroupCategorization;
 import io.github.mikip98.humilityafm.config.enums.ModSupportState;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 
@@ -14,6 +15,9 @@ public class ModDefaultConfig {
     public static final boolean defaultEnableLightStripRadiusColorCompensation = true;
     public static final boolean defaultEnableCandlestickBeta = false;
     public static final boolean defaultEnableColouredFeatureSetBeta = false;
+
+    public static final CreativeItemGroupCategorization dCreativeItemGroupCategorization = CreativeItemGroupCategorization.SEPARATE;
+    public static final boolean dPlaceHumilityBlocksInVanillaCreativeCategories = true;
 
     public static final float defaultMosaicsAndTilesStrengthMultiplayer = (float) (4.0 / 3.0);  // 1.333f
     // (3 x 20 + 60) / 5 = 24 -> flammability

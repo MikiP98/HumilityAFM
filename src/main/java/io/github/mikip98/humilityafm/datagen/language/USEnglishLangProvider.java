@@ -5,7 +5,6 @@ import io.github.mikip98.humilityafm.datagen.language.util.TranslationHashMap;
 import io.github.mikip98.humilityafm.datagen.language.util.TranslatorBase;
 import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
-import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 
@@ -34,6 +33,7 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
 
         // Item groups
         categoryTranslations.put(TranslationCategory.ITEM_GROUPS, Map.of(
+                // --- SEPARATE ---
                 "itemGroup.cabinets", "Cabinets",
                 "itemGroup.innerOuterStairs", "Inner and Outer Stairs",
                 "itemGroup.woodenMosaics", "Wooden Mosaics",
@@ -41,7 +41,12 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
                 "itemGroup.humilityMisc", "Miscellaneous (Humility)",
                 // Optional item groups
                 "itemGroup.leds", "LEDs",
-                "itemGroup.candlesticks", "Candlesticks"
+                "itemGroup.candlesticks", "Candlesticks",
+                // --- BLOCKS AND ITEMS ---
+                "itemGroup.humilityBlocks", "AFM Blocks",
+                "itemGroup.humilityItems", "AFM Items",
+                // --- SINGLE ---
+                "itemGroup.humilityContent", "AFM"
         ));
 
         // Submit the block translations

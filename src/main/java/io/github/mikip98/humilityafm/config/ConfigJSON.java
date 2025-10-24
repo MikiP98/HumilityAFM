@@ -1,6 +1,7 @@
 package io.github.mikip98.humilityafm.config;
 
 import com.google.gson.*;
+import io.github.mikip98.humilityafm.config.enums.CreativeItemGroupCategorization;
 import io.github.mikip98.humilityafm.config.enums.ModSupportState;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import net.fabricmc.loader.api.FabricLoader;
@@ -30,6 +31,9 @@ public class ConfigJSON {
         configJson.addProperty("enableLightStripRadiusColorCompensation", ModConfig.enableLightStripRadiusColorCompensation);
         configJson.addProperty("enableCandlestickBeta", ModConfig.getRawEnableCandlestickBeta());
         configJson.addProperty("enableColouredFeatureSetBeta", ModConfig.getRawEnableColouredFeatureSetBeta());
+
+        configJson.addProperty("creativeItemGroupCategorization", ModConfig.creativeItemGroupCategorization.toString());
+        configJson.addProperty("placeHumilityBlocksInVanillaCreativeCategories", ModConfig.placeHumilityBlocksInVanillaCreativeCategories);
 
         configJson.addProperty("mosaicsAndTilesStrengthMultiplayer", ModConfig.mosaicsAndTilesStrengthMultiplayer);
         configJson.addProperty("cabinetBlockBurnTime", ModConfig.cabinetBlockBurnTime);
@@ -71,6 +75,9 @@ public class ConfigJSON {
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableLightStripRadiusColorCompensation");
                     needsUpdating |= tryLoadViaSetter(configJson, JsonElement::getAsBoolean, "enableCandlestickBeta", boolean.class);
                     needsUpdating |= tryLoadViaSetter(configJson, JsonElement::getAsBoolean, "enableColouredFeatureSetBeta", boolean.class);
+
+                    needsUpdating |= tryLoadEnum(configJson, "creativeItemGroupCategorization", CreativeItemGroupCategorization::valueOf);
+                    needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "placeHumilityBlocksInVanillaCreativeCategories");
 
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsFloat, "mosaicsAndTilesStrengthMultiplayer");
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsInt, "cabinetBlockBurnTime");
@@ -115,6 +122,16 @@ public class ConfigJSON {
         try {
             T value = getter.apply(configJson.get(fieldName));
             ModConfig.class.getField(fieldName).set(ModConfig.class, value);
+        } catch (Exception e) {
+            printLoadError(fieldName, configJson, e);
+            return true;
+        }
+        return false;
+    }
+    private static <V> boolean tryLoadEnum(JsonObject configJson, String fieldName, Function<String, V> setter) {
+        try {
+            String value = configJson.get(fieldName).getAsString();
+            ModConfig.class.getField(fieldName).set(ModConfig.class, setter.apply(value));
         } catch (Exception e) {
             printLoadError(fieldName, configJson, e);
             return true;

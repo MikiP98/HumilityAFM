@@ -1,5 +1,6 @@
 package io.github.mikip98.humilityafm.config;
 
+import io.github.mikip98.humilityafm.config.enums.CreativeItemGroupCategorization;
 import io.github.mikip98.humilityafm.config.enums.ModSupportState;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.LightStripBlockEntityRenderer;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.FloorIlluminatedCabinetBlockEntityRenderer;
@@ -77,6 +78,29 @@ public class ModConfigScreen {
                 .setSaveConsumer(ModConfig::setEnableColouredFeatureSetBeta)
                 .build()
         );
+
+        rootCategory.addEntry(ConfigEntryBuilder.create()
+                .startEnumSelector(Text.of("Cretive Inventory Tab Separation"), CreativeItemGroupCategorization.class, ModConfig.creativeItemGroupCategorization)
+                .setDefaultValue(ModConfig.dCreativeItemGroupCategorization)
+                .setTooltip(Text.of("""
+                        Controls how the Humility AFM block and items are separated in the creative inventory tabs.
+                        - SEPARATE -> Default separation based on block types and their variant amounts
+                        - BLOCKS_AND_ITEMS -> Only 2 additional tabs: 'Humility Blocks' and 'Humility Items'
+                        - SINGLE -> Only 1 additional tab with all the Humility content
+                        - NONE -> No additional tabs are created
+                        """
+                ))
+                .setSaveConsumer(value -> ModConfig.creativeItemGroupCategorization = value)
+                .build()
+        );
+        rootCategory.addEntry(ConfigEntryBuilder.create()
+                .startBooleanToggle(Text.of("Put Humility Blocks In Vanilla Creative Tabs"), ModConfig.placeHumilityBlocksInVanillaCreativeCategories)
+                .setDefaultValue(ModConfig.dPlaceHumilityBlocksInVanillaCreativeCategories)
+                .setTooltip(Text.of("Weather to put Humility AFM content inside the vanilla creative inventopry tabs"))
+                .setSaveConsumer(value -> ModConfig.placeHumilityBlocksInVanillaCreativeCategories = value)
+                .build()
+        );
+
         rootCategory.addEntry(ConfigEntryBuilder.create()
                 .startBooleanToggle(Text.literal("Datagen Mode"), ModConfig.datagenMode)
                 .setDefaultValue(ModConfig.defaultDatagenMode)
