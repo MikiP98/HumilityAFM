@@ -1,7 +1,7 @@
 package io.github.mikip98.humilityafm.registries;
 
 import io.github.mikip98.humilityafm.config.ModConfig;
-import io.github.mikip98.humilityafm.config.ModSupport;
+import io.github.mikip98.humilityafm.config.enums.ModSupportState;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
@@ -20,10 +20,10 @@ public class ClientNetworkRegistry {
             boolean serverConfigEnableCandlestickBeta = buf.readBoolean();
             boolean serverConfigEnableColouredFeatureSetBeta = buf.readBoolean();
             float serverMosaicsAndTilesStrengthMultiplayer = buf.readFloat();
-            Map<SupportedMods, ModSupport> serverConfigModSupport = new EnumMap<>(SupportedMods.class);
+            Map<SupportedMods, ModSupportState> serverConfigModSupport = new EnumMap<>(SupportedMods.class);
             for (SupportedMods mod : SupportedMods.values()) {
                 if (mod == SupportedMods.SHIMMER) continue;
-                serverConfigModSupport.put(mod, ModSupport.values()[buf.readByte()]);
+                serverConfigModSupport.put(mod, ModSupportState.values()[buf.readByte()]);
             }
 
             DiffList differences = new DiffList();
@@ -47,8 +47,8 @@ public class ClientNetworkRegistry {
                 );
             for (SupportedMods mod : SupportedMods.values()) {
                 if (mod == SupportedMods.SHIMMER) continue;
-                ModSupport serverModSupportSetting = serverConfigModSupport.get(mod);
-                ModSupport clientModSupportSetting = ModConfig.modSupport.get(mod);
+                ModSupportState serverModSupportSetting = serverConfigModSupport.get(mod);
+                ModSupportState clientModSupportSetting = ModConfig.modSupport.get(mod);
                 if (clientModSupportSetting != serverModSupportSetting)
                     differences.add(
                             "Support for mod '" + mod.modName + " (" + mod.modId + ")'",

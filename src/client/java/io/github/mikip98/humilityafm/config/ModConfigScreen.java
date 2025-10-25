@@ -1,5 +1,7 @@
 package io.github.mikip98.humilityafm.config;
 
+import io.github.mikip98.humilityafm.config.enums.CreativeItemGroupCategorization;
+import io.github.mikip98.humilityafm.config.enums.ModSupportState;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.LightStripBlockEntityRenderer;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.FloorIlluminatedCabinetBlockEntityRenderer;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.IlluminatedCabinetBlockEntityRenderer;
@@ -76,6 +78,29 @@ public class ModConfigScreen {
                 .setSaveConsumer(ModConfig::setEnableColouredFeatureSetBeta)
                 .build()
         );
+
+        rootCategory.addEntry(ConfigEntryBuilder.create()
+                .startEnumSelector(Text.of("Cretive Inventory Tab Separation"), CreativeItemGroupCategorization.class, ModConfig.creativeItemGroupCategorization)
+                .setDefaultValue(ModConfig.dCreativeItemGroupCategorization)
+                .setTooltip(Text.of("""
+                        Controls how the Humility AFM block and items are separated in the creative inventory tabs.
+                        - SEPARATE -> Default separation based on block types and their variant amounts
+                        - BLOCKS_AND_ITEMS -> Only 2 additional tabs: 'Humility Blocks' and 'Humility Items'
+                        - SINGLE -> Only 1 additional tab with all the Humility content
+                        - NONE -> No additional tabs are created
+                        """
+                ))
+                .setSaveConsumer(value -> ModConfig.creativeItemGroupCategorization = value)
+                .build()
+        );
+        rootCategory.addEntry(ConfigEntryBuilder.create()
+                .startBooleanToggle(Text.of("Put Humility Blocks In Vanilla Creative Tabs"), ModConfig.placeHumilityBlocksInVanillaCreativeCategories)
+                .setDefaultValue(ModConfig.dPlaceHumilityBlocksInVanillaCreativeCategories)
+                .setTooltip(Text.of("Weather to put Humility AFM content inside the vanilla creative inventopry tabs"))
+                .setSaveConsumer(value -> ModConfig.placeHumilityBlocksInVanillaCreativeCategories = value)
+                .build()
+        );
+
         rootCategory.addEntry(ConfigEntryBuilder.create()
                 .startBooleanToggle(Text.literal("Datagen Mode"), ModConfig.datagenMode)
                 .setDefaultValue(ModConfig.defaultDatagenMode)
@@ -93,17 +118,17 @@ public class ModConfigScreen {
 
         ConfigCategory modSupportCategory = builder.getOrCreateCategory(Text.literal("Mod Support"));
 
-        List<Map.Entry<SupportedMods, ModSupport>> sortedModSupport = ModConfig.modSupport.entrySet()
+        List<Map.Entry<SupportedMods, ModSupportState>> sortedModSupport = ModConfig.modSupport.entrySet()
                 .stream()
                 .sorted(Comparator.comparing(entry -> entry.getKey().modName)).toList();
 
-        for (Map.Entry<SupportedMods, ModSupport> entry : sortedModSupport) {
+        for (Map.Entry<SupportedMods, ModSupportState> entry : sortedModSupport) {
             SupportedMods mod = entry.getKey();
-            ModSupport support = entry.getValue();
+            ModSupportState support = entry.getValue();
 
             modSupportCategory.addEntry(ConfigEntryBuilder.create()
-                    .startEnumSelector(Text.literal(mod.modName), ModSupport.class, support)
-                    .setDefaultValue(ModSupport.AUTO)
+                    .startEnumSelector(Text.literal(mod.modName), ModSupportState.class, support)
+                    .setDefaultValue(ModSupportState.AUTO)
                     .setTooltip(Text.of("Enable or disable support for " + mod.modName + ".\n" +
                             "Auto will enable the support if the mod is present."))
                     .setSaveConsumer(value -> ModConfig.modSupport.put(mod, value))

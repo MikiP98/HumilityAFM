@@ -319,7 +319,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
                     colouredTorch,
                     glowingPowder, 3,
                     MOD_ID + "/coloured_torches",
-                    "coloured_torches/strong/"
+                    "coloured_torches/"
             );
         }
     }
