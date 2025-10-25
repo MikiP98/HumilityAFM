@@ -30,7 +30,7 @@ public class ClientNetworkRegistry {
             if (ModConfig.getEnableCandlestickBeta() != payload.enableCandlestick())
                 differences.add(
                         "Candlestick BETA",
-                        serverConfigEnableCandlestickBeta,
+                        payload.enableCandlestick(),
                         ModConfig.getEnableCandlestickBeta()
                 );
             if (ModConfig.getEnableCandlestickBeta() != payload.enableColouredFeature())
