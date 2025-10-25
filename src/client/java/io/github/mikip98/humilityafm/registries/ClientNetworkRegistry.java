@@ -1,7 +1,7 @@
 package io.github.mikip98.humilityafm.registries;
 
 import io.github.mikip98.humilityafm.config.ModConfig;
-import io.github.mikip98.humilityafm.config.ModSupport;
+import io.github.mikip98.humilityafm.config.enums.ModSupportState;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
@@ -18,11 +18,11 @@ import static io.github.mikip98.humilityafm.HumilityAFM.LOGGER;
 public class ClientNetworkRegistry {
     public static void register() {
         ClientPlayNetworking.registerGlobalReceiver(NetworkRegistry.ConfigSyncPayload.ID, (payload, context) -> {
-            Map<SupportedMods, ModSupport> serverConfigModSupport = new EnumMap<>(SupportedMods.class);
+            Map<SupportedMods, ModSupportState> serverConfigModSupport = new EnumMap<>(SupportedMods.class);
             int i = 0;
             for (SupportedMods mod : SupportedMods.values()) {
                 if (mod == SupportedMods.SHIMMER) continue;
-                serverConfigModSupport.put(mod, ModSupport.values()[payload.modSupport()[i]]);
+                serverConfigModSupport.put(mod, ModSupportState.values()[payload.modSupport()[i]]);
                 ++i;
             }
 
@@ -30,7 +30,7 @@ public class ClientNetworkRegistry {
             if (ModConfig.getEnableCandlestickBeta() != payload.enableCandlestick())
                 differences.add(
                         "Candlestick BETA",
-                        payload.enableCandlestick(),
+                        serverConfigEnableCandlestickBeta,
                         ModConfig.getEnableCandlestickBeta()
                 );
             if (ModConfig.getEnableCandlestickBeta() != payload.enableColouredFeature())
@@ -47,8 +47,8 @@ public class ClientNetworkRegistry {
                 );
             for (SupportedMods mod : SupportedMods.values()) {
                 if (mod == SupportedMods.SHIMMER) continue;
-                ModSupport serverModSupportSetting = serverConfigModSupport.get(mod);
-                ModSupport clientModSupportSetting = ModConfig.modSupport.get(mod);
+                ModSupportState serverModSupportSetting = serverConfigModSupport.get(mod);
+                ModSupportState clientModSupportSetting = ModConfig.modSupport.get(mod);
                 if (clientModSupportSetting != serverModSupportSetting)
                     differences.add(
                             "Support for mod '" + mod.modName + " (" + mod.modId + ")'",
