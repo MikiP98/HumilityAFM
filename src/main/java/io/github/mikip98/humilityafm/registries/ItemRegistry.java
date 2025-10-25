@@ -8,7 +8,6 @@ import io.github.mikip98.humilityafm.util.generation_data.RawGenerationData;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.SizedIterable;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.math.Direction;
@@ -16,10 +15,11 @@ import net.minecraft.util.math.Direction;
 import java.util.Arrays;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
-import static io.github.mikip98.humilityafm.registries.ItemGroupRegistry.putIntoItemGroup;
 
 public class ItemRegistry {
-    public static final Item[] GLOWING_POWDER_VARIANTS = Arrays.stream(RawGenerationData.vanillaColorPallet).map(color -> register("glowing_powder_" + color)).toArray(Item[]::new);
+    public static final Item[] GLOWING_POWDER_VARIANTS = ModConfig.getEnableColouredFeatureSetBeta()
+                    ? Arrays.stream(RawGenerationData.vanillaColorPallet).map(color -> register("glowing_powder_" + color)).toArray(Item[]::new)
+                    : null;
 
     public static final Item CABINET_ITEM = register(
             new DoubleVerticallyAttachableBlockItem(BlockRegistry.FLOOR_CABINET_BLOCK, BlockRegistry.CABINET_BLOCK, new Item.Settings()),
@@ -62,8 +62,6 @@ public class ItemRegistry {
             );
             ++i;
         }
-        putIntoItemGroup(CABINET_ITEM_VARIANTS, ItemGroups.COLORED_BLOCKS);
-        putIntoItemGroup(ILLUMINATED_CABINET_ITEM_VARIANTS, ItemGroups.COLORED_BLOCKS);
 
         // CANDLESTICK BETA
         if (ModConfig.getEnableCandlestickBeta()) {
@@ -101,12 +99,8 @@ public class ItemRegistry {
                 }
                 ++i;
             }
-            putIntoItemGroup(CANDLESTICK_ITEM_VARIANTS, ItemGroups.FUNCTIONAL);
-            Arrays.stream(RUSTABLE_CANDLESTICK_ITEM_VARIANTS).forEach(s -> putIntoItemGroup(s, ItemGroups.FUNCTIONAL));
         }
         if (ModConfig.getEnableColouredFeatureSetBeta()) {
-            putIntoItemGroup(GLOWING_POWDER_VARIANTS, ItemGroups.INGREDIENTS);
-
             COLOURED_TORCH_ITEM_VARIANTS = new Item[BlockRegistry.COLOURED_TORCH_VARIANTS.length];
             i = 0;
             for (BlockMaterial material : ActiveGenerationData.colouredFeatureSetMaterials) {
