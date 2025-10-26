@@ -38,7 +38,12 @@ public class PolishLangProvider extends FabricLanguageProvider {
                 "itemGroup.humilityMisc", "Różne (Humility)",
                 // Optional item groups
                 "itemGroup.leds", "LED-y",
-                "itemGroup.candlesticks", "Świeczniki"
+                "itemGroup.candlesticks", "Świeczniki",
+                // --- BLOCKS AND ITEMS ---
+                "itemGroup.humilityBlocks", "AFM Bloki",
+                "itemGroup.humilityItems", "AFM Przedmioty",
+                // --- SINGLE ---
+                "itemGroup.humilityContent", "AFM"
         ));
 
         // Blocks

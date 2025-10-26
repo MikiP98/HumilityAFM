@@ -84,41 +84,6 @@ Lighten up your builds with unobtrusive light source
 
 ## Roadmap:
 
-### Done:
-
-- Reduced the jar size:
-  - Minified the included JSON files
-  - Recompressed the jar with `advzip -3 -i 5`
-  - Recompressed all the image files
-- Fixed coloured jack o'Lanterns being based on the redstone jack o'Lantern block variant
-- Code clean-up:
-  - BlockEntityRegistry
-  - CabinetBlock
-  - Client side code
-- Fixed Cabinets displaying the items after it got removed
-- Improved Cabinet sound a bit
-- Server feature sync:
-  - If the client config differs from the server one, display a warning message with the differences
-- Finished built-in jack o'Lantern rp compat resourcepack
-- Light Strip Brightening option no longer requires a game restart to take effect
-- Added PBR data to:
-  - Light Strip models (vanilla emission)
-  - Jack o'Lanterns textures:
-    - Optifine emission (coloured face only)
-    - LabPBR metadata (emission included) (sharp face)
-    - LabPBR metadata (emission included) (smooth)
-  - Coloured Torches:
-    - Optifine emission
-    - LabPBR (sharp)
-    - LabPBR (smooth)
-  - Cabinets
-- Fixed Outer Light String brightening rendering
-- Fixed Coloured Feature set translations
-- Reduced the number of blocks in the Coloured Feature Set to 1 per type per colour
-- Added Illuminated Cabinet Brightening to the config
-- Removed Shimmer Colour configuration from the config  
-  The colours should be handled by Shimmer, Shimmer Support Layer, user and/or respective shaders
-
 ### High priority:
 
 - Redo the window capture screenshots or at least crop the window app bar
@@ -129,6 +94,9 @@ Lighten up your builds with unobtrusive light source
   - BetterEnd
   - Biomes o' Plenty
   - *(Add stone variants from the above mods, and fix the missing wood variants)*
+
+[//]: # (- Improve Cabinet PBR texture: Roughness of zero, f0/reflectance of like either 0.02 or 0.1)
+[//]: # (- Add a packed record to the networking similar to 1.20.6 version)
 
 ### Medium priority:
 
