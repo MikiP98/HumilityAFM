@@ -86,9 +86,11 @@ Lighten up your builds with unobtrusive light source
 
 ### High priority:
 
+- Merge all version branches into 1 Manifold branch
 - Redo the window capture screenshots or at least crop the window app bar
 - Fix Cabinet breaking animation being invisible
 - Redo coloured torch textures using the Jack o'Lantern palette system
+- Deduplicate ColouredTorch & ColouredWallTorch code
 - Improve the built-in mod support for:
   - BetterNether
   - BetterEnd
