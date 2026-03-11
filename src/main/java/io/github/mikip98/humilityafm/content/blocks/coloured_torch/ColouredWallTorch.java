@@ -3,10 +3,13 @@ package io.github.mikip98.humilityafm.content.blocks.coloured_torch;
 import io.github.mikip98.humilityafm.util.SoundUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.WallTorchBlock;
 import net.minecraft.entity.player.PlayerEntity;
+#if MC_VERSION == 12001
 import net.minecraft.particle.ParticleEffect;
+#else
+import net.minecraft.particle.DefaultParticleType;
+#endif
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
@@ -20,12 +23,21 @@ import net.minecraft.world.World;
 public class ColouredWallTorch extends WallTorchBlock {
     public static final IntProperty POWER = Properties.POWER;
 
-    public static final Settings defaultSettings = Settings.copy(Blocks.TORCH);
-    public ColouredWallTorch(ParticleEffect particle) { this(defaultSettings, particle); }
-    public ColouredWallTorch(Settings settings, ParticleEffect particle) {
-        super(settings.luminance((state) -> state.get(POWER)), particle);
+    public static final Settings defaultSettings = ColouredTorch.defaultSettings;
+
+    #if MC_VERSION == 12001
+    public ColouredWallTorch(ParticleEffect particle) { this(particle, defaultSettings); }
+    public ColouredWallTorch(ParticleEffect particle, Settings settings) {
+        super(settings, particle);
         setDefaultState(getDefaultState().with(POWER, 15));
     }
+    #else
+    public ColouredWallTorch(DefaultParticleType particleType) { this(particleType, defaultSettings); }
+    public ColouredWallTorch(DefaultParticleType particleType, Settings settings) {
+        super(particleType, settings);
+        setDefaultState(getDefaultState().with(POWER, 15));
+    }
+    #endif
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {

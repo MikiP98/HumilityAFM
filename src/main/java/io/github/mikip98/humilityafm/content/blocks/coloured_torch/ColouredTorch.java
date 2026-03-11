@@ -6,8 +6,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.TorchBlock;
 import net.minecraft.entity.player.PlayerEntity;
+#if MC_VERSION == 12001
 import net.minecraft.particle.ParticleEffect;
-import net.minecraft.sound.SoundEvent;
+#else
+import net.minecraft.particle.DefaultParticleType;
+#endif
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
@@ -21,12 +24,22 @@ import net.minecraft.world.World;
 public class ColouredTorch extends TorchBlock {
     public static final IntProperty POWER = Properties.POWER;
 
-    public static final Settings defaultSettings = Settings.copy(Blocks.TORCH);
-    public ColouredTorch(ParticleEffect particle) { this(defaultSettings, particle); }
-    public ColouredTorch(Settings settings, ParticleEffect particle) {
-        super(settings.luminance((state) -> state.get(POWER)), particle);
+    public static final Settings defaultSettings = Settings.copy(Blocks.TORCH).luminance((state) -> state.get(POWER));
+
+    #if MC_VERSION == 12001
+    public ColouredTorch(ParticleEffect particle) { this(particle, defaultSettings); }
+    public ColouredTorch(ParticleEffect particle, Settings settings) {
+        super(settings, particle);
         setDefaultState(getDefaultState().with(POWER, 15));
     }
+    #else
+    public ColouredTorch(DefaultParticleType particleType) { this(particleType, defaultSettings); }
+    public ColouredTorch(DefaultParticleType particleType, Settings settings) {
+        super(particleType, settings);
+        setDefaultState(getDefaultState().with(POWER, 15));
+    }
+    #endif
+
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {

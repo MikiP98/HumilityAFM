@@ -9,7 +9,11 @@ import io.github.mikip98.humilityafm.util.Pair;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.MaterialType;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+#if MC_VERSION == 12001
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
+#else
+import net.minecraft.data.server.recipe.RecipeExporter;
+#endif
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
@@ -18,7 +22,9 @@ import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
 import java.util.*;
+#if MC_VERSION == 12001
 import java.util.function.Consumer;
+#endif
 
 import static io.github.mikip98.humilityafm.HumilityAFM.MOD_ID;
 
@@ -28,7 +34,9 @@ public class RecipeGenerator extends AFMRecipieProvider {
     }
 
     @Override
-    public void generate(Consumer<RecipeJsonProvider> exporter) {
+    public void generate(
+            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
+    ) {
         // ............ TEST BLOCKS & BLOCK ITEMS ............
 
         // Cabinet Blocks
@@ -61,7 +69,9 @@ public class RecipeGenerator extends AFMRecipieProvider {
         generateColouredJackOLanternRecipies(exporter);
     }
 
-    protected static void generateCabinetRecipies(Consumer<RecipeJsonProvider> exporter) {
+    protected static void generateCabinetRecipies(
+            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
+    ) {
         Map<Pair<SupportedMods, String>, List<Pair<ItemConvertible, String>>> perWoodCabinets = new HashMap<>();
         Map<Pair<SupportedMods, String>, List<Pair<ItemConvertible, String>>> perWoodIlluminatedCabinets = new HashMap<>();
         int i = 0;
@@ -137,7 +147,9 @@ public class RecipeGenerator extends AFMRecipieProvider {
         }
     }
 
-    protected static void generateWoodenMosaicRecipies(Consumer<RecipeJsonProvider> exporter) {
+    protected static void generateWoodenMosaicRecipies(
+            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
+    ) {
         Iterable<BlockMaterial> woodenMosaicMaterials = ActiveGenerationData.woodenMosaicVariantMaterials;
         int i = 0;
         for (BlockMaterial material : woodenMosaicMaterials) {
@@ -181,7 +193,9 @@ public class RecipeGenerator extends AFMRecipieProvider {
             ++i;
         }
     }
-    protected static void generateTerracottaTileRecipies(Consumer<RecipeJsonProvider> exporter) {
+    protected static void generateTerracottaTileRecipies(
+            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
+    ) {
         int i = 0;
         for (BlockMaterial material : ActiveGenerationData.terracottaTilesMaterials) {
             Item terracotta1 = getItemFromName(material.layers()[0].name() + "_terracotta");
@@ -220,7 +234,9 @@ public class RecipeGenerator extends AFMRecipieProvider {
         return result;
     }
 
-    protected static void generateForcedCornerStairsRecipies(Consumer<RecipeJsonProvider> exporter) {
+    protected static void generateForcedCornerStairsRecipies(
+            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
+    ) {
         int i = 0;
         for (BlockMaterial stairMaterial : ActiveGenerationData.forcedCornerStairsVariantMaterials) {
             if (stairMaterial.layers().length != 1) throw new IllegalArgumentException("Forced corner stairs material must have exactly one layer, but found: " + Arrays.toString(stairMaterial.layers()));
@@ -249,7 +265,9 @@ public class RecipeGenerator extends AFMRecipieProvider {
         }
     }
 
-    protected static void generateSpecialJackOLanternRecipies(Consumer<RecipeJsonProvider> exporter) {
+    protected static void generateSpecialJackOLanternRecipies(
+            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
+    ) {
         Item carved_pumpkin = Items.CARVED_PUMPKIN;
         offerDoubleInputShapelessRecipe(
                 exporter,
@@ -270,7 +288,9 @@ public class RecipeGenerator extends AFMRecipieProvider {
                 "jack_o_lanterns/"
         );
     }
-    protected static void generateColouredJackOLanternRecipies(Consumer<RecipeJsonProvider> exporter) {
+    protected static void generateColouredJackOLanternRecipies(
+            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
+    ) {
         Item carved_pumpkin = Items.CARVED_PUMPKIN;
 
         for (int i = 0; i < RawGenerationData.vanillaColorPallet.length; ++i) {
@@ -289,7 +309,9 @@ public class RecipeGenerator extends AFMRecipieProvider {
         }
     }
 
-    protected static void generateGlowingPowderRecipies(Consumer<RecipeJsonProvider> exporter) {
+    protected static void generateGlowingPowderRecipies(
+            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
+    ) {
         Item glowstoneDust = Items.GLOWSTONE_DUST;
         Item redstone = Items.REDSTONE;
         int i = 0;
@@ -310,7 +332,9 @@ public class RecipeGenerator extends AFMRecipieProvider {
         }
     }
 
-    protected static void generateColouredTorchRecipies(Consumer<RecipeJsonProvider> exporter) {
+    protected static void generateColouredTorchRecipies(
+            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
+    ) {
         final int length = ActiveGenerationData.colouredFeatureSetMaterials.size();
         for (int i = 0; i < length; i++) {
             ItemConvertible colouredTorch = BlockRegistry.COLOURED_TORCH_VARIANTS[i];
@@ -325,7 +349,9 @@ public class RecipeGenerator extends AFMRecipieProvider {
         }
     }
 
-    protected static void generateCandlestickRecipies(Consumer<RecipeJsonProvider> exporter) {
+    protected static void generateCandlestickRecipies(
+            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
+    ) {
         int i = 0;
         for (BlockMaterial material : ActiveGenerationData.simpleCandlestickMaterials) {
             final String metal = material.layers()[0].name();
@@ -342,7 +368,9 @@ public class RecipeGenerator extends AFMRecipieProvider {
         }
     }
 
-    protected static void generateLightStripRecipies(Consumer<RecipeJsonProvider> exporter) {
+    protected static void generateLightStripRecipies(
+            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
+    ) {
         for (int i = 0; i < RawGenerationData.vanillaColorPallet.length; ++i) {
             offerLightStripRecipie(
                     exporter,

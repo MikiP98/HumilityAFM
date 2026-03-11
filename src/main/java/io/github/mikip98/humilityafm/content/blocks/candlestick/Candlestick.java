@@ -1,5 +1,8 @@
 package io.github.mikip98.humilityafm.content.blocks.candlestick;
 
+#if MC_VERSION >= 12004
+import com.mojang.serialization.MapCodec;
+#endif
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.SimpleCandlestickLogic;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
@@ -114,6 +117,15 @@ public class Candlestick extends HorizontalFacingBlock implements SimpleCandlest
     );  // Empty + Candle
 
     protected static final EnumProperty<CandleColor> CANDLE_COLOR = ModProperties.CANDLE_COLOR;
+
+    #if MC_VERSION >= 12004
+    protected static final MapCodec<Candlestick> CODEC = createCodec(Candlestick::new);
+
+    @Override
+    protected MapCodec<? extends HorizontalFacingBlock> getCodec() {
+        return CODEC;
+    }
+    #endif
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
