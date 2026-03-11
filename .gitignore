@@ -25,6 +25,8 @@ image_recompressor.py
 
 server/
 
+build.properties
+
 
 # Python
 

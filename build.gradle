@@ -5,10 +5,31 @@ import groovy.json.JsonOutput
 plugins {
 	id 'fabric-loom' version "${loom_version}"
 	id 'maven-publish'
+
+	id 'io.freefair.lombok' version "${lombok_plugin_version}"
+	id 'systems.manifold.manifold-gradle-plugin' version "${manifold_plugin_version}"
+}
+
+// Load version-specific properties dynamically
+def activeVersion = project.properties['active_mc_version']
+def versionPropsFile = file("versions/${activeVersion}.properties")
+if (versionPropsFile.exists()) {
+	def versionProps = new Properties()
+	versionPropsFile.withInputStream { stream -> versionProps.load(stream) }
+	versionProps.each { key, value -> project.ext.set(key, value) }
+} else {
+	throw new GradleException("Could not find property file for MC version: ${activeVersion}")
 }
 
 version = "${project.mod_version}+${project.minecraft_version}"
 group = project.maven_group
+
+manifold {
+	manifoldVersion = project.manifold_version
+}
+
+// Auto-generate build.properties so the Manifold IDE plugin and compiler stay in sync
+file("build.properties").text = "MC_VERSION=${project.ext.mc_version_number}\n"
 
 base {
 	archivesName = project.archives_base_name
@@ -24,22 +45,25 @@ repositories {
 	maven { url "https://maven.shedaniel.me/" }
 	maven { url "https://maven.terraformersmc.com/releases/" }
 
-	exclusiveContent {
-		forRepository {
-			maven {
-				name = "Modrinth"
-				url = "https://api.modrinth.com/maven"
+	if (project.properties['active_mc_version'] == "1.20.1") {
+		// For Modrinth mod dependencies 'polymorph'
+		exclusiveContent {
+			forRepository {
+				maven {
+					name = "Modrinth"
+					url = "https://api.modrinth.com/maven"
+				}
+			}
+			filter {
+				includeGroup "maven.modrinth"
 			}
 		}
-		filter {
-			includeGroup "maven.modrinth"
-		}
-	}
 
-	// Required for 'polymorph'
-	maven {
-		name = 'Ladysnake Mods'
-		url = 'https://maven.ladysnake.org/releases'
+		// Required for 'polymorph'
+		maven {
+			name = 'Ladysnake Mods'
+			url = 'https://maven.ladysnake.org/releases'
+		}
 	}
 }
 
@@ -56,14 +80,14 @@ loom {
 
 fabricApi {
 	configureDataGeneration() {
-		modId = "humility-afm"
+		client = true
 	}
 }
 
 dependencies {
-	// Lombok for annotations like @Getter, @Setter, etc.
-	compileOnly 'org.projectlombok:lombok:1.18.34'
-	annotationProcessor 'org.projectlombok:lombok:1.18.34'
+	// Manifold preprocessor
+	annotationProcessor "systems.manifold:manifold-preprocessor:${project.manifold_version}"
+	compileOnly "systems.manifold:manifold-preprocessor:${project.manifold_version}"
 
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -78,12 +102,16 @@ dependencies {
 	}
 	modApi "com.terraformersmc:modmenu:${project.modmenu_version}"
 
-	modRuntimeOnly "maven.modrinth:polymorph:${project.polymorph_version}"  // Required for Datagen to not fail
-	runtimeOnly group: 'com.electronwill.night-config', name: 'core', version: '3.7.4'  // Required for 'polymorph'
-	modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${polymorph_cca_version}"  // Required for 'polymorph'
-	modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${polymorph_cca_version}"  // Required for 'polymorph'
-	modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-block:${polymorph_cca_version}"  // Required for 'polymorph'
-	modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-item:${polymorph_cca_version}"  // Required for 'polymorph'
+	// For some reason this does not work on 1.20.4, 1.20.6 and 1.21.1
+	// As of now, Polymorph has also not been updated past 1.21.1
+	if (project.properties['active_mc_version'] == "1.20.1") {
+		modRuntimeOnly "maven.modrinth:polymorph:${project.polymorph_version}"  // Required for Datagen to not fail
+		runtimeOnly group: 'com.electronwill.night-config', name: 'core', version: '3.7.4'  // Required for 'polymorph'
+		modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${polymorph_cca_version}" // Required for 'polymorph'
+		modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${polymorph_cca_version}" // Required for 'polymorph'
+		modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-block:${polymorph_cca_version}" // Required for 'polymorph'
+		modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-item:${polymorph_cca_version}" // Required for 'polymorph'
+	}
 }
 
 processResources {
@@ -105,7 +133,7 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 17
+	it.options.release = java_version.toInteger()
 }
 tasks.named('processResources') {
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
@@ -118,8 +146,8 @@ java {
 	// If you remove this line, sources will not be generated.
 	// withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
+	sourceCompatibility = JavaVersion.valueOf("VERSION_${java_version}")
+	targetCompatibility = JavaVersion.valueOf("VERSION_${java_version}")
 }
 
 jar {
@@ -135,7 +163,7 @@ jar {
 // configure the maven publication
 publishing {
 	publications {
-		mavenJava(MavenPublication) {
+		create("mavenJava", MavenPublication) {
 			artifactId = project.archives_base_name
 			from components.java
 		}
