@@ -1,6 +1,6 @@
 {
 	"pack": {
-		"pack_format": 15,
+		"pack_format": ${data_pack_format},
 		"description": "§4Alternative Wooden Mosaic Recipies"
 	}
 }

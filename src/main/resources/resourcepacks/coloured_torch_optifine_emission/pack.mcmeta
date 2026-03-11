@@ -1,6 +1,6 @@
 {
   "pack": {
-    "pack_format": 15,
+    "pack_format": ${resource_pack_format},
     "description": "Built-in pack that adds Optifine emission to coloured torches"
   }
 }

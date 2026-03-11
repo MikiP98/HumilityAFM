@@ -104,7 +104,7 @@ dependencies {
 
 	// For some reason this does not work on 1.20.4, 1.20.6 and 1.21.1
 	// As of now, Polymorph has also not been updated past 1.21.1
-	if (project.properties['active_mc_version'] == "1.20.1") {
+	if (project.active_mc_version == "1.20.1") {
 		modRuntimeOnly "maven.modrinth:polymorph:${project.polymorph_version}"  // Required for Datagen to not fail
 		runtimeOnly group: 'com.electronwill.night-config', name: 'core', version: '3.7.4'  // Required for 'polymorph'
 		modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${polymorph_cca_version}" // Required for 'polymorph'
@@ -116,9 +116,16 @@ dependencies {
 
 processResources {
 	inputs.property "version", project.version
+	inputs.property "resource_pack_format", project.resource_pack_format
+	inputs.property "data_pack_format", project.data_pack_format
 
 	filesMatching("fabric.mod.json") {
 		expand "version": inputs.properties.version
+	}
+
+	filesMatching("**/*.mcmeta") {
+		expand "resource_pack_format": inputs.properties.resource_pack_format,
+				"data_pack_format": inputs.properties.data_pack_format
 	}
 
 	doLast {
