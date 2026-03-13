@@ -116,11 +116,15 @@ dependencies {
 
 processResources {
 	inputs.property "version", project.version
+	inputs.property "java_version", project.java_version
+	inputs.property "loader_version", project.loader_version
 	inputs.property "resource_pack_format", project.resource_pack_format
 	inputs.property "data_pack_format", project.data_pack_format
 
 	filesMatching("fabric.mod.json") {
-		expand "version": inputs.properties.version
+		expand "version": inputs.properties.version,
+				"java_version": inputs.properties.java_version,
+				"loader_version": inputs.properties.loader_version
 	}
 
 	filesMatching("**/*.mcmeta") {
@@ -163,7 +167,7 @@ jar {
 	entryCompression = ZipEntryCompression.STORED
 
 	from("LICENSE") {
-		rename { "${it}_${project.base.archivesName}"}
+		rename { "${it}_${inputs.properties.archivesName}"}
 	}
 }
 

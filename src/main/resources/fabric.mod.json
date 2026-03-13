@@ -42,9 +42,9 @@
 		]
 	},
 	"depends": {
-		"fabricloader": ">=0.17.3",
+		"fabricloader": ">=${loader_version}",
 		"minecraft": "~1.20",
-		"java": ">=17",
+		"java": ">=${java_version}",
 		"fabric-api": "*",
 		"cloth-config2": "*",
 		"polymorph": "*"
