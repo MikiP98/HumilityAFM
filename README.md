@@ -91,6 +91,7 @@ Lighten up your builds with unobtrusive light source
 - Fix Cabinet breaking animation being invisible
 - Redo coloured torch textures using the Jack o'Lantern palette system
 - Deduplicate ColouredTorch & ColouredWallTorch code
+- Clean-up the Manifold code duplication
 - Improve the built-in mod support for:
   - BetterNether
   - BetterEnd
