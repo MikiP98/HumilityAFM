@@ -53,6 +53,6 @@ public class HumilityAFM implements ModInitializer {
 	 * Returns a new identifier for the given name, in 'humility-afm' namespace
 	 */
 	public static Identifier getId(String name) {
-		return new Identifier(MOD_ID, name);
+		return Identifier.of(MOD_ID, name);
 	}
 }
