@@ -164,7 +164,7 @@ public class Candlestick extends HorizontalFacingBlock implements SimpleCandlest
     @SuppressWarnings("deprecation")
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (onUseLogic(state, world, pos, player, hand, hit)) return ActionResult.SUCCESS;
+        if (onUseLogic(state, world, pos, player, hand)) return ActionResult.SUCCESS;
         return super.onUse(state, world, pos, player, hand, hit);
     }
     #else
