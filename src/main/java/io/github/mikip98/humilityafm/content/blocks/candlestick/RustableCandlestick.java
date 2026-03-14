@@ -4,14 +4,15 @@ import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.RustableCandlestickLogic;
 import lombok.Getter;
 import lombok.Setter;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.ActionResult;
+#if MC_VERSION < 12006
 import net.minecraft.util.Hand;
+#endif
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
@@ -21,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 @Getter
 @Setter
 public class RustableCandlestick extends Candlestick implements RustableCandlestickLogic {
-    public static final FabricBlockSettings defaultSettings = FabricBlockSettings.copyOf(Candlestick.defaultSettings)
+    public static final Settings defaultSettings = Candlestick.defaultSettingsSupplier.get()
             .sounds(BlockSoundGroup.COPPER)
             .ticksRandomly();
 
@@ -61,7 +62,11 @@ public class RustableCandlestick extends Candlestick implements RustableCandlest
     }
 
     @Override
+    #if MC_VERSION < 12006
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    #else
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+    #endif
         double x = pos.getX() + 0.5;
         final double y = pos.getY() + 0.5;
         double z = pos.getZ() + 0.5;
@@ -76,8 +81,13 @@ public class RustableCandlestick extends Candlestick implements RustableCandlest
 
         final double randomSpread = 2.0 / 3.0;
 
+        #if MC_VERSION < 12006
         if (onUseRustableLogic(state, world, pos, player, hand, x, y, z, randomSpread)) return ActionResult.SUCCESS;
         return super.onUse(state, world, pos, player, hand, hit);
+        #else
+        if (onUseRustableLogic(state, world, pos, player, x, y, z, randomSpread)) return ActionResult.SUCCESS;
+        return super.onUse(state, world, pos, player, hit);
+        #endif
     }
 
     @Override

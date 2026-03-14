@@ -4,7 +4,6 @@ package io.github.mikip98.humilityafm.content.blocks.cabinet;
 import com.mojang.serialization.MapCodec;
 #endif
 import io.github.mikip98.humilityafm.util.SoundUtils;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -30,6 +29,8 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetBlockEntity;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.function.Supplier;
 
 public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable, BlockEntityProvider {
     protected static final VoxelShape voxelShapeOpenNorth = VoxelShapes.cuboid(0.0625f, 0.0625f, 0.81252f, 0.9375f, 0.9375f, 1.0f);  //open, reverse original
@@ -62,11 +63,13 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
         builder.add(WATERLOGGED);
     }
 
-    public static final FabricBlockSettings defaultSettings = FabricBlockSettings.create()
+    public static final Supplier<AbstractBlock.Settings> defaultSettingsSupplier = () -> Settings.create()
             .strength(2.0f)
             .requiresTool()
             .nonOpaque()
             .sounds(BlockSoundGroup.WOOD);
+
+    public static final Settings defaultSettings = defaultSettingsSupplier.get();
 
 
     public CabinetBlock() {
@@ -81,9 +84,15 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
     }
 
 
-    @SuppressWarnings("deprecation")
+
     @Override
+    #if MC_VERSION < 12006
+    @SuppressWarnings("deprecation")
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    #else
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+        final Hand hand = player.getActiveHand();
+    #endif
         if (state.get(OPEN)) {
             Inventory cabinetBlockEntity = (Inventory) world.getBlockEntity(pos);
             assert cabinetBlockEntity != null;
@@ -162,7 +171,11 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof CabinetBlockEntity cabinetEntity) {
                 // Drop the item withing the Cabinet
+                #if MC_VERSION < 12006
                 ItemStack stack = cabinetEntity.getItems().get(0);
+                #else
+                ItemStack stack = cabinetEntity.getItems().getFirst();
+                #endif
                 if (!stack.isEmpty()) Block.dropStack(world, pos, stack);
             }
             super.onStateReplaced(state, world, pos, newState, moved);

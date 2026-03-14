@@ -6,7 +6,6 @@ import com.mojang.serialization.MapCodec;
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.SimpleCandlestickLogic;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
@@ -18,7 +17,9 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
+#if MC_VERSION < 12006
 import net.minecraft.util.Hand;
+#endif
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -28,13 +29,17 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
+import java.util.function.Supplier;
+
 public class Candlestick extends HorizontalFacingBlock implements SimpleCandlestickLogic, Waterloggable {
-    public static final FabricBlockSettings defaultSettings = FabricBlockSettings.create()
+    public static final Supplier<Settings> defaultSettingsSupplier = () -> Settings.create()
             .strength(0.5f)
             .requiresTool()
             .nonOpaque()
             .sounds(BlockSoundGroup.METAL)
             .luminance(state -> state.get(Properties.LIT) ? 4 : 0);
+
+    public static final Settings defaultSettings = defaultSettingsSupplier.get();
 
     // The below commented-out shapes are a simplified variants of the voxel shapes
     // They look more vanilla-like, but are in my opinion more ugly
@@ -155,12 +160,20 @@ public class Candlestick extends HorizontalFacingBlock implements SimpleCandlest
                 .with(Properties.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).isIn(FluidTags.WATER));
     }
 
+    #if MC_VERSION < 12006
     @SuppressWarnings("deprecation")
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (onUseLogic(state, world, pos, player, hand, hit)) return ActionResult.SUCCESS;
         return super.onUse(state, world, pos, player, hand, hit);
     }
+    #else
+    @Override
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+        if (onUseLogic(state, world, pos, player)) return ActionResult.SUCCESS;
+        return super.onUse(state, world, pos, player, hit);
+    }
+    #endif
 
     @Override
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {

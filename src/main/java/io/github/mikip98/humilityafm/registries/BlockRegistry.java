@@ -6,10 +6,10 @@ import io.github.mikip98.humilityafm.content.blocks.cabinet.FloorIlluminatedCabi
 import io.github.mikip98.humilityafm.content.blocks.cabinet.IlluminatedCabinetBlock;
 import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.JackOLanternRedStone;
 import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.JackOLanternSoul;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
@@ -89,7 +89,7 @@ public class BlockRegistry extends BlockGeneration {
     protected static Block registerWithItem(Block block, String name) {
         Identifier id = getId(name);
         Registry.register(Registries.BLOCK, id, block);
-        Registry.register(Registries.ITEM, id, new BlockItem(block, new FabricItemSettings()));
+        Registry.register(Registries.ITEM, id, new BlockItem(block, new Item.Settings()));
         return block;
     }
     protected static Block register(Block block, String name) {

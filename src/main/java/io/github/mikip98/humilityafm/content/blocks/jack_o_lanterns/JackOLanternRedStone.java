@@ -1,6 +1,5 @@
 package io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;
@@ -25,7 +24,7 @@ public class JackOLanternRedStone extends JackOLantern {
 
     public JackOLanternRedStone() {
         // Luminance of Redstone Torch boosted by 1 as it was too dark
-        super(FabricBlockSettings.copyOf(defaultSettings).luminance((state) -> state.get(LIT) ? 7+1 : 0));
+        super(defaultSettingsSupplier.get().luminance((state) -> state.get(LIT) ? 7+1 : 0));
         setDefaultState(getDefaultState().with(LIT, true));
     }
 

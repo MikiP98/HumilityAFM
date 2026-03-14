@@ -11,6 +11,9 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+#if MC_VERSION >= 12006
+import net.minecraft.registry.RegistryWrapper;
+#endif
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -33,6 +36,7 @@ public class CabinetBlockEntity extends BlockEntity implements ImplementedInvent
     }
 
     // Required for the stored item to show up
+    #if MC_VERSION < 12006
     @Override
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
@@ -44,12 +48,28 @@ public class CabinetBlockEntity extends BlockEntity implements ImplementedInvent
         super.writeNbt(nbt);
     }
     @Override
-    public @Nullable Packet<ClientPlayPacketListener> toUpdatePacket() {
-        return BlockEntityUpdateS2CPacket.create(this);
-    }
-    @Override
     public NbtCompound toInitialChunkDataNbt() {
         return createNbt();
+    }
+    #else
+    @Override
+    public void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+        super.readNbt(nbt, registryLookup);
+        Inventories.readNbt(nbt, items, registryLookup);
+    }
+    @Override
+    public void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+        Inventories.writeNbt(nbt, items, registryLookup);
+        super.writeNbt(nbt, registryLookup);
+    }
+    @Override
+    public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registryLookup) {
+        return createNbt(registryLookup);
+    }
+    #endif
+    @Override
+    public @Nullable Packet<ClientPlayPacketListener> toUpdatePacket() {
+        return BlockEntityUpdateS2CPacket.create(this);
     }
 
     // Required to block hoppers from working

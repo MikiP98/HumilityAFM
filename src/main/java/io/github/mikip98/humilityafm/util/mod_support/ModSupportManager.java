@@ -2,7 +2,6 @@ package io.github.mikip98.humilityafm.util.mod_support;
 
 import io.github.mikip98.humilityafm.config.ModConfig;
 import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
 
 import java.util.EnumSet;
 import java.util.Set;

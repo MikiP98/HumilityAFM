@@ -3,7 +3,7 @@ package io.github.mikip98.humilityafm.datagen;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Blocks;
-#if MC_VERSION == 12001
+#if MC_VERSION < 12004
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 #else
 import net.minecraft.data.server.recipe.RecipeExporter;
@@ -14,18 +14,27 @@ import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
+#if MC_VERSION >= 12006
+import net.minecraft.registry.RegistryWrapper;
+#endif
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 #if MC_VERSION == 12001
 import java.util.function.Consumer;
+#elif MC_VERSION >= 12006
+import java.util.concurrent.CompletableFuture;
 #endif
 
 import static io.github.mikip98.humilityafm.HumilityAFM.MOD_ID;
 
 public abstract class AFMRecipieProvider extends FabricRecipeProvider {
+    #if MC_VERSION < 12006
     public AFMRecipieProvider(FabricDataOutput output) { super(output); }
+    #else
+    public AFMRecipieProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) { super(output, registriesFuture); }
+    #endif
 
     protected static void offerCabinetRecipe(
             #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter,

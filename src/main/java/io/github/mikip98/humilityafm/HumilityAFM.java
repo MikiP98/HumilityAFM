@@ -39,6 +39,10 @@ public class HumilityAFM implements ModInitializer {
 		ItemRegistry.register();
 		// ............ ITEM GROUPS ............
 		ItemGroupRegistry.registerItemGroups();
+		#if MC_VERSION >= 12006
+		// ............ NETWORKING ............
+		NetworkRegistry.registerPayload();
+		#endif
 
 
 		// ------------------------------------ CLEANUP -------------------------------------------

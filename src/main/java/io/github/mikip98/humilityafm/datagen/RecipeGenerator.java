@@ -9,7 +9,7 @@ import io.github.mikip98.humilityafm.util.Pair;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.MaterialType;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-#if MC_VERSION == 12001
+#if MC_VERSION < 12004
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 #else
 import net.minecraft.data.server.recipe.RecipeExporter;
@@ -19,19 +19,30 @@ import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.Registries;
+#if MC_VERSION >= 12006
+import net.minecraft.registry.RegistryWrapper;
+#endif
 import net.minecraft.util.Identifier;
 
 import java.util.*;
-#if MC_VERSION == 12001
+#if MC_VERSION < 12004
 import java.util.function.Consumer;
+#elif MC_VERSION >= 12006
+import java.util.concurrent.CompletableFuture;
 #endif
 
 import static io.github.mikip98.humilityafm.HumilityAFM.MOD_ID;
 
 public class RecipeGenerator extends AFMRecipieProvider {
+    #if MC_VERSION < 12006
     public RecipeGenerator(FabricDataOutput output) {
         super(output);
     }
+    #else
+    public RecipeGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+        super(output, registriesFuture);
+    }
+    #endif
 
     @Override
     public void generate(

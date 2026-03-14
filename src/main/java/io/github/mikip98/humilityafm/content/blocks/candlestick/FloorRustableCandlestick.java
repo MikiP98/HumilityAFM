@@ -11,7 +11,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.ActionResult;
+#if MC_VERSION < 12006
 import net.minecraft.util.Hand;
+#endif
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
@@ -57,13 +59,22 @@ public class FloorRustableCandlestick extends FloorCandlestick implements Waterl
     }
 
     @Override
+    #if MC_VERSION < 12006
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    #else
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+    #endif
         final double x = pos.getX() + 0.5;
         final double y = pos.getY() + 0.35;
         final double z = pos.getZ() + 0.5;
         final double randomSpread = 0.625;
+        #if MC_VERSION < 12006
         if (onUseRustableLogic(state, world, pos, player, hand, x, y, z, randomSpread)) return ActionResult.SUCCESS;
         return super.onUse(state, world, pos, player, hand, hit);
+        #else
+        if (onUseRustableLogic(state, world, pos, player, x, y, z, randomSpread)) return ActionResult.SUCCESS;
+        return super.onUse(state, world, pos, player, hit);
+        #endif
     }
 
     @Override

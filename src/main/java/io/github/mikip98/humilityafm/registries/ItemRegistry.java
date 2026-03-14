@@ -7,7 +7,6 @@ import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
 import io.github.mikip98.humilityafm.util.generation_data.RawGenerationData;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.SizedIterable;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -23,11 +22,11 @@ public class ItemRegistry {
                     : null;
 
     public static final Item CABINET_ITEM = register(
-            new DoubleVerticallyAttachableBlockItem(BlockRegistry.FLOOR_CABINET_BLOCK, BlockRegistry.CABINET_BLOCK, new FabricItemSettings()),
+            new DoubleVerticallyAttachableBlockItem(BlockRegistry.FLOOR_CABINET_BLOCK, BlockRegistry.CABINET_BLOCK, new Item.Settings()),
             "cabinet_block"
     );
     public static final Item ILLUMINATED_CABINET_ITEM = register(
-            new DoubleVerticallyAttachableBlockItem(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK, BlockRegistry.ILLUMINATED_CABINET_BLOCK, new FabricItemSettings()),
+            new DoubleVerticallyAttachableBlockItem(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK, BlockRegistry.ILLUMINATED_CABINET_BLOCK, new Item.Settings()),
             "illuminated_cabinet_block"
     );
     public static Item[] CABINET_ITEM_VARIANTS;
@@ -49,7 +48,7 @@ public class ItemRegistry {
                     new DoubleVerticallyAttachableBlockItem(
                             BlockRegistry.FLOOR_CABINET_BLOCK_VARIANTS[i],
                             BlockRegistry.WALL_CABINET_BLOCK_VARIANTS[i],
-                            new FabricItemSettings()
+                            new Item.Settings()
                     ),
                     "cabinet_" + material.getSafeName()
             );
@@ -57,7 +56,7 @@ public class ItemRegistry {
                     new DoubleVerticallyAttachableBlockItem(
                             BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_VARIANTS[i],
                             BlockRegistry.WALL_ILLUMINATED_CABINET_BLOCK_VARIANTS[i],
-                            new FabricItemSettings()
+                            new Item.Settings()
                     ),
                     "illuminated_cabinet_" + material.getSafeName()
             );
@@ -74,7 +73,7 @@ public class ItemRegistry {
                         new ModVerticallyAttachableBlockItem(
                                 BlockRegistry.SIMPLE_CANDLESTICK_FLOOR_VARIANTS[i],
                                 BlockRegistry.SIMPLE_CANDLESTICK_WALL_VARIANTS[i],
-                                new FabricItemSettings(),
+                                new Item.Settings(),
                                 Direction.DOWN
                         )
                 );
@@ -91,7 +90,7 @@ public class ItemRegistry {
                             new ModVerticallyAttachableBlockItem(
                                     BlockRegistry.RUSTABLE_CANDLESTICK_FLOOR_VARIANTS[i][j],
                                     BlockRegistry.RUSTABLE_CANDLESTICK_WALL_VARIANTS[i][j],
-                                    new FabricItemSettings(),
+                                    new Item.Settings(),
                                     Direction.DOWN
                             )
                     );
@@ -124,7 +123,7 @@ public class ItemRegistry {
         return register(name, item);
     }
     public static Item register(String name) {
-        return register(name, new Item(new FabricItemSettings()));
+        return register(name, new Item(new Item.Settings()));
     }
     public static Item register(String name, Item item) {
         Registry.register(Registries.ITEM, getId(name), item);

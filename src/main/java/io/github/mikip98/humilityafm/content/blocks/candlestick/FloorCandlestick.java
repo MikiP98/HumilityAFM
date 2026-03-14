@@ -55,12 +55,19 @@ public class FloorCandlestick extends Block implements SimpleCandlestickLogic, W
                 .with(Properties.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).isIn(FluidTags.WATER));
     }
 
-    @SuppressWarnings("deprecation")
     @Override
+    #if MC_VERSION < 12006
+    @SuppressWarnings("deprecation")
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (onUseLogic(state, world, pos, player, hand, hit)) return ActionResult.SUCCESS;
+        if (onUseLogic(state, world, pos, player, hand)) return ActionResult.SUCCESS;
         return super.onUse(state, world, pos, player, hand, hit);
     }
+    #else
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+        if (onUseLogic(state, world, pos, player)) return ActionResult.SUCCESS;
+        return super.onUse(state, world, pos, player, hit);
+    }
+    #endif
 
     @Override
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {

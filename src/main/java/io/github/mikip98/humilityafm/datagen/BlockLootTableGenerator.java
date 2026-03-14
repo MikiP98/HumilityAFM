@@ -6,13 +6,25 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+#if MC_VERSION >= 12006
+import net.minecraft.registry.RegistryWrapper;
+#endif
 
 import java.util.Arrays;
+#if MC_VERSION >= 12006
+import java.util.concurrent.CompletableFuture;
+#endif
 
 public class BlockLootTableGenerator extends FabricBlockLootTableProvider {
+    #if MC_VERSION < 12006
     public BlockLootTableGenerator(FabricDataOutput dataOutput) {
         super(dataOutput);
     }
+    #else
+    public BlockLootTableGenerator(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+        super(dataOutput, registriesFuture);
+    }
+    #endif
 
     @Override
     public void generate() {

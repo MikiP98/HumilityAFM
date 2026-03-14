@@ -7,20 +7,36 @@ import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
+#if MC_VERSION >= 12006
+import net.minecraft.registry.RegistryWrapper;
+#endif
 
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
+#if MC_VERSION >= 12006
+import java.util.concurrent.CompletableFuture;
+#endif
 
 import static io.github.mikip98.humilityafm.HumilityAFM.MOD_ID;
 
 public class USEnglishLangProvider extends FabricLanguageProvider {
+    #if MC_VERSION < 12006
     public USEnglishLangProvider(FabricDataOutput dataOutput) {
         super(dataOutput, "en_us");
     }
+    #else
+    public USEnglishLangProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+        super(dataOutput, "en_us", registryLookup);
+    }
+    #endif
 
     @Override
+    #if MC_VERSION < 12006
     public void generateTranslations(FabricLanguageProvider.TranslationBuilder translationBuilder) {
+    #else
+    public void generateTranslations(RegistryWrapper.WrapperLookup registryLookup, FabricLanguageProvider.TranslationBuilder translationBuilder) {
+    #endif
         for (Map.Entry<TranslationCategory, Map<String, String>> entry : generateBaseUSEnglishTranslations().entrySet()) {
             for (Map.Entry<String, String> subEntry : entry.getValue().entrySet()) {
                 translationBuilder.add(subEntry.getKey(), subEntry.getValue());

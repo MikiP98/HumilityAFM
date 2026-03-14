@@ -4,6 +4,9 @@ import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.config.enums.ModSupportState;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+#if MC_VERSION >= 12006
+import net.minecraft.client.MinecraftClient;
+#endif
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 
@@ -16,35 +19,41 @@ import static io.github.mikip98.humilityafm.HumilityAFM.LOGGER;
 
 public class ClientNetworkRegistry {
     public static void register() {
+        #if MC_VERSION >= 12006
+        ClientPlayNetworking.registerGlobalReceiver(NetworkRegistry.ConfigSyncPayload.ID, (payload, context) -> {
+        #else
         ClientPlayNetworking.registerGlobalReceiver(NetworkRegistry.CONFIG_SYNC, (client, handler, buf, responseSender) -> {
-            boolean serverConfigEnableCandlestickBeta = buf.readBoolean();
-            boolean serverConfigEnableColouredFeatureSetBeta = buf.readBoolean();
-            float serverMosaicsAndTilesStrengthMultiplayer = buf.readFloat();
+            final NetworkRegistry.ConfigSyncPayload payload = new NetworkRegistry.ConfigSyncPayload(buf);
+            #endif
+
             Map<SupportedMods, ModSupportState> serverConfigModSupport = new EnumMap<>(SupportedMods.class);
+            int i = 0;
             for (SupportedMods mod : SupportedMods.values()) {
                 if (mod == SupportedMods.SHIMMER) continue;
-                serverConfigModSupport.put(mod, ModSupportState.values()[buf.readByte()]);
+                serverConfigModSupport.put(mod, ModSupportState.values()[payload.modSupport()[i]]);
+                ++i;
             }
 
             DiffList differences = new DiffList();
-            if (ModConfig.getEnableCandlestickBeta() != serverConfigEnableCandlestickBeta)
+            if (ModConfig.getEnableCandlestickBeta() != payload.enableCandlestick())
                 differences.add(
                         "Candlestick BETA",
-                        serverConfigEnableCandlestickBeta,
+                        payload.enableCandlestick(),
                         ModConfig.getEnableCandlestickBeta()
                 );
-            if (ModConfig.getEnableCandlestickBeta() != serverConfigEnableColouredFeatureSetBeta)
+            if (ModConfig.getEnableColouredFeatureSetBeta() != payload.enableColouredFeature())
                 differences.add(
                         "Coloured Feature Set BETA",
-                        serverConfigEnableColouredFeatureSetBeta,
+                        payload.enableColouredFeature(),
                         ModConfig.getEnableColouredFeatureSetBeta()
                 );
-            if (ModConfig.mosaicsAndTilesStrengthMultiplayer != serverMosaicsAndTilesStrengthMultiplayer)
+            if (ModConfig.mosaicsAndTilesStrengthMultiplayer != payload.mosaicsStrength())
                 differences.add(
                         "Mosaics & Tiles Strength Multiplayer",
-                        serverMosaicsAndTilesStrengthMultiplayer,
+                        payload.mosaicsStrength(),
                         ModConfig.mosaicsAndTilesStrengthMultiplayer
                 );
+            i = 0;
             for (SupportedMods mod : SupportedMods.values()) {
                 if (mod == SupportedMods.SHIMMER) continue;
                 ModSupportState serverModSupportSetting = serverConfigModSupport.get(mod);
@@ -55,10 +64,14 @@ public class ClientNetworkRegistry {
                             serverModSupportSetting,
                             clientModSupportSetting
                     );
+                ++i;
             }
 
             // Log the differences
             if (!differences.isEmpty()) {
+                #if MC_VERSION >= 12006
+                MinecraftClient client = context.client();
+                #endif
                 client.execute(() -> {
                     printDiffs(LOGGER::error, differences, new String[]{"","",""});
                     if (ModConfig.printInChatServerClientMissmatch) {
@@ -99,6 +112,5 @@ public class ClientNetworkRegistry {
         void add(String name, String server, String client) {
             super.add(name + " -> server: " + server + " (yours: " + client + ")");
         }
-
     }
 }

@@ -1,6 +1,5 @@
 package io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.BlockState;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
@@ -10,7 +9,7 @@ import net.minecraft.world.World;
 public class JackOLanternSoul extends JackOLantern {
     public JackOLanternSoul() {
         // Luminance of Soul Torch boosted by 1 as it was too dark
-        super(FabricBlockSettings.copyOf(defaultSettings).luminance(8+1));
+        super(defaultSettingsSupplier.get().luminance((ignored) -> 8+1));
     }
 
     @Override

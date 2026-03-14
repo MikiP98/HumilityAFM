@@ -8,12 +8,19 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+#if MC_VERSION < 12006
 import net.minecraft.util.hit.BlockHitResult;
+#endif
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public non-sealed interface SimpleCandlestickLogic extends BaseCandlestickLogic {
-    default boolean onUseLogic(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    #if MC_VERSION < 12006
+    default boolean onUseLogic(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand) {
+    #else
+    default boolean onUseLogic(BlockState state, World world, BlockPos pos, PlayerEntity player) {
+        Hand hand = player.getActiveHand();
+    #endif
         ItemStack heldItemStack = player.getStackInHand(hand);
         Item heldItem = heldItemStack.getItem();
         if (tryToInsertCandle(state, world, pos, player, heldItemStack, heldItem)) return true;

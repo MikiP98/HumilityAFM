@@ -7,8 +7,10 @@ import net.minecraft.block.WallTorchBlock;
 import net.minecraft.entity.player.PlayerEntity;
 #if MC_VERSION == 12001
 import net.minecraft.particle.ParticleEffect;
-#else
+#elif MC_VERSION == 12004
 import net.minecraft.particle.DefaultParticleType;
+#else
+import net.minecraft.particle.SimpleParticleType;
 #endif
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
@@ -31,9 +33,15 @@ public class ColouredWallTorch extends WallTorchBlock {
         super(settings, particle);
         setDefaultState(getDefaultState().with(POWER, 15));
     }
-    #else
+    #elif MC_VERSION == 12004
     public ColouredWallTorch(DefaultParticleType particleType) { this(particleType, defaultSettings); }
     public ColouredWallTorch(DefaultParticleType particleType, Settings settings) {
+        super(particleType, settings);
+        setDefaultState(getDefaultState().with(POWER, 15));
+    }
+    #else
+    public ColouredWallTorch(SimpleParticleType particleType) { this(particleType, defaultSettings); }
+    public ColouredWallTorch(SimpleParticleType particleType, Settings settings) {
         super(particleType, settings);
         setDefaultState(getDefaultState().with(POWER, 15));
     }
@@ -45,15 +53,24 @@ public class ColouredWallTorch extends WallTorchBlock {
         builder.add(POWER);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
+    #if MC_VERSION < 12006
+    @SuppressWarnings("deprecation")
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    #else
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+        final Hand hand = player.getActiveHand();
+    #endif
         final int currentPower = state.get(POWER);
         if (player.isSneaking() && player.getStackInHand(hand).isEmpty() && currentPower > 3) {
             SoundUtils.playSoundAtBlockCenter(world, pos, SoundEvents.BLOCK_CANDLE_EXTINGUISH, 2.5f, -0.25f);
             world.setBlockState(pos, state.with(POWER, currentPower - 3));
             return ActionResult.SUCCESS;
         }
+        #if MC_VERSION < 12006
         return super.onUse(state, world, pos, player, hand, hit);
+        #else
+        return super.onUse(state, world, pos, player, hit);
+        #endif
     }
 }
