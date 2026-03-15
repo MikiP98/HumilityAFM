@@ -1,6 +1,8 @@
 {
   "pack": {
+    "description": "Built-in pack that improves vanilla resource packs compatibility for Jack o'Lanterns",
     "pack_format": ${resource_pack_format},
-    "description": "Built-in pack that improves vanilla resource packs compatibility for Jack o'Lanterns"
+    "min_format": ${resource_pack_format},
+    "max_format": ${resource_pack_format}
   }
 }

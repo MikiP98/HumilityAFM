@@ -1,6 +1,8 @@
 {
   "pack": {
+    "description": "Built-in pack that adds LabPBR data to coloured torches (smooth)",
     "pack_format": ${resource_pack_format},
-    "description": "Built-in pack that adds LabPBR data to coloured torches (smooth)"
+    "min_format": ${resource_pack_format},
+    "max_format": ${resource_pack_format}
   }
 }

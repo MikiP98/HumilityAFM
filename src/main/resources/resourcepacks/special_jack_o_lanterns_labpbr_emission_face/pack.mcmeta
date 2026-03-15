@@ -1,6 +1,8 @@
 {
   "pack": {
+    "description": "Built-in pack that adds LabPBR data to Special Jack o'Lanterns (Face)",
     "pack_format": ${resource_pack_format},
-    "description": "Built-in pack that adds LabPBR data to Special Jack o'Lanterns (Face)"
+    "min_format": ${resource_pack_format},
+    "max_format": ${resource_pack_format}
   }
 }

@@ -1,6 +1,8 @@
 {
   "pack": {
+    "description": "Built-in pack that improves vanilla resource packs compatibility for Coloured Torches",
     "pack_format": ${resource_pack_format},
-    "description": "Built-in pack that improves vanilla resource packs compatibility for Coloured Torches"
+    "min_format": ${resource_pack_format},
+    "max_format": ${resource_pack_format}
   }
 }

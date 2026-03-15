@@ -1,6 +1,8 @@
 {
   "pack": {
+    "description": "Built-in pack that adds Optifine emission to Coloured Jack o'Lantern faces",
     "pack_format": ${resource_pack_format},
-    "description": "Built-in pack that adds Optifine emission to Coloured Jack o'Lantern faces"
+    "min_format": ${resource_pack_format},
+    "max_format": ${resource_pack_format}
   }
 }

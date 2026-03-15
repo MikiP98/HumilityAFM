@@ -1,6 +1,8 @@
 {
   "pack": {
+    "description": "Built-in pack that makes Cabinets appear 3D and improves vanilla resoucepacks compatibility",
     "pack_format": ${resource_pack_format},
-    "description": "Built-in pack that makes Cabinets appear 3D and improves vanilla resoucepacks compatibility"
+    "min_format": ${resource_pack_format},
+    "max_format": ${resource_pack_format}
   }
 }

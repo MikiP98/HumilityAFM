@@ -1,6 +1,8 @@
 {
 	"pack": {
+		"description": "§4Alternative Wooden Mosaic Recipies",
 		"pack_format": ${data_pack_format},
-		"description": "§4Alternative Wooden Mosaic Recipies"
+		"min_format": ${data_pack_format},
+		"max_format": ${data_pack_format}
 	}
 }
