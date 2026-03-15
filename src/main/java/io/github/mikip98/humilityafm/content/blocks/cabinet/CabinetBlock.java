@@ -16,7 +16,6 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -45,7 +44,6 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
 
     protected static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
     protected static final BooleanProperty OPEN = Properties.OPEN;
-    protected static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 
     #if MC_VERSION >= 12004
     protected static final MapCodec<CabinetBlock> CODEC = createCodec(CabinetBlock::new);
