@@ -79,6 +79,8 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
                 // Candlesticks
                 .addOptionalTag(ModBlockTags.CANDLESTICKS);
     }
+    // TODO: Consider changing '.add()' to '.addOptional()' for modded block in modded tags
+    //  This would get rid of the 21 tag loading errors, but will increase the JAR size
 
     private void generateCabinetTags() {
         final FabricTagProvider<Block>.FabricTagBuilder cabinetTag = getOrCreateTagBuilder(ModBlockTags.CABINET_BLOCKS);
