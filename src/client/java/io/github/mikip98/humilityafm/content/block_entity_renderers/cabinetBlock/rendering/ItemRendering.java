@@ -2,12 +2,20 @@ package io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBloc
 
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.ImplementedInventory;
 import net.minecraft.block.BlockState;
+#if MC_VERSION >= 12104
+import net.minecraft.block.entity.BlockEntity;
+#endif
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
+#if MC_VERSION < 12104
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
+#endif
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
+#if MC_VERSION >= 12104
+import net.minecraft.item.ModelTransformationMode;
+#endif
 
 public sealed interface ItemRendering permits ItemFloorRendering, ItemWallRendering {
     MatrixStack rotateMatrices(MatrixStack matrices, BlockState blockState);
@@ -35,8 +43,20 @@ public sealed interface ItemRendering permits ItemFloorRendering, ItemWallRender
         matrices.scale(scale, scale, scale);
 
         // Render the item inside the cabinet
+        #if MC_VERSION < 12104
         final BakedModel model = MinecraftClient.getInstance().getItemRenderer().getModel(stack, null, null, 0);
-        MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformationMode.FIXED, false, matrices, vertexConsumers, light, overlay, model);
+        MinecraftClient.getInstance().getItemRenderer().renderItem(
+                stack, ModelTransformationMode.FIXED, false, matrices, vertexConsumers, light, overlay, model
+        );
+        #else
+        MinecraftClient.getInstance().getItemRenderer().renderItem(
+                stack, ModelTransformationMode.FIXED,
+                light, overlay,
+                matrices, vertexConsumers,
+                ((BlockEntity) blockEntity).getWorld(),
+                0
+        );
+        #endif
 
         // Mandatory call after GL calls
         matrices.pop();
