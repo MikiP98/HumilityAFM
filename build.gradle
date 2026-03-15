@@ -137,10 +137,27 @@ processResources {
 	doLast {
 		// Minify JSON files to reduce the mod size a bit
 		fileTree("$layout.buildDirectory/resources/main")
-				.matching { include "**/*.json" }
+				.matching { include "**/*.json", "**/*.mcmeta" }
 				.forEach { File f ->
 					def json = new JsonSlurper().parse(f)
-					f.text = JsonOutput.toJson(json) // minified form
+
+					// --- MCMETA CLEANUP START ---
+					if (f.name == "pack.mcmeta") {
+						int activeMcVersion = project.ext.mc_version_number.toInteger()
+
+						if (activeMcVersion >= 12109) {
+							// 1.21.9+ Format
+							json.pack.remove("pack_format")
+						} else {
+							// Pre-1.21.9 Format
+							json.pack.remove("min_format")
+							json.pack.remove("max_format")
+						}
+					}
+					// --- MCMETA CLEANUP END ---
+
+					// Save the minified output
+					f.text = JsonOutput.toJson(json)
 				}
 	}
 }
