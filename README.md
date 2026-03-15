@@ -92,6 +92,7 @@ Lighten up your builds with unobtrusive light source
 - Redo coloured torch textures using the Jack o'Lantern palette system
 - Deduplicate ColouredTorch & ColouredWallTorch code
 - Clean-up the Manifold code duplication
+  - Consider adding fake class extenders as aliases
 - Improve the built-in mod support for:
   - BetterNether
   - BetterEnd
