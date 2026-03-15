@@ -10,6 +10,7 @@ import io.github.mikip98.humilityafm.util.generation_data.material_management.ma
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.MaterialType;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 #if MC_VERSION < 12004
+import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 #else
 import net.minecraft.data.server.recipe.RecipeExporter;
@@ -30,13 +31,13 @@ import java.util.function.Consumer;
 import java.util.concurrent.CompletableFuture;
 #endif import static io.github.mikip98.humilityafm.HumilityAFM.*;
 
-public class RecipeGenerator extends AFMRecipieProvider {
+public class AMFRecipeGenerator extends AFMRecipieProvider {
     #if MC_VERSION < 12006
-    public RecipeGenerator(FabricDataOutput output) {
+    public AMFRecipeGenerator(FabricDataOutput output) {
         super(output);
     }
     #else
-    public RecipeGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+    public AMFRecipeGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
         super(output, registriesFuture);
     }
     #endif
@@ -77,7 +78,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
         generateColouredJackOLanternRecipies(exporter);
     }
 
-    protected static void generateCabinetRecipies(
+    protected void generateCabinetRecipies(
             #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
     ) {
         Map<Pair<SupportedMods, String>, List<Pair<ItemConvertible, String>>> perWoodCabinets = new HashMap<>();
@@ -103,6 +104,17 @@ public class RecipeGenerator extends AFMRecipieProvider {
             final String colourName = material.layers()[1].name();
             final SupportedMods woodSourceMod = woodLayer.metadata().sourceMod();
 
+            #if MC_VERSION == 12001
+            Consumer<RecipeJsonProvider> currentExporter = exporter;
+            #else
+            RecipeExporter currentExporter = exporter;
+            #endif
+
+            // Apply the condition if the source mod isn't vanilla Minecraft
+            if (woodSourceMod != null) {
+                currentExporter = withConditions(exporter, DefaultResourceConditions.allModsLoaded(woodSourceMod.modId));
+            }
+
             final Pair<SupportedMods, String> key = new Pair<>(woodSourceMod, woodLayer.name());
             final ItemConvertible[] sameWoodOtherColourCabinets = perWoodCabinets
                     .get(key)
@@ -118,16 +130,16 @@ public class RecipeGenerator extends AFMRecipieProvider {
             final ItemConvertible cabinetBlockItemVariant = ItemRegistry.CABINET_ITEM_VARIANTS[i];
             final ItemConvertible illuminatedCabinetBlockItemVariant = ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS[i];
 
-            // Normal recipies
+            // Normal recipes
             offerCabinetRecipe(
-                    exporter,
+                    currentExporter,
                     cabinetBlockItemVariant,
                     getItemFromName(woodLayer.name() + "_slab", woodSourceMod),
                     getItemFromName(colourName + "_carpet"),
                     "cabinets/"
             );
             offerIlluminatedCabinetRecipe(
-                    exporter,
+                    currentExporter,
                     illuminatedCabinetBlockItemVariant,
                     cabinetBlockItemVariant
             );
@@ -136,7 +148,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
             final Item currentDye = getItemFromName(colourName + "_dye");
 
             offerColorChangeRecipie(
-                    exporter,
+                    currentExporter,
                     cabinetBlockItemVariant,
                     Ingredient.ofItems(sameWoodOtherColourCabinets),
                     currentDye,
@@ -144,7 +156,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
                     "cabinets/color_change/"
             );
             offerColorChangeRecipie(
-                    exporter,
+                    currentExporter,
                     illuminatedCabinetBlockItemVariant,
                     Ingredient.ofItems(sameWoodOtherColourIlluminatedCabinets),
                     currentDye,
@@ -155,7 +167,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
         }
     }
 
-    protected static void generateWoodenMosaicRecipies(
+    protected void generateWoodenMosaicRecipies(
             #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
     ) {
         Iterable<BlockMaterial> woodenMosaicMaterials = ActiveGenerationData.woodenMosaicVariantMaterials;
@@ -167,11 +179,24 @@ public class RecipeGenerator extends AFMRecipieProvider {
             SupportedMods sourceMod1 = woodMaterial1.metadata().sourceMod();
             SupportedMods sourceMod2 = woodMaterial2.metadata().sourceMod();
 
+            #if MC_VERSION == 12001
+            Consumer<RecipeJsonProvider> currentExporter = exporter;
+            #else
+            RecipeExporter currentExporter = exporter;
+            #endif
+
+            // Apply the condition if the source mod isn't vanilla Minecraft
+            if (sourceMod1 != null && sourceMod2 != null)
+                currentExporter = withConditions(exporter, DefaultResourceConditions.allModsLoaded(sourceMod1.modId, sourceMod2.modId));
+            else if (sourceMod1 != null || sourceMod2 != null) {
+                currentExporter = withConditions(exporter, DefaultResourceConditions.allModsLoaded(Objects.requireNonNullElse(sourceMod1, sourceMod2).modId));
+            }
+
             Item plank1 = getItemFromName(woodMaterial1.name() + "_planks", sourceMod1);
             Item plank2 = getItemFromName(woodMaterial2.name() + "_planks", sourceMod2);
 
             offerWoodenMosaicRecipe(
-                    exporter,
+                    currentExporter,
                     BlockRegistry.WOODEN_MOSAIC_VARIANTS[i],
                     plank1,
                     plank2,
@@ -180,7 +205,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
             // TODO: Double check this still works
             final int j = getMirrorIndex(i, RawGenerationData.allWoodTypes.size());
             offerChangeRecipie(
-                    exporter,
+                    currentExporter,
                     BlockRegistry.WOODEN_MOSAIC_VARIANTS[i],
                     BlockRegistry.WOODEN_MOSAIC_VARIANTS[j],
                     MOD_ID + "/wooden_mosaics",
@@ -191,7 +216,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
             // The output of this should be moved from 'generated/data/humility-afm/recipies'
             // to its own dedicated datapack folder
             offerAlternateWoodenMosaicRecipe(
-                    exporter,
+                    currentExporter,
                     BlockRegistry.WOODEN_MOSAIC_VARIANTS[i],
                     plank1,
                     plank2,
@@ -242,7 +267,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
         return result;
     }
 
-    protected static void generateForcedCornerStairsRecipies(
+    protected void generateForcedCornerStairsRecipies(
             #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
     ) {
         int i = 0;
@@ -263,12 +288,23 @@ public class RecipeGenerator extends AFMRecipieProvider {
             final Item stairs = getItemFromName(materialName + "_stairs", sourceMod);
             final String modId = sourceMod != null ? sourceMod.modId : "vanilla";
 
+            #if MC_VERSION == 12001
+            Consumer<RecipeJsonProvider> currentExporter = exporter;
+            #else
+            RecipeExporter currentExporter = exporter;
+            #endif
+
+            // Apply the condition if the source mod isn't vanilla Minecraft
+            if (sourceMod != null) {
+                currentExporter = withConditions(exporter, DefaultResourceConditions.allModsLoaded(sourceMod.modId));
+            }
+
             final ItemConvertible inner_stairs = BlockRegistry.INNER_STAIRS_BLOCK_VARIANTS[i];
             final ItemConvertible outer_stairs = BlockRegistry.OUTER_STAIRS_BLOCK_VARIANTS[i];
 
-            offerChangeRecipie(exporter, inner_stairs, stairs, MOD_ID + "/stairs", "stairs/" + modId + "/inner/");
-            offerChangeRecipie(exporter, outer_stairs, inner_stairs, MOD_ID + "/stairs", "stairs/" + modId + "/outer/");
-            offerChangeRecipie(exporter, stairs, outer_stairs, MOD_ID + "/stairs", "stairs/" + modId + "/normal/");
+            offerChangeRecipie(currentExporter, inner_stairs, stairs, MOD_ID + "/stairs", "stairs/" + modId + "/inner/");
+            offerChangeRecipie(currentExporter, outer_stairs, inner_stairs, MOD_ID + "/stairs", "stairs/" + modId + "/outer/");
+            offerChangeRecipie(currentExporter, stairs, outer_stairs, MOD_ID + "/stairs", "stairs/" + modId + "/normal/");
             ++i;
         }
     }

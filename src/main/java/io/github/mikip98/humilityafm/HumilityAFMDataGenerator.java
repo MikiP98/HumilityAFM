@@ -4,7 +4,7 @@ import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.datagen.BlockLootTableGenerator;
 import io.github.mikip98.humilityafm.datagen.BlockTagGenerator;
 import io.github.mikip98.humilityafm.datagen.ModelGenerator;
-import io.github.mikip98.humilityafm.datagen.RecipeGenerator;
+import io.github.mikip98.humilityafm.datagen.AMFRecipeGenerator;
 import io.github.mikip98.humilityafm.datagen.language.PolishLangProvider;
 import io.github.mikip98.humilityafm.datagen.language.UKEnglishLangProvider;
 import io.github.mikip98.humilityafm.datagen.language.USEnglishLangProvider;
@@ -21,7 +21,7 @@ public class HumilityAFMDataGenerator implements DataGeneratorEntrypoint {
 
 		pack.addProvider(BlockTagGenerator::new);
 		pack.addProvider(BlockLootTableGenerator::new);
-		pack.addProvider(RecipeGenerator::new);
+		pack.addProvider(AMFRecipeGenerator::new);
 		pack.addProvider(ModelGenerator::new);
 		// Language providers
 		pack.addProvider(PolishLangProvider::new);
