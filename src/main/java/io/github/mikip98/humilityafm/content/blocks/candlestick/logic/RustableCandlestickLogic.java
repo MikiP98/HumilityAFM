@@ -62,14 +62,14 @@ public non-sealed interface RustableCandlestickLogic extends BaseCandlestickLogi
             // De-wax
             if (state.get(ModProperties.WAXED)) {
                 world.setBlockState(pos, state.with(ModProperties.WAXED, false), Block.NOTIFY_ALL);
-                damageItem(heldItemStack, player, world, hand);
+                damageItem(heldItemStack, player, hand);
                 emmitWaxOffParticles(world, offsetX, offsetY, offsetZ, randomSpread);
                 world.playSound(offsetX, offsetY, offsetZ, SoundEvents.ITEM_AXE_WAX_OFF, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
                 return true;
             }
             // De-rust
             else if (getRustPreviousLevel() != null) {
-                damageItem(heldItemStack, player, world, hand);
+                damageItem(heldItemStack, player, hand);
                 // ServerWorld check is required to be spam proof
                 if (!world.isClient) derust(state, world, pos);
                 return true;

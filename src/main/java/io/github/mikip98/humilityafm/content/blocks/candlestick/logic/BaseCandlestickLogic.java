@@ -70,7 +70,7 @@ public sealed interface BaseCandlestickLogic permits SimpleCandlestickLogic, Rus
                         && !state.get(Properties.WATERLOGGED)
         ) {
             world.setBlockState(pos, state.with(Properties.LIT, true), Block.NOTIFY_ALL);
-            damageItem(heldItemStack, player, world, hand);
+            damageItem(heldItemStack, player, hand);
             world.playSoundAtBlockCenter(pos, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
             return true;
         }
@@ -113,18 +113,12 @@ public sealed interface BaseCandlestickLogic permits SimpleCandlestickLogic, Rus
     }
     record Velocity(double x, double y, double z) {}
 
-    default void damageItem(ItemStack heldItemStack, PlayerEntity player, World world, Hand hand) {
+    default void damageItem(ItemStack heldItemStack, PlayerEntity player, Hand hand) {
         if (!player.isCreative()) {
         #if MC_VERSION < 12006
         heldItemStack.damage(1, player, (p) -> p.sendToolBreakStatus(hand));
         #else
-            if (!world.isClient)
-                heldItemStack.damage(
-                        1,
-                        world.getRandom(),
-                        (ServerPlayerEntity) player,
-                        () -> player.sendEquipmentBreakStatus(LivingEntity.getSlotForHand(hand))
-                );
+        heldItemStack.damage(1, player, LivingEntity.getSlotForHand(hand));
         #endif
         }
     }

@@ -3,9 +3,9 @@ package io.github.mikip98.humilityafm.content.tags;
 import net.minecraft.block.Block;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
+import static io.github.mikip98.humilityafm.HumilityAFM.getVanillaId;
 
 public class ModBlockTags {
 
@@ -37,6 +37,6 @@ public class ModBlockTags {
 
 
     // Vanilla Tags
-    public static final TagKey<Block> AXE_MINEABLE = TagKey.of(RegistryKeys.BLOCK, new Identifier("minecraft:mineable/axe"));
-    public static final TagKey<Block> PICKAXE_MINEABLE = TagKey.of(RegistryKeys.BLOCK, new Identifier("minecraft:mineable/pickaxe"));
+    public static final TagKey<Block> AXE_MINEABLE = TagKey.of(RegistryKeys.BLOCK, getVanillaId("mineable/axe"));
+    public static final TagKey<Block> PICKAXE_MINEABLE = TagKey.of(RegistryKeys.BLOCK, getVanillaId("mineable/pickaxe"));
 }

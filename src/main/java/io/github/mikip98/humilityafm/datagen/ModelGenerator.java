@@ -20,13 +20,15 @@ import net.minecraft.item.Item;
 import net.minecraft.state.property.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
-import static io.github.mikip98.humilityafm.HumilityAFM.getId;
+import static io.github.mikip98.humilityafm.HumilityAFM.*;
 
 public class ModelGenerator extends FabricModelProvider {
     // Cabinet Models
@@ -179,7 +181,7 @@ public class ModelGenerator extends FabricModelProvider {
         for (BlockMaterial material : ActiveGenerationData.colouredFeatureSetMaterials) {
             final String color = material.layers()[0].name();
 
-            final Identifier coloured_concrete = new Identifier("block/" + color + "_concrete");
+            final Identifier coloured_concrete = getVanillaId("block/" + color + "_concrete");
             final TextureMap textureMap = new TextureMap()
                     .register(TextureKey.of("0"), coloured_concrete);
 
@@ -240,7 +242,7 @@ public class ModelGenerator extends FabricModelProvider {
 
             final String suffix = block_suffix_metals.contains(metal) ? "_block" : "";
             final TextureMap metalTextureMap = new TextureMap()
-                    .register(TextureKey.of("metal"), new Identifier("block/" + metal + suffix));
+                    .register(TextureKey.of("metal"), getVanillaId("block/" + metal + suffix));
 
             final Identifier candlestickStandingMetalModelId = CANDLESTICK_STANDING_MODEL.upload(
                     getId("block/candlestick/standing/" + metal + "/candlestick_" + metal),
@@ -298,7 +300,7 @@ public class ModelGenerator extends FabricModelProvider {
             for (String color : RawGenerationData.vanillaColorPallet) {
                 final CandleColor candleColor = CandleColor.getColor(color);
                 final TextureMap candleColorTextureMap = new TextureMap()
-                        .register(TextureKey.of("candle"), new Identifier("block/" + color + "_candle_lit"));
+                        .register(TextureKey.of("candle"), getVanillaId("block/" + color + "_candle_lit"));
 
                 String id = "block/candlestick/standing/" + metal + "/candlestick_" + metal + "_" + color;
                 final Identifier standingCandlestickColoredModelId = candlestickWithCandleStandingMetalModel.upload(
@@ -357,7 +359,7 @@ public class ModelGenerator extends FabricModelProvider {
             final BlockMaterial.Layer materialLayer = stairMaterial.layers()[0];
 
             final SupportedMods sourceMod = materialLayer.metadata().sourceMod();
-            final String textureAtlasPrefix = (sourceMod != null ? sourceMod.modId + ':' : "") + "block/";
+            final Function<String, Identifier> getBlockId = (name) -> getBlockId(sourceMod, name);
 
             final MaterialType materialType = materialLayer.metadata().type();
             if (materialType == null) throw new IllegalStateException("Material type is null for forced corner stairs material layer: " + materialLayer.name());
@@ -370,7 +372,7 @@ public class ModelGenerator extends FabricModelProvider {
             switch (materialType) {
                 case BURNABLE_WOOD, FIREPROOF_WOOD -> {
                     textureBlockName = materialLayer.name() + "_planks";
-                    final Identifier textureId = new Identifier(textureAtlasPrefix + textureBlockName);
+                    final Identifier textureId = getBlockId.apply(textureBlockName);
                     topTextureId = textureId;
                     sideTextureId = textureId;
                     bottomTextureId = textureId;
@@ -416,9 +418,9 @@ public class ModelGenerator extends FabricModelProvider {
                             sideTextureName = topTextureName;
                         }
                     }
-                    topTextureId = new Identifier(textureAtlasPrefix + topTextureName + suffix);
-                    sideTextureId = new Identifier(textureAtlasPrefix + sideTextureName + suffix);
-                    bottomTextureId = new Identifier(textureAtlasPrefix + bottomTextureName + suffix);
+                    topTextureId = getBlockId.apply(topTextureName + suffix);
+                    sideTextureId = getBlockId.apply(sideTextureName + suffix);
+                    bottomTextureId = getBlockId.apply(bottomTextureName + suffix);
                 }
                 default -> throw new IllegalArgumentException("Unsupported material type for forced corner stairs: " + materialType);
             }
@@ -460,8 +462,8 @@ public class ModelGenerator extends FabricModelProvider {
             SupportedMods mod1 = layer1.metadata().sourceMod();
             SupportedMods mod2 = layer2.metadata().sourceMod();
 
-            Identifier planks1Id = new Identifier((mod1 != null ? mod1.modId + ':' : "") + "block/" + layer1.name() + "_planks");
-            Identifier planks2Id = new Identifier((mod2 != null ? mod2.modId + ':' : "") + "block/" + layer2.name() + "_planks");
+            Identifier planks1Id = getBlockId(mod1, layer1.name() + "_planks");
+            Identifier planks2Id = getBlockId(mod2, layer2.name() + "_planks");
 
             String modFolders = "";
             if (mod1 != null) modFolders += mod1.modId;
@@ -490,8 +492,8 @@ public class ModelGenerator extends FabricModelProvider {
 //                final Identifier woodenMosaicModelId = CHECKER_2X2_MODEL.upload(
 //                        getId("block/wooden_mosaic/wooden_mosaic_" + woodType + "_" + woodType2),
 //                        new TextureMap()
-//                                .register(TextureKey.of("1"), new Identifier("block/" + woodType + "_planks"))
-//                                .register(TextureKey.of("2"), new Identifier("block/" + woodType2 + "_planks")),
+//                                .register(TextureKey.of("1"), getVanillaId("block/" + woodType + "_planks"))
+//                                .register(TextureKey.of("2"), getVanillaId("block/" + woodType2 + "_planks")),
 //                        blockStateModelGenerator.modelCollector
 //                );
 //                blockStateModelGenerator.registerParentedItemModel(BlockRegistry.WOODEN_MOSAIC_VARIANTS[i], woodenMosaicModelId);
@@ -510,8 +512,8 @@ public class ModelGenerator extends FabricModelProvider {
                 final Identifier terracottaTileModelId = CHECKER_2X2_MODEL.upload(
                         getId("block/terracotta_tiles/terracotta_tiles_" + color + "_" + color2),
                         new TextureMap()
-                                .register(TextureKey.of("1"), new Identifier("block/" + color + "_terracotta"))
-                                .register(TextureKey.of("2"), new Identifier("block/" + color2 + "_terracotta")),
+                                .register(TextureKey.of("1"), getVanillaId("block/" + color + "_terracotta"))
+                                .register(TextureKey.of("2"), getVanillaId("block/" + color2 + "_terracotta")),
                         blockStateModelGenerator.modelCollector
                 );
                 blockStateModelGenerator.registerParentedItemModel(BlockRegistry.TERRACOTTA_TILE_VARIANTS[i], terracottaTileModelId);
@@ -536,7 +538,7 @@ public class ModelGenerator extends FabricModelProvider {
 
             final TextureMap woolTextureMap = new TextureMap().register(
                     TextureKey.of("wool"),
-                    new Identifier("block/" + colorLayer.name() + "_wool")
+                    getVanillaId("block/" + colorLayer.name() + "_wool")
             );
 
             final Identifier coloredCabinet = baseWoodSet.wallClosed.upload(
@@ -572,7 +574,7 @@ public class ModelGenerator extends FabricModelProvider {
 //        for (String woodType : RawGenerationData.allWoodTypes) {
 //            final TextureMap plankTextureMap = new TextureMap().register(
 //                    TextureKey.of("planks"),
-//                    new Identifier("block/" + woodType + "_planks")
+//                    getVanillaId("block/" + woodType + "_planks")
 //            );
 //
 //            final Identifier woodTypeCabinetId = CABINET_BLOCK_MODEL.upload(
@@ -618,7 +620,7 @@ public class ModelGenerator extends FabricModelProvider {
 //            for (String color : RawGenerationData.vanillaColorPallet) {
 //                final TextureMap woolTextureMap = new TextureMap().register(
 //                        TextureKey.of("wool"),
-//                        new Identifier("block/" + color + "_wool")
+//                        getVanillaId("block/" + color + "_wool")
 //                );
 //                final Identifier coloredCabinet = woodTypeCabinetModel.upload(
 //                        getId("block/cabinet/closed/" + woodType + "/cabinet_block_" + woodType + "_" + color),
@@ -655,7 +657,7 @@ public class ModelGenerator extends FabricModelProvider {
         SupportedMods sourceMod = wood.metadata().sourceMod();
         final TextureMap plankTextureMap = new TextureMap().register(
                 TextureKey.of("planks"),
-                sourceMod != null ? new Identifier(sourceMod.modId, "block/" + wood.name() + "_planks") : new Identifier("block/" + wood.name() + "_planks")
+                getBlockId(sourceMod, wood.name() + "_planks")
         );
 
         final Identifier woodTypeCabinetId = CABINET_BLOCK_MODEL.upload(
@@ -1373,5 +1375,9 @@ public class ModelGenerator extends FabricModelProvider {
         for (Item item : ItemRegistry.GLOWING_POWDER_VARIANTS) {
             itemModelGenerator.register(item, Models.GENERATED);
         }
+    }
+
+    protected static Identifier getBlockId(@Nullable SupportedMods mod, String name) {
+        return getVMId(mod, "block/" + name);
     }
 }

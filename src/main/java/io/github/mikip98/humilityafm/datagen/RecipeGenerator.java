@@ -22,16 +22,13 @@ import net.minecraft.registry.Registries;
 #if MC_VERSION >= 12006
 import net.minecraft.registry.RegistryWrapper;
 #endif
-import net.minecraft.util.Identifier;
 
 import java.util.*;
 #if MC_VERSION < 12004
 import java.util.function.Consumer;
 #elif MC_VERSION >= 12006
 import java.util.concurrent.CompletableFuture;
-#endif
-
-import static io.github.mikip98.humilityafm.HumilityAFM.MOD_ID;
+#endif import static io.github.mikip98.humilityafm.HumilityAFM.*;
 
 public class RecipeGenerator extends AFMRecipieProvider {
     #if MC_VERSION < 12006
@@ -75,7 +72,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
         // Optional
         generateCandlestickRecipies(exporter);
         generateGlowingPowderRecipies(exporter);
-        generateLightStripRecipies(exporter);
+        generateLightStripRecipes(exporter);
         generateColouredTorchRecipies(exporter);
         generateColouredJackOLanternRecipies(exporter);
     }
@@ -379,7 +376,7 @@ public class RecipeGenerator extends AFMRecipieProvider {
         }
     }
 
-    protected static void generateLightStripRecipies(
+    protected static void generateLightStripRecipes(
             #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
     ) {
         for (int i = 0; i < RawGenerationData.vanillaColorPallet.length; ++i) {
@@ -394,18 +391,12 @@ public class RecipeGenerator extends AFMRecipieProvider {
 
 
     protected static Item getItemFromName(String name) {
-        return Registries.ITEM.get(new Identifier(name));
+        return Registries.ITEM.get(getVanillaId(name));
     }
     protected static Item getItemFromName(String name, SupportedMods mod) {
-        Item item;
-        if (mod == null) {
-            item = Registries.ITEM.get(new Identifier(name));
-        } else {
-            item = Registries.ITEM.get(new Identifier(mod.modId, name));
-        }
-        if (item == Items.AIR) {
-            throw new IllegalStateException("Item not found: " + name + " in mod: " + (mod != null ? mod.modId : "vanilla"));
-        }
+        Item item = Registries.ITEM.get(getVMId(mod, name));
+        if (item == Items.AIR)
+            throw new IllegalStateException("Item not found: '" + name + "' in mod: '" + (mod != null ? mod.modId : "vanilla") + "'");
         return item;
     }
 }
