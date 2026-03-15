@@ -10,12 +10,21 @@ import io.github.mikip98.humilityafm.util.generation_data.RawGenerationData;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.MaterialType;
+#if MC_VERSION >= 12104
+import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
+#endif
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+#if MC_VERSION < 12104
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
+#endif
 import net.minecraft.block.Block;
 import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.block.enums.StairShape;
+#if MC_VERSION < 12104
 import net.minecraft.data.client.*;
+#else
+import net.minecraft.client.data.*;
+#endif
 import net.minecraft.item.Item;
 import net.minecraft.state.property.*;
 import net.minecraft.util.Identifier;
@@ -26,6 +35,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.*;
