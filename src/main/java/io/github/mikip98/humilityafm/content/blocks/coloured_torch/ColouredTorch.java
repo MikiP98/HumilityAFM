@@ -35,9 +35,9 @@ public class ColouredTorch extends TorchBlock {
         setDefaultState(getDefaultState().with(POWER, 15));
     }
     #elif MC_VERSION == 12004
-    public ColouredTorch(DefaultParticleType particle) { this(particleType, defaultSettings); }
-    public ColouredTorch(DefaultParticleType particle, Settings settings) {
-        super(particle, settings);
+    public ColouredTorch(DefaultParticleType particleType) { this(particleType, defaultSettings); }
+    public ColouredTorch(DefaultParticleType particleType, Settings settings) {
+        super(particleType, settings);
         setDefaultState(getDefaultState().with(POWER, 15));
     }
     #else
