@@ -44,27 +44,6 @@ repositories {
 	
 	maven { url "https://maven.shedaniel.me/" }
 	maven { url "https://maven.terraformersmc.com/releases/" }
-
-	if (project.properties['active_mc_version'] == "1.20.1") {
-		// For Modrinth mod dependencies 'polymorph'
-		exclusiveContent {
-			forRepository {
-				maven {
-					name = "Modrinth"
-					url = "https://api.modrinth.com/maven"
-				}
-			}
-			filter {
-				includeGroup "maven.modrinth"
-			}
-		}
-
-		// Required for 'polymorph'
-		maven {
-			name = 'Ladysnake Mods'
-			url = 'https://maven.ladysnake.org/releases'
-		}
-	}
 }
 
 loom {
@@ -81,6 +60,9 @@ loom {
 fabricApi {
 	configureDataGeneration() {
 		client = true
+		modId = "humility-afm"
+		outputDirectory = file("src/main/generated/${project.active_mc_version}")
+		// TODO: Check if adding the 'modId' config options helps with other mod datagen when deleting the run config
 	}
 }
 
@@ -101,17 +83,6 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 	modApi "com.terraformersmc:modmenu:${project.modmenu_version}"
-
-	// For some reason this does not work on 1.20.4, 1.20.6 and 1.21.1
-	// As of now, Polymorph has also not been updated past 1.21.1
-	if (project.active_mc_version == "1.20.1") {
-		modRuntimeOnly "maven.modrinth:polymorph:${project.polymorph_version}"  // Required for Datagen to not fail
-		runtimeOnly group: 'com.electronwill.night-config', name: 'core', version: '3.7.4'  // Required for 'polymorph'
-		modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${polymorph_cca_version}" // Required for 'polymorph'
-		modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${polymorph_cca_version}" // Required for 'polymorph'
-		modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-block:${polymorph_cca_version}" // Required for 'polymorph'
-		modRuntimeOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-item:${polymorph_cca_version}" // Required for 'polymorph'
-	}
 }
 
 processResources {
@@ -119,6 +90,7 @@ processResources {
 	inputs.property "java_version", project.java_version
 	inputs.property "loader_version", project.loader_version
 	inputs.property "minecraft_version", project.minecraft_version
+	inputs.property "minecraft_version_number", project.mc_version_number.toInteger()
 	inputs.property "resource_pack_format", project.resource_pack_format
 	inputs.property "data_pack_format", project.data_pack_format
 
@@ -134,18 +106,38 @@ processResources {
 				"data_pack_format": inputs.properties.data_pack_format
 	}
 
+	// Move the datapack files to the datapack folder
+	def activeMcVersionNum = inputs.properties.minecraft_version_number
+	def modId = "humility-afm"
+
+	def recipeDirName = (activeMcVersionNum >= 12100) ? "recipe" : "recipes"
+
+	exclude "data/${modId}/${recipeDirName}/datapack"
+
+	from("src/main/generated/${activeVersion}/data/${modId}/${recipeDirName}/datapack") {
+		into "resourcepacks/alternate_wooden_mosaic_recipies/data/${modId}/${recipeDirName}"
+	}
+
 	doLast {
 		// Minify JSON files to reduce the mod size a bit
-		fileTree("$layout.buildDirectory/resources/main")
+		fileTree(destinationDir)
 				.matching { include "**/*.json", "**/*.mcmeta" }
 				.forEach { File f ->
 					def json = new JsonSlurper().parse(f)
 
+					// --- FABRIC.MOD.JSON CLEANUP START ---
+					if (f.name == "fabric.mod.json") {
+						// If 1.21.4 or newer, downgrade Polymorph to a suggestion
+						if (activeMcVersionNum >= 12104) {
+							json.depends.remove("polymorph")
+							json.suggests.polymorph = "*"
+						}
+					}
+					// --- FABRIC.MOD.JSON CLEANUP END ---
+
 					// --- MCMETA CLEANUP START ---
 					if (f.name == "pack.mcmeta") {
-						int activeMcVersion = project.ext.mc_version_number.toInteger()
-
-						if (activeMcVersion >= 12109) {
+						if (activeMcVersionNum >= 12109) {
 							// 1.21.9+ Format
 							json.pack.remove("pack_format")
 						} else {
@@ -217,7 +209,7 @@ tasks.register("recompressJars", Exec) {
 	dependsOn(tasks.named("jar"))
 
 	// Build the jar name based on project properties
-	def jarFile = layout.buildDirectory.file("libs/${project.archivesBaseName}-${project.version}.jar").get().asFile
+	def jarFile = layout.buildDirectory.file("libs/${project.archives_base_name}-${project.version}.jar").get().asFile
 
 	// Configure the command
 	workingDir projectDir
@@ -234,4 +226,36 @@ tasks.register("recompressJars", Exec) {
 // Run the 'recompressJars' task after the 'build' task
 tasks.named("build") {
 	finalizedBy("recompressJars")
+}
+
+// Sync task for standard runs (Client/Server)
+tasks.register('syncRunMods', Sync) {
+	group = "fabric"
+	description = "Syncs local mods to the run/mods directory"
+
+	from("local-mods/common/${activeVersion}")
+	from("local-mods/run/${activeVersion}")
+	into("run/mods")
+}
+
+// Sync task for Datagen
+tasks.register('syncDatagenMods', Sync) {
+	group = "fabric"
+	description = "Syncs local mods to the datagen mods directory"
+
+	from("local-mods/common/${activeVersion}")
+	from("local-mods/datagen/${activeVersion}")
+	into("build/datagen/mods")
+}
+
+tasks.named('runClient').configure {
+	dependsOn('syncRunMods')
+}
+
+tasks.named('runServer').configure {
+	dependsOn('syncRunMods')
+}
+
+tasks.named('runDatagen').configure {
+	dependsOn('syncDatagenMods')
 }
