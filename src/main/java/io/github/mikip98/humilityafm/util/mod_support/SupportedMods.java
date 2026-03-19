@@ -3,7 +3,7 @@ package io.github.mikip98.humilityafm.util.mod_support;
 import org.jetbrains.annotations.NotNull;
 
 public enum SupportedMods {
-    #if MC_VERSION != 12006
+    #if MC_VERSION != 12006 && MC_VERSION < 12104
     BETTER_NETHER("Better Nether", "betternether"),
     BETTER_END("Better End", "betterend"),
     #endif
