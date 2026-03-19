@@ -57,6 +57,24 @@ loom {
 	}
 }
 
+def activeMcVersionNum = project.mc_version_number.toInteger()
+
+sourceSets {
+	if (activeMcVersionNum < 12104) {
+		main {
+			java {
+				srcDir 'src/versioned_datagen/java'
+			}
+		}
+	} else {
+		client {
+			java {
+				srcDir 'src/versioned_datagen/java'
+			}
+		}
+	}
+}
+
 fabricApi {
 	configureDataGeneration() {
 		client = true
@@ -107,7 +125,6 @@ processResources {
 	}
 
 	// Move the datapack files to the datapack folder
-	def activeMcVersionNum = inputs.properties.minecraft_version_number
 	def modId = "humility-afm"
 
 	def recipeDirName = (activeMcVersionNum >= 12100) ? "recipe" : "recipes"

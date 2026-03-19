@@ -35,8 +35,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.*;
@@ -79,8 +77,13 @@ public class ModelGenerator extends FabricModelProvider {
     public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
         // ............ TEST BLOCKS & BLOCK ITEMS ............
         // Cabinet Blocks
+        #if MC_VERSION < 12104
         blockStateModelGenerator.registerParentedItemModel(ItemRegistry.CABINET_ITEM, getId("block/cabinet_block"));
         blockStateModelGenerator.registerParentedItemModel(ItemRegistry.ILLUMINATED_CABINET_ITEM, getId("block/cabinet_block"));
+        #else
+        blockStateModelGenerator.registerItemModel(ItemRegistry.CABINET_ITEM, getId("block/cabinet_block"));
+        blockStateModelGenerator.registerItemModel(ItemRegistry.ILLUMINATED_CABINET_ITEM, getId("block/cabinet_block"));
+        #endif
         blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(BlockRegistry.CABINET_BLOCK, getId("block/cabinet_block"), getId("block/cabinet_block_open")));
         blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(BlockRegistry.ILLUMINATED_CABINET_BLOCK, getId("block/cabinet_block"), getId("block/cabinet_block_open")));
         blockStateModelGenerator.blockStateCollector.accept(getFloorCabinetBlockstate(BlockRegistry.FLOOR_CABINET_BLOCK, getId("block/floor_cabinet_block"), getId("block/floor_cabinet_block_open")));
@@ -180,7 +183,11 @@ public class ModelGenerator extends FabricModelProvider {
                     blockStateModelGenerator.modelCollector
             );
 
+            #if MC_VERSION < 12104
             blockStateModelGenerator.registerParentedItemModel(ItemRegistry.COLOURED_TORCH_ITEM_VARIANTS[i], torchModelId);
+            #else
+            blockStateModelGenerator.registerItemModel(ItemRegistry.COLOURED_TORCH_ITEM_VARIANTS[i], torchModelId);
+            #endif
             blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(BlockRegistry.COLOURED_TORCH_VARIANTS[i], torchModelId));
             blockStateModelGenerator.blockStateCollector.accept(getTorchOrientableBlockState(BlockRegistry.COLOURED_WALL_TORCH_VARIANTS[i], wallTorchModelId));
             ++i;
@@ -342,7 +349,11 @@ public class ModelGenerator extends FabricModelProvider {
                 wallLitCandleColorModelMap.put(candleColor, wallCandlestickLitColoredModelId);
             }
 
+            #if MC_VERSION < 12104
             blockStateModelGenerator.registerParentedItemModel(items[i], candlestickStandingMetalModelId);
+            #else
+            blockStateModelGenerator.registerItemModel(items[i], candlestickStandingMetalModelId);
+            #endif
             blockStateModelGenerator.blockStateCollector.accept(getWallCandlestickBlockstate(
                     wallBlocks[i],
                     candlestickWallMetalModelId,
@@ -573,8 +584,13 @@ public class ModelGenerator extends FabricModelProvider {
                     blockStateModelGenerator.modelCollector
             );
 
+            #if MC_VERSION < 12104
             blockStateModelGenerator.registerParentedItemModel(ItemRegistry.CABINET_ITEM_VARIANTS[i], coloredCabinet);
             blockStateModelGenerator.registerParentedItemModel(ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS[i], coloredCabinet);
+            #else
+            blockStateModelGenerator.registerItemModel(ItemRegistry.CABINET_ITEM_VARIANTS[i], coloredCabinet);
+            blockStateModelGenerator.registerItemModel(ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS[i], coloredCabinet);
+            #endif
             blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(BlockRegistry.WALL_CABINET_BLOCK_VARIANTS[i], coloredCabinet, coloredCabinetOpen));
             blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(BlockRegistry.WALL_ILLUMINATED_CABINET_BLOCK_VARIANTS[i], coloredCabinet, coloredCabinetOpen));
             blockStateModelGenerator.blockStateCollector.accept(getFloorCabinetBlockstate(BlockRegistry.FLOOR_CABINET_BLOCK_VARIANTS[i], coloredFloorCabinet, coloredFloorCabinetOpen));
@@ -723,7 +739,7 @@ public class ModelGenerator extends FabricModelProvider {
             Identifier innerModel,
             Identifier outerModel
     ) {
-        DirectionProperty FACING = Properties.HORIZONTAL_FACING;
+        #if MC_VERSION < 12104 DirectionProperty #else EnumProperty<Direction> #endif FACING = Properties.HORIZONTAL_FACING;
         EnumProperty<BlockHalf> HALF = Properties.BLOCK_HALF;
         EnumProperty<StairShape> SHAPE = Properties.STAIR_SHAPE;
 
@@ -969,7 +985,7 @@ public class ModelGenerator extends FabricModelProvider {
             Map<CandleColor, Identifier> colouredCandleModels,
             Map<CandleColor, Identifier> litColouredCandleModels
     ) {
-        DirectionProperty FACING = Properties.HORIZONTAL_FACING;
+        #if MC_VERSION < 12104 DirectionProperty #else EnumProperty<Direction> #endif FACING = Properties.HORIZONTAL_FACING;
         BooleanProperty LIT = Properties.LIT;
         EnumProperty<CandleColor> CANDLE_COLOR = ModProperties.CANDLE_COLOR;
 
@@ -1224,38 +1240,38 @@ public class ModelGenerator extends FabricModelProvider {
     protected static VariantsBlockStateSupplier getCabinetBlockstate(Block cabinetBlock, Identifier cabinetModel, Identifier cabinetOpenModel) {
         return VariantsBlockStateSupplier.create(cabinetBlock)
                 .coordinate(BlockStateVariantMap.create(Properties.HORIZONTAL_FACING, Properties.OPEN)
-                    .register(
-                            Direction.NORTH, true,
-                            getVariantY(cabinetOpenModel, VariantSettings.Rotation.R180)
-                    )
-                    .register(
-                            Direction.NORTH, false,
-                            getVariantY(cabinetModel, VariantSettings.Rotation.R180)
-                    )
-                    .register(
-                            Direction.EAST, true,
-                            getVariantY(cabinetOpenModel, VariantSettings.Rotation.R270)
-                    )
-                    .register(
-                            Direction.EAST, false,
-                            getVariantY(cabinetModel, VariantSettings.Rotation.R270)
-                    )
-                    .register(
-                            Direction.SOUTH, true,
-                            getVariant(cabinetOpenModel)
-                    )
-                    .register(
-                            Direction.SOUTH, false,
-                            getVariant(cabinetModel)
-                    )
-                    .register(
-                            Direction.WEST, true,
-                            getVariantY(cabinetOpenModel, VariantSettings.Rotation.R90)
-                    )
-                    .register(
-                            Direction.WEST, false,
-                            getVariantY(cabinetModel, VariantSettings.Rotation.R90)
-                    )
+                        .register(
+                                Direction.NORTH, true,
+                                getVariantY(cabinetOpenModel, VariantSettings.Rotation.R180)
+                        )
+                        .register(
+                                Direction.NORTH, false,
+                                getVariantY(cabinetModel, VariantSettings.Rotation.R180)
+                        )
+                        .register(
+                                Direction.EAST, true,
+                                getVariantY(cabinetOpenModel, VariantSettings.Rotation.R270)
+                        )
+                        .register(
+                                Direction.EAST, false,
+                                getVariantY(cabinetModel, VariantSettings.Rotation.R270)
+                        )
+                        .register(
+                                Direction.SOUTH, true,
+                                getVariant(cabinetOpenModel)
+                        )
+                        .register(
+                                Direction.SOUTH, false,
+                                getVariant(cabinetModel)
+                        )
+                        .register(
+                                Direction.WEST, true,
+                                getVariantY(cabinetOpenModel, VariantSettings.Rotation.R90)
+                        )
+                        .register(
+                                Direction.WEST, false,
+                                getVariantY(cabinetModel, VariantSettings.Rotation.R90)
+                        )
                 );
     }
     protected static VariantsBlockStateSupplier getFloorCabinetBlockstate(Block cabinetBlock, Identifier cabinetModel, Identifier cabinetOpenModel) {
