@@ -76,7 +76,11 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
 
     protected static class BlockTranslator extends TranslatorBase {
         public BlockTranslator() {
+            #if MC_VERSION < 12104
             super(new TranslationHashMap("block." + MOD_ID + "."));
+            #else
+            super(new TranslationHashMap("item." + MOD_ID + "."));
+            #endif
         }
 
         public TranslationHashMap getBlockTranslations() {
@@ -102,8 +106,13 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
         public void generateCabinetTranslations() {
             translations.put(ItemRegistry.CABINET_ITEM, "Test Cabinet Block");  // Manual testing block
             translations.put(ItemRegistry.ILLUMINATED_CABINET_ITEM, "Test Illuminated Cabinet Block");  // Manual testing block
+            #if MC_VERSION < 12104
             final String idPrefix1 = "cabinet_block_";
             final String idPrefix2 = "illuminated_cabinet_block_";
+            #else
+            final String idPrefix1 = "cabinet_";
+            final String idPrefix2 = "illuminated_cabinet_";
+            #endif
             final String nameSuffix1 = " cabinet";
             final String nameSuffix2 = " illuminated cabinet";
             enterTranslations(ActiveGenerationData.cabinetVariantMaterials, idPrefix1, nameSuffix1);
