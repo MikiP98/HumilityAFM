@@ -169,6 +169,11 @@ Lighten up your builds with unobtrusive light source
   - [Message on Fabric DC server](https://discord.com/channels/507304429255393322/507982478276034570/1414634100610044004)
 - Runtime resourcepack generation? (datapacks)
 
+### Done:
+
+- Fixed a massive log error spam on world loading/creation
+- Merged all versions into a single manifold branch
+
 <br>
 
 
