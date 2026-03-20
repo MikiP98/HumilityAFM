@@ -37,9 +37,6 @@ public class FloorCandlestick extends Block implements SimpleCandlestickLogic, W
         builder.add(Properties.LIT);
     }
 
-    public FloorCandlestick() {
-        this(Candlestick.defaultSettings);
-    }
     public FloorCandlestick(Settings settings) {
         super(settings);
         setDefaultState(getDefaultState()

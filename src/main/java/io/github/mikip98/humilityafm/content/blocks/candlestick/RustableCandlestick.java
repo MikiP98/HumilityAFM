@@ -19,12 +19,15 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.Supplier;
+
 @Getter
 @Setter
 public class RustableCandlestick extends Candlestick implements RustableCandlestickLogic {
-    public static final Settings defaultSettings = Candlestick.defaultSettingsSupplier.get()
+    public static final Supplier<Settings> defaultSettingsSupplier = () -> Candlestick.defaultSettingsSupplier.get()
             .sounds(BlockSoundGroup.COPPER)
             .ticksRandomly();
+    public static final Settings defaultSettings = defaultSettingsSupplier.get();
 
     protected @Nullable BlockState rustPreviousLevel;
     protected @Nullable BlockState rustNextLevel;
@@ -35,9 +38,6 @@ public class RustableCandlestick extends Candlestick implements RustableCandlest
         builder.add(ModProperties.WAXED);
     }
 
-    public RustableCandlestick() {
-        this(defaultSettings);
-    }
     public RustableCandlestick(Settings settings) {
         this(settings, null, null);
     }

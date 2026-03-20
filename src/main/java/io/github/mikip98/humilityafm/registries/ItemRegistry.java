@@ -8,11 +8,18 @@ import io.github.mikip98.humilityafm.util.generation_data.RawGenerationData;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.SizedIterable;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
+#if MC_VERSION < 12104
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+#else
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+#endif
 import net.minecraft.util.math.Direction;
 
 import java.util.Arrays;
+import java.util.function.Function;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
 
@@ -22,12 +29,12 @@ public class ItemRegistry {
                     : null;
 
     public static final Item CABINET_ITEM = register(
-            new DoubleVerticallyAttachableBlockItem(BlockRegistry.FLOOR_CABINET_BLOCK, BlockRegistry.CABINET_BLOCK, new Item.Settings()),
-            "cabinet_block"
+            "cabinet_block",
+            (settings) -> new DoubleVerticallyAttachableBlockItem(BlockRegistry.FLOOR_CABINET_BLOCK, BlockRegistry.CABINET_BLOCK, settings)
     );
     public static final Item ILLUMINATED_CABINET_ITEM = register(
-            new DoubleVerticallyAttachableBlockItem(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK, BlockRegistry.ILLUMINATED_CABINET_BLOCK, new Item.Settings()),
-            "illuminated_cabinet_block"
+            "illuminated_cabinet_block",
+            (settings) -> new DoubleVerticallyAttachableBlockItem(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK, BlockRegistry.ILLUMINATED_CABINET_BLOCK, settings)
     );
     public static Item[] CABINET_ITEM_VARIANTS;
     public static Item[] ILLUMINATED_CABINET_ITEM_VARIANTS;
@@ -44,21 +51,22 @@ public class ItemRegistry {
         ILLUMINATED_CABINET_ITEM_VARIANTS = new Item[cabinetAmount];
         int i = 0;
         for (BlockMaterial material : ActiveGenerationData.cabinetVariantMaterials) {
+            final int finalI = i;
             CABINET_ITEM_VARIANTS[i] = register(
-                    new DoubleVerticallyAttachableBlockItem(
-                            BlockRegistry.FLOOR_CABINET_BLOCK_VARIANTS[i],
-                            BlockRegistry.WALL_CABINET_BLOCK_VARIANTS[i],
-                            new Item.Settings()
-                    ),
-                    "cabinet_" + material.getSafeName()
+                    "cabinet_" + material.getSafeName(),
+                    (settings) -> new DoubleVerticallyAttachableBlockItem(
+                            BlockRegistry.FLOOR_CABINET_BLOCK_VARIANTS[finalI],
+                            BlockRegistry.WALL_CABINET_BLOCK_VARIANTS[finalI],
+                            settings
+                    )
             );
             ILLUMINATED_CABINET_ITEM_VARIANTS[i] = register(
-                    new DoubleVerticallyAttachableBlockItem(
-                            BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_VARIANTS[i],
-                            BlockRegistry.WALL_ILLUMINATED_CABINET_BLOCK_VARIANTS[i],
-                            new Item.Settings()
-                    ),
-                    "illuminated_cabinet_" + material.getSafeName()
+                    "illuminated_cabinet_" + material.getSafeName(),
+                    (settings) -> new DoubleVerticallyAttachableBlockItem(
+                            BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_VARIANTS[finalI],
+                            BlockRegistry.WALL_ILLUMINATED_CABINET_BLOCK_VARIANTS[finalI],
+                            settings
+                    )
             );
             ++i;
         }
@@ -68,12 +76,13 @@ public class ItemRegistry {
             CANDLESTICK_ITEM_VARIANTS = new Item[ActiveGenerationData.simpleCandlestickMaterials.size()];
             i = 0;
             for (BlockMaterial material : ActiveGenerationData.simpleCandlestickMaterials) {
+                final int finalI = i;
                 CANDLESTICK_ITEM_VARIANTS[i] = register(
                         "candlestick_" + material.getSafeName(),
-                        new ModVerticallyAttachableBlockItem(
-                                BlockRegistry.SIMPLE_CANDLESTICK_FLOOR_VARIANTS[i],
-                                BlockRegistry.SIMPLE_CANDLESTICK_WALL_VARIANTS[i],
-                                new Item.Settings(),
+                        (settings) -> new ModVerticallyAttachableBlockItem(
+                                BlockRegistry.SIMPLE_CANDLESTICK_FLOOR_VARIANTS[finalI],
+                                BlockRegistry.SIMPLE_CANDLESTICK_WALL_VARIANTS[finalI],
+                                settings,
                                 Direction.DOWN
                         )
                 );
@@ -82,19 +91,20 @@ public class ItemRegistry {
             RUSTABLE_CANDLESTICK_ITEM_VARIANTS = new Item[ActiveGenerationData.rustingCandlestickMaterials.length][];
             i = 0;
             for (SizedIterable<BlockMaterial> materialSet : ActiveGenerationData.rustingCandlestickMaterials) {
+                final int finalI = i;
                 RUSTABLE_CANDLESTICK_ITEM_VARIANTS[i] = new Item[materialSet.size()];
                 int j = 0;
                 for (BlockMaterial material : materialSet) {
+                    final int finalJ = j;
                     RUSTABLE_CANDLESTICK_ITEM_VARIANTS[i][j] = register(
                             "candlestick_" + material.getSafeName(),
-                            new ModVerticallyAttachableBlockItem(
-                                    BlockRegistry.RUSTABLE_CANDLESTICK_FLOOR_VARIANTS[i][j],
-                                    BlockRegistry.RUSTABLE_CANDLESTICK_WALL_VARIANTS[i][j],
-                                    new Item.Settings(),
+                            (settings) -> new ModVerticallyAttachableBlockItem(
+                                    BlockRegistry.RUSTABLE_CANDLESTICK_FLOOR_VARIANTS[finalI][finalJ],
+                                    BlockRegistry.RUSTABLE_CANDLESTICK_WALL_VARIANTS[finalI][finalJ],
+                                    settings,
                                     Direction.DOWN
                             )
                     );
-                    if (RUSTABLE_CANDLESTICK_ITEM_VARIANTS[i][j] == null) throw new NullPointerException();
                     ++j;
                 }
                 ++i;
@@ -104,12 +114,13 @@ public class ItemRegistry {
             COLOURED_TORCH_ITEM_VARIANTS = new Item[BlockRegistry.COLOURED_TORCH_VARIANTS.length];
             i = 0;
             for (BlockMaterial material : ActiveGenerationData.colouredFeatureSetMaterials) {
+                final int finalI = i;
                 COLOURED_TORCH_ITEM_VARIANTS[i] = register(
                         "coloured_torch_" + material.getRawName(),
-                        new ModVerticallyAttachableBlockItem(
-                                BlockRegistry.COLOURED_TORCH_VARIANTS[i],
-                                BlockRegistry.COLOURED_WALL_TORCH_VARIANTS[i],
-                                new Item.Settings(),
+                        (settings) -> new ModVerticallyAttachableBlockItem(
+                                BlockRegistry.COLOURED_TORCH_VARIANTS[finalI],
+                                BlockRegistry.COLOURED_WALL_TORCH_VARIANTS[finalI],
+                                settings,
                                 Direction.DOWN
                         )
                 );
@@ -119,14 +130,20 @@ public class ItemRegistry {
     }
 
 
-    public static Item register(Item item, String name) {
-        return register(name, item);
-    }
     public static Item register(String name) {
-        return register(name, new Item(new Item.Settings()));
+        return register(name, Item::new);
     }
-    public static Item register(String name, Item item) {
-        Registry.register(Registries.ITEM, getId(name), item);
-        return item;
+    public static Item register(String name, Function<Item.Settings, Item> factory) {
+        return register(name, factory, new Item.Settings());
     }
+    #if MC_VERSION < 12104
+    public static Item register(String name, Function<Item.Settings, Item> factory, Item.Settings settings) {
+        return Registry.register(Registries.ITEM, getId(name), factory.apply(settings));
+    }
+    #else
+    public static Item register(String name, Function<Item.Settings, Item> factory, Item.Settings settings) {
+        final RegistryKey<Item> registryKey = RegistryKey.of(RegistryKeys.ITEM, getId(name));
+        return Items.register(registryKey, factory, settings);
+    }
+    #endif
 }

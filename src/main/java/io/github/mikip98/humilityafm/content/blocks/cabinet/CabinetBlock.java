@@ -70,9 +70,6 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
     public static final Settings defaultSettings = defaultSettingsSupplier.get();
 
 
-    public CabinetBlock() {
-        this(defaultSettings);
-    }
     public CabinetBlock(Settings settings) {
         super(settings);
         setDefaultState(getStateManager().getDefaultState()
@@ -80,7 +77,6 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
                 .with(FACING, Direction.SOUTH)
                 .with(WATERLOGGED, false));
     }
-
 
 
     @Override

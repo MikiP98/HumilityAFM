@@ -10,7 +10,13 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
+#if MC_VERSION >= 12104
+import net.minecraft.world.block.WireOrientation;
+#endif
 import org.jetbrains.annotations.NotNull;
+#if MC_VERSION >= 12104
+import org.jetbrains.annotations.Nullable;
+#endif
 
 public class JackOLanternRedStone extends JackOLantern {
     public static final BooleanProperty LIT = Properties.LIT;
@@ -21,10 +27,11 @@ public class JackOLanternRedStone extends JackOLantern {
         builder.add(LIT);
     }
 
+    // Luminance of Redstone Torch boosted by 1 as it was too dark
+    public static final Settings defaultSettings = defaultSettingsSupplier.get().luminance((state) -> state.get(LIT) ? 7+1 : 0);
 
-    public JackOLanternRedStone() {
-        // Luminance of Redstone Torch boosted by 1 as it was too dark
-        super(defaultSettingsSupplier.get().luminance((state) -> state.get(LIT) ? 7+1 : 0));
+    public JackOLanternRedStone(Settings settings) {
+        super(settings);
         setDefaultState(getDefaultState().with(LIT, true));
     }
 
@@ -36,7 +43,12 @@ public class JackOLanternRedStone extends JackOLantern {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
+    #if MC_VERSION < 12104 public #else protected #endif void neighborUpdate(
+            BlockState state, World world, BlockPos pos,
+            Block sourceBlock,
+            #if MC_VERSION < 12104 BlockPos sourcePos #else @Nullable WireOrientation wireOrientation #endif,
+            boolean notify
+    ) {
         if (!world.isClient) {
             boolean isLit = state.get(LIT);
             if (isLit == world.isReceivingRedstonePower(pos)) {
@@ -47,6 +59,11 @@ public class JackOLanternRedStone extends JackOLantern {
                 }
             }
         }
+        #if MC_VERSION < 12104
+        super.neighborUpdate(state, world, pos, sourceBlock, sourcePos, notify);
+        #else
+        super.neighborUpdate(state, world, pos, sourceBlock, wireOrientation, notify);
+        #endif
     }
 
     @SuppressWarnings("deprecation")

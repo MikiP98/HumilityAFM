@@ -28,19 +28,16 @@ public class ColouredWallTorch extends WallTorchBlock {
     public static final Settings defaultSettings = ColouredTorch.defaultSettings;
 
     #if MC_VERSION == 12001
-    public ColouredWallTorch(ParticleEffect particle) { this(particle, defaultSettings); }
     public ColouredWallTorch(ParticleEffect particle, Settings settings) {
         super(settings, particle);
         setDefaultState(getDefaultState().with(POWER, 15));
     }
     #elif MC_VERSION == 12004
-    public ColouredWallTorch(DefaultParticleType particleType) { this(particleType, defaultSettings); }
     public ColouredWallTorch(DefaultParticleType particleType, Settings settings) {
         super(particleType, settings);
         setDefaultState(getDefaultState().with(POWER, 15));
     }
     #else
-    public ColouredWallTorch(SimpleParticleType particleType) { this(particleType, defaultSettings); }
     public ColouredWallTorch(SimpleParticleType particleType, Settings settings) {
         super(particleType, settings);
         setDefaultState(getDefaultState().with(POWER, 15));

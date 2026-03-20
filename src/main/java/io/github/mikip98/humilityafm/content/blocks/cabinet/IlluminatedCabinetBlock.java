@@ -11,7 +11,6 @@ public class IlluminatedCabinetBlock extends CabinetBlock {
     public static final Supplier<Settings> defaultSettingsSupplier = () -> CabinetBlock.defaultSettingsSupplier.get().luminance((ignored) -> 2);
     public static final Settings defaultSettings = defaultSettingsSupplier.get();
 
-    public IlluminatedCabinetBlock() { this(defaultSettings); }
     public IlluminatedCabinetBlock(Settings settings) { super(settings); }
 
     @Override

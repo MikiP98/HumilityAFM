@@ -72,14 +72,14 @@ public class OuterStairs extends HorizontalFacingBlock implements Waterloggable 
     public OuterStairs(Settings settings) {
         super(settings);
         setDefaultState(getStateManager().getDefaultState()
-                .with(Properties.HORIZONTAL_FACING, Direction.SOUTH)
-                .with(Properties.WATERLOGGED, false)
+                .with(FACING, Direction.SOUTH)
+                .with(WATERLOGGED, false)
                 .with(Properties.BLOCK_HALF, BlockHalf.BOTTOM));
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(Properties.HORIZONTAL_FACING);
+        builder.add(FACING);
         builder.add(WATERLOGGED);
         builder.add(Properties.BLOCK_HALF);
     }
@@ -87,8 +87,8 @@ public class OuterStairs extends HorizontalFacingBlock implements Waterloggable 
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         return this.getDefaultState()
-                .with(Properties.HORIZONTAL_FACING, ctx.getHorizontalPlayerFacing().getOpposite())
-                .with(Properties.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER)
+                .with(FACING, ctx.getHorizontalPlayerFacing().getOpposite())
+                .with(WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER)
                 .with(Properties.BLOCK_HALF, ctx.getHitPos().y - ctx.getBlockPos().getY() > 0.5 ? BlockHalf.TOP : BlockHalf.BOTTOM);
     }
 

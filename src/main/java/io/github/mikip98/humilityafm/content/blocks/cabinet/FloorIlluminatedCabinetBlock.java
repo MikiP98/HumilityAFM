@@ -5,10 +5,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 
-public class FloorIlluminatedCabinetBlock extends FloorCabinetBlock {
-    public static final Settings defaultSettings = CabinetBlock.defaultSettingsSupplier.get().luminance((ignored) -> 2);
+import java.util.function.Supplier;
 
-    public FloorIlluminatedCabinetBlock() { this(defaultSettings); }
+public class FloorIlluminatedCabinetBlock extends FloorCabinetBlock {
+    public static final Settings defaultSettings = IlluminatedCabinetBlock.defaultSettingsSupplier.get();
+
+
     public FloorIlluminatedCabinetBlock(Settings settings) { super(settings); }
 
     @Override

@@ -7,9 +7,11 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
 public class JackOLanternSoul extends JackOLantern {
-    public JackOLanternSoul() {
-        // Luminance of Soul Torch boosted by 1 as it was too dark
-        super(defaultSettingsSupplier.get().luminance((ignored) -> 8+1));
+    // Luminance of Soul Torch boosted by 1 as it was too dark
+    public static final Settings defaultSettings = defaultSettingsSupplier.get().luminance((ignored) -> 8+1);
+
+    public JackOLanternSoul(Settings settings) {
+        super(settings);
     }
 
     @Override

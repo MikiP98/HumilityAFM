@@ -62,10 +62,10 @@ public abstract class BlockGeneration {
             final AbstractBlock.Settings illuminatedSettingToUse = fireproof ? fireproofIlluminatedCabinetSettings : burnableIlluminatedCabinetSettings;
 
             final String name = material.getSafeName();
-            final Block cabinetBlock = BlockRegistry.register(new CabinetBlock(normalSettingToUse), "wall_cabinet_block_" + name);
-            final Block floorCabinetBlock = register(new FloorCabinetBlock(normalSettingToUse), "cabinet_block_" + name);
-            final Block illuminatedCabinetBlock = register(new IlluminatedCabinetBlock(illuminatedSettingToUse), "wall_illuminated_cabinet_block_" + name);
-            final Block floorIlluminatedCabinetBlock = register(new FloorIlluminatedCabinetBlock(illuminatedSettingToUse), "illuminated_cabinet_block_" + name);
+            final Block cabinetBlock = BlockRegistry.register("wall_cabinet_block_" + name, CabinetBlock::new, normalSettingToUse);
+            final Block floorCabinetBlock = register("cabinet_block_" + name, FloorCabinetBlock::new, normalSettingToUse);
+            final Block illuminatedCabinetBlock = register("wall_illuminated_cabinet_block_" + name, IlluminatedCabinetBlock::new, illuminatedSettingToUse);
+            final Block floorIlluminatedCabinetBlock = register("illuminated_cabinet_block_" + name, FloorIlluminatedCabinetBlock::new, illuminatedSettingToUse);
 
             wallCabinetVariants.add(cabinetBlock);
             floorCabinetVariants.add(floorCabinetBlock);
@@ -128,8 +128,8 @@ public abstract class BlockGeneration {
             SupportedMods sourceMod = materialMetadata.sourceMod();
             if (sourceMod != null) variantName = sourceMod.modId + "_" + variantName;
 
-            innerStairs.add(registerWithItem(new InnerStairs(settingsToUse), "inner_stairs_" + variantName));
-            outerStairs.add(registerWithItem(new OuterStairs(woodStairsBlockSettings), "outer_stairs_" + variantName));
+            innerStairs.add(registerWithItem("inner_stairs_" + variantName, InnerStairs::new, settingsToUse));
+            outerStairs.add(registerWithItem("outer_stairs_" + variantName, OuterStairs::new, woodStairsBlockSettings));
         }
         return new ForcedCornerStairsBlockSet(innerStairs.toArray(Block[]::new), outerStairs.toArray(Block[]::new));
     }
@@ -161,9 +161,9 @@ public abstract class BlockGeneration {
 
             Block block;
             if (isFirstWoodFireproof && isSecondWoodFireproof) {
-                block = registerWithItem(new Block(fireproofWoodenMosaicSettings), "wooden_mosaic_" + variantName);
+                block = registerWithItem("wooden_mosaic_" + variantName, fireproofWoodenMosaicSettings);
             } else {
-                block = registerWithItem(new Block(burnableWoodenMosaicSettings), "wooden_mosaic_" + variantName);
+                block = registerWithItem("wooden_mosaic_" + variantName, burnableWoodenMosaicSettings);
                 if (isFirstWoodFireproof || isSecondWoodFireproof) {
                     registerFlammable(block, burn * 4, spread / 4);
                 } else {
@@ -185,10 +185,9 @@ public abstract class BlockGeneration {
                 .requiresTool();
         List<Block> terracottaTilesVariants = new ArrayList<>();
         for (BlockMaterial material : ActiveGenerationData.terracottaTilesMaterials) {
-            terracottaTilesVariants.add(registerWithItem(
-                    new Block(terracottaTilesSettings),
-                    "terracotta_tiles_" + material.getSafeName()
-            ));
+            terracottaTilesVariants.add(
+                    registerWithItem("terracotta_tiles_" + material.getSafeName(), terracottaTilesSettings)
+            );
         }
         return terracottaTilesVariants.toArray(Block[]::new);
     }
@@ -203,8 +202,9 @@ public abstract class BlockGeneration {
             List<Block> simpleCandlestickWallVariants = new ArrayList<>();
             List<Block> simpleCandlestickFloorVariants = new ArrayList<>();
             for (BlockMaterial material : ActiveGenerationData.simpleCandlestickMaterials) {
-                simpleCandlestickWallVariants.add(register(new Candlestick(), "candlestick_wall_" + material.getSafeName()));
-                simpleCandlestickFloorVariants.add(register(new FloorCandlestick(), "candlestick_" + material.getSafeName()));
+                simpleCandlestickWallVariants.add(register("candlestick_wall_" + material.getSafeName(), Candlestick::new, Candlestick.defaultSettings));
+                simpleCandlestickFloorVariants.add(register("candlestick_" + material.getSafeName(), FloorCandlestick::new, Candlestick.defaultSettings));
+                // FloorCandlestick does not have its own default settings
             }
 
             // Rustable Candlesticks
@@ -215,8 +215,12 @@ public abstract class BlockGeneration {
                 List<RustableCandlestick> metalSetWallVaraintList = new ArrayList<>();
                 List<FloorRustableCandlestick> metalSetFloorVariantList = new ArrayList<>();
                 for (BlockMaterial material : ActiveGenerationData.rustingCandlestickMaterials[i]) {
-                    metalSetWallVaraintList.add((RustableCandlestick) register(new RustableCandlestick(), "candlestick_wall_" + material.getSafeName()));
-                    metalSetFloorVariantList.add((FloorRustableCandlestick) register(new FloorRustableCandlestick(), "candlestick_" + material.getSafeName()));
+                    metalSetWallVaraintList.add(
+                            register("candlestick_wall_" + material.getSafeName(), RustableCandlestick::new, RustableCandlestick.defaultSettings)
+                    );
+                    metalSetFloorVariantList.add(
+                            register("candlestick_" + material.getSafeName(), FloorRustableCandlestick::new, RustableCandlestick.defaultSettings)
+                    );
                 }
                 rustableCandlestickWallVariants[i] = metalSetWallVaraintList.toArray(RustableCandlestick[]::new);
                 rustableCandlestickFloorVariants[i] = metalSetFloorVariantList.toArray(FloorRustableCandlestick[]::new);
@@ -275,12 +279,16 @@ public abstract class BlockGeneration {
             for (BlockMaterial material : ActiveGenerationData.colouredFeatureSetMaterials) {
                 final String name = material.getSafeName();
                 // Light Strip
-                lightStripVariants.add(registerWithItem(new LightStripBlock(), "light_strip_" + name));
+                lightStripVariants.add(registerWithItem("light_strip_" + name, LightStripBlock::new, LightStripBlock.defaultSettings));
                 // Coloured Torch
-                colouredTorchVariants.add(register(new ColouredTorch(torchParticle), "coloured_torch_" + name));
-                colouredWallTorchVariants.add(register(new ColouredWallTorch(torchParticle), "coloured_wall_torch_" + name));
+                colouredTorchVariants.add(
+                        register("coloured_torch_" + name, (settings) -> new ColouredTorch(torchParticle, settings), ColouredTorch.defaultSettings)
+                );
+                colouredWallTorchVariants.add(
+                        register("coloured_wall_torch_" + name, (settings) -> new ColouredWallTorch(torchParticle, settings), ColouredWallTorch.defaultSettings)
+                );
                 // Coloured Jack O'Lantern
-                colouredJackOLanterns.add(registerWithItem(new ColouredJackOLantern(), "coloured_jack_o_lantern_" + name));
+                colouredJackOLanterns.add(registerWithItem("coloured_jack_o_lantern_" + name, ColouredJackOLantern::new, ColouredJackOLantern.defaultSettings));
             }
             return new ColouredFeatureBlockSet(
                     lightStripVariants.toArray(Block[]::new),

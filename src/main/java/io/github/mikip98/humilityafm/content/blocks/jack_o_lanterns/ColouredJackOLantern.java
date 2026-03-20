@@ -17,7 +17,6 @@ import net.minecraft.world.World;
 public class ColouredJackOLantern extends JackOLantern {
     public static final IntProperty POWER = Properties.POWER;
 
-    public ColouredJackOLantern() { this(defaultSettings); }
     public ColouredJackOLantern(Settings settings) {
         super(settings.luminance((state) -> state.get(POWER)));
         setDefaultState(getDefaultState().with(POWER, 15));

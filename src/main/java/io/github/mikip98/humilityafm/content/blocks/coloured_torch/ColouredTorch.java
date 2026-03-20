@@ -29,20 +29,17 @@ public class ColouredTorch extends TorchBlock {
     public static final Settings defaultSettings = Settings.copy(Blocks.TORCH).luminance((state) -> state.get(POWER));
 
     #if MC_VERSION == 12001
-    public ColouredTorch(ParticleEffect particle) { this(particle, defaultSettings); }
     public ColouredTorch(ParticleEffect particle, Settings settings) {
         super(settings, particle);
         setDefaultState(getDefaultState().with(POWER, 15));
     }
     #elif MC_VERSION == 12004
-    public ColouredTorch(DefaultParticleType particleType) { this(particleType, defaultSettings); }
     public ColouredTorch(DefaultParticleType particleType, Settings settings) {
         super(particleType, settings);
         setDefaultState(getDefaultState().with(POWER, 15));
     }
     #else
-    public ColouredTorch(SimpleParticleType particleType) { this(particleType, defaultSettings); }
-    public ColouredTorch(SimpleParticleType particleType, Settings settings) {
+     public ColouredTorch(SimpleParticleType particleType, Settings settings) {
         super(particleType, settings);
         setDefaultState(getDefaultState().with(POWER, 15));
     }

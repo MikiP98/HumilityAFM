@@ -32,9 +32,6 @@ public class FloorRustableCandlestick extends FloorCandlestick implements Waterl
         builder.add(ModProperties.WAXED);
     }
 
-    public FloorRustableCandlestick() {
-        this(RustableCandlestick.defaultSettings);
-    }
     public FloorRustableCandlestick(Settings settings) {
         this(settings, null, null);
     }

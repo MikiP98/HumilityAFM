@@ -140,9 +140,6 @@ public class Candlestick extends HorizontalFacingBlock implements SimpleCandlest
         builder.add(Properties.LIT);
     }
 
-    public Candlestick() {
-        this(defaultSettings);
-    }
     public Candlestick(Settings settings) {
         super(settings);
         setDefaultState(getDefaultState()
