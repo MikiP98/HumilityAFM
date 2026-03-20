@@ -96,7 +96,7 @@ public class ClientNetworkRegistry {
     }
 
     protected static void sendMessage(PlayerEntity player, String message) {
-        player.sendMessage(Text.literal(message));
+        player.sendMessage(Text.literal(message) #if MC_VERSION >= 12104 , false #endif);
     }
 
     protected static class DiffList extends ArrayList<String> {
