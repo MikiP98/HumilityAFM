@@ -167,6 +167,7 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
         final String stonyInnerTagPrefix = "stony_inner_stairs_";
         final String stonyOuterTagPrefix = "stony_outer_stairs_";
 
+        int i = 0;
         for (BlockMaterial material : ActiveGenerationData.forcedCornerStairsVariantMaterials) {
             if (material.layers().length != 1) throw new IllegalStateException("Forced corner stairs material must have exactly one layer, but found: " + material.layers().length);
             BlockMaterial.Layer layer = material.layers()[0];
@@ -175,8 +176,6 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
             String sourceModId = sourceMod != null ? sourceMod.modId : "vanilla";  // Fallback to 'vanilla' if no mod is specified
             MaterialType type = layer.metadata().type();
             if (type == null) throw new IllegalStateException("Material type for forced corner stairs material must not be null");
-            String innerStairsName = "inner_stairs_" + material.getSafeName();
-            String outerStairsName = "outer_stairs_" + material.getSafeName();
 
             switch (type) {
                 case BURNABLE_WOOD, FIREPROOF_WOOD:
@@ -186,8 +185,8 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
                     woodenInnerStairsTags.computeIfAbsent(sourceMod, m -> getTagKey(innerTag));
                     woodenOuterStairsTags.computeIfAbsent(sourceMod, m -> getTagKey(outerTag));
 
-                    getOrCreateTagBuilder(woodenInnerStairsTags.get(sourceMod)).add(getId(innerStairsName));
-                    getOrCreateTagBuilder(woodenOuterStairsTags.get(sourceMod)).add(getId(outerStairsName));
+                    getOrCreateTagBuilder(woodenInnerStairsTags.get(sourceMod)).add(BlockRegistry.INNER_STAIRS_BLOCK_VARIANTS[i]);
+                    getOrCreateTagBuilder(woodenOuterStairsTags.get(sourceMod)).add(BlockRegistry.OUTER_STAIRS_BLOCK_VARIANTS[i]);
                     break;
                 case STONY:
                     String stonyInnerTag = stonyInnerTagPrefix + sourceModId;
@@ -196,10 +195,11 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
                     stonyInnerStairsTags.computeIfAbsent(sourceMod, m -> getTagKey(stonyInnerTag));
                     stonyOuterStairsTags.computeIfAbsent(sourceMod, m -> getTagKey(stonyOuterTag));
 
-                    getOrCreateTagBuilder(stonyInnerStairsTags.get(sourceMod)).add(getId(innerStairsName));
-                    getOrCreateTagBuilder(stonyOuterStairsTags.get(sourceMod)).add(getId(outerStairsName));
+                    getOrCreateTagBuilder(stonyInnerStairsTags.get(sourceMod)).add(BlockRegistry.INNER_STAIRS_BLOCK_VARIANTS[i]);
+                    getOrCreateTagBuilder(stonyOuterStairsTags.get(sourceMod)).add(BlockRegistry.OUTER_STAIRS_BLOCK_VARIANTS[i]);
                     break;
             }
+            ++i;
         }
 
         woodenInnerStairsTags.values().forEach(woodenInnerStairsTag::addOptionalTag);
