@@ -1,7 +1,5 @@
 package io.github.mikip98.humilityafm.datagen;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Blocks;
 #if MC_VERSION < 12104
 #if MC_VERSION < 12004
@@ -33,20 +31,19 @@ import org.jetbrains.annotations.Nullable;
 #if MC_VERSION == 12001
 import java.util.function.Consumer;
 #elif MC_VERSION >= 12006
-import java.util.concurrent.CompletableFuture;
 #endif
 
 import static io.github.mikip98.humilityafm.HumilityAFM.MOD_ID;
 
-public abstract class AFMRecipieProvider extends #if MC_VERSION < 12104 FabricRecipeProvider #else RecipeGenerator #endif {
+public abstract class AFMRecipeProvider extends #if MC_VERSION < 12104 FabricRecipeProvider #else RecipeGenerator #endif {
     #if MC_VERSION < 12006
-    public AFMRecipieProvider(FabricDataOutput output) { super(output); }
+    public AFMRecipeProvider(FabricDataOutput output) { super(output); }
     #elif MC_VERSION < 12104
-    public AFMRecipieProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+    public AFMRecipeProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
         super(output, registriesFuture);
     }
     #else
-    protected AFMRecipieProvider(RegistryWrapper.WrapperLookup registries, RecipeExporter exporter) {
+    protected AFMRecipeProvider(RegistryWrapper.WrapperLookup registries, RecipeExporter exporter) {
         super(registries, exporter);
     }
     #endif
