@@ -5,12 +5,20 @@ import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
+#if MC_VERSION < 12006
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
+#else
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
+#endif
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.loot.LootTable;
 import net.minecraft.registry.Registries;
+#if MC_VERSION >= 12006
+import net.minecraft.registry.RegistryKey;
+#else
 import net.minecraft.util.Identifier;
+#endif
 #if MC_VERSION >= 12006
 import net.minecraft.registry.RegistryWrapper;
 #endif
@@ -20,7 +28,6 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-import static io.github.mikip98.humilityafm.HumilityAFM.MOD_ID;
 #if MC_VERSION >= 12006
 import java.util.concurrent.CompletableFuture;
 #endif
@@ -40,7 +47,13 @@ public class BlockLootTableGenerator extends FabricBlockLootTableProvider {
     public void generate() {}
 
     @Override
+    #if MC_VERSION < 12006
     public void accept(BiConsumer<Identifier, LootTable.Builder> exporter) {
+    #elif MC_VERSION < 12101
+    public void accept(RegistryWrapper.WrapperLookup registryLookup, BiConsumer<RegistryKey<LootTable>, LootTable.Builder> exporter) {
+    #else
+    public void accept(BiConsumer<RegistryKey<LootTable>, LootTable.Builder> exporter) {
+    #endif
         Exporter exp = new Exporter(exporter, this);
 
         // Cabinet blocks
@@ -98,9 +111,19 @@ public class BlockLootTableGenerator extends FabricBlockLootTableProvider {
     }
 
     protected static class Exporter {
+        #if MC_VERSION < 12006
         protected BiConsumer<Identifier, LootTable.Builder> exporter;
+        #else
+        protected BiConsumer<RegistryKey<LootTable>, LootTable.Builder> exporter;
+        #endif
+
         protected BlockLootTableGenerator parent;
+
+        #if MC_VERSION < 12006
         public Exporter(BiConsumer<Identifier, LootTable.Builder> exporter, BlockLootTableGenerator parent) {
+        #else
+        public Exporter(BiConsumer<RegistryKey<LootTable>, LootTable.Builder> exporter, BlockLootTableGenerator parent) {
+        #endif
             this.exporter = exporter;
             this.parent = parent;
         }
@@ -122,12 +145,25 @@ public class BlockLootTableGenerator extends FabricBlockLootTableProvider {
                 }
             }
 
-            if (mods.isEmpty()) exporter.accept(block.getLootTableId(), parent.drops(drop));
+            #if MC_VERSION < 12006
+            Identifier id = block.getLootTableId();
+            #elif MC_VERSION < 12104
+            RegistryKey<LootTable> id = block.getLootTableKey();//.get();
+            #else
+            RegistryKey<LootTable> id = block.getLootTableKey().get();
+            #endif
+
+            if (mods.isEmpty()) exporter.accept(id, parent.drops(drop));
             else {
                 String[] modIds = mods.stream().map((mod) -> mod.modId).toArray(String[]::new);
+                #if MC_VERSION < 12006
                 BiConsumer<Identifier, LootTable.Builder> conditionalExporter =
                         parent.withConditions(exporter, DefaultResourceConditions.allModsLoaded(modIds));
-                conditionalExporter.accept(block.getLootTableId(), parent.drops(drop));
+                #else
+                BiConsumer<RegistryKey<LootTable>, LootTable.Builder> conditionalExporter =
+                        parent.withConditions(exporter, ResourceConditions.allModsLoaded(modIds));
+                #endif
+                conditionalExporter.accept(id, parent.drops(drop));
             }
         }
     }
