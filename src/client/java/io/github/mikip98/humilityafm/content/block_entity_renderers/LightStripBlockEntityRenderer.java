@@ -9,15 +9,20 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+import net.minecraft.client.render.block.entity.state.BlockEntityRenderState;
+import net.minecraft.client.render.command.ModelCommandRenderer;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
+import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import static net.minecraft.block.enums.BlockHalf.TOP;
 
-public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightStripBlockEntity> {
+public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightStripBlockEntity #if MC_VERSION >= 12111, LightStripBlockEntityRenderer.LightStripRenderState #endif> {
     protected static RenderFunction renderFunction = LightStripBlockEntityRenderer::fakeRunnable;
     public static void enableBrightening() { renderFunction = LightStripBlockEntityRenderer::renderBrightening; }
     public static void disableBrightening() { renderFunction = LightStripBlockEntityRenderer::fakeRunnable; }
@@ -25,11 +30,36 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
     @SuppressWarnings("unused")
     public LightStripBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {}
 
+    #if MC_VERSION < 12111
     @Override
     public void render(LightStripBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay #if MC_VERSION >= 12105, Vec3d cameraPos #endif) {
         renderFunction.execute(entity, matrices, vertexConsumers, overlay);
     }
+    #else
+    @Override
+    public LightStripRenderState createRenderState() {
+        return new LightStripRenderState();
+    }
 
+    @Override
+    public void updateRenderState(
+            LightStripBlockEntity blockEntity, LightStripRenderState renderState,
+            float tickDelta, Vec3d cameraPos,
+            @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlayCommand
+    ) {
+        BlockEntityRenderer.super.updateRenderState(blockEntity, renderState, tickDelta, cameraPos, crumblingOverlayCommand);
+        renderState.blockState = blockEntity.getCachedState();
+        renderState.overlay = net.minecraft.client.render.OverlayTexture.DEFAULT_UV;
+    }
+
+    @Override
+    public void render(LightStripRenderState state, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState cameraState) {
+        VertexConsumerProvider vertexConsumers = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
+        renderFunction.execute(state, matrices, queue, state.overlay);
+    }
+    #endif
+
+    #if MC_VERSION < 12111
     protected static void fakeRunnable(LightStripBlockEntity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int overlay) {}
     protected static void renderBrightening(LightStripBlockEntity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int overlay) {
         World world = entity.getWorld();
@@ -37,8 +67,14 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
         if (world == null || pos == null) return;
 
         BlockState blockState = world.getBlockState(pos);
-        if (blockState == null || !(blockState.getBlock() instanceof LightStripBlock)) return;
+        #else
+    protected static void fakeRunnable(LightStripRenderState state, MatrixStack matrices, OrderedRenderCommandQueue queue, int overlay) {}
+    protected static void renderBrightening(LightStripRenderState state, MatrixStack matrices, OrderedRenderCommandQueue queue, int overlay) {
+        VertexConsumerProvider vertexConsumers = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
+        BlockState blockState = state.blockState;
+    #endif
 
+        if (blockState == null || !(blockState.getBlock() instanceof LightStripBlock)) return;
 
         matrices.push();
 
@@ -199,7 +235,7 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
         #else
         BlockModelRenderer.render(
                 matrices.peek(),
-                vertexConsumers.getBuffer(RenderLayer.getSolid()),
+                vertexConsumers.getBuffer(#if MC_VERSION < 12111 RenderLayer.getSolid() #else RenderLayers.solid() #endif),
                 MinecraftClient.getInstance().getBlockRenderManager().getModel(blockState),
                 1.0f, 1.0f, 1.0f,
                 0xF000F0,
@@ -210,8 +246,20 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
         matrices.pop();
     }
 
+    #if MC_VERSION < 12111
     @FunctionalInterface
     protected interface RenderFunction {
         void execute(LightStripBlockEntity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int overlay);
     }
+    #else
+    @FunctionalInterface
+    protected interface RenderFunction {
+        void execute(LightStripRenderState state, MatrixStack matrices, OrderedRenderCommandQueue queue, int overlay);
+    }
+
+    public static class LightStripRenderState extends BlockEntityRenderState {
+        public BlockState blockState;
+        public int overlay;
+    }
+    #endif
 }

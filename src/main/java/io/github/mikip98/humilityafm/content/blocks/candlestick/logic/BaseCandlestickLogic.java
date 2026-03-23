@@ -6,7 +6,7 @@ import io.github.mikip98.humilityafm.util.SoundUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CandleBlock;
-#if MC_VERSION >= 12006
+#if MC_VERSION >= 12006 && MC_VERSION < 12111
 import net.minecraft.entity.LivingEntity;
 #endif
 import net.minecraft.entity.player.PlayerEntity;
@@ -116,11 +116,13 @@ public sealed interface BaseCandlestickLogic permits SimpleCandlestickLogic, Rus
 
     default void damageItem(ItemStack heldItemStack, PlayerEntity player, Hand hand) {
         if (!player.isCreative()) {
-        #if MC_VERSION < 12006
-        heldItemStack.damage(1, player, (p) -> p.sendToolBreakStatus(hand));
-        #else
-        heldItemStack.damage(1, player, LivingEntity.getSlotForHand(hand));
-        #endif
+            #if MC_VERSION < 12006
+            heldItemStack.damage(1, player, (p) -> p.sendToolBreakStatus(hand));
+            #elif MC_VERSION < 12111
+            heldItemStack.damage(1, player, LivingEntity.getSlotForHand(hand));
+            #else
+            heldItemStack.damage(1, player, hand);
+            #endif
         }
     }
 }

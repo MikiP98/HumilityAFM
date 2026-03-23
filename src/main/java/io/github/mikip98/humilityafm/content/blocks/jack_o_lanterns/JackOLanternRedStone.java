@@ -49,7 +49,7 @@ public class JackOLanternRedStone extends JackOLantern {
             #if MC_VERSION < 12104 BlockPos sourcePos #else @Nullable WireOrientation wireOrientation #endif,
             boolean notify
     ) {
-        if (!world.isClient) {
+        if (!world.isClient()) {
             boolean isLit = state.get(LIT);
             if (isLit == world.isReceivingRedstonePower(pos)) {
                 if (isLit) {

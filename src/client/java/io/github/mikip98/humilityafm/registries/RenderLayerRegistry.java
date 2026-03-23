@@ -17,7 +17,8 @@ public class RenderLayerRegistry {
     #if MC_VERSION < 12106
     protected static final RenderLayer cabinetRenderLayer = ModConfig.transparentCabinetBlocks ? RenderLayer.getTranslucent() : RenderLayer.getCutoutMipped();
     #else
-    protected static final BlockRenderLayer cabinetRenderLayer = ModConfig.transparentCabinetBlocks ? BlockRenderLayer.TRANSLUCENT : BlockRenderLayer.CUTOUT_MIPPED;
+    protected static final BlockRenderLayer cabinetRenderLayer =
+            ModConfig.transparentCabinetBlocks ? BlockRenderLayer.TRANSLUCENT : #if MC_VERSION < 12111 BlockRenderLayer.CUTOUT_MIPPED #else BlockRenderLayer.CUTOUT #endif;
     #endif
     public static void register() {
         applyCabinetRenderLayer(BlockRegistry.CABINET_BLOCK);

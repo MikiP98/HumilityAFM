@@ -1,6 +1,8 @@
 package io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock;
 
+import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering.CabinetBlockEntityRenderState;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering.ItemFloorRendering;
+import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetBlockEntity;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorCabinetBlockEntity;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.FloorCabinetBlock;
 import net.fabricmc.api.EnvType;
@@ -9,16 +11,24 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+import net.minecraft.client.render.command.ModelCommandRenderer;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
+import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
-public class FloorCabinetBlockEntityRenderer implements BlockEntityRenderer<FloorCabinetBlockEntity>, ItemFloorRendering {
+public class FloorCabinetBlockEntityRenderer implements
+        BlockEntityRenderer<FloorCabinetBlockEntity #if MC_VERSION >= 12111, CabinetBlockEntityRenderState #endif>,
+        ItemFloorRendering
+{
     @SuppressWarnings("unused")
     public FloorCabinetBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {}
 
+    #if MC_VERSION < 12111
     @Override
     public void render(FloorCabinetBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay #if MC_VERSION >= 12105, Vec3d cameraPos #endif) {
         World world = blockEntity.getWorld();
@@ -30,4 +40,29 @@ public class FloorCabinetBlockEntityRenderer implements BlockEntityRenderer<Floo
 
         renderItem(blockEntity, blockState, matrices, vertexConsumers, light, overlay);
     }
+    #else
+    @Override
+    public CabinetBlockEntityRenderState createRenderState() {
+        return new CabinetBlockEntityRenderState();
+    }
+
+    @Override
+    public void updateRenderState(
+            FloorCabinetBlockEntity blockEntity,
+            CabinetBlockEntityRenderState renderState,
+            float tickDelta, Vec3d cameraPos,
+            @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlayCommand
+    ) {
+        BlockEntityRenderer.super.updateRenderState(blockEntity, renderState, tickDelta, cameraPos, crumblingOverlayCommand);
+        renderState.extractSharedState(blockEntity);
+    }
+
+    @Override
+    public void render(CabinetBlockEntityRenderState renderState, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState cameraState) {
+        // If there's no item, or the extraction failed, skip rendering to save frames
+        // TODO: Check if these checks are required, if yes, move to the interface
+        if (!renderState.hasItem || renderState.blockState == null) return;
+        renderItem(renderState, matrices, queue, renderState.light);
+    }
+    #endif
 }

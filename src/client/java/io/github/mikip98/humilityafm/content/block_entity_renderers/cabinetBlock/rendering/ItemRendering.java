@@ -11,6 +11,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 #endif
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.util.math.MatrixStack;
 #if MC_VERSION >= 12108
 import net.minecraft.item.ItemDisplayContext;
@@ -23,6 +24,7 @@ import net.minecraft.item.ModelTransformationMode;
 public sealed interface ItemRendering permits ItemFloorRendering, ItemWallRendering {
     MatrixStack rotateMatrices(MatrixStack matrices, BlockState blockState);
 
+    #if MC_VERSION < 12111
     default void renderItem(
             ImplementedInventory blockEntity, BlockState blockState,
             MatrixStack matrices, VertexConsumerProvider vertexConsumers,
@@ -65,4 +67,23 @@ public sealed interface ItemRendering permits ItemFloorRendering, ItemWallRender
         // Mandatory call after GL calls
         matrices.pop();
     }
+    #else
+    default void renderItem(
+            CabinetBlockEntityRenderState state,
+            MatrixStack matrices, OrderedRenderCommandQueue queue,
+            int light
+    ) {
+        float scale = 0.59375f;
+
+        matrices.push();
+        matrices.translate(0.5, 0.5, 0.5);
+        matrices = rotateMatrices(matrices, state.blockState);
+        matrices.translate(0, 0, 0.4375 - 3f/64*(1-scale));
+        matrices.scale(scale, scale, scale);
+
+        state.itemRenderState.render(matrices, queue, light, state.overlay, 0);
+
+        matrices.pop();
+    }
+    #endif
 }

@@ -71,7 +71,8 @@ public non-sealed interface RustableCandlestickLogic extends BaseCandlestickLogi
             else if (getRustPreviousLevel() != null) {
                 damageItem(heldItemStack, player, hand);
                 // ServerWorld check is required to be spam proof
-                if (!world.isClient) derust(state, world, pos);
+                if (!world.isClient()) derust(state, world, pos);  // isClient() is required past 1.21.11
+                // TODO: Check it still works in older versions and remove the comment
                 return true;
             }
         }

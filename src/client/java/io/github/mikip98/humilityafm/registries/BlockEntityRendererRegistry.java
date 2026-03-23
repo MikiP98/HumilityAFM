@@ -12,6 +12,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+import net.minecraft.client.render.block.entity.state.BlockEntityRenderState;
 
 public class BlockEntityRendererRegistry {
     public static void register() {
@@ -32,7 +33,11 @@ public class BlockEntityRendererRegistry {
                 LightStripBlockEntityRenderer.enableBrightening();
         }
     }
+    #if MC_VERSION < 12111
     protected static <T extends BlockEntity> void register(BlockEntityType<T> blockEntityType, BlockEntityRendererFactory<T> factory) {
+    #else
+    protected static <T extends BlockEntity, Y extends BlockEntityRenderState> void register(BlockEntityType<T> blockEntityType, BlockEntityRendererFactory<T, Y> factory) {
+    #endif
         BlockEntityRendererFactories.register(blockEntityType, factory);
     }
 }

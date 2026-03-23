@@ -4,13 +4,15 @@ import io.github.mikip98.humilityafm.content.block_entity_renderers.rendering_ut
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.util.math.MatrixStack;
 
 public interface RenderSelfBrightening {
     static void renderSelfBrightening(
             BlockState blockState,
             float posisionConstant, float posisionConstantX, float posisionConstantZ,
-            MatrixStack matrices, VertexConsumerProvider vertexConsumers,
+            MatrixStack matrices,
+            #if MC_VERSION < 12111 VertexConsumerProvider vertexConsumers, #endif
             int light, int overlay
     ) {
         final float blockSizeYZ = 0.875f;
@@ -20,14 +22,14 @@ public interface RenderSelfBrightening {
         renderSelf(
                 1.1f, 1,
                 blockSizeX, blockSizeYZ, posisionConstant, posisionConstantX, posisionConstantZ, 1.005f,
-                blockState, matrices, vertexConsumers, light, overlay
+                blockState, matrices, #if MC_VERSION < 12111 vertexConsumers, #endif light, overlay
         );
 
         // Render the brightened inside walls of the cabinet
         renderSelf(
                 1.15f, 3,
                 blockSizeX, blockSizeYZ, posisionConstant, posisionConstantX, posisionConstantZ, 0.992f,
-                blockState, matrices, vertexConsumers, light, overlay
+                blockState, matrices, #if MC_VERSION < 12111 vertexConsumers, #endif light, overlay
         );
     }
 
@@ -35,7 +37,8 @@ public interface RenderSelfBrightening {
             float lightMultiplayer, int lightAddition,
             float blockSizeX, float blockSizeYZ,
             float posisionConstant, float posisionConstantX, float posisionConstantZ, float scale,
-            BlockState blockState, MatrixStack matrices, VertexConsumerProvider vertexConsumers,
+            BlockState blockState, MatrixStack matrices,
+            #if MC_VERSION < 12111 VertexConsumerProvider vertexConsumers, #endif
             int light, int overlay
     ) {
         matrices.push();
@@ -50,8 +53,14 @@ public interface RenderSelfBrightening {
         int outsideLight = LightManipulation.multiplyLight(light, lightMultiplayer);
         outsideLight = LightManipulation.addLight(outsideLight, lightAddition);
 
+        #if MC_VERSION >= 12111
+        VertexConsumerProvider vertexConsumers = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
+        #endif
+
         MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(
-                blockState, matrices, vertexConsumers, outsideLight, overlay
+                blockState, matrices,
+                vertexConsumers,
+                outsideLight, overlay
         );
 
         matrices.pop();
