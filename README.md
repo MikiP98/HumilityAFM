@@ -98,6 +98,9 @@ Lighten up your builds with unobtrusive light source
   - BetterEnd
   - Biomes o' Plenty
   - *(Add stone variants from the above mods, and fix the missing wood variants)*
+- Double check everything is using SoundUtils and not raw world sounds
+- Consider making ParticleUtil for particle creation
+- Add model culling
 
 [//]: # (- Improve Cabinet PBR texture: Roughness of zero, f0/reflectance of like either 0.02 or 0.1)
 [//]: # (- Add a packed record to the networking similar to 1.20.6 version)
@@ -173,6 +176,7 @@ Lighten up your builds with unobtrusive light source
 
 - Fixed a massive log error spam on world loading/creation
 - Merged all versions into a single manifold branch
+- Improved Sounds
 
 <br>
 
