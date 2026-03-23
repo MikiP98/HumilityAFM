@@ -6,11 +6,13 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import static net.minecraft.block.enums.BlockHalf.TOP;
@@ -24,7 +26,7 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
     public LightStripBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {}
 
     @Override
-    public void render(LightStripBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+    public void render(LightStripBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay #if MC_VERSION >= 12105, Vec3d cameraPos #endif) {
         renderFunction.execute(entity, matrices, vertexConsumers, overlay);
     }
 
@@ -184,6 +186,7 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
         matrices.scale(scale, scale, scale);
 
         // Render the LED strip block with custom light value
+        #if MC_VERSION < 12105
         MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer().render(
                 matrices.peek(),
                 vertexConsumers.getBuffer(RenderLayer.getSolid()),
@@ -193,6 +196,16 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
                 0xF000F0,
                 overlay
         );
+        #else
+        BlockModelRenderer.render(
+                matrices.peek(),
+                vertexConsumers.getBuffer(RenderLayer.getSolid()),
+                MinecraftClient.getInstance().getBlockRenderManager().getModel(blockState),
+                1.0f, 1.0f, 1.0f,
+                0xF000F0,
+                overlay
+        );
+        #endif
 
         matrices.pop();
     }

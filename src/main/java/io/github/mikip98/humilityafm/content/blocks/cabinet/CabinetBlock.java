@@ -116,11 +116,11 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
             }
         } else world.setBlockState(pos, state.with(OPEN, true));
 
-        playCabinetSound(world, pos);
+        playCabinetSound(world, pos, player);
         return ActionResult.SUCCESS;
     }
-    protected void playCabinetSound(World world, BlockPos pos) {
-        SoundUtils.playSoundAtBlockCenter(world, pos, SoundEvents.BLOCK_BAMBOO_BREAK, 0.35f);
+    protected void playCabinetSound(World world, BlockPos pos, PlayerEntity player) {
+        SoundUtils.playSoundAtBlockCenter(world, player, pos, SoundEvents.BLOCK_BAMBOO_BREAK);
     }
 
     @SuppressWarnings("deprecation")
@@ -158,6 +158,7 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
         return state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : Fluids.EMPTY.getDefaultState();
     }
 
+    #if MC_VERSION < 12105
     @SuppressWarnings("deprecation")
     @Override
     public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
@@ -175,6 +176,7 @@ public class CabinetBlock extends HorizontalFacingBlock implements Waterloggable
             super.onStateReplaced(state, world, pos, newState, moved);
         }
     }
+    #endif
 
 
     @Override

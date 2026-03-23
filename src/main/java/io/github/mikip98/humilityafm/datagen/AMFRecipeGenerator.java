@@ -1,5 +1,8 @@
 package io.github.mikip98.humilityafm.datagen;
 
+#if MC_VERSION < 12104
+import io.github.mikip98.humilityafm.datagen.AFMRecipeProvider;
+#endif
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
@@ -14,17 +17,16 @@ import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 #endif
 #if MC_VERSION < 12004
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
-#else
+#endif
 #if MC_VERSION >= 12006
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 #endif
-#if MC_VERSION < 12104
+#if MC_VERSION > 12001 && MC_VERSION < 12104
 import net.minecraft.data.server.recipe.RecipeExporter;
-#else
+#elif MC_VERSION > 12001
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.data.recipe.RecipeExporter;
 import net.minecraft.data.recipe.RecipeGenerator;
-#endif
 #endif
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
@@ -43,7 +45,7 @@ import java.util.function.Consumer;
 import java.util.concurrent.CompletableFuture;
 #endif import static io.github.mikip98.humilityafm.HumilityAFM.*;
 
-public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipieProvider #else FabricRecipeProvider #endif {
+public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider #else FabricRecipeProvider #endif {
     #if MC_VERSION < 12006
     public AMFRecipeGenerator(FabricDataOutput output) {
         super(output);

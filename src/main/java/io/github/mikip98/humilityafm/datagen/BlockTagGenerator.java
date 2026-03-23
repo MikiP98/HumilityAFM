@@ -9,8 +9,14 @@ import io.github.mikip98.humilityafm.util.generation_data.material_management.ma
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.block.Block;
+#if MC_VERSION > 12105
+import net.minecraft.registry.Registries;
+#endif
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
+#if MC_VERSION > 12105
+import net.minecraft.registry.tag.TagBuilder;
+#endif
 import net.minecraft.registry.tag.TagKey;
 
 import java.util.*;
@@ -33,24 +39,24 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
         generateWoodenMosaicTags();
 
         // Terracotta Tiles Block Tag
-        getOrCreateTagBuilder(ModBlockTags.TERRACOTTA_TILES_BLOCKS)
+        getCommonTagBuilder(ModBlockTags.TERRACOTTA_TILES_BLOCKS)
                 .add(BlockRegistry.TERRACOTTA_TILE_VARIANTS);
 
         // Inner & Outer Stairs Block Tags
         generateForcedCornerStairsTags();
 
         // Jack o'Lanterns
-        getOrCreateTagBuilder(ModBlockTags.JACK_O_LANTERNS)
+        getCommonTagBuilder(ModBlockTags.JACK_O_LANTERNS)
                 .addTag(ModBlockTags.SPECIAL_JACK_O_LANTERNS)
                 .addOptionalTag(ModBlockTags.COLOURED_JACK_O_LANTERNS);
-        getOrCreateTagBuilder(ModBlockTags.SPECIAL_JACK_O_LANTERNS)
+        getCommonTagBuilder(ModBlockTags.SPECIAL_JACK_O_LANTERNS)
                 .add(BlockRegistry.JACK_O_LANTERN_SOUL)
                 .add(BlockRegistry.JACK_O_LANTERN_REDSTONE);
-        getOrCreateTagBuilder(ModBlockTags.COLOURED_JACK_O_LANTERNS)
+        getCommonTagBuilder(ModBlockTags.COLOURED_JACK_O_LANTERNS)
                 .add(BlockRegistry.COLOURED_JACK_O_LANTERNS);
 
         // Candlesticks
-        FabricTagProvider<Block>.FabricTagBuilder tag = getOrCreateTagBuilder(ModBlockTags.CANDLESTICKS)
+        TagBuilderWrapper tag = getCommonTagBuilder(ModBlockTags.CANDLESTICKS)
                 .add(BlockRegistry.SIMPLE_CANDLESTICK_FLOOR_VARIANTS)
                 .add(BlockRegistry.SIMPLE_CANDLESTICK_WALL_VARIANTS);
         Arrays.stream(BlockRegistry.RUSTABLE_CANDLESTICK_FLOOR_VARIANTS).forEach(tag::add);
@@ -58,7 +64,7 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 
         // ------------ Vanilla Tags ------------
         // Axe Mineable
-        getOrCreateTagBuilder(ModBlockTags.AXE_MINEABLE)
+        getCommonTagBuilder(ModBlockTags.AXE_MINEABLE)
                 // Cabinets
                 .addTag(ModBlockTags.CABINET_BLOCKS)
                 .addTag(ModBlockTags.ILLUMINATED_CABINET_BLOCKS)
@@ -70,7 +76,7 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
                 // Jack o'Lanterns
                 .addTag(ModBlockTags.JACK_O_LANTERNS);
         // Pickaxe Mineable
-        getOrCreateTagBuilder(ModBlockTags.PICKAXE_MINEABLE)
+        getCommonTagBuilder(ModBlockTags.PICKAXE_MINEABLE)
                 // Terracotta Tiles
                 .addTag(ModBlockTags.TERRACOTTA_TILES_BLOCKS)
                 // Inner & Outer Stairs
@@ -83,8 +89,8 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
     //  This would get rid of the 21 tag loading errors, but will increase the JAR size
 
     private void generateCabinetTags() {
-        final FabricTagProvider<Block>.FabricTagBuilder cabinetTag = getOrCreateTagBuilder(ModBlockTags.CABINET_BLOCKS);
-        final FabricTagProvider<Block>.FabricTagBuilder illuminatedCabinetTag = getOrCreateTagBuilder(ModBlockTags.ILLUMINATED_CABINET_BLOCKS);
+        final TagBuilderWrapper cabinetTag = getCommonTagBuilder(ModBlockTags.CABINET_BLOCKS);
+        final TagBuilderWrapper illuminatedCabinetTag = getCommonTagBuilder(ModBlockTags.ILLUMINATED_CABINET_BLOCKS);
 
         cabinetTag
                 .add(BlockRegistry.CABINET_BLOCK)
@@ -104,12 +110,12 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
             String sourceModId = sourceMod != null ? sourceMod.modId : "vanilla";
 
             cabinetTags.computeIfAbsent(sourceMod, k -> getTagKey(cabinetTagPrefix + sourceModId));
-            getOrCreateTagBuilder(cabinetTags.get(sourceMod))
+            getCommonTagBuilder(cabinetTags.get(sourceMod))
                     .add(BlockRegistry.WALL_CABINET_BLOCK_VARIANTS[i])
                     .add(BlockRegistry.FLOOR_CABINET_BLOCK_VARIANTS[i]);
 
             illuminatedCabinetTags.computeIfAbsent(sourceMod, k -> getTagKey(illuminatedCabinetTagPrefix + sourceModId));
-            getOrCreateTagBuilder(illuminatedCabinetTags.get(sourceMod))
+            getCommonTagBuilder(illuminatedCabinetTags.get(sourceMod))
                     .add(BlockRegistry.WALL_ILLUMINATED_CABINET_BLOCK_VARIANTS[i])
                     .add(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_VARIANTS[i]);
 
@@ -121,7 +127,7 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
     }
 
     private void generateWoodenMosaicTags() {
-        final FabricTagProvider<Block>.FabricTagBuilder woodenMosaicTag = getOrCreateTagBuilder(ModBlockTags.WOODEN_MOSAIC_BLOCKS);
+        final TagBuilderWrapper woodenMosaicTag = getCommonTagBuilder(ModBlockTags.WOODEN_MOSAIC_BLOCKS);
 
         String woodenMosaicTagPrefix = "wooden_mosaic_blocks_";
         Map<Set<SupportedMods>, TagKey<Block>> woodenMosaicTags = new HashMap<>();
@@ -139,7 +145,7 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
                 woodenMosaicTags.put(sourceMods, getTagKey(woodenMosaicTagPrefix + layer1SourceModId + "_" + layer2SourceModId));
             }
 
-            getOrCreateTagBuilder(woodenMosaicTags.get(sourceMods))
+            getCommonTagBuilder(woodenMosaicTags.get(sourceMods))
                     .add(BlockRegistry.WOODEN_MOSAIC_VARIANTS[i]);
 
             ++i;
@@ -149,11 +155,11 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
     }
 
     private void generateForcedCornerStairsTags() {
-        final FabricTagProvider<Block>.FabricTagBuilder woodenInnerStairsTag = getOrCreateTagBuilder(ModBlockTags.WOODEN_INNER_STAIRS);
-        final FabricTagProvider<Block>.FabricTagBuilder woodenOuterStairsTag = getOrCreateTagBuilder(ModBlockTags.WOODEN_OUTER_STAIRS);
+        final TagBuilderWrapper woodenInnerStairsTag = getCommonTagBuilder(ModBlockTags.WOODEN_INNER_STAIRS);
+        final TagBuilderWrapper woodenOuterStairsTag = getCommonTagBuilder(ModBlockTags.WOODEN_OUTER_STAIRS);
 
-        final FabricTagProvider<Block>.FabricTagBuilder stonyInnerStairsTag = getOrCreateTagBuilder(ModBlockTags.STONY_INNER_STAIRS);
-        final FabricTagProvider<Block>.FabricTagBuilder stonyOuterStairsTag = getOrCreateTagBuilder(ModBlockTags.STONY_OUTER_STAIRS);
+        final TagBuilderWrapper stonyInnerStairsTag = getCommonTagBuilder(ModBlockTags.STONY_INNER_STAIRS);
+        final TagBuilderWrapper stonyOuterStairsTag = getCommonTagBuilder(ModBlockTags.STONY_OUTER_STAIRS);
 
         Map<SupportedMods, TagKey<Block>> woodenInnerStairsTags = new HashMap<>();
         Map<SupportedMods, TagKey<Block>> woodenOuterStairsTags = new HashMap<>();
@@ -185,8 +191,8 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
                     woodenInnerStairsTags.computeIfAbsent(sourceMod, m -> getTagKey(innerTag));
                     woodenOuterStairsTags.computeIfAbsent(sourceMod, m -> getTagKey(outerTag));
 
-                    getOrCreateTagBuilder(woodenInnerStairsTags.get(sourceMod)).add(BlockRegistry.INNER_STAIRS_BLOCK_VARIANTS[i]);
-                    getOrCreateTagBuilder(woodenOuterStairsTags.get(sourceMod)).add(BlockRegistry.OUTER_STAIRS_BLOCK_VARIANTS[i]);
+                    getCommonTagBuilder(woodenInnerStairsTags.get(sourceMod)).add(BlockRegistry.INNER_STAIRS_BLOCK_VARIANTS[i]);
+                    getCommonTagBuilder(woodenOuterStairsTags.get(sourceMod)).add(BlockRegistry.OUTER_STAIRS_BLOCK_VARIANTS[i]);
                     break;
                 case STONY:
                     String stonyInnerTag = stonyInnerTagPrefix + sourceModId;
@@ -195,8 +201,8 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
                     stonyInnerStairsTags.computeIfAbsent(sourceMod, m -> getTagKey(stonyInnerTag));
                     stonyOuterStairsTags.computeIfAbsent(sourceMod, m -> getTagKey(stonyOuterTag));
 
-                    getOrCreateTagBuilder(stonyInnerStairsTags.get(sourceMod)).add(BlockRegistry.INNER_STAIRS_BLOCK_VARIANTS[i]);
-                    getOrCreateTagBuilder(stonyOuterStairsTags.get(sourceMod)).add(BlockRegistry.OUTER_STAIRS_BLOCK_VARIANTS[i]);
+                    getCommonTagBuilder(stonyInnerStairsTags.get(sourceMod)).add(BlockRegistry.INNER_STAIRS_BLOCK_VARIANTS[i]);
+                    getCommonTagBuilder(stonyOuterStairsTags.get(sourceMod)).add(BlockRegistry.OUTER_STAIRS_BLOCK_VARIANTS[i]);
                     break;
             }
             ++i;
@@ -210,5 +216,38 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 
     public static TagKey<Block> getTagKey(String name) {
         return TagKey.of(RegistryKeys.BLOCK, getId(name));
+    }
+
+    protected TagBuilderWrapper getCommonTagBuilder(TagKey<Block> tag) {
+        return new TagBuilderWrapper(tag);
+    }
+
+    protected class TagBuilderWrapper {
+        #if MC_VERSION < 12105
+        final FabricTagProvider<Block>.FabricTagBuilder builder;
+        public TagBuilderWrapper(TagKey<Block> tag) {
+            this.builder = getOrCreateTagBuilder(tag);
+        }
+        public TagBuilderWrapper add(Block... blocks) { builder.add(blocks); return this; }
+        public TagBuilderWrapper addTag(TagKey<Block> tag) { builder.addTag(tag); return this; }
+        public TagBuilderWrapper addOptionalTag(TagKey<Block> tag) { builder.addOptionalTag(tag); return this; }
+        #else
+        final protected TagBuilder builder;
+        public TagBuilderWrapper(TagKey<Block> tag) {
+            this.builder = getTagBuilder(tag);
+        }
+        public TagBuilderWrapper add(Block... blocks) {
+            Arrays.stream(blocks).forEach((block) -> builder.add(Registries.BLOCK.getId(block)));
+            return this;
+        }
+        public TagBuilderWrapper addTag(TagKey<Block> tag) {
+            builder.addTag(tag.id());
+            return this;
+        }
+        public TagBuilderWrapper addOptionalTag(TagKey<Block> tag) {
+            builder.addOptionalTag(tag.id());
+            return this;
+        }
+        #endif
     }
 }

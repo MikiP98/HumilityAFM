@@ -1,16 +1,19 @@
 package io.github.mikip98.humilityafm.datagen;
 
-import net.minecraft.block.Blocks;
 #if MC_VERSION < 12104
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+#endif
+import net.minecraft.block.Blocks;
 #if MC_VERSION < 12004
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
-#else
+#elif MC_VERSION < 12104
 import net.minecraft.data.server.recipe.RecipeExporter;
 #endif
+#if MC_VERSION < 12104
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
-#endif
-#if MC_VERSION >= 12104
+#else
 import net.minecraft.data.recipe.RecipeExporter;
 import net.minecraft.data.recipe.RecipeGenerator;
 import net.minecraft.data.recipe.ShapedRecipeJsonBuilder;
@@ -30,7 +33,9 @@ import org.jetbrains.annotations.Nullable;
 
 #if MC_VERSION == 12001
 import java.util.function.Consumer;
-#elif MC_VERSION >= 12006
+#endif
+#if MC_VERSION >= 12006 && MC_VERSION < 12104
+import java.util.concurrent.CompletableFuture;
 #endif
 
 import static io.github.mikip98.humilityafm.HumilityAFM.MOD_ID;

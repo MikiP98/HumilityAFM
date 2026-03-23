@@ -1,6 +1,7 @@
 package io.github.mikip98.humilityafm.content.blocks.candlestick.logic;
 
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
+import io.github.mikip98.humilityafm.util.SoundUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -14,7 +15,6 @@ import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleEffect;
 #endif
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Hand;
@@ -30,41 +30,41 @@ public non-sealed interface RustableCandlestickLogic extends BaseCandlestickLogi
 
     default boolean onUseRustableLogic(
             BlockState state, World world, BlockPos pos, PlayerEntity player, #if MC_VERSION < 12006 Hand hand, #endif
-            double offsetX, double offsetY, double offsetZ, double randomSpread
+            double x, double y, double z, double randomSpread
     ) {
         #if MC_VERSION >= 12006
         Hand hand = player.getActiveHand();
         #endif
         ItemStack heldItemStack = player.getStackInHand(hand);
         Item heldItem = heldItemStack.getItem();
-        if (tryToWax(state, world, pos, player, heldItemStack, heldItem, offsetX, offsetY, offsetZ, randomSpread)) return true;
-        return tryToDeWaxOrDeRust(state, world, pos, player, hand, heldItemStack, heldItem, offsetX, offsetY, offsetZ, randomSpread);
+        if (tryToWax(state, world, pos, player, heldItemStack, heldItem, x, y, z, randomSpread)) return true;
+        return tryToDeWaxOrDeRust(state, world, pos, player, hand, heldItemStack, heldItem, x, y, z, randomSpread);
     }
 
     default boolean tryToWax(
             BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack heldItemStack, Item heldItem,
-            double offsetX, double offsetY, double offsetZ, double randomSpread
+            double x, double y, double z, double randomSpread
     ) {
         if (heldItem instanceof HoneycombItem && !state.get(ModProperties.WAXED)) {
             world.setBlockState(pos, state.with(ModProperties.WAXED, true), Block.NOTIFY_ALL);
             if (!player.isCreative()) heldItemStack.decrement(1);
-            emmitWaxOnParticles(world, offsetX, offsetY, offsetZ, randomSpread);
-            world.playSound(offsetX, offsetY, offsetZ, SoundEvents.ITEM_HONEYCOMB_WAX_ON, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
+            emmitWaxOnParticles(world, x, y, z, randomSpread);
+            SoundUtils.playSound(world, player, x, y, z, SoundEvents.ITEM_HONEYCOMB_WAX_ON);
             return true;
         }
         return false;
     }
     default boolean tryToDeWaxOrDeRust(
             BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, ItemStack heldItemStack, Item heldItem,
-            double offsetX, double offsetY, double offsetZ, double randomSpread
+            double x, double y, double z, double randomSpread
     ) {
         if (heldItem instanceof AxeItem) {
             // De-wax
             if (state.get(ModProperties.WAXED)) {
                 world.setBlockState(pos, state.with(ModProperties.WAXED, false), Block.NOTIFY_ALL);
                 damageItem(heldItemStack, player, hand);
-                emmitWaxOffParticles(world, offsetX, offsetY, offsetZ, randomSpread);
-                world.playSound(offsetX, offsetY, offsetZ, SoundEvents.ITEM_AXE_WAX_OFF, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
+                emmitWaxOffParticles(world, x, y, z, randomSpread);
+                SoundUtils.playSound(world, player, x, y, z, SoundEvents.ITEM_AXE_WAX_OFF);
                 return true;
             }
             // De-rust
@@ -100,16 +100,22 @@ public non-sealed interface RustableCandlestickLogic extends BaseCandlestickLogi
             #else
             ParticleEffect particle,
             #endif
-            double offsetX, double offsetY, double offsetZ,
+            double x, double y, double z,
             double randomSpread
     ) {
         Random random = world.random;
 
         for (int i = 0; i < 5; i++) {
-            double randomX = offsetX + ((random.nextDouble() - 0.5) * randomSpread);
-            double randomY = offsetY + ((random.nextDouble() - 0.5) * randomSpread);
-            double randomZ = offsetZ + ((random.nextDouble() - 0.5) * randomSpread);
-            world.addParticle(particle, randomX, randomY, randomZ, 0, 0, 0);
+            double randomX = x + ((random.nextDouble() - 0.5) * randomSpread);
+            double randomY = y + ((random.nextDouble() - 0.5) * randomSpread);
+            double randomZ = z + ((random.nextDouble() - 0.5) * randomSpread);
+            #if MC_VERSION < 12105
+            world.addParticle(
+            #else
+            world.addParticleClient(
+            #endif
+                    particle, randomX, randomY, randomZ, 0, 0, 0
+            );
         }
     }
 

@@ -25,19 +25,26 @@ import net.minecraft.data.client.*;
 #else
 import net.minecraft.client.data.*;
 #endif
+#if MC_VERSION >= 12105
+import net.minecraft.client.render.model.json.*;
+#endif
 import net.minecraft.item.Item;
 import net.minecraft.state.property.*;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
+#if MC_VERSION >= 12105
+import net.minecraft.util.math.AxisRotation;
+#endif
 import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.*;
+#if MC_VERSION >= 12105
+import static net.minecraft.client.data.BlockStateModelGenerator.createWeightedVariant;
+#endif
 
 public class ModelGenerator extends FabricModelProvider {
     // Cabinet Models
@@ -68,6 +75,9 @@ public class ModelGenerator extends FabricModelProvider {
     protected static final Model JACK_O_LANTERN_TEMPLATE_MODEL = getModel("block/jack_o_lantern_template");
 
 
+    protected BlockStateModelGenerator blockStateModelGenerator;
+
+
     public ModelGenerator(FabricDataOutput output) {
         super(output);
     }
@@ -75,15 +85,12 @@ public class ModelGenerator extends FabricModelProvider {
 
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
+        this.blockStateModelGenerator = blockStateModelGenerator;
+
         // ............ TEST BLOCKS & BLOCK ITEMS ............
         // Cabinet Blocks
-        #if MC_VERSION < 12104
-        blockStateModelGenerator.registerParentedItemModel(ItemRegistry.CABINET_ITEM, getId("block/cabinet_block"));
-        blockStateModelGenerator.registerParentedItemModel(ItemRegistry.ILLUMINATED_CABINET_ITEM, getId("block/cabinet_block"));
-        #else
-        blockStateModelGenerator.registerItemModel(ItemRegistry.CABINET_ITEM, getId("block/cabinet_block"));
-        blockStateModelGenerator.registerItemModel(ItemRegistry.ILLUMINATED_CABINET_ITEM, getId("block/cabinet_block"));
-        #endif
+        registerItemModel(ItemRegistry.CABINET_ITEM, getId("block/cabinet_block"));
+        registerItemModel(ItemRegistry.ILLUMINATED_CABINET_ITEM, getId("block/cabinet_block"));
         blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(BlockRegistry.CABINET_BLOCK, getId("block/cabinet_block"), getId("block/cabinet_block_open")));
         blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(BlockRegistry.ILLUMINATED_CABINET_BLOCK, getId("block/cabinet_block"), getId("block/cabinet_block_open")));
         blockStateModelGenerator.blockStateCollector.accept(getFloorCabinetBlockstate(BlockRegistry.FLOOR_CABINET_BLOCK, getId("block/floor_cabinet_block"), getId("block/floor_cabinet_block_open")));
@@ -97,7 +104,7 @@ public class ModelGenerator extends FabricModelProvider {
         // Optional blocks
         generateCandlestickModelsAndBlockStates(blockStateModelGenerator);
         generateColouredTorchModelsAndBlockStates(blockStateModelGenerator);
-        generateLightStripModelsAndBlockStates(blockStateModelGenerator);
+        generateLightStripModelsAndBlockStates();
         generateColouredJackOLanternModelsAndBlockStates(blockStateModelGenerator);
     }
 
@@ -122,41 +129,51 @@ public class ModelGenerator extends FabricModelProvider {
         }
     }
 
-    protected static VariantsBlockStateSupplier getOrientableBlockState(Block block, Identifier modelId) {
+    protected static #if MC_VERSION < 12105 VariantsBlockStateSupplier #else VariantsBlockModelDefinitionCreator #endif getOrientableBlockState(Block block, Identifier modelId) {
+        #if MC_VERSION < 12105
         return VariantsBlockStateSupplier.create(block)
                 .coordinate(BlockStateVariantMap.create(Properties.HORIZONTAL_FACING)
+        #else
+        return VariantsBlockModelDefinitionCreator.of(block)
+                .with(BlockStateVariantMap.models(Properties.HORIZONTAL_FACING)
+        #endif
                         .register(
                                 Direction.NORTH,
                                 getVariant(modelId)
                         )
                         .register(
                                 Direction.SOUTH,
-                                getUVLockedVariantY(modelId, VariantSettings.Rotation.R180)
+                                getUVLockedVariantY(modelId, Rotation.R180.get())
                         )
                         .register(
                                 Direction.WEST,
-                                getUVLockedVariantY(modelId, VariantSettings.Rotation.R270)
+                                getUVLockedVariantY(modelId, Rotation.R270.get())
                         )
                         .register(
                                 Direction.EAST,
-                                getUVLockedVariantY(modelId, VariantSettings.Rotation.R90)
+                                getUVLockedVariantY(modelId, Rotation.R90.get())
                         )
                 );
     }
-    protected static VariantsBlockStateSupplier getTorchOrientableBlockState(Block block, Identifier modelId) {
+    protected static #if MC_VERSION < 12105 VariantsBlockStateSupplier #else VariantsBlockModelDefinitionCreator #endif getTorchOrientableBlockState(Block block, Identifier modelId) {
+        #if MC_VERSION < 12105
         return VariantsBlockStateSupplier.create(block)
                 .coordinate(BlockStateVariantMap.create(Properties.HORIZONTAL_FACING)
+        #else
+        return VariantsBlockModelDefinitionCreator.of(block)
+                .with(BlockStateVariantMap.models(Properties.HORIZONTAL_FACING)
+        #endif
                         .register(
                                 Direction.NORTH,
-                                getVariantY(modelId, VariantSettings.Rotation.R270)
+                                getVariantY(modelId, Rotation.R270.get())
                         )
                         .register(
                                 Direction.SOUTH,
-                                getVariantY(modelId, VariantSettings.Rotation.R90)
+                                getVariantY(modelId, Rotation.R90.get())
                         )
                         .register(
                                 Direction.WEST,
-                                getVariantY(modelId, VariantSettings.Rotation.R180)
+                                getVariantY(modelId, Rotation.R180.get())
                         )
                         .register(
                                 Direction.EAST,
@@ -165,7 +182,7 @@ public class ModelGenerator extends FabricModelProvider {
                 );
     }
 
-    protected static void generateColouredTorchModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
+    protected void generateColouredTorchModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
         int i = 0;
         for (String color : RawGenerationData.vanillaColorPallet) {
             final Identifier coloured_torch_texture = getId("block/coloured_torch/coloured_torch_" + color);
@@ -183,18 +200,14 @@ public class ModelGenerator extends FabricModelProvider {
                     blockStateModelGenerator.modelCollector
             );
 
-            #if MC_VERSION < 12104
-            blockStateModelGenerator.registerParentedItemModel(ItemRegistry.COLOURED_TORCH_ITEM_VARIANTS[i], torchModelId);
-            #else
-            blockStateModelGenerator.registerItemModel(ItemRegistry.COLOURED_TORCH_ITEM_VARIANTS[i], torchModelId);
-            #endif
+            registerItemModel(ItemRegistry.COLOURED_TORCH_ITEM_VARIANTS[i], torchModelId);
             blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(BlockRegistry.COLOURED_TORCH_VARIANTS[i], torchModelId));
             blockStateModelGenerator.blockStateCollector.accept(getTorchOrientableBlockState(BlockRegistry.COLOURED_WALL_TORCH_VARIANTS[i], wallTorchModelId));
             ++i;
         }
     }
 
-    protected static void generateLightStripModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
+    protected void generateLightStripModelsAndBlockStates() {
         int i = 0;
         for (BlockMaterial material : ActiveGenerationData.colouredFeatureSetMaterials) {
             final String color = material.layers()[0].name();
@@ -230,7 +243,7 @@ public class ModelGenerator extends FabricModelProvider {
         }
     }
 
-    protected static void generateCandlestickModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
+    protected void generateCandlestickModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
         generateCandlestickModelsAndBlockstatesForMetals(
                 blockStateModelGenerator,
                 ActiveGenerationData.simpleCandlestickMaterials,
@@ -248,7 +261,7 @@ public class ModelGenerator extends FabricModelProvider {
             );
         }
     }
-    protected static void generateCandlestickModelsAndBlockstatesForMetals(
+    protected void generateCandlestickModelsAndBlockstatesForMetals(
             BlockStateModelGenerator blockStateModelGenerator,
             Iterable<BlockMaterial> materials,
             Item[] items, Block[] wallBlocks, Block[] standingBlocks
@@ -349,11 +362,7 @@ public class ModelGenerator extends FabricModelProvider {
                 wallLitCandleColorModelMap.put(candleColor, wallCandlestickLitColoredModelId);
             }
 
-            #if MC_VERSION < 12104
-            blockStateModelGenerator.registerParentedItemModel(items[i], candlestickStandingMetalModelId);
-            #else
-            blockStateModelGenerator.registerItemModel(items[i], candlestickStandingMetalModelId);
-            #endif
+            registerItemModel(items[i], candlestickStandingMetalModelId);
             blockStateModelGenerator.blockStateCollector.accept(getWallCandlestickBlockstate(
                     wallBlocks[i],
                     candlestickWallMetalModelId,
@@ -507,23 +516,6 @@ public class ModelGenerator extends FabricModelProvider {
             blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(BlockRegistry.WOODEN_MOSAIC_VARIANTS[i], woodenMosaicModelId));
             ++i;
         }
-//        for (String woodType : RawGenerationData.vanillaWoodTypes) {
-//            for (String woodType2 : RawGenerationData.vanillaWoodTypes) {
-//                if (woodType.equals(woodType2)) continue;
-//
-//                final Identifier woodenMosaicModelId = CHECKER_2X2_MODEL.upload(
-//                        getId("block/wooden_mosaic/wooden_mosaic_" + woodType + "_" + woodType2),
-//                        new TextureMap()
-//                                .register(TextureKey.of("1"), getVanillaId("block/" + woodType + "_planks"))
-//                                .register(TextureKey.of("2"), getVanillaId("block/" + woodType2 + "_planks")),
-//                        blockStateModelGenerator.modelCollector
-//                );
-//                blockStateModelGenerator.registerParentedItemModel(BlockRegistry.WOODEN_MOSAIC_VARIANTS[i], woodenMosaicModelId);
-//                blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(BlockRegistry.WOODEN_MOSAIC_VARIANTS[i], woodenMosaicModelId));
-//
-//                ++i;
-//            }
-//        }
     }
     protected static void generateTerracottaTilesModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
         int i = 0;
@@ -546,7 +538,7 @@ public class ModelGenerator extends FabricModelProvider {
         }
     }
 
-    protected static void generateCabinetModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
+    protected void generateCabinetModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
         Map<Pair<SupportedMods, String>, CabinetModelWoodSet> mod2baseWoodSet = new HashMap<>();
         int i = 0;
         for (BlockMaterial material : ActiveGenerationData.cabinetVariantMaterials) {
@@ -584,101 +576,14 @@ public class ModelGenerator extends FabricModelProvider {
                     blockStateModelGenerator.modelCollector
             );
 
-            #if MC_VERSION < 12104
-            blockStateModelGenerator.registerParentedItemModel(ItemRegistry.CABINET_ITEM_VARIANTS[i], coloredCabinet);
-            blockStateModelGenerator.registerParentedItemModel(ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS[i], coloredCabinet);
-            #else
-            blockStateModelGenerator.registerItemModel(ItemRegistry.CABINET_ITEM_VARIANTS[i], coloredCabinet);
-            blockStateModelGenerator.registerItemModel(ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS[i], coloredCabinet);
-            #endif
+            registerItemModel(ItemRegistry.CABINET_ITEM_VARIANTS[i], coloredCabinet);
+            registerItemModel(ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS[i], coloredCabinet);
             blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(BlockRegistry.WALL_CABINET_BLOCK_VARIANTS[i], coloredCabinet, coloredCabinetOpen));
             blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(BlockRegistry.WALL_ILLUMINATED_CABINET_BLOCK_VARIANTS[i], coloredCabinet, coloredCabinetOpen));
             blockStateModelGenerator.blockStateCollector.accept(getFloorCabinetBlockstate(BlockRegistry.FLOOR_CABINET_BLOCK_VARIANTS[i], coloredFloorCabinet, coloredFloorCabinetOpen));
             blockStateModelGenerator.blockStateCollector.accept(getFloorCabinetBlockstate(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_VARIANTS[i], coloredFloorCabinet, coloredFloorCabinetOpen));
             ++i;
         }
-
-//        for (String woodType : RawGenerationData.allWoodTypes) {
-//            final TextureMap plankTextureMap = new TextureMap().register(
-//                    TextureKey.of("planks"),
-//                    getVanillaId("block/" + woodType + "_planks")
-//            );
-//
-//            final Identifier woodTypeCabinetId = CABINET_BLOCK_MODEL.upload(
-//                    getId("block/cabinet/closed/cabinet_block_" + woodType),
-//                    plankTextureMap,
-//                    blockStateModelGenerator.modelCollector
-//            );
-//            final Model woodTypeCabinetModel = new Model(
-//                    Optional.of(woodTypeCabinetId),
-//                    Optional.empty()
-//            );
-//
-//            final Identifier woodTypeCabinetOpenId = CABINET_BLOCK_OPEN_MODEL.upload(
-//                    getId("block/cabinet/open/cabinet_block_open_" + woodType),
-//                    plankTextureMap,
-//                    blockStateModelGenerator.modelCollector
-//            );
-//            final Model woodTypeCabinetOpenModel = new Model(
-//                    Optional.of(woodTypeCabinetOpenId),
-//                    Optional.empty()
-//            );
-//
-//            final Identifier woodTypeFloorCabinetId = FLOOR_CABINET_BLOCK_MODEL.upload(
-//                    getId("block/cabinet/floor/closed/floor_cabinet_block_" + woodType),
-//                    plankTextureMap,
-//                    blockStateModelGenerator.modelCollector
-//            );
-//            final Model woodTypeFloorCabinetModel = new Model(
-//                    Optional.of(woodTypeFloorCabinetId),
-//                    Optional.empty()
-//            );
-//
-//            final Identifier woodTypeFloorCabinetOpenId = FLOOR_CABINET_BLOCK_OPEN_MODEL.upload(
-//                    getId("block/cabinet/floor/open/floor_cabinet_block_open_" + woodType),
-//                    plankTextureMap,
-//                    blockStateModelGenerator.modelCollector
-//            );
-//            final Model woodTypeFloorCabinetOpenModel = new Model(
-//                    Optional.of(woodTypeFloorCabinetOpenId),
-//                    Optional.empty()
-//            );
-//
-//            for (String color : RawGenerationData.vanillaColorPallet) {
-//                final TextureMap woolTextureMap = new TextureMap().register(
-//                        TextureKey.of("wool"),
-//                        getVanillaId("block/" + color + "_wool")
-//                );
-//                final Identifier coloredCabinet = woodTypeCabinetModel.upload(
-//                        getId("block/cabinet/closed/" + woodType + "/cabinet_block_" + woodType + "_" + color),
-//                        woolTextureMap,
-//                        blockStateModelGenerator.modelCollector
-//                );
-//                final Identifier coloredCabinetOpen = woodTypeCabinetOpenModel.upload(
-//                        getId("block/cabinet/open/" + woodType + "/cabinet_block_open_" + woodType + "_" + color),
-//                        woolTextureMap,
-//                        blockStateModelGenerator.modelCollector
-//                );
-//                final Identifier coloredFloorCabinet = woodTypeFloorCabinetModel.upload(
-//                        getId("block/cabinet/floor/closed/" + woodType + "/floor_cabinet_block_" + woodType + "_" + color),
-//                        woolTextureMap,
-//                        blockStateModelGenerator.modelCollector
-//                );
-//                final Identifier coloredFloorCabinetOpen = woodTypeFloorCabinetOpenModel.upload(
-//                        getId("block/cabinet/floor/open/" + woodType + "/floor_cabinet_block_open_" + woodType + "_" + color),
-//                        woolTextureMap,
-//                        blockStateModelGenerator.modelCollector
-//                );
-//
-//                blockStateModelGenerator.registerParentedItemModel(ItemRegistry.CABINET_ITEM_VARIANTS[i], coloredCabinet);
-//                blockStateModelGenerator.registerParentedItemModel(ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS[i], coloredCabinet);
-//                blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(BlockRegistry.WALL_CABINET_BLOCK_VARIANTS[i], coloredCabinet, coloredCabinetOpen));
-//                blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(BlockRegistry.WALL_ILLUMINATED_CABINET_BLOCK_VARIANTS[i], coloredCabinet, coloredCabinetOpen));
-//                blockStateModelGenerator.blockStateCollector.accept(getFloorCabinetBlockstate(BlockRegistry.FLOOR_CABINET_BLOCK_VARIANTS[i], coloredFloorCabinet, coloredFloorCabinetOpen));
-//                blockStateModelGenerator.blockStateCollector.accept(getFloorCabinetBlockstate(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_VARIANTS[i], coloredFloorCabinet, coloredFloorCabinetOpen));
-//                ++i;
-//            }
-//        }
     }
     protected static CabinetModelWoodSet generateCabinetWoodSet(BlockMaterial.Layer wood, BlockStateModelGenerator blockStateModelGenerator) {
         SupportedMods sourceMod = wood.metadata().sourceMod();
@@ -733,7 +638,7 @@ public class ModelGenerator extends FabricModelProvider {
     protected record CabinetModelWoodSet(Model wallClosed, Model wallOpen, Model floorClosed, Model floorOpen) {}
 
 
-    protected static VariantsBlockStateSupplier getLightStripBlockstate(
+    protected static #if MC_VERSION < 12105 VariantsBlockStateSupplier #else VariantsBlockModelDefinitionCreator #endif getLightStripBlockstate(
             Block block,
             Identifier straightModel,
             Identifier innerModel,
@@ -743,8 +648,13 @@ public class ModelGenerator extends FabricModelProvider {
         EnumProperty<BlockHalf> HALF = Properties.BLOCK_HALF;
         EnumProperty<StairShape> SHAPE = Properties.STAIR_SHAPE;
 
+        #if MC_VERSION < 12105
         return VariantsBlockStateSupplier.create(block)
                 .coordinate(BlockStateVariantMap.create(FACING, HALF, SHAPE)
+        #else
+        return VariantsBlockModelDefinitionCreator.of(block)
+                .with(BlockStateVariantMap.models(FACING, HALF, SHAPE)
+        #endif
                         // East Bottom
                         .register(
                                 Direction.EAST, BlockHalf.BOTTOM, StairShape.INNER_LEFT,
@@ -752,7 +662,7 @@ public class ModelGenerator extends FabricModelProvider {
                         )
                         .register(
                                 Direction.EAST, BlockHalf.BOTTOM, StairShape.INNER_RIGHT,
-                                getUVLockedUpsideDownVariantY(innerModel, VariantSettings.Rotation.R90)
+                                getUVLockedUpsideDownVariantY(innerModel, Rotation.R90.get())
                         )
                         .register(
                                 Direction.EAST, BlockHalf.BOTTOM, StairShape.OUTER_LEFT,
@@ -760,16 +670,16 @@ public class ModelGenerator extends FabricModelProvider {
                         )
                         .register(
                                 Direction.EAST, BlockHalf.BOTTOM, StairShape.OUTER_RIGHT,
-                                getUVLockedUpsideDownVariantY(outerModel, VariantSettings.Rotation.R90)
+                                getUVLockedUpsideDownVariantY(outerModel, Rotation.R90.get())
                         )
                         .register(
                                 Direction.EAST, BlockHalf.BOTTOM, StairShape.STRAIGHT,
-                                getUVLockedUpsideDownVariantY(straightModel, VariantSettings.Rotation.R90)
+                                getUVLockedUpsideDownVariantY(straightModel, Rotation.R90.get())
                         )
                         // East Top
                         .register(
                                 Direction.EAST, BlockHalf.TOP, StairShape.INNER_LEFT,
-                                getUVLockedVariantY(innerModel, VariantSettings.Rotation.R270)
+                                getUVLockedVariantY(innerModel, Rotation.R270.get())
                         )
                         .register(
                                 Direction.EAST, BlockHalf.TOP, StairShape.INNER_RIGHT,
@@ -777,7 +687,7 @@ public class ModelGenerator extends FabricModelProvider {
                         )
                         .register(
                                 Direction.EAST, BlockHalf.TOP, StairShape.OUTER_LEFT,
-                                getUVLockedVariantY(outerModel, VariantSettings.Rotation.R270)
+                                getUVLockedVariantY(outerModel, Rotation.R270.get())
                         )
                         .register(
                                 Direction.EAST, BlockHalf.TOP, StairShape.OUTER_RIGHT,
@@ -785,12 +695,12 @@ public class ModelGenerator extends FabricModelProvider {
                         )
                         .register(
                                 Direction.EAST, BlockHalf.TOP, StairShape.STRAIGHT,
-                                getUVLockedVariantY(straightModel, VariantSettings.Rotation.R270)
+                                getUVLockedVariantY(straightModel, Rotation.R270.get())
                         )
                         // North Bottom
                         .register(
                                 Direction.NORTH, BlockHalf.BOTTOM, StairShape.INNER_LEFT,
-                                getUVLockedUpsideDownVariantY(innerModel, VariantSettings.Rotation.R270)
+                                getUVLockedUpsideDownVariantY(innerModel, Rotation.R270.get())
                         )
                         .register(
                                 Direction.NORTH, BlockHalf.BOTTOM, StairShape.INNER_RIGHT,
@@ -798,7 +708,7 @@ public class ModelGenerator extends FabricModelProvider {
                         )
                         .register(
                                 Direction.NORTH, BlockHalf.BOTTOM, StairShape.OUTER_LEFT,
-                                getUVLockedUpsideDownVariantY(outerModel, VariantSettings.Rotation.R270)
+                                getUVLockedUpsideDownVariantY(outerModel, Rotation.R270.get())
                         )
                         .register(
                                 Direction.NORTH, BlockHalf.BOTTOM, StairShape.OUTER_RIGHT,
@@ -811,44 +721,44 @@ public class ModelGenerator extends FabricModelProvider {
                         // North Top
                         .register(
                                 Direction.NORTH, BlockHalf.TOP, StairShape.INNER_LEFT,
-                                getUVLockedVariantY(innerModel, VariantSettings.Rotation.R180)
+                                getUVLockedVariantY(innerModel, Rotation.R180.get())
                         )
                         .register(
                                 Direction.NORTH, BlockHalf.TOP, StairShape.INNER_RIGHT,
-                                getUVLockedVariantY(innerModel, VariantSettings.Rotation.R270)
+                                getUVLockedVariantY(innerModel, Rotation.R270.get())
                         )
                         .register(
                                 Direction.NORTH, BlockHalf.TOP, StairShape.OUTER_LEFT,
-                                getUVLockedVariantY(outerModel, VariantSettings.Rotation.R180)
+                                getUVLockedVariantY(outerModel, Rotation.R180.get())
                         )
                         .register(
                                 Direction.NORTH, BlockHalf.TOP, StairShape.OUTER_RIGHT,
-                                getUVLockedVariantY(outerModel, VariantSettings.Rotation.R270)
+                                getUVLockedVariantY(outerModel, Rotation.R270.get())
                         )
                         .register(
                                 Direction.NORTH, BlockHalf.TOP, StairShape.STRAIGHT,
-                                getUVLockedVariantY(straightModel, VariantSettings.Rotation.R180)
+                                getUVLockedVariantY(straightModel, Rotation.R180.get())
                         )
                         // South Bottom
                         .register(
                                 Direction.SOUTH, BlockHalf.BOTTOM, StairShape.INNER_LEFT,
-                                getUVLockedUpsideDownVariantY(innerModel, VariantSettings.Rotation.R90)
+                                getUVLockedUpsideDownVariantY(innerModel, Rotation.R90.get())
                         )
                         .register(
                                 Direction.SOUTH, BlockHalf.BOTTOM, StairShape.INNER_RIGHT,
-                                getUVLockedUpsideDownVariantY(innerModel, VariantSettings.Rotation.R180)
+                                getUVLockedUpsideDownVariantY(innerModel, Rotation.R180.get())
                         )
                         .register(
                                 Direction.SOUTH, BlockHalf.BOTTOM, StairShape.OUTER_LEFT,
-                                getUVLockedUpsideDownVariantY(outerModel, VariantSettings.Rotation.R90)
+                                getUVLockedUpsideDownVariantY(outerModel, Rotation.R90.get())
                         )
                         .register(
                                 Direction.SOUTH, BlockHalf.BOTTOM, StairShape.OUTER_RIGHT,
-                                getUVLockedUpsideDownVariantY(outerModel, VariantSettings.Rotation.R180)
+                                getUVLockedUpsideDownVariantY(outerModel, Rotation.R180.get())
                         )
                         .register(
                                 Direction.SOUTH, BlockHalf.BOTTOM, StairShape.STRAIGHT,
-                                getUVLockedUpsideDownVariantY(straightModel, VariantSettings.Rotation.R180)
+                                getUVLockedUpsideDownVariantY(straightModel, Rotation.R180.get())
                         )
                         // South Top
                         .register(
@@ -857,7 +767,7 @@ public class ModelGenerator extends FabricModelProvider {
                         )
                         .register(
                                 Direction.SOUTH, BlockHalf.TOP, StairShape.INNER_RIGHT,
-                                getUVLockedVariantY(innerModel, VariantSettings.Rotation.R90)
+                                getUVLockedVariantY(innerModel, Rotation.R90.get())
                         )
                         .register(
                                 Direction.SOUTH, BlockHalf.TOP, StairShape.OUTER_LEFT,
@@ -865,7 +775,7 @@ public class ModelGenerator extends FabricModelProvider {
                         )
                         .register(
                                 Direction.SOUTH, BlockHalf.TOP, StairShape.OUTER_RIGHT,
-                                getUVLockedVariantY(outerModel, VariantSettings.Rotation.R90)
+                                getUVLockedVariantY(outerModel, Rotation.R90.get())
                         )
                         .register(
                                 Direction.SOUTH, BlockHalf.TOP, StairShape.STRAIGHT,
@@ -874,48 +784,49 @@ public class ModelGenerator extends FabricModelProvider {
                         // West Bottom
                         .register(
                                 Direction.WEST, BlockHalf.BOTTOM, StairShape.INNER_LEFT,
-                                getUVLockedUpsideDownVariantY(innerModel, VariantSettings.Rotation.R180)
+                                getUVLockedUpsideDownVariantY(innerModel, Rotation.R180.get())
                         )
                         .register(
                                 Direction.WEST, BlockHalf.BOTTOM, StairShape.INNER_RIGHT,
-                                getUVLockedUpsideDownVariantY(innerModel, VariantSettings.Rotation.R270)
+                                getUVLockedUpsideDownVariantY(innerModel, Rotation.R270.get())
                         )
                         .register(
                                 Direction.WEST, BlockHalf.BOTTOM, StairShape.OUTER_LEFT,
-                                getUVLockedUpsideDownVariantY(outerModel, VariantSettings.Rotation.R180)
+                                getUVLockedUpsideDownVariantY(outerModel, Rotation.R180.get())
                         )
                         .register(
                                 Direction.WEST, BlockHalf.BOTTOM, StairShape.OUTER_RIGHT,
-                                getUVLockedUpsideDownVariantY(outerModel, VariantSettings.Rotation.R270)
+                                getUVLockedUpsideDownVariantY(outerModel, Rotation.R270.get())
                         )
                         .register(
                                 Direction.WEST, BlockHalf.BOTTOM, StairShape.STRAIGHT,
-                                getUVLockedUpsideDownVariantY(straightModel, VariantSettings.Rotation.R270)
+                                getUVLockedUpsideDownVariantY(straightModel, Rotation.R270.get())
                         )
                         // West Top
                         .register(
                                 Direction.WEST, BlockHalf.TOP, StairShape.INNER_LEFT,
-                                getUVLockedVariantY(innerModel, VariantSettings.Rotation.R90)
+                                getUVLockedVariantY(innerModel, Rotation.R90.get())
                         )
                         .register(
                                 Direction.WEST, BlockHalf.TOP, StairShape.INNER_RIGHT,
-                                getUVLockedVariantY(innerModel, VariantSettings.Rotation.R180)
+                                getUVLockedVariantY(innerModel, Rotation.R180.get())
                         )
                         .register(
                                 Direction.WEST, BlockHalf.TOP, StairShape.OUTER_LEFT,
-                                getUVLockedVariantY(outerModel, VariantSettings.Rotation.R90)
+                                getUVLockedVariantY(outerModel, Rotation.R90.get())
                         )
                         .register(
                                 Direction.WEST, BlockHalf.TOP, StairShape.OUTER_RIGHT,
-                                getUVLockedVariantY(outerModel, VariantSettings.Rotation.R180)
+                                getUVLockedVariantY(outerModel, Rotation.R180.get())
                         )
                         .register(
                                 Direction.WEST, BlockHalf.TOP, StairShape.STRAIGHT,
-                                getUVLockedVariantY(straightModel, VariantSettings.Rotation.R90)
+                                getUVLockedVariantY(straightModel, Rotation.R90.get())
                         )
                 );
     }
 
+    #if MC_VERSION < 12105
     protected static MultipartBlockStateSupplier getStandingCandlestickBlockstate(
             Block block,
             Identifier emptyModel,
@@ -934,7 +845,7 @@ public class ModelGenerator extends FabricModelProvider {
                         BlockStateVariant.create()
                                 .put(VariantSettings.MODEL, emptyModel)
                 )
-                // PLAIN NON LIT
+                // PLAIN NON-LIT
                 .with(
                         When.allOf(
                                 When.create().set(CANDLE_COLOR, CandleColor.PLAIN),
@@ -998,7 +909,7 @@ public class ModelGenerator extends FabricModelProvider {
                         ),
                         BlockStateVariant.create()
                                 .put(VariantSettings.MODEL, emptyModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R180)
+                                .put(VariantSettings.Y, Rotation.R180.get())
                 )
                 .with(
                         When.allOf(
@@ -1015,7 +926,7 @@ public class ModelGenerator extends FabricModelProvider {
                         ),
                         BlockStateVariant.create()
                                 .put(VariantSettings.MODEL, emptyModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R270)
+                                .put(VariantSettings.Y, Rotation.R270.get())
                 )
                 .with(
                         When.allOf(
@@ -1024,7 +935,7 @@ public class ModelGenerator extends FabricModelProvider {
                         ),
                         BlockStateVariant.create()
                                 .put(VariantSettings.MODEL, emptyModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R90)
+                                .put(VariantSettings.Y, Rotation.R90.get())
                 )
                 // PLAIN NON LIT
                 .with(
@@ -1035,7 +946,7 @@ public class ModelGenerator extends FabricModelProvider {
                         ),
                         BlockStateVariant.create()
                                 .put(VariantSettings.MODEL, plainCandleModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R180)
+                                .put(VariantSettings.Y, Rotation.R180.get())
                 )
                 .with(
                         When.allOf(
@@ -1054,7 +965,7 @@ public class ModelGenerator extends FabricModelProvider {
                         ),
                         BlockStateVariant.create()
                                 .put(VariantSettings.MODEL, plainCandleModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R270)
+                                .put(VariantSettings.Y, Rotation.R270.get())
                 )
                 .with(
                         When.allOf(
@@ -1064,7 +975,7 @@ public class ModelGenerator extends FabricModelProvider {
                         ),
                         BlockStateVariant.create()
                                 .put(VariantSettings.MODEL, plainCandleModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R90)
+                                .put(VariantSettings.Y, Rotation.R90.get())
                 )
                 // PLAIN LIT
                 .with(
@@ -1075,7 +986,7 @@ public class ModelGenerator extends FabricModelProvider {
                         ),
                         BlockStateVariant.create()
                                 .put(VariantSettings.MODEL, litPlainCandleModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R180)
+                                .put(VariantSettings.Y, Rotation.R180.get())
                 )
                 .with(
                         When.allOf(
@@ -1094,7 +1005,7 @@ public class ModelGenerator extends FabricModelProvider {
                         ),
                         BlockStateVariant.create()
                                 .put(VariantSettings.MODEL, litPlainCandleModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R270)
+                                .put(VariantSettings.Y, Rotation.R270.get())
                 )
                 .with(
                         When.allOf(
@@ -1104,7 +1015,7 @@ public class ModelGenerator extends FabricModelProvider {
                         ),
                         BlockStateVariant.create()
                                 .put(VariantSettings.MODEL, litPlainCandleModel)
-                                .put(VariantSettings.Y, VariantSettings.Rotation.R90)
+                                .put(VariantSettings.Y, Rotation.R90.get())
                 );
 
         for (CandleColor candleColor : colouredCandleModels.keySet()) {
@@ -1118,7 +1029,7 @@ public class ModelGenerator extends FabricModelProvider {
                             ),
                             BlockStateVariant.create()
                                     .put(VariantSettings.MODEL, colouredCandleModels.get(candleColor))
-                                    .put(VariantSettings.Y, VariantSettings.Rotation.R180)
+                                    .put(VariantSettings.Y, Rotation.R180.get())
                     )
                     .with(
                             When.allOf(
@@ -1137,7 +1048,7 @@ public class ModelGenerator extends FabricModelProvider {
                             ),
                             BlockStateVariant.create()
                                     .put(VariantSettings.MODEL, colouredCandleModels.get(candleColor))
-                                    .put(VariantSettings.Y, VariantSettings.Rotation.R270)
+                                    .put(VariantSettings.Y, Rotation.R270.get())
                     )
                     .with(
                             When.allOf(
@@ -1147,7 +1058,7 @@ public class ModelGenerator extends FabricModelProvider {
                             ),
                             BlockStateVariant.create()
                                     .put(VariantSettings.MODEL, colouredCandleModels.get(candleColor))
-                                    .put(VariantSettings.Y, VariantSettings.Rotation.R90)
+                                    .put(VariantSettings.Y, Rotation.R90.get())
                     )
                     // LIT
                     .with(
@@ -1158,7 +1069,7 @@ public class ModelGenerator extends FabricModelProvider {
                             ),
                             BlockStateVariant.create()
                                     .put(VariantSettings.MODEL, litColouredCandleModels.get(candleColor))
-                                    .put(VariantSettings.Y, VariantSettings.Rotation.R180)
+                                    .put(VariantSettings.Y, Rotation.R180.get())
                             )
                     .with(
                             When.allOf(
@@ -1177,7 +1088,7 @@ public class ModelGenerator extends FabricModelProvider {
                             ),
                             BlockStateVariant.create()
                                     .put(VariantSettings.MODEL, litColouredCandleModels.get(candleColor))
-                                    .put(VariantSettings.Y, VariantSettings.Rotation.R270)
+                                    .put(VariantSettings.Y, Rotation.R270.get())
                     )
                     .with(
                             When.allOf(
@@ -1187,24 +1098,337 @@ public class ModelGenerator extends FabricModelProvider {
                             ),
                             BlockStateVariant.create()
                                     .put(VariantSettings.MODEL, litColouredCandleModels.get(candleColor))
-                                    .put(VariantSettings.Y, VariantSettings.Rotation.R90)
+                                    .put(VariantSettings.Y, Rotation.R90.get())
+                    );
+        }
+        return multipart;
+    }
+    #else
+    protected static MultipartBlockModelDefinitionCreator getStandingCandlestickBlockstate(
+            Block block,
+            Identifier emptyModel,
+            Identifier plainCandleModel,
+            Identifier litPlainCandleModel,
+            Map<CandleColor, Identifier> colouredCandleModels,
+            Map<CandleColor, Identifier> litColouredCandleModels
+    ) {
+        BooleanProperty LIT = Properties.LIT;
+        EnumProperty<CandleColor> CANDLE_COLOR = ModProperties.CANDLE_COLOR;
+
+        MultipartBlockModelDefinitionCreator multipart = MultipartBlockModelDefinitionCreator.create(block)
+                // NO CANDLE
+                .with(
+                        new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.NONE),
+                        getVariant(emptyModel)
+                )
+                // PLAIN NON LIT
+                .with(
+                        new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                        new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.PLAIN).build(),
+                                        new MultipartModelConditionBuilder().put(LIT, false).build()
+                                )
+                        ),
+                        getVariant(plainCandleModel)
+                )
+                // PLAIN LIT
+                .with(
+                        new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                        new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.PLAIN).build(),
+                                        new MultipartModelConditionBuilder().put(LIT, true).build()
+                                )
+                        ),
+                        getVariant(litPlainCandleModel)
+                );
+
+        for (CandleColor candleColor : colouredCandleModels.keySet()) {
+            multipart
+                    // NON-LIT
+                    .with(
+                            new MultipartModelCombinedCondition(
+                                    MultipartModelCombinedCondition.LogicalOperator.AND,
+                                    List.of(
+                                            new MultipartModelConditionBuilder().put(CANDLE_COLOR, candleColor).build(),
+                                            new MultipartModelConditionBuilder().put(LIT, false).build()
+                                    )
+                            ),
+                            getVariant(colouredCandleModels.get(candleColor))
+                    )
+                    // LIT
+                    .with(
+                            new MultipartModelCombinedCondition(
+                                    MultipartModelCombinedCondition.LogicalOperator.AND,
+                                    List.of(
+                                            new MultipartModelConditionBuilder().put(CANDLE_COLOR, candleColor).build(),
+                                            new MultipartModelConditionBuilder().put(LIT, true).build()
+                                    )
+                            ),
+                            getVariant(litColouredCandleModels.get(candleColor))
                     );
         }
 
         return multipart;
     }
+    protected static MultipartBlockModelDefinitionCreator getWallCandlestickBlockstate(
+            Block block,
+            Identifier emptyModel,
+            Identifier plainCandleModel,
+            Identifier litPlainCandleModel,
+            Map<CandleColor, Identifier> colouredCandleModels,
+            Map<CandleColor, Identifier> litColouredCandleModels
+    ) {
+        EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
+        BooleanProperty LIT = Properties.LIT;
+        EnumProperty<CandleColor> CANDLE_COLOR = ModProperties.CANDLE_COLOR;
 
-    protected static VariantsBlockStateSupplier getForcedCornerStairsBlockstate(Block block, Identifier modelId) {
-        return VariantsBlockStateSupplier
-                .create(block)
+        MultipartBlockModelDefinitionCreator multipart = MultipartBlockModelDefinitionCreator.create(block)
+                // NO CANDLE
+                .with(
+                        new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                        new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.NONE).build(),
+                                        new MultipartModelConditionBuilder().put(FACING, Direction.NORTH).build()
+                                )
+                        ),
+                        getVariantY(emptyModel, AxisRotation.R180)
+                )
+                .with(
+                        new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                        new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.NONE).build(),
+                                        new MultipartModelConditionBuilder().put(FACING, Direction.SOUTH).build()
+                                )
+                        ),
+                        getVariant(emptyModel)
+                )
+                .with(
+                        new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                        new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.NONE).build(),
+                                        new MultipartModelConditionBuilder().put(FACING, Direction.EAST).build()
+                                )
+                        ),
+                        getVariantY(emptyModel, AxisRotation.R270)
+                )
+                .with(
+                        new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                        new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.NONE).build(),
+                                        new MultipartModelConditionBuilder().put(FACING, Direction.WEST).build()
+                                )
+                        ),
+                        getVariantY(emptyModel, AxisRotation.R90)
+                )
+                // PLAIN NON LIT
+                .with(
+                        new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                        new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.PLAIN).build(),
+                                        new MultipartModelConditionBuilder().put(LIT, false).build(),
+                                        new MultipartModelConditionBuilder().put(FACING, Direction.NORTH).build()
+                                )
+                        ),
+                        getVariantY(plainCandleModel, AxisRotation.R180)
+                )
+                .with(
+                        new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                        new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.PLAIN).build(),
+                                        new MultipartModelConditionBuilder().put(LIT, false).build(),
+                                        new MultipartModelConditionBuilder().put(FACING, Direction.SOUTH).build()
+                                )
+                        ),
+                        getVariant(plainCandleModel)
+                )
+                .with(
+                        new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                        new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.PLAIN).build(),
+                                        new MultipartModelConditionBuilder().put(LIT, false).build(),
+                                        new MultipartModelConditionBuilder().put(FACING, Direction.EAST).build()
+                                )
+                        ),
+                        getVariantY(plainCandleModel, AxisRotation.R270)
+                )
+                .with(
+                        new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                        new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.PLAIN).build(),
+                                        new MultipartModelConditionBuilder().put(LIT, false).build(),
+                                        new MultipartModelConditionBuilder().put(FACING, Direction.WEST).build()
+                                )
+                        ),
+                        getVariantY(plainCandleModel, AxisRotation.R90)
+                )
+                // PLAIN LIT
+                .with(
+                        new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                        new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.PLAIN).build(),
+                                        new MultipartModelConditionBuilder().put(LIT, true).build(),
+                                        new MultipartModelConditionBuilder().put(FACING, Direction.NORTH).build()
+                                )
+                        ),
+                        getVariantY(litPlainCandleModel, AxisRotation.R180)
+                )
+                .with(
+                        new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                        new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.PLAIN).build(),
+                                        new MultipartModelConditionBuilder().put(LIT, true).build(),
+                                        new MultipartModelConditionBuilder().put(FACING, Direction.SOUTH).build()
+                                )
+                        ),
+                        getVariant(litPlainCandleModel)
+                )
+                .with(
+                        new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                        new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.PLAIN).build(),
+                                        new MultipartModelConditionBuilder().put(LIT, true).build(),
+                                        new MultipartModelConditionBuilder().put(FACING, Direction.EAST).build()
+                                )
+                        ),
+                        getVariantY(litPlainCandleModel, AxisRotation.R270)
+                )
+                .with(
+                        new MultipartModelCombinedCondition(
+                                MultipartModelCombinedCondition.LogicalOperator.AND,
+                                List.of(
+                                        new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.PLAIN).build(),
+                                        new MultipartModelConditionBuilder().put(LIT, true).build(),
+                                        new MultipartModelConditionBuilder().put(FACING, Direction.WEST).build()
+                                )
+                        ),
+                        getVariantY(litPlainCandleModel, AxisRotation.R90)
+                );
+
+        for (CandleColor candleColor : colouredCandleModels.keySet()) {
+            multipart
+                    // NON-LIT
+                    .with(
+                            new MultipartModelCombinedCondition(
+                                    MultipartModelCombinedCondition.LogicalOperator.AND,
+                                    List.of(
+                                            new MultipartModelConditionBuilder().put(CANDLE_COLOR, candleColor).build(),
+                                            new MultipartModelConditionBuilder().put(LIT, false).build(),
+                                            new MultipartModelConditionBuilder().put(FACING, Direction.NORTH).build()
+                                    )
+                            ),
+                            getVariantY(colouredCandleModels.get(candleColor), AxisRotation.R180)
+                    )
+                    .with(
+                            new MultipartModelCombinedCondition(
+                                    MultipartModelCombinedCondition.LogicalOperator.AND,
+                                    List.of(
+                                            new MultipartModelConditionBuilder().put(CANDLE_COLOR, candleColor).build(),
+                                            new MultipartModelConditionBuilder().put(LIT, false).build(),
+                                            new MultipartModelConditionBuilder().put(FACING, Direction.SOUTH).build()
+                                    )
+                            ),
+                            getVariant(colouredCandleModels.get(candleColor))
+                    )
+                    .with(
+                            new MultipartModelCombinedCondition(
+                                    MultipartModelCombinedCondition.LogicalOperator.AND,
+                                    List.of(
+                                            new MultipartModelConditionBuilder().put(CANDLE_COLOR, candleColor).build(),
+                                            new MultipartModelConditionBuilder().put(LIT, false).build(),
+                                            new MultipartModelConditionBuilder().put(FACING, Direction.EAST).build()
+                                    )
+                            ),
+                            getVariantY(colouredCandleModels.get(candleColor), AxisRotation.R270)
+                    )
+                    .with(
+                            new MultipartModelCombinedCondition(
+                                    MultipartModelCombinedCondition.LogicalOperator.AND,
+                                    List.of(
+                                            new MultipartModelConditionBuilder().put(CANDLE_COLOR, candleColor).build(),
+                                            new MultipartModelConditionBuilder().put(LIT, false).build(),
+                                            new MultipartModelConditionBuilder().put(FACING, Direction.WEST).build()
+                                    )
+                            ),
+                            getVariantY(colouredCandleModels.get(candleColor), AxisRotation.R90)
+                    )
+                    // LIT
+                    .with(
+                            new MultipartModelCombinedCondition(
+                                    MultipartModelCombinedCondition.LogicalOperator.AND,
+                                    List.of(
+                                            new MultipartModelConditionBuilder().put(CANDLE_COLOR, candleColor).build(),
+                                            new MultipartModelConditionBuilder().put(LIT, true).build(),
+                                            new MultipartModelConditionBuilder().put(FACING, Direction.NORTH).build()
+                                    )
+                            ),
+                            getVariantY(litColouredCandleModels.get(candleColor), AxisRotation.R180)
+                    )
+                    .with(
+                            new MultipartModelCombinedCondition(
+                                    MultipartModelCombinedCondition.LogicalOperator.AND,
+                                    List.of(
+                                            new MultipartModelConditionBuilder().put(CANDLE_COLOR, candleColor).build(),
+                                            new MultipartModelConditionBuilder().put(LIT, true).build(),
+                                            new MultipartModelConditionBuilder().put(FACING, Direction.SOUTH).build()
+                                    )
+                            ),
+                            getVariant(litColouredCandleModels.get(candleColor))
+                    )
+                    .with(
+                            new MultipartModelCombinedCondition(
+                                    MultipartModelCombinedCondition.LogicalOperator.AND,
+                                    List.of(
+                                            new MultipartModelConditionBuilder().put(CANDLE_COLOR, candleColor).build(),
+                                            new MultipartModelConditionBuilder().put(LIT, true).build(),
+                                            new MultipartModelConditionBuilder().put(FACING, Direction.EAST).build()
+                                    )
+                            ),
+                            getVariantY(litColouredCandleModels.get(candleColor), AxisRotation.R270)
+                    )
+                    .with(
+                            new MultipartModelCombinedCondition(
+                                    MultipartModelCombinedCondition.LogicalOperator.AND,
+                                    List.of(
+                                            new MultipartModelConditionBuilder().put(CANDLE_COLOR, candleColor).build(),
+                                            new MultipartModelConditionBuilder().put(LIT, true).build(),
+                                            new MultipartModelConditionBuilder().put(FACING, Direction.WEST).build()
+                                    )
+                            ),
+                            getVariantY(litColouredCandleModels.get(candleColor), AxisRotation.R90)
+                    );
+        }
+        return multipart;
+    }
+    #endif
+
+    protected static #if MC_VERSION < 12105 VariantsBlockStateSupplier #else VariantsBlockModelDefinitionCreator #endif getForcedCornerStairsBlockstate(Block block, Identifier modelId) {
+        #if MC_VERSION < 12105
+        return VariantsBlockStateSupplier.create(block)
                 .coordinate(BlockStateVariantMap.create(Properties.HORIZONTAL_FACING, Properties.BLOCK_HALF)
+        #else
+        return VariantsBlockModelDefinitionCreator.of(block)
+                .with(BlockStateVariantMap.models(Properties.HORIZONTAL_FACING, Properties.BLOCK_HALF)
+        #endif
                         .register(
                                 Direction.EAST, BlockHalf.BOTTOM,
-                                getUVLockedVariantY(modelId, VariantSettings.Rotation.R90)
+                                getUVLockedVariantY(modelId, Rotation.R90.get())
                         )
                         .register(
                                 Direction.EAST, BlockHalf.TOP,
-                                getUVLockedUpsideDownVariantY(modelId, VariantSettings.Rotation.R180)
+                                getUVLockedUpsideDownVariantY(modelId, Rotation.R180.get())
                         )
                         .register(
                                 Direction.NORTH, BlockHalf.BOTTOM,
@@ -1212,19 +1436,19 @@ public class ModelGenerator extends FabricModelProvider {
                         )
                         .register(
                                 Direction.NORTH, BlockHalf.TOP,
-                                getUVLockedUpsideDownVariantY(modelId, VariantSettings.Rotation.R90)
+                                getUVLockedUpsideDownVariantY(modelId, Rotation.R90.get())
                         )
                         .register(
                                 Direction.SOUTH, BlockHalf.BOTTOM,
-                                getUVLockedVariantY(modelId, VariantSettings.Rotation.R180)
+                                getUVLockedVariantY(modelId, Rotation.R180.get())
                         )
                         .register(
                                 Direction.SOUTH, BlockHalf.TOP,
-                                getUVLockedUpsideDownVariantY(modelId, VariantSettings.Rotation.R270)
+                                getUVLockedUpsideDownVariantY(modelId, Rotation.R270.get())
                         )
                         .register(
                                 Direction.WEST, BlockHalf.BOTTOM,
-                                getUVLockedVariantY(modelId, VariantSettings.Rotation.R270)
+                                getUVLockedVariantY(modelId, Rotation.R270.get())
                         )
                         .register(
                                 Direction.WEST, BlockHalf.TOP,
@@ -1233,28 +1457,37 @@ public class ModelGenerator extends FabricModelProvider {
                 );
     }
 
-    protected static VariantsBlockStateSupplier getDefaultBlockstate(Block block, Identifier modelId) {
+    protected static #if MC_VERSION < 12105 VariantsBlockStateSupplier #else VariantsBlockModelDefinitionCreator #endif getDefaultBlockstate(Block block, Identifier modelId) {
+        #if MC_VERSION < 12105
         return VariantsBlockStateSupplier.create(block, BlockStateVariant.create().put(VariantSettings.MODEL, modelId));
+        #else
+        return VariantsBlockModelDefinitionCreator.of(block, createWeightedVariant(new ModelVariant(modelId)));
+        #endif
     }
 
-    protected static VariantsBlockStateSupplier getCabinetBlockstate(Block cabinetBlock, Identifier cabinetModel, Identifier cabinetOpenModel) {
+    protected static #if MC_VERSION < 12105 VariantsBlockStateSupplier #else VariantsBlockModelDefinitionCreator #endif getCabinetBlockstate(Block cabinetBlock, Identifier cabinetModel, Identifier cabinetOpenModel) {
+        #if MC_VERSION < 12105
         return VariantsBlockStateSupplier.create(cabinetBlock)
                 .coordinate(BlockStateVariantMap.create(Properties.HORIZONTAL_FACING, Properties.OPEN)
+        #else
+        return VariantsBlockModelDefinitionCreator.of(cabinetBlock)
+                .with(BlockStateVariantMap.models(Properties.HORIZONTAL_FACING, Properties.OPEN)
+        #endif
                         .register(
                                 Direction.NORTH, true,
-                                getVariantY(cabinetOpenModel, VariantSettings.Rotation.R180)
+                                getVariantY(cabinetOpenModel, Rotation.R180.get())
                         )
                         .register(
                                 Direction.NORTH, false,
-                                getVariantY(cabinetModel, VariantSettings.Rotation.R180)
+                                getVariantY(cabinetModel, Rotation.R180.get())
                         )
                         .register(
                                 Direction.EAST, true,
-                                getVariantY(cabinetOpenModel, VariantSettings.Rotation.R270)
+                                getVariantY(cabinetOpenModel, Rotation.R270.get())
                         )
                         .register(
                                 Direction.EAST, false,
-                                getVariantY(cabinetModel, VariantSettings.Rotation.R270)
+                                getVariantY(cabinetModel, Rotation.R270.get())
                         )
                         .register(
                                 Direction.SOUTH, true,
@@ -1266,32 +1499,37 @@ public class ModelGenerator extends FabricModelProvider {
                         )
                         .register(
                                 Direction.WEST, true,
-                                getVariantY(cabinetOpenModel, VariantSettings.Rotation.R90)
+                                getVariantY(cabinetOpenModel, Rotation.R90.get())
                         )
                         .register(
                                 Direction.WEST, false,
-                                getVariantY(cabinetModel, VariantSettings.Rotation.R90)
+                                getVariantY(cabinetModel, Rotation.R90.get())
                         )
                 );
     }
-    protected static VariantsBlockStateSupplier getFloorCabinetBlockstate(Block cabinetBlock, Identifier cabinetModel, Identifier cabinetOpenModel) {
+    protected static #if MC_VERSION < 12105 VariantsBlockStateSupplier #else VariantsBlockModelDefinitionCreator #endif getFloorCabinetBlockstate(Block cabinetBlock, Identifier cabinetModel, Identifier cabinetOpenModel) {
+        #if MC_VERSION < 12105
         return VariantsBlockStateSupplier.create(cabinetBlock)
                 .coordinate(BlockStateVariantMap.create(Properties.BLOCK_HALF, Properties.HORIZONTAL_FACING, Properties.OPEN)
+        #else
+        return VariantsBlockModelDefinitionCreator.of(cabinetBlock)
+                .with(BlockStateVariantMap.models(Properties.BLOCK_HALF, Properties.HORIZONTAL_FACING, Properties.OPEN)
+        #endif
                         .register(
                                 BlockHalf.BOTTOM, Direction.NORTH, true,
-                                getVariantY(cabinetOpenModel, VariantSettings.Rotation.R180)
+                                getVariantY(cabinetOpenModel, Rotation.R180.get())
                         )
                         .register(
                                 BlockHalf.BOTTOM, Direction.NORTH, false,
-                                getVariantY(cabinetModel, VariantSettings.Rotation.R180)
+                                getVariantY(cabinetModel, Rotation.R180.get())
                         )
                         .register(
                                 BlockHalf.BOTTOM, Direction.EAST, true,
-                                getVariantY(cabinetOpenModel, VariantSettings.Rotation.R270)
+                                getVariantY(cabinetOpenModel, Rotation.R270.get())
                         )
                         .register(
                                 BlockHalf.BOTTOM, Direction.EAST, false,
-                                getVariantY(cabinetModel, VariantSettings.Rotation.R270)
+                                getVariantY(cabinetModel, Rotation.R270.get())
                         )
                         .register(
                                 BlockHalf.BOTTOM, Direction.SOUTH, true,
@@ -1303,27 +1541,27 @@ public class ModelGenerator extends FabricModelProvider {
                         )
                         .register(
                                 BlockHalf.BOTTOM, Direction.WEST, true,
-                                getVariantY(cabinetOpenModel, VariantSettings.Rotation.R90)
+                                getVariantY(cabinetOpenModel, Rotation.R90.get())
                         )
                         .register(
                                 BlockHalf.BOTTOM, Direction.WEST, false,
-                                getVariantY(cabinetModel, VariantSettings.Rotation.R90)
+                                getVariantY(cabinetModel, Rotation.R90.get())
                         )
                         .register(
                                 BlockHalf.TOP, Direction.NORTH, true,
-                                getUpsideDownVariantY(cabinetOpenModel, VariantSettings.Rotation.R180)
+                                getUpsideDownVariantY(cabinetOpenModel, Rotation.R180.get())
                         )
                         .register(
                                 BlockHalf.TOP, Direction.NORTH, false,
-                                getUpsideDownVariantY(cabinetModel, VariantSettings.Rotation.R180)
+                                getUpsideDownVariantY(cabinetModel, Rotation.R180.get())
                         )
                         .register(
                                 BlockHalf.TOP, Direction.EAST, true,
-                                getUpsideDownVariantY(cabinetOpenModel, VariantSettings.Rotation.R270)
+                                getUpsideDownVariantY(cabinetOpenModel, Rotation.R270.get())
                         )
                         .register(
                                 BlockHalf.TOP, Direction.EAST, false,
-                                getUpsideDownVariantY(cabinetModel, VariantSettings.Rotation.R270)
+                                getUpsideDownVariantY(cabinetModel, Rotation.R270.get())
                         )
                         .register(
                                 BlockHalf.TOP, Direction.SOUTH, true,
@@ -1335,21 +1573,22 @@ public class ModelGenerator extends FabricModelProvider {
                         )
                         .register(
                                 BlockHalf.TOP, Direction.WEST, true,
-                                getUpsideDownVariantY(cabinetOpenModel, VariantSettings.Rotation.R90)
+                                getUpsideDownVariantY(cabinetOpenModel, Rotation.R90.get())
                         )
                         .register(
                                 BlockHalf.TOP, Direction.WEST, false,
-                                getUpsideDownVariantY(cabinetModel, VariantSettings.Rotation.R90)
+                                getUpsideDownVariantY(cabinetModel, Rotation.R90.get())
                         )
                 );
     }
 
 
+    #if MC_VERSION < 12105
     protected static BlockStateVariant getUVLockedUpsideDownVariantY(Identifier model, VariantSettings.Rotation rotationY) {
         return BlockStateVariant.create()
                 .put(VariantSettings.MODEL, model)
                 .put(VariantSettings.UVLOCK, true)
-                .put(VariantSettings.X, VariantSettings.Rotation.R180)
+                .put(VariantSettings.X, Rotation.R180.get())
                 .put(VariantSettings.Y, rotationY);
     }
 
@@ -1357,7 +1596,7 @@ public class ModelGenerator extends FabricModelProvider {
         return BlockStateVariant.create()
                 .put(VariantSettings.MODEL, model)
                 .put(VariantSettings.UVLOCK, true)
-                .put(VariantSettings.X, VariantSettings.Rotation.R180);
+                .put(VariantSettings.X, Rotation.R180.get());
     }
     protected static BlockStateVariant getUVLockedVariantY(Identifier model, VariantSettings.Rotation rotationY) {
         return BlockStateVariant.create()
@@ -1369,14 +1608,14 @@ public class ModelGenerator extends FabricModelProvider {
     protected static BlockStateVariant getUpsideDownVariantY(Identifier model, VariantSettings.Rotation rotationY) {
         return BlockStateVariant.create()
                 .put(VariantSettings.MODEL, model)
-                .put(VariantSettings.X, VariantSettings.Rotation.R180)
+                .put(VariantSettings.X, Rotation.R180.get())
                 .put(VariantSettings.Y, rotationY);
     }
 
     protected static BlockStateVariant getUpsideDownVariant(Identifier model) {
         return BlockStateVariant.create()
                 .put(VariantSettings.MODEL, model)
-                .put(VariantSettings.X, VariantSettings.Rotation.R180);
+                .put(VariantSettings.X, Rotation.R180.get());
     }
     protected static BlockStateVariant getVariantY(Identifier model, VariantSettings.Rotation rotationY) {
         return BlockStateVariant.create()
@@ -1387,6 +1626,50 @@ public class ModelGenerator extends FabricModelProvider {
     protected static BlockStateVariant getVariant(Identifier model) {
         return BlockStateVariant.create().put(VariantSettings.MODEL, model);
     }
+    #else
+    protected static WeightedVariant getUVLockedUpsideDownVariantY(Identifier model, AxisRotation rotationY) {
+        return createWeightedVariant(new ModelVariant(model)
+                .with(ModelVariantOperator.UV_LOCK.withValue(true))
+                .with(ModelVariantOperator.ROTATION_X.withValue(AxisRotation.R180))
+                .with(ModelVariantOperator.ROTATION_Y.withValue(rotationY))
+        );
+    }
+
+    protected static WeightedVariant getUVLockedUpsideDownVariant(Identifier model) {
+        return createWeightedVariant(new ModelVariant(model)
+                .with(ModelVariantOperator.UV_LOCK.withValue(true))
+                .with(ModelVariantOperator.ROTATION_X.withValue(AxisRotation.R180))
+        );
+    }
+    protected static WeightedVariant getUVLockedVariantY(Identifier model, AxisRotation rotationY) {
+        return createWeightedVariant(new ModelVariant(model)
+                .with(ModelVariantOperator.UV_LOCK.withValue(true))
+                .with(ModelVariantOperator.ROTATION_Y.withValue(rotationY))
+        );
+    }
+
+    protected static WeightedVariant getUpsideDownVariantY(Identifier model, AxisRotation rotationY) {
+        return createWeightedVariant(new ModelVariant(model)
+                .with(ModelVariantOperator.ROTATION_X.withValue(AxisRotation.R180))
+                .with(ModelVariantOperator.ROTATION_Y.withValue(rotationY))
+        );
+    }
+
+    protected static WeightedVariant getUpsideDownVariant(Identifier model) {
+        return createWeightedVariant(new ModelVariant(model)
+                .with(ModelVariantOperator.ROTATION_X.withValue(AxisRotation.R180))
+        );
+    }
+    protected static WeightedVariant getVariantY(Identifier model, AxisRotation rotationY) {
+        return createWeightedVariant(new ModelVariant(model)
+                .with(ModelVariantOperator.ROTATION_Y.withValue(rotationY))
+        );
+    }
+
+    protected static WeightedVariant getVariant(Identifier model) {
+        return createWeightedVariant(new ModelVariant(model));
+    }
+    #endif
 
 
     protected static Model getModel(String id) {
@@ -1404,7 +1687,46 @@ public class ModelGenerator extends FabricModelProvider {
         }
     }
 
+    protected void registerItemModel(Item item, Identifier modelId) {
+        #if MC_VERSION < 12104
+        blockStateModelGenerator.registerParentedItemModel(item, modelId);
+        #else
+        blockStateModelGenerator.registerItemModel(item, modelId);
+        #endif
+    }
+
     protected static Identifier getBlockId(@Nullable SupportedMods mod, String name) {
         return getVMId(mod, "block/" + name);
     }
+
+
+    #if MC_VERSION < 12105
+    protected static enum Rotation {
+        R0(VariantSettings.Rotation.R0),
+        R90(VariantSettings.Rotation.R90),
+        R180(VariantSettings.Rotation.R180),
+        R270(VariantSettings.Rotation.R270);
+        
+        protected final VariantSettings.Rotation rotation;
+        public VariantSettings.Rotation get() { return rotation; }
+        
+        Rotation(AxisRotation rotation) {
+            this.rotation = rotation;
+        }
+    }
+    #else
+    protected enum Rotation {
+        R0(AxisRotation.R0),
+        R90(AxisRotation.R90),
+        R180(AxisRotation.R180),
+        R270(AxisRotation.R270);
+        
+        protected final AxisRotation rotation;
+        public AxisRotation get() { return rotation; }
+        
+        Rotation(AxisRotation rotation) {
+            this.rotation = rotation;
+        }
+    }
+    #endif
 }

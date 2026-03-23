@@ -12,8 +12,11 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 #endif
 import net.minecraft.client.util.math.MatrixStack;
+#if MC_VERSION >= 12108
+import net.minecraft.item.ItemDisplayContext;
+#endif
 import net.minecraft.item.ItemStack;
-#if MC_VERSION >= 12104
+#if MC_VERSION >= 12104 && MC_VERSION < 12108
 import net.minecraft.item.ModelTransformationMode;
 #endif
 
@@ -50,7 +53,8 @@ public sealed interface ItemRendering permits ItemFloorRendering, ItemWallRender
         );
         #else
         MinecraftClient.getInstance().getItemRenderer().renderItem(
-                stack, ModelTransformationMode.FIXED,
+                stack,
+                #if MC_VERSION < 12108 ModelTransformationMode.FIXED #else ItemDisplayContext.FIXED #endif,
                 light, overlay,
                 matrices, vertexConsumers,
                 ((BlockEntity) blockEntity).getWorld(),

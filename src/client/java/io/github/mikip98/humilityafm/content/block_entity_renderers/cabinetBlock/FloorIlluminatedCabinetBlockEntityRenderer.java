@@ -12,6 +12,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 @Environment(EnvType.CLIENT)
@@ -24,7 +25,7 @@ public class FloorIlluminatedCabinetBlockEntityRenderer implements BlockEntityRe
     public FloorIlluminatedCabinetBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {}
 
     @Override
-    public void render(FloorIlluminatedCabinetBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+    public void render(FloorIlluminatedCabinetBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay #if MC_VERSION >= 12105, Vec3d cameraPos #endif) {
         World world = blockEntity.getWorld();
         BlockPos pos = blockEntity.getPos();
         if (world == null || pos == null) return;

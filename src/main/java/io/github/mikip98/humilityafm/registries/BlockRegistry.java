@@ -25,9 +25,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 #endif
 
-#if MC_VERSION >= 12104
 import java.util.function.Function;
-#endif
 
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
 

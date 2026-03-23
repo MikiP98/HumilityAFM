@@ -38,7 +38,7 @@ public class ColouredJackOLantern extends JackOLantern {
     #endif
         final int currentPower = state.get(POWER);
         if (player.isSneaking() && player.getStackInHand(hand).isEmpty() && currentPower > 3) {
-            SoundUtils.playSoundAtBlockCenter(world, pos, SoundEvents.BLOCK_PUMPKIN_CARVE);
+            SoundUtils.playSoundAtBlockCenter(world, player, pos, SoundEvents.BLOCK_PUMPKIN_CARVE);
             world.setBlockState(pos, state.with(POWER, currentPower - 3));
             return ActionResult.SUCCESS;
         }

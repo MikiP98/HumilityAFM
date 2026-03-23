@@ -1,6 +1,9 @@
 package io.github.mikip98.humilityafm.content.blockentities.cabinetBlock;
 
 import io.github.mikip98.humilityafm.registries.BlockEntityRegistry;
+#if MC_VERSION >= 12105
+import net.minecraft.block.Block;
+#endif
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -13,6 +16,10 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 #if MC_VERSION >= 12006
 import net.minecraft.registry.RegistryWrapper;
+#endif
+#if MC_VERSION >= 12108
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 #endif
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
@@ -47,11 +54,7 @@ public class CabinetBlockEntity extends BlockEntity implements ImplementedInvent
         Inventories.writeNbt(nbt, items);
         super.writeNbt(nbt);
     }
-    @Override
-    public NbtCompound toInitialChunkDataNbt() {
-        return createNbt();
-    }
-    #else
+    #elif MC_VERSION < 12108
     @Override
     public void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
         super.readNbt(nbt, registryLookup);
@@ -62,6 +65,25 @@ public class CabinetBlockEntity extends BlockEntity implements ImplementedInvent
         Inventories.writeNbt(nbt, items, registryLookup);
         super.writeNbt(nbt, registryLookup);
     }
+    #else
+    @Override
+    protected void readData(ReadView view) {
+        super.readData(view);
+//        this.items.clear();  // TODO: Make sure this is indeed required to prevent ghost items on clients
+        Inventories.readData(view, this.items);
+    }
+    @Override
+    protected void writeData(WriteView view) {
+        Inventories.writeData(view, this.items, false);  // Make sure 'False' does not create ghost blocks on clients
+        super.writeData(view);
+    }
+    #endif
+    #if MC_VERSION < 12006
+    @Override
+    public NbtCompound toInitialChunkDataNbt() {
+        return createNbt();
+    }
+    #else
     @Override
     public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registryLookup) {
         return createNbt(registryLookup);
@@ -71,6 +93,17 @@ public class CabinetBlockEntity extends BlockEntity implements ImplementedInvent
     public @Nullable Packet<ClientPlayPacketListener> toUpdatePacket() {
         return BlockEntityUpdateS2CPacket.create(this);
     }
+
+    #if MC_VERSION >= 12105
+    @Override
+    public void onBlockReplaced(BlockPos pos, BlockState oldState) {
+        final ItemStack stack = this.items.getFirst();
+        if (!stack.isEmpty() && this.world != null) {
+            Block.dropStack(this.world, pos, stack);
+        }
+        super.onBlockReplaced(pos, oldState);
+    }
+    #endif
 
     // Required to block hoppers from working
     @Override

@@ -12,11 +12,14 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.registry.tag.FluidTags;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
+#if MC_VERSION < 12006
 import net.minecraft.util.Hand;
+#endif
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
@@ -84,12 +87,19 @@ public class FloorCandlestick extends Block implements SimpleCandlestickLogic, W
         return (state.get(CANDLE_COLOR) != CandleColor.NONE) ? voxelShapeCandle : voxelShape;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
+    #if MC_VERSION < 12105
+    @SuppressWarnings("deprecation")
     public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
         onStateReplacedLogic(state, world, pos, newState);
         super.onStateReplaced(state, world, pos, newState, moved);
     }
+    #else
+    public void onStateReplaced(BlockState state, ServerWorld world, BlockPos pos, boolean moved) {
+        onStateReplacedLogic(state, world, pos);
+        super.onStateReplaced(state, world, pos, moved);
+    }
+    #endif
 
     @SuppressWarnings("deprecation")
     @Override

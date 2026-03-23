@@ -7,6 +7,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+#if MC_VERSION >= 12105
+import net.minecraft.server.world.ServerWorld;
+#endif
 import net.minecraft.util.Hand;
 #if MC_VERSION < 12006
 import net.minecraft.util.hit.BlockHitResult;
@@ -27,9 +30,23 @@ public non-sealed interface SimpleCandlestickLogic extends BaseCandlestickLogic 
         if (tryToExtinguishOrRemove(state, world, pos, player, heldItemStack)) return true;
         return tryToLightTheCandle(state, world, pos, player, hand, heldItemStack, heldItem);
     }
+
+    #if MC_VERSION < 12105
     default void onStateReplacedLogic(BlockState state, World world, BlockPos pos, BlockState newState) {
+        dropCandle(state, newState, world, pos);
+    }
+    #else
+    default void onStateReplacedLogic(BlockState state, ServerWorld world, BlockPos pos) {
+        // In 1.21.5+, the block is already replaced, before that is is yet to be replaced, so this cannot be merged
+        BlockState newState = world.getBlockState(pos);
+        dropCandle(state, newState, world, pos);
+    }
+    #endif
+
+    default void dropCandle(BlockState oldState, BlockState newState, World world, BlockPos pos) {
         // If the block is replaced with a different block, drop the candle if present
-        if (newState.getBlock() != state.getBlock() && state.get(ModProperties.CANDLE_COLOR) != CandleColor.NONE)
-            Block.dropStack(world, pos, new ItemStack(state.get(ModProperties.CANDLE_COLOR).asCandle()));
+        if (newState.getBlock() != oldState.getBlock() && oldState.get(ModProperties.CANDLE_COLOR) != CandleColor.NONE) {
+            Block.dropStack(world, pos, new ItemStack(oldState.get(ModProperties.CANDLE_COLOR).asCandle()));
+        }
     }
 }

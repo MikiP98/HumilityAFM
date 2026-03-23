@@ -62,7 +62,7 @@ public class ColouredTorch extends TorchBlock {
     #endif
         final int currentPower = state.get(POWER);
         if (player.isSneaking() && player.getStackInHand(hand).isEmpty() && currentPower > 3) {
-            SoundUtils.playSoundAtBlockCenter(world, pos, SoundEvents.BLOCK_CANDLE_EXTINGUISH, 2.5f, -0.25f);
+            SoundUtils.playSoundAtBlockCenter(world, player, pos, SoundEvents.BLOCK_CANDLE_EXTINGUISH, 1.2f, 0.75f);
             world.setBlockState(pos, state.with(POWER, currentPower - 3));
             return ActionResult.SUCCESS;
         }

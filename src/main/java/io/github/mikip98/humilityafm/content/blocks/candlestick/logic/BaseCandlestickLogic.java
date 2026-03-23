@@ -2,6 +2,7 @@ package io.github.mikip98.humilityafm.content.blocks.candlestick.logic;
 
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
+import io.github.mikip98.humilityafm.util.SoundUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CandleBlock;
@@ -14,10 +15,6 @@ import net.minecraft.item.FlintAndSteelItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
-#if MC_VERSION >= 12006
-import net.minecraft.server.network.ServerPlayerEntity;
-#endif
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Hand;
@@ -38,7 +35,7 @@ public sealed interface BaseCandlestickLogic permits SimpleCandlestickLogic, Rus
                 }
                 world.setBlockState(pos, state.with(ModProperties.CANDLE_COLOR, CandleColor.getColor(heldItem)), Block.NOTIFY_ALL);
                 if (!player.isCreative()) heldItemStack.decrement(1);
-                world.playSoundAtBlockCenter(pos, SoundEvents.ENTITY_ITEM_FRAME_REMOVE_ITEM, SoundCategory.BLOCKS, 0.9f, 1.1f, true);
+                SoundUtils.playSoundAtBlockCenter(world, player, pos, SoundEvents.BLOCK_STONE_BUTTON_CLICK_ON, 0.9f, 1.1f);
                 return true;
             }
         }
@@ -49,14 +46,14 @@ public sealed interface BaseCandlestickLogic permits SimpleCandlestickLogic, Rus
             // Extinguish the candle
             if (state.get(Properties.LIT)) {
                 world.setBlockState(pos, state.with(Properties.LIT, false), Block.NOTIFY_ALL);
-                world.playSoundAtBlockCenter(pos, SoundEvents.BLOCK_CANDLE_EXTINGUISH, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
+                SoundUtils.playSoundAtBlockCenter(world, player, pos, SoundEvents.BLOCK_CANDLE_EXTINGUISH);
                 return true;
             }
             // Remove the candle
             else if (state.get(ModProperties.CANDLE_COLOR) != CandleColor.NONE) {
                 player.getInventory().offerOrDrop(new ItemStack(state.get(ModProperties.CANDLE_COLOR).asCandle()));
                 world.setBlockState(pos, state.with(ModProperties.CANDLE_COLOR, CandleColor.NONE), Block.NOTIFY_ALL);
-                world.playSoundAtBlockCenter(pos, SoundEvents.ENTITY_ITEM_FRAME_REMOVE_ITEM, SoundCategory.BLOCKS, 0.9f, 0.9f, true);
+                SoundUtils.playSoundAtBlockCenter(world, player, pos, SoundEvents.ENTITY_ITEM_FRAME_REMOVE_ITEM, 0.9f, 0.9f);
                 return true;
             }
         }
@@ -71,7 +68,7 @@ public sealed interface BaseCandlestickLogic permits SimpleCandlestickLogic, Rus
         ) {
             world.setBlockState(pos, state.with(Properties.LIT, true), Block.NOTIFY_ALL);
             damageItem(heldItemStack, player, hand);
-            world.playSoundAtBlockCenter(pos, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0f, 1.0f, true);
+            SoundUtils.playSoundAtBlockCenter(world, player, pos, SoundEvents.ITEM_FLINTANDSTEEL_USE);
             return true;
         }
         return false;
@@ -80,7 +77,11 @@ public sealed interface BaseCandlestickLogic permits SimpleCandlestickLogic, Rus
     default void performRandomDisplayTick(World world, double candleWickX, double candleWickY, double candleWickZ, Random random) {
         if (random.nextInt(1) == 0) {
             Velocity velocity = getRandomVelocity(random, 0.001953125f);
+            #if MC_VERSION < 12105
             world.addParticle(
+            #else
+            world.addParticleClient(
+            #endif
                     ParticleTypes.SMALL_FLAME,
                     candleWickX, candleWickY, candleWickZ,
                     velocity.x(), velocity.y(), velocity.z()
@@ -88,7 +89,11 @@ public sealed interface BaseCandlestickLogic permits SimpleCandlestickLogic, Rus
 
             if (random.nextInt(3) == 0) {
                 velocity = getRandomVelocity(random, 0.00390625f);
+                #if MC_VERSION < 12105
                 world.addParticle(
+                #else
+                world.addParticleClient(
+                #endif
                         ParticleTypes.SMOKE,
                         candleWickX, candleWickY, candleWickZ,
                         velocity.x(), velocity.y(), velocity.z()
@@ -96,11 +101,7 @@ public sealed interface BaseCandlestickLogic permits SimpleCandlestickLogic, Rus
             }
 
             if (random.nextInt(2) == 0) {
-                world.playSound(
-                        candleWickX, candleWickY, candleWickZ,
-                        SoundEvents.BLOCK_CANDLE_AMBIENT, SoundCategory.BLOCKS,
-                        1.0f, 1.0f, true
-                );
+                SoundUtils.playSound(world, candleWickX, candleWickY, candleWickZ, SoundEvents.BLOCK_CANDLE_AMBIENT);
             }
         }
     }
