@@ -4,7 +4,6 @@ import io.github.mikip98.humilityafm.content.block_entity_renderers.rendering_ut
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.util.math.MatrixStack;
 
 public interface RenderSelfBrightening {

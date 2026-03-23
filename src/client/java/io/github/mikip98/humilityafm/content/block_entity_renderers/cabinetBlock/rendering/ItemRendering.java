@@ -11,7 +11,9 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 #endif
+#if MC_VERSION >= 12111
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
+#endif
 import net.minecraft.client.util.math.MatrixStack;
 #if MC_VERSION >= 12108
 import net.minecraft.item.ItemDisplayContext;

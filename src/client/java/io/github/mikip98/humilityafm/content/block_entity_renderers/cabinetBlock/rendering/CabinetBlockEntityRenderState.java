@@ -1,4 +1,4 @@
-#if MC_VERSION >= 12105
+#if MC_VERSION >= 12111
 package io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering;
 
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetBlockEntity;

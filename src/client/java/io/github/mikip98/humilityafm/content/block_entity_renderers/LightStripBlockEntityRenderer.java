@@ -6,19 +6,27 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
+#if MC_VERSION >= 12105
 import net.minecraft.client.render.block.BlockModelRenderer;
+#endif
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+#if MC_VERSION >= 12111
 import net.minecraft.client.render.block.entity.state.BlockEntityRenderState;
 import net.minecraft.client.render.command.ModelCommandRenderer;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.state.CameraRenderState;
+#endif
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
+#if MC_VERSION >= 12105
 import net.minecraft.util.math.Vec3d;
+#endif
 import net.minecraft.world.World;
+#if MC_VERSION >= 12111
 import org.jetbrains.annotations.Nullable;
+#endif
 
 import static net.minecraft.block.enums.BlockHalf.TOP;
 

@@ -1121,7 +1121,7 @@ public class ModelGenerator extends FabricModelProvider {
                         new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.NONE),
                         getVariant(emptyModel)
                 )
-                // PLAIN NON LIT
+                // PLAIN NON-LIT
                 .with(
                         new MultipartModelCombinedCondition(
                                 MultipartModelCombinedCondition.LogicalOperator.AND,
@@ -1226,7 +1226,7 @@ public class ModelGenerator extends FabricModelProvider {
                         ),
                         getVariantY(emptyModel, AxisRotation.R90)
                 )
-                // PLAIN NON LIT
+                // PLAIN NON-LIT
                 .with(
                         new MultipartModelCombinedCondition(
                                 MultipartModelCombinedCondition.LogicalOperator.AND,
@@ -1701,7 +1701,7 @@ public class ModelGenerator extends FabricModelProvider {
 
 
     #if MC_VERSION < 12105
-    protected static enum Rotation {
+    protected enum Rotation {
         R0(VariantSettings.Rotation.R0),
         R90(VariantSettings.Rotation.R90),
         R180(VariantSettings.Rotation.R180),
@@ -1710,7 +1710,7 @@ public class ModelGenerator extends FabricModelProvider {
         protected final VariantSettings.Rotation rotation;
         public VariantSettings.Rotation get() { return rotation; }
         
-        Rotation(AxisRotation rotation) {
+        Rotation(VariantSettings.Rotation rotation) {
             this.rotation = rotation;
         }
     }

@@ -12,7 +12,9 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+#if MC_VERSION >= 12111
 import net.minecraft.client.render.block.entity.state.BlockEntityRenderState;
+#endif
 
 public class BlockEntityRendererRegistry {
     public static void register() {

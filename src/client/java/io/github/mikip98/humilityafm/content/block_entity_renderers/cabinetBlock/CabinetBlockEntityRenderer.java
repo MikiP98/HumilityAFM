@@ -1,29 +1,32 @@
 package io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock;
 
+#if MC_VERSION >= 12111
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering.CabinetBlockEntityRenderState;
+#endif
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering.ItemWallRendering;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetBlockEntity;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.CabinetBlock;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+#if MC_VERSION >= 12111
 import net.minecraft.client.render.block.entity.state.BlockEntityRenderState;
 import net.minecraft.client.render.command.ModelCommandRenderer;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.state.CameraRenderState;
+#endif
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemDisplayContext;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+#if MC_VERSION >= 12105
 import net.minecraft.util.math.Vec3d;
+#endif
 import net.minecraft.world.World;
+#if MC_VERSION >= 12111
 import org.jetbrains.annotations.Nullable;
+#endif
 
 @Environment(EnvType.CLIENT)
 public class CabinetBlockEntityRenderer implements
