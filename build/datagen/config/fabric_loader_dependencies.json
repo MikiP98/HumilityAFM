@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "overrides": {
+    "humility-afm": {
+      "-depends": {
+        "polymorph": "IGNORED"
+      }
+    }
+  }
+}
