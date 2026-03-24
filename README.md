@@ -86,13 +86,12 @@ Lighten up your builds with unobtrusive light source
 
 ### High priority:
 
-- Merge all version branches into 1 Manifold branch
 - Redo the window capture screenshots or at least crop the window app bar
 - Fix Cabinet breaking animation being invisible
 - Redo coloured torch textures using the Jack o'Lantern palette system
 - Deduplicate ColouredTorch & ColouredWallTorch code
 - Clean-up the Manifold code duplication
-  - Consider adding fake class extenders as aliases
+  - Consider adding more fake class extenders or wrappers as aliases
 - Improve the built-in mod support for:
   - BetterNether
   - BetterEnd
@@ -140,8 +139,7 @@ Lighten up your builds with unobtrusive light source
   - Vertical mount
   - Fit multiple Light Strips in 1 block
 - Make coloured flame particles for coloured torches
-- Improve the sounds by varying the pitch and volume slightly
-- Optimise the model datagen
+- Cleanup the model datagen
 - Convert the config from JSON to TOML
 - Consider making Polymorph an optional dependency, now with the alternative wooden mosaic recipie datapack it is no longer needed, that said people might still be confused if they didn't have either enabled/installed
 - Add proper translations for the Resource Packs
@@ -176,7 +174,10 @@ Lighten up your builds with unobtrusive light source
 
 - Fixed a massive log error spam on world loading/creation
 - Merged all versions into a single manifold branch
-- Improved Sounds
+- Improve sounds by varying the pitch and volume slightly
+- Moved from 1.21.6 to 1.21.8
+- Ported to 1.21.11
+- Ported to 26.1
 
 <br>
 
