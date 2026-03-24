@@ -73,14 +73,11 @@ public class BlockEntityRegistry {
     protected static <T extends BlockEntity> BlockEntityType<T> register(
             String name,
             FabricBlockEntityTypeBuilder.Factory<? extends T> entityFactory,
-//            BlockEntityType.BlockEntityFactory<T> entityFactory,
             Block... blocks
     ) {
         return Registry.register(
                 Registries.BLOCK_ENTITY_TYPE, getId(name),
                 FabricBlockEntityTypeBuilder.<T>create(entityFactory, blocks).build()
-                // Null is required until 1.20.6, but it does not break anything
-//                BlockEntityType.Builder.create(entityFactory, blocks).build(null)
         );
     }
 }

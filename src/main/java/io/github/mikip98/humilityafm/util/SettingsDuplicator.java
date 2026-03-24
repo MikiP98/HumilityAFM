@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.LOGGER;
 
-public class SettingsDuplicator {
+public abstract class SettingsDuplicator {
     public static AtomicLong count = new AtomicLong(0);
     public static Map<AbstractBlock.Settings, Supplier<AbstractBlock.Settings>> cache = new IdentityHashMap<>();
 
