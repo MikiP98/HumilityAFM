@@ -3,7 +3,8 @@ import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
 plugins {
-	id 'fabric-loom' version "${loom_version}"
+	id 'fabric-loom' version "${loom_version}" apply false
+	id 'net.fabricmc.fabric-loom' version "${loom_version}" apply false
 	id 'maven-publish'
 
 	id 'io.freefair.lombok' version "${lombok_plugin_version}"
@@ -19,6 +20,17 @@ if (versionPropsFile.exists()) {
 	versionProps.each { key, value -> project.ext.set(key, value) }
 } else {
 	throw new GradleException("Could not find property file for MC version: ${activeVersion}")
+}
+
+
+def activeMcVersionNum = project.mc_version_number.toInteger()
+
+
+// Apply the correct Loom variant dynamically
+if (activeMcVersionNum < 260000) {
+	apply plugin: 'fabric-loom'
+} else {
+	apply plugin: 'net.fabricmc.fabric-loom'
 }
 
 version = "${project.mod_version}+${project.minecraft_version}"
@@ -57,8 +69,6 @@ loom {
 	}
 }
 
-def activeMcVersionNum = project.mc_version_number.toInteger()
-
 sourceSets {
 	if (activeMcVersionNum < 12104) {
 		main {
@@ -93,16 +103,27 @@ dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	if (activeMcVersionNum < 260000) {
 		mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	}
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	// Fabric API. This is technically optional, but you probably want it anyway.
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+		modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	modApi("me.shedaniel.cloth:cloth-config-fabric:${project.config2_version}") {
-		exclude(group: "net.fabricmc.fabric-api")
+		// Fabric API. This is technically optional, but you probably want it anyway.
+		modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+		modApi("me.shedaniel.cloth:cloth-config-fabric:${project.config2_version}") {
+			exclude(group: "net.fabricmc.fabric-api")
+		}
+		modApi "com.terraformersmc:modmenu:${project.modmenu_version}"
+	} else {
+		implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+		// Fabric API. This is technically optional, but you probably want it anyway.
+		implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+//		api("me.shedaniel.cloth:cloth-config-fabric:${project.config2_version}") {
+//			exclude(group: "net.fabricmc.fabric-api")
+//		}
+//		api "com.terraformersmc:modmenu:${project.modmenu_version}"
 	}
-	modApi "com.terraformersmc:modmenu:${project.modmenu_version}"
 }
 
 processResources {
