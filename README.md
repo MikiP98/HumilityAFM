@@ -88,7 +88,7 @@ Lighten up your builds with unobtrusive light source
 
 - Redo the window capture screenshots or at least crop the window app bar
 - Fix Cabinet breaking animation being invisible
-- Redo coloured torch textures using the Jack o'Lantern palette system
+- Redo coloured torch textures using the Jack o'Lantern palette system, consider 21:9 aspect ratio
 - Deduplicate ColouredTorch & ColouredWallTorch code
 - Clean-up the Manifold code duplication
   - Consider adding more fake class extenders or wrappers as aliases
