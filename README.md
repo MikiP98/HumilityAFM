@@ -100,6 +100,7 @@ Lighten up your builds with unobtrusive light source
 - Double check everything is using SoundUtils and not raw world sounds
 - Consider making ParticleUtil for particle creation
 - Add model culling
+- Update the building instructions
 
 [//]: # (- Improve Cabinet PBR texture: Roughness of zero, f0/reflectance of like either 0.02 or 0.1)
 [//]: # (- Add a packed record to the networking similar to 1.20.6 version)
@@ -177,7 +178,6 @@ Lighten up your builds with unobtrusive light source
 - Improve sounds by varying the pitch and volume slightly
 - Moved from 1.21.6 to 1.21.8
 - Ported to 1.21.11
-- Ported to 26.1
 
 <br>
 
@@ -198,7 +198,7 @@ You can also use the mod [Kilt](https://github.com/KiltMC/Kilt) to run forge mod
 
 **Q:** Why don’t my *Light Strips* / *Coloured Torches* / *Coloured Jack o'Lanterns* emit coloured light?  
 **A:** For coloured lighting you need a separate compatible mod or shader. For now this includes [**Bliss** shader](https://github.com/MikiP98/Bliss-Shader) and [**Shimmer** mod](https://modrinth.com/mod/shimmer!)  
-  If the light sources still don't emmit coloured light:  
+  If the light sources still don't emit coloured light:  
   When using **Shimmer** mod, there is probably some mod incompatibility. Try disabling the 'NVIDIUM' mod if present and it should start working again, if 'NVIDIUM' is not the cause try asking in Shimmer DC server for help  
   When using **Bliss** shader, make sure to load it via [Iris](https://modrinth.com/mod/iris) or [Oculus](https://modrinth.com/mod/oculus) and __***not***__ using **Optifine**! Then make sure floodfill option is enabled in the shader settings
 
