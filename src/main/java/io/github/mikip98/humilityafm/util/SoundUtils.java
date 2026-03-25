@@ -49,9 +49,9 @@ public class SoundUtils {
     }
 
     private static float calculateVolume(float baseVolume, float randomValue) {
-        // Linear scale for volume: [0.9, 1.0] of base volume.
+        // Linear scale for volume: [0.9, 1.05] of base volume.
         final float minVolume = 0.9f;
-        return baseVolume * (minVolume + (randomValue * (1.0f - minVolume)));
+        return baseVolume * (minVolume + (randomValue * (1.05f - minVolume)));
     }
 
     private static float calculatePitch(float basePitch, float randomValue) {
