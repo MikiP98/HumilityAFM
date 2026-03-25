@@ -7,7 +7,11 @@ import io.github.mikip98.humilityafm.util.mod_support.ModSupportManager;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import net.fabricmc.api.ModInitializer;
 
+#if MC_VERSION < 260000
 import net.minecraft.util.Identifier;
+#else
+import net.minecraft.resources.Identifier;
+#endif
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,20 +59,28 @@ public class HumilityAFM implements ModInitializer {
 	 * Returns a new identifier for the given name, in 'humility-afm' namespace
 	 */
 	public static Identifier getId(String name) {
-		return Identifier.of(MOD_ID, name);
+		return getId(MOD_ID, name);
 	}
 
 	/**
 	 * Returns a new identifier for the given name, in 'minecraft' namespace
 	 */
 	public static Identifier getVanillaId(String name) {
-		return Identifier.of("minecraft", name);
+		return getId("minecraft", name);
 	}
 
 	/**
 	 * Returns a new identifier for the given name, in the given mod's namespace if not null, or 'minecraft' otherwise
 	 */
 	public static Identifier getVMId(@Nullable SupportedMods mod, String name) {
-		return Identifier.of(mod != null ? mod.modId : "minecraft", name);
+		return getId(mod != null ? mod.modId : "minecraft", name);
+	}
+
+	protected static Identifier getId(String namespace, String name) {
+		#if MC_VERSION < 260000
+		return Identifier.of(namespace, name);
+		#else
+		return Identifier.tryBuild(namespace, name);
+		#endif
 	}
 }

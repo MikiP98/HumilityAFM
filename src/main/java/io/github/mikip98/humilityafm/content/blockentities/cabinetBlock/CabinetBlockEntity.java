@@ -1,9 +1,10 @@
 package io.github.mikip98.humilityafm.content.blockentities.cabinetBlock;
 
 import io.github.mikip98.humilityafm.registries.BlockEntityRegistry;
-#if MC_VERSION >= 12105
+#if MC_VERSION >= 12105 && MC_VERSION < 260000
 import net.minecraft.block.Block;
 #endif
+#if MC_VERSION < 260000
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -14,16 +15,26 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-#if MC_VERSION >= 12006
+#endif
+#if MC_VERSION >= 12006 && MC_VERSION < 260000
 import net.minecraft.registry.RegistryWrapper;
 #endif
-#if MC_VERSION >= 12108
+#if MC_VERSION >= 12108 && MC_VERSION < 260000
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 #endif
+#if MC_VERSION < 260000
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+#else
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+#endif
 import org.jetbrains.annotations.Nullable;
 
 public class CabinetBlockEntity extends BlockEntity implements ImplementedInventory, SidedInventory {

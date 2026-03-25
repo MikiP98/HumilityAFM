@@ -10,14 +10,23 @@ import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.JackOLantern
 import io.github.mikip98.humilityafm.util.SettingsDuplicator;
 #endif
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
+#if MC_VERSION >= 260000
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+#else
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.BlockItem;
+#endif
 #if MC_VERSION < 12104
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-#else
+#elif MC_VERSION < 260000
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 #endif
@@ -126,9 +135,13 @@ public class BlockRegistry extends BlockGeneration {
         #endif
     }
 
-    #if MC_VERSION >= 12104
+    #if MC_VERSION >= 12104 && MC_VERSION < 260000
     public static RegistryKey<Block> keyOfBlock(String name) {
         return RegistryKey.of(RegistryKeys.BLOCK, getId(name));
+    }
+    #elif MC_VERSION >= 260000
+    public static ResourceKey<Block> keyOfBlock(String name) {
+        return ResourceKey.create(Registries.BLOCK, getId(name));
     }
     #endif
 

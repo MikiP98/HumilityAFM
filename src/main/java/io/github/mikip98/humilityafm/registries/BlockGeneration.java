@@ -22,16 +22,24 @@ import io.github.mikip98.humilityafm.util.generation_data.material_management.ma
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockStrength;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.MaterialType;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
+#if MC_VERSION >= 260000
+import net.minecraft.world.level.block.Block;
+#else
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+#endif
 #if MC_VERSION < 12006
 import net.minecraft.particle.DefaultParticleType;
 #endif
+#if MC_VERSION < 260000
 import net.minecraft.particle.ParticleTypes;
-#if MC_VERSION >= 12006
+#endif
+#if MC_VERSION >= 12006 && MC_VERSION < 260000
 import net.minecraft.particle.SimpleParticleType;
 #endif
+#if MC_VERSION < 260000
 import net.minecraft.sound.BlockSoundGroup;
+#endif
 
 import java.util.ArrayList;
 import java.util.List;
