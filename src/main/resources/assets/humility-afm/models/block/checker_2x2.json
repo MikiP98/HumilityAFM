@@ -1,5 +1,5 @@
 {
-	"credit": "Made with Blockbench by Mikołaj Pokor",
+	"credit": "Made with Blockbench by Mikołaj Pokora",
 	"parent": "minecraft:block/cube_all",
 	"textures": {
 		"1": "block/birch_planks",
