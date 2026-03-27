@@ -233,9 +233,7 @@
 			"to": [16, 2, 16],
 			"rotation": {"angle": 45, "axis": "y", "origin": [15, 8, 3]},
 			"faces": {
-				"north": {"uv": [14, 14, 15, 15], "texture": "#planks"},
 				"east": {"uv": [2, 14, 14, 15], "texture": "#planks"},
-				"south": {"uv": [1, 14, 2, 15], "texture": "#planks"},
 				"west": {"uv": [14, 14, 2, 15], "texture": "#planks"},
 				"down": {"uv": [2, 12, 14, 13], "rotation": 90, "texture": "#planks"}
 			}
@@ -246,9 +244,7 @@
 			"to": [16, 15, 16],
 			"rotation": {"angle": 45, "axis": "y", "origin": [15, 8, 3]},
 			"faces": {
-				"north": {"uv": [14, 1, 15, 2], "texture": "#planks"},
 				"east": {"uv": [2, 1, 14, 2], "texture": "#planks"},
-				"south": {"uv": [1, 1, 2, 2], "texture": "#planks"},
 				"west": {"uv": [14, 1, 2, 2], "texture": "#planks"},
 				"up": {"uv": [2, 13, 14, 12], "rotation": 270, "texture": "#planks"}
 			}
@@ -276,6 +272,7 @@
 		{
 			"name": "door",
 			"origin": [15, 8, 3],
+			"scope": 0,
 			"color": 0,
 			"children": [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
 		}
