@@ -50,8 +50,6 @@ public class ModelGenerator extends FabricModelProvider {
     // Cabinet Models
     protected static final Model CABINET_BLOCK_MODEL = getModel("block/cabinet_block");
     protected static final Model CABINET_BLOCK_OPEN_MODEL = getModel("block/cabinet_block_open");
-    protected static final Model FLOOR_CABINET_BLOCK_MODEL = getModel("block/floor_cabinet_block");
-    protected static final Model FLOOR_CABINET_BLOCK_OPEN_MODEL = getModel("block/floor_cabinet_block_open");
     // Checker 2x2 Model
     protected static final Model CHECKER_2X2_MODEL = getModel("block/checker_2x2");
     // Forced Corner Stairs Models
@@ -165,15 +163,15 @@ public class ModelGenerator extends FabricModelProvider {
         #endif
                         .register(
                                 Direction.NORTH,
-                                getVariantY(modelId, Rotation.R270.get())
+                                getVariantY(modelId, Rotation.R270)
                         )
                         .register(
                                 Direction.SOUTH,
-                                getVariantY(modelId, Rotation.R90.get())
+                                getVariantY(modelId, Rotation.R90)
                         )
                         .register(
                                 Direction.WEST,
-                                getVariantY(modelId, Rotation.R180.get())
+                                getVariantY(modelId, Rotation.R180)
                         )
                         .register(
                                 Direction.EAST,
@@ -565,23 +563,13 @@ public class ModelGenerator extends FabricModelProvider {
                     woolTextureMap,
                     blockStateModelGenerator.modelCollector
             );
-            final Identifier coloredFloorCabinet = baseWoodSet.floorClosed.upload(
-                    getCabinetCompleteModelId("floor", "closed", woodLayer, colorLayer),
-                    woolTextureMap,
-                    blockStateModelGenerator.modelCollector
-            );
-            final Identifier coloredFloorCabinetOpen = baseWoodSet.floorOpen.upload(
-                    getCabinetCompleteModelId("floor", "open", woodLayer, colorLayer),
-                    woolTextureMap,
-                    blockStateModelGenerator.modelCollector
-            );
 
             registerItemModel(ItemRegistry.CABINET_ITEM_VARIANTS[i], coloredCabinet);
             registerItemModel(ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS[i], coloredCabinet);
             blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(BlockRegistry.WALL_CABINET_BLOCK_VARIANTS[i], coloredCabinet, coloredCabinetOpen));
             blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(BlockRegistry.WALL_ILLUMINATED_CABINET_BLOCK_VARIANTS[i], coloredCabinet, coloredCabinetOpen));
-            blockStateModelGenerator.blockStateCollector.accept(getFloorCabinetBlockstate(BlockRegistry.FLOOR_CABINET_BLOCK_VARIANTS[i], coloredFloorCabinet, coloredFloorCabinetOpen));
-            blockStateModelGenerator.blockStateCollector.accept(getFloorCabinetBlockstate(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_VARIANTS[i], coloredFloorCabinet, coloredFloorCabinetOpen));
+            blockStateModelGenerator.blockStateCollector.accept(getFloorCabinetBlockstate(BlockRegistry.FLOOR_CABINET_BLOCK_VARIANTS[i], coloredCabinet, coloredCabinetOpen));
+            blockStateModelGenerator.blockStateCollector.accept(getFloorCabinetBlockstate(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_VARIANTS[i], coloredCabinet, coloredCabinetOpen));
             ++i;
         }
     }
@@ -604,24 +592,7 @@ public class ModelGenerator extends FabricModelProvider {
                 blockStateModelGenerator.modelCollector
         );
 
-        final Identifier woodTypeFloorCabinetId = FLOOR_CABINET_BLOCK_MODEL.upload(
-                getCabinetBaseWoodModelId(sourceMod, "floor", "closed", wood.name()),
-                plankTextureMap,
-                blockStateModelGenerator.modelCollector
-        );
-
-        final Identifier woodTypeFloorCabinetOpenId = FLOOR_CABINET_BLOCK_OPEN_MODEL.upload(
-                getCabinetBaseWoodModelId(sourceMod, "floor", "open", wood.name()),
-                plankTextureMap,
-                blockStateModelGenerator.modelCollector
-        );
-
-        return new CabinetModelWoodSet(
-                getModel(woodTypeCabinetId),
-                getModel(woodTypeCabinetOpenId),
-                getModel(woodTypeFloorCabinetId),
-                getModel(woodTypeFloorCabinetOpenId)
-        );
+        return new CabinetModelWoodSet(getModel(woodTypeCabinetId), getModel(woodTypeCabinetOpenId));
     }
     protected static Identifier getCabinetBaseWoodModelId(SupportedMods sourceMod, String wallFloor, String openClosed, String woodName) {
         final String cabinetPath = "block/cabinet/" + (sourceMod != null ? sourceMod.modId : "vanilla") + "/" + wallFloor + "/" + openClosed;
@@ -635,7 +606,9 @@ public class ModelGenerator extends FabricModelProvider {
         final String cabinetName = "cabinet_block_" + (woodSourceMod != null ? woodSourceMod.modId + "_" : "") + woodName + "_" + colorLayer.name();
         return getId(cabinetPath + "/" + cabinetName);
     }
-    protected record CabinetModelWoodSet(Model wallClosed, Model wallOpen, Model floorClosed, Model floorOpen) {}
+    protected record CabinetModelWoodSet(
+            Model wallClosed, Model wallOpen//, Model floorClosed, Model floorOpen
+    ) {}
 
 
     protected static #if MC_VERSION < 12105 VariantsBlockStateSupplier #else VariantsBlockModelDefinitionCreator #endif getLightStripBlockstate(
@@ -1475,19 +1448,19 @@ public class ModelGenerator extends FabricModelProvider {
         #endif
                         .register(
                                 Direction.NORTH, true,
-                                getVariantY(cabinetOpenModel, Rotation.R180.get())
+                                getVariantY(cabinetOpenModel, Rotation.R180)
                         )
                         .register(
                                 Direction.NORTH, false,
-                                getVariantY(cabinetModel, Rotation.R180.get())
+                                getVariantY(cabinetModel, Rotation.R180)
                         )
                         .register(
                                 Direction.EAST, true,
-                                getVariantY(cabinetOpenModel, Rotation.R270.get())
+                                getVariantY(cabinetOpenModel, Rotation.R270)
                         )
                         .register(
                                 Direction.EAST, false,
-                                getVariantY(cabinetModel, Rotation.R270.get())
+                                getVariantY(cabinetModel, Rotation.R270)
                         )
                         .register(
                                 Direction.SOUTH, true,
@@ -1499,11 +1472,11 @@ public class ModelGenerator extends FabricModelProvider {
                         )
                         .register(
                                 Direction.WEST, true,
-                                getVariantY(cabinetOpenModel, Rotation.R90.get())
+                                getVariantY(cabinetOpenModel, Rotation.R90)
                         )
                         .register(
                                 Direction.WEST, false,
-                                getVariantY(cabinetModel, Rotation.R90.get())
+                                getVariantY(cabinetModel, Rotation.R90)
                         )
                 );
     }
@@ -1517,67 +1490,67 @@ public class ModelGenerator extends FabricModelProvider {
         #endif
                         .register(
                                 BlockHalf.BOTTOM, Direction.NORTH, true,
-                                getVariantY(cabinetOpenModel, Rotation.R180.get())
+                                getVariant90XY(cabinetOpenModel, Rotation.R180)
                         )
                         .register(
                                 BlockHalf.BOTTOM, Direction.NORTH, false,
-                                getVariantY(cabinetModel, Rotation.R180.get())
+                                getVariant90XY(cabinetModel, Rotation.R180)
                         )
                         .register(
                                 BlockHalf.BOTTOM, Direction.EAST, true,
-                                getVariantY(cabinetOpenModel, Rotation.R270.get())
+                                getVariant90XY(cabinetOpenModel, Rotation.R270)
                         )
                         .register(
                                 BlockHalf.BOTTOM, Direction.EAST, false,
-                                getVariantY(cabinetModel, Rotation.R270.get())
+                                getVariant90XY(cabinetModel, Rotation.R270)
                         )
                         .register(
                                 BlockHalf.BOTTOM, Direction.SOUTH, true,
-                                getVariant(cabinetOpenModel)
+                                getVariant90X(cabinetOpenModel)
                         )
                         .register(
                                 BlockHalf.BOTTOM, Direction.SOUTH, false,
-                                getVariant(cabinetModel)
+                                getVariant90X(cabinetModel)
                         )
                         .register(
                                 BlockHalf.BOTTOM, Direction.WEST, true,
-                                getVariantY(cabinetOpenModel, Rotation.R90.get())
+                                getVariant90XY(cabinetOpenModel, Rotation.R90)
                         )
                         .register(
                                 BlockHalf.BOTTOM, Direction.WEST, false,
-                                getVariantY(cabinetModel, Rotation.R90.get())
+                                getVariant90XY(cabinetModel, Rotation.R90)
                         )
                         .register(
                                 BlockHalf.TOP, Direction.NORTH, true,
-                                getUpsideDownVariantY(cabinetOpenModel, Rotation.R180.get())
+                                getVariant270XY(cabinetOpenModel, Rotation.R180)
                         )
                         .register(
                                 BlockHalf.TOP, Direction.NORTH, false,
-                                getUpsideDownVariantY(cabinetModel, Rotation.R180.get())
+                                getVariant270XY(cabinetModel, Rotation.R180)
                         )
                         .register(
                                 BlockHalf.TOP, Direction.EAST, true,
-                                getUpsideDownVariantY(cabinetOpenModel, Rotation.R270.get())
+                                getVariant270XY(cabinetOpenModel, Rotation.R270)
                         )
                         .register(
                                 BlockHalf.TOP, Direction.EAST, false,
-                                getUpsideDownVariantY(cabinetModel, Rotation.R270.get())
+                                getVariant270XY(cabinetModel, Rotation.R270)
                         )
                         .register(
                                 BlockHalf.TOP, Direction.SOUTH, true,
-                                getUpsideDownVariant(cabinetOpenModel)
+                                getVariant270X(cabinetOpenModel)
                         )
                         .register(
                                 BlockHalf.TOP, Direction.SOUTH, false,
-                                getUpsideDownVariant(cabinetModel)
+                                getVariant270X(cabinetModel)
                         )
                         .register(
                                 BlockHalf.TOP, Direction.WEST, true,
-                                getUpsideDownVariantY(cabinetOpenModel, Rotation.R90.get())
+                                getVariant270XY(cabinetOpenModel, Rotation.R90)
                         )
                         .register(
                                 BlockHalf.TOP, Direction.WEST, false,
-                                getUpsideDownVariantY(cabinetModel, Rotation.R90.get())
+                                getVariant270XY(cabinetModel, Rotation.R90)
                         )
                 );
     }
@@ -1585,46 +1558,43 @@ public class ModelGenerator extends FabricModelProvider {
 
     #if MC_VERSION < 12105
     protected static BlockStateVariant getUVLockedUpsideDownVariantY(Identifier model, VariantSettings.Rotation rotationY) {
-        return BlockStateVariant.create()
-                .put(VariantSettings.MODEL, model)
-                .put(VariantSettings.UVLOCK, true)
+        return getUVLockedVariant(model)
                 .put(VariantSettings.X, Rotation.R180.get())
                 .put(VariantSettings.Y, rotationY);
     }
-
     protected static BlockStateVariant getUVLockedUpsideDownVariant(Identifier model) {
-        return BlockStateVariant.create()
-                .put(VariantSettings.MODEL, model)
-                .put(VariantSettings.UVLOCK, true)
-                .put(VariantSettings.X, Rotation.R180.get());
+        return getUVLockedVariant(model).put(VariantSettings.X, Rotation.R180.get());
     }
     protected static BlockStateVariant getUVLockedVariantY(Identifier model, VariantSettings.Rotation rotationY) {
-        return BlockStateVariant.create()
-                .put(VariantSettings.MODEL, model)
-                .put(VariantSettings.UVLOCK, true)
-                .put(VariantSettings.Y, rotationY);
+        return getUVLockedVariant(model).put(VariantSettings.Y, rotationY);
+    }
+    protected static BlockStateVariant getUVLockedVariant(Identifier model) {
+        return getVariant(model).put(VariantSettings.UVLOCK, true);
     }
 
-    protected static BlockStateVariant getUpsideDownVariantY(Identifier model, VariantSettings.Rotation rotationY) {
-        return BlockStateVariant.create()
-                .put(VariantSettings.MODEL, model)
-                .put(VariantSettings.X, Rotation.R180.get())
-                .put(VariantSettings.Y, rotationY);
+    protected static BlockStateVariant getVariant90XY(Identifier model, Rotation rotationY) {
+        return getVariant90X(model).put(VariantSettings.Y, rotationY.get());
+    }
+    protected static BlockStateVariant getVariant270XY(Identifier model, Rotation rotationY) {
+        return getVariant270X(model).put(VariantSettings.Y, rotationY.get());
     }
 
-    protected static BlockStateVariant getUpsideDownVariant(Identifier model) {
-        return BlockStateVariant.create()
-                .put(VariantSettings.MODEL, model)
-                .put(VariantSettings.X, Rotation.R180.get());
-    }
-    protected static BlockStateVariant getVariantY(Identifier model, VariantSettings.Rotation rotationY) {
-        return BlockStateVariant.create()
-                .put(VariantSettings.MODEL, model)
-                .put(VariantSettings.Y, rotationY);
+    protected static BlockStateVariant getVariantY(Identifier model, Rotation rotationY) {
+        return getVariant(model).put(VariantSettings.Y, rotationY.get());
     }
 
     protected static BlockStateVariant getVariant(Identifier model) {
         return BlockStateVariant.create().put(VariantSettings.MODEL, model);
+    }
+
+    protected static BlockStateVariant getVariant90X(Identifier model) {
+        return getVariantX(model, Rotation.R90);
+    }
+    protected static BlockStateVariant getVariant270X(Identifier model) {
+        return getVariantX(model, Rotation.R270);
+    }
+    protected static BlockStateVariant getVariantX(Identifier model, Rotation rotation) {
+        return getVariant(model).put(VariantSettings.X, rotation.get());
     }
     #else
     protected static WeightedVariant getUVLockedUpsideDownVariantY(Identifier model, AxisRotation rotationY) {
