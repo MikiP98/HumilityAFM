@@ -99,20 +99,6 @@ Lighten up your builds with unobtrusive light source
   - *(Add stone variants from the above mods, and fix the missing wood variants)*
 - Double check everything is using SoundUtils and not raw world sounds
 - Consider making ParticleUtil for particle creation
-- Add model culling:
-  - Base
-    - ~~Cabinet~~
-    - Jack o'Lantern
-    - Torch
-    - Candlestick
-    - checker
-    - light_strip
-    - stairs
-  - Resourcepacks
-    - ~~3D Cabinets~~
-    - 3D Cabinets + Vanilla RP compat
-    - Cabinet Vanilla RP compat
-    - Jack o'Lantern Vanilla RP compat
 - Update the building instructions
 - Why floor and wall cabinets have separate models? Remove one!
 
@@ -192,6 +178,7 @@ Lighten up your builds with unobtrusive light source
 - Moved from 1.21.6 to 1.21.8
 - Ported to 1.21.11
 - Improved networking
+- Improved performance by optimising the block models
 
 <br>
 
