@@ -119,10 +119,10 @@ dependencies {
 		// Fabric API. This is technically optional, but you probably want it anyway.
 		implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-//		api("me.shedaniel.cloth:cloth-config-fabric:${project.config2_version}") {
-//			exclude(group: "net.fabricmc.fabric-api")
-//		}
-//		api "com.terraformersmc:modmenu:${project.modmenu_version}"
+		api("me.shedaniel.cloth:cloth-config-fabric:${project.config2_version}") {
+			exclude(group: "net.fabricmc.fabric-api")
+		}
+		api "com.terraformersmc:modmenu:${project.modmenu_version}"
 	}
 }
 
@@ -165,6 +165,7 @@ processResources {
 			println ">>> Skipping JSON modifications during Datagen..."
 			return
 		}
+		println ">>> Running JSON modifications..."
 
 		// Minify JSON files to reduce the mod size a bit
 		fileTree(destinationDir)
