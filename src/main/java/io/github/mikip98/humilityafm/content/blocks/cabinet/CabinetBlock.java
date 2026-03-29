@@ -7,30 +7,6 @@ import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.Implemen
 import io.github.mikip98.humilityafm.content.blocks.templates.PlainHorizontalFacingBlock;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetBlockEntity;
 import io.github.mikip98.humilityafm.util.wrappers.*;
-#if MC_VERSION < 260000
-import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
-#else
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -53,26 +29,24 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-#endif
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class CabinetBlock extends PlainHorizontalFacingBlock implements
-        #if MC_VERSION < 260000 Waterloggable, BlockEntityProvider #else SimpleWaterloggedBlock, EntityBlock #endif
-{
-    protected static final VoxelShape voxelShapeOpenNorth = VoxelUtils.cuboid(1, 1, 13.00032, 15, 15, 16);  //open, reverse original
-    protected static final VoxelShape voxelShapeOpenSouth = VoxelUtils.cuboid(1, 1, 0, 15, 15, 2.99968);  //open, original
-    protected static final VoxelShape voxelShapeOpenEast = VoxelUtils.cuboid(0, 1, 1, 2.99968, 15, 15);  //open, swap z <-> x
-    protected static final VoxelShape voxelShapeOpenWest = VoxelUtils.cuboid(13.00032, 1, 1, 1.0f, 15, 15);  //open, reverse + swap
+public class CabinetBlock extends PlainHorizontalFacingBlock implements SimpleWaterloggedBlock, EntityBlock {
+    protected static final VoxelShape voxelShapeOpenNorth = Block.box(1, 1, 13.00032, 15, 15, 16);  //open, reverse original
+    protected static final VoxelShape voxelShapeOpenSouth = Block.box(1, 1, 0, 15, 15, 2.99968);  //open, original
+    protected static final VoxelShape voxelShapeOpenEast = Block.box(0, 1, 1, 2.99968, 15, 15);  //open, swap z <-> x
+    protected static final VoxelShape voxelShapeOpenWest = Block.box(13.00032, 1, 1, 1.0f, 15, 15);  //open, reverse + swap
 
-    protected static final VoxelShape voxelShapeClosedNorth = VoxelUtils.union(voxelShapeOpenNorth, VoxelUtils.cuboid(1, 1, 12, 15, 15, 12.99968));  //reverse original
-    protected static final VoxelShape voxelShapeClosedSouth = VoxelUtils.union(voxelShapeOpenSouth, VoxelUtils.cuboid(1, 1, 3.00032, 15, 15, 4));  //original
-    protected static final VoxelShape voxelShapeClosedEast = VoxelUtils.union(voxelShapeOpenEast, VoxelUtils.cuboid(3.00032, 1, 1, 4, 15, 15));  //swap z <-> x
-    protected static final VoxelShape voxelShapeClosedWest = VoxelUtils.union(voxelShapeOpenWest, VoxelUtils.cuboid(12, 1, 1, 12.99968, 15, 15));  //reverse + swap
+    protected static final VoxelShape voxelShapeClosedNorth = Shapes.or(voxelShapeOpenNorth, Block.box(1, 1, 12, 15, 15, 12.99968));  //reverse original
+    protected static final VoxelShape voxelShapeClosedSouth = Shapes.or(voxelShapeOpenSouth, Block.box(1, 1, 3.00032, 15, 15, 4));  //original
+    protected static final VoxelShape voxelShapeClosedEast = Shapes.or(voxelShapeOpenEast, Block.box(3.00032, 1, 1, 4, 15, 15));  //swap z <-> x
+    protected static final VoxelShape voxelShapeClosedWest = Shapes.or(voxelShapeOpenWest, Block.box(12, 1, 1, 12.99968, 15, 15));  //reverse + swap
 
     protected static final BooleanProperty WATERLOGGED = PropertiesWrapper.WATERLOGGED;
     protected static final BooleanProperty OPEN = PropertiesWrapper.OPEN;
@@ -96,11 +70,7 @@ public class CabinetBlock extends PlainHorizontalFacingBlock implements
         builder.add(WATERLOGGED);
     }
 
-    #if MC_VERSION < 260000
-    public static final Supplier<Settings> defaultSettingsSupplier = () -> Settings.create()
-    #else
     public static final Supplier<Properties> defaultSettingsSupplier = () -> Properties.of()
-    #endif
             .strength(2.0f)
             #if MC_VERSION < 260000
             .requiresTool()
