@@ -3,6 +3,13 @@ package io.github.mikip98.humilityafm.content.blocks.candlestick;
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.SimpleCandlestickLogic;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
+import io.github.mikip98.humilityafm.util.wrappers.ActionResultWrapper;
+import io.github.mikip98.humilityafm.util.wrappers.VoxelUtils;
+#if MC_VERSION >= 260000
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.phys.shapes.VoxelShape;
+#else
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
@@ -26,10 +33,11 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+#endif
 
 public class FloorCandlestick extends Block implements SimpleCandlestickLogic, Waterloggable {
-    protected static final VoxelShape voxelShape = Block.createCuboidShape(6, 0, 6, 10, 6, 10);
-    protected static final VoxelShape voxelShapeCandle = Block.createCuboidShape(6, 0, 6, 10, 10, 10);
+    protected static final VoxelShape voxelShape = VoxelUtils.cuboid(6, 0, 6, 10, 6, 10);
+    protected static final VoxelShape voxelShapeCandle = VoxelUtils.cuboid(6, 0, 6, 10, 10, 10);
 
     protected static final EnumProperty<CandleColor> CANDLE_COLOR = ModProperties.CANDLE_COLOR;
 
@@ -64,7 +72,7 @@ public class FloorCandlestick extends Block implements SimpleCandlestickLogic, W
     }
     #else
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-        if (onUseLogic(state, world, pos, player)) return ActionResult.SUCCESS;
+        if (onUseLogic(state, world, pos, player)) return ActionResultWrapper.SUCCESS;
         return super.onUse(state, world, pos, player, hit);
     }
     #endif

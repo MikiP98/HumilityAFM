@@ -1,6 +1,7 @@
 package io.github.mikip98.humilityafm.content.blocks;
 
 import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntity;
+import io.github.mikip98.humilityafm.util.wrappers.VoxelUtils;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.BlockHalf;
@@ -128,26 +129,26 @@ public class LightStripBlock extends StairsBlock implements BlockEntityProvider 
     }
     protected static Map<Direction, VoxelShape> getStraightVoxelShape(double y) {
         return Map.of(
-                Direction.NORTH, VoxelShapes.cuboid(0f, y, 0f, 1f, y + 0.0625d, 0.0625f),
-                Direction.SOUTH, VoxelShapes.cuboid(0f, y, 0.9375f, 1f, y + 0.0625d, 1f),
-                Direction.EAST,  VoxelShapes.cuboid(0.9375f, y, 0f, 1f, y + 0.0625d, 1f),
-                Direction.WEST,  VoxelShapes.cuboid(0f, y, 0f, 0.0625f, y + 0.0625d, 1f)
+                Direction.NORTH, VoxelUtils.cuboid(0, y, 0, 16, y + 1, 1),
+                Direction.SOUTH, VoxelUtils.cuboid(0, y, 15, 16, y + 1, 16),
+                Direction.EAST,  VoxelUtils.cuboid(15, y, 0, 16, y + 1, 16),
+                Direction.WEST,  VoxelUtils.cuboid(0, y, 0, 1, y + 1, 16)
         );
     }
     protected static Map<Direction, VoxelShape> getInnerLeftVoxelShape(Map<Direction, VoxelShape> base) {
         return Map.of(
-                Direction.NORTH, VoxelShapes.union(base.get(Direction.NORTH), base.get(Direction.WEST)),
-                Direction.SOUTH, VoxelShapes.union(base.get(Direction.SOUTH), base.get(Direction.EAST)),
-                Direction.EAST,  VoxelShapes.union(base.get(Direction.EAST), base.get(Direction.NORTH)),
-                Direction.WEST,  VoxelShapes.union(base.get(Direction.WEST), base.get(Direction.SOUTH))
+                Direction.NORTH, VoxelUtils.union(base.get(Direction.NORTH), base.get(Direction.WEST)),
+                Direction.SOUTH, VoxelUtils.union(base.get(Direction.SOUTH), base.get(Direction.EAST)),
+                Direction.EAST,  VoxelUtils.union(base.get(Direction.EAST), base.get(Direction.NORTH)),
+                Direction.WEST,  VoxelUtils.union(base.get(Direction.WEST), base.get(Direction.SOUTH))
         );
     }
     protected static Map<Direction, VoxelShape> getOuterLeftVoxelShape(double y) {
         return Map.of(
-                Direction.NORTH, VoxelShapes.cuboid(0f, y, 0, 0.0625f, y + 0.0625d, 0.0625f),
-                Direction.SOUTH, VoxelShapes.cuboid(0.9375f, y, 0.9375f, 1f, y + 0.0625d, 1f),
-                Direction.EAST,  VoxelShapes.cuboid(0.9375f, y, 0f, 1f, y + 0.0625d, 0.0625f),
-                Direction.WEST,  VoxelShapes.cuboid(0f, y, 0.9375f, 0.0625f, y + 0.0625d, 1f)
+                Direction.NORTH, VoxelUtils.cuboid(0, y, 0, 1, y + 1, 1),
+                Direction.SOUTH, VoxelUtils.cuboid(15, y, 15, 16, y + 1, 16),
+                Direction.EAST,  VoxelUtils.cuboid(15, y, 0, 16, y + 1, 1),
+                Direction.WEST,  VoxelUtils.cuboid(0, y, 15, 1, y + 1, 16)
         );
     }
 

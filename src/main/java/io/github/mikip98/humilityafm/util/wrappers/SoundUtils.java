@@ -1,4 +1,4 @@
-package io.github.mikip98.humilityafm.util;
+package io.github.mikip98.humilityafm.util.wrappers;
 
 #if MC_VERSION < 260000
 import net.minecraft.entity.Entity;

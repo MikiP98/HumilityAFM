@@ -1,5 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.stairs;
 
+import io.github.mikip98.humilityafm.util.wrappers.VoxelUtils;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.state.property.Properties;
@@ -22,37 +23,37 @@ public class InnerStairs extends OuterStairs {
     protected static final VoxelShape voxelShapeTopEast;
     protected static final VoxelShape voxelShapeTopWest;
 
-    protected static Map<Direction, VoxelShape> getVoxelShapeMapOfY ( double y){
+    protected static Map<Direction, VoxelShape> getVoxelShapeMapOfY (double y) {
         VoxelShape base = VoxelShapes.cuboid(
-                0f, 0.5f - y, 0f,
-                1f, 1f - y, 1f
+                0, 8 - y, 0,
+                16, 16 - y, 16
         );
         return Map.of(
-                Direction.NORTH, VoxelShapes.union(
+                Direction.NORTH, VoxelUtils.union(
                         base,
-                        VoxelShapes.cuboid(0.5f, y, 0f, 1f, y + 0.5f, 1f),
-                        VoxelShapes.cuboid(0f, y, 0.5f, 0.5f, y + 0.5f, 1f)
+                        VoxelUtils.cuboid(8, y, 0, 16, y + 8, 16),
+                        VoxelUtils.cuboid(0, y, 8, 8, y + 8, 16)
                 ),  // original
-                Direction.SOUTH, VoxelShapes.union(
+                Direction.SOUTH, VoxelUtils.union(
                         base,
-                        VoxelShapes.cuboid(0f, y, 0f, 0.5f, y + 0.5f, 1f),
-                        VoxelShapes.cuboid(0.5f, y, 0f, 1f, y + 0.5f, 0.5f)
+                        VoxelUtils.cuboid(0, y, 0, 8, y + 8, 16),
+                        VoxelUtils.cuboid(8, y, 0, 16, y + 8, 8)
                 ),  // reverse original
-                Direction.EAST, VoxelShapes.union(
+                Direction.EAST, VoxelUtils.union(
                         base,
-                        VoxelShapes.cuboid(0f, y, 0.5f, 1f, y + 0.5f, 1f),
-                        VoxelShapes.cuboid(0f, y, 0f, 0.5f, y + 0.5f, 0.5f)
+                        VoxelUtils.cuboid(0, y, 8, 16, y + 8, 16),
+                        VoxelUtils.cuboid(0, y, 0, 8, y + 8, 8)
                 ),  // swap x <-> z + reverse
-                Direction.WEST, VoxelShapes.union(
+                Direction.WEST, VoxelUtils.union(
                         base,
-                        VoxelShapes.cuboid(0f, y, 0f, 1f, y + 0.5f, 0.5f),
-                        VoxelShapes.cuboid(0.5f, y, 0.5f, 1f, y + 0.5f, 1f)
+                        VoxelUtils.cuboid(0, y, 0, 16, y + 8, 8),
+                        VoxelUtils.cuboid(8, y, 8, 16, y + 8, 16)
                 )   // swap x <-> z
         );
     }
     static {
-        final Map<Direction, VoxelShape> bottomVoxelShape = getVoxelShapeMapOfY(0.5f);
-        final Map<Direction, VoxelShape> topVoxelShape = getVoxelShapeMapOfY(0f);
+        final Map<Direction, VoxelShape> bottomVoxelShape = getVoxelShapeMapOfY(8);
+        final Map<Direction, VoxelShape> topVoxelShape = getVoxelShapeMapOfY(0);
 
         voxelShapeBottomNorth = bottomVoxelShape.get(Direction.NORTH);
         voxelShapeBottomSouth = bottomVoxelShape.get(Direction.SOUTH);

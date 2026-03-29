@@ -2,7 +2,24 @@ package io.github.mikip98.humilityafm.content.blocks.candlestick.logic;
 
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
-import io.github.mikip98.humilityafm.util.SoundUtils;
+import io.github.mikip98.humilityafm.util.wrappers.BlockStateWrapper;
+import io.github.mikip98.humilityafm.util.wrappers.PropertiesWrapper;
+import io.github.mikip98.humilityafm.util.wrappers.SoundUtils;
+#if MC_VERSION >= 260000
+import io.github.mikip98.humilityafm.util.wrappers.WorldWrapper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.FlintAndSteelItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CandleBlock;
+import net.minecraft.world.level.block.WallBlock;
+import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.Map;
+#else
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CandleBlock;
@@ -21,6 +38,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
+#endif
 
 public sealed interface BaseCandlestickLogic permits SimpleCandlestickLogic, RustableCandlestickLogic {
     default boolean tryToInsertCandle(BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack heldItemStack, Item heldItem) {
@@ -44,15 +62,16 @@ public sealed interface BaseCandlestickLogic permits SimpleCandlestickLogic, Rus
     default boolean tryToExtinguishOrRemove(BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack heldItemStack) {
         if (heldItemStack.isEmpty() && player.isSneaking()) {
             // Extinguish the candle
-            if (state.get(Properties.LIT)) {
-                world.setBlockState(pos, state.with(Properties.LIT, false), Block.NOTIFY_ALL);
+            if (BlockStateWrapper.get(state, PropertiesWrapper.LIT)) {
+                WorldWrapper.setBlockState(world, pos, BlockStateWrapper.with(state, PropertiesWrapper.LIT, false), Block.NOTIFY_ALL);
+                world.setBlockState(pos, state.with(), Block.NOTIFY_ALL);
                 SoundUtils.playSoundAtBlockCenter(world, player, pos, SoundEvents.BLOCK_CANDLE_EXTINGUISH);
                 return true;
             }
             // Remove the candle
-            else if (state.get(ModProperties.CANDLE_COLOR) != CandleColor.NONE) {
+            else if (BlockStateWrapper.get(state, ModProperties.CANDLE_COLOR) != CandleColor.NONE) {
                 player.getInventory().offerOrDrop(new ItemStack(state.get(ModProperties.CANDLE_COLOR).asCandle()));
-                world.setBlockState(pos, state.with(ModProperties.CANDLE_COLOR, CandleColor.NONE), Block.NOTIFY_ALL);
+                WorldWrapper.setBlockState(world, pos, state.with(ModProperties.CANDLE_COLOR, CandleColor.NONE), Block.NOTIFY_ALL);
                 SoundUtils.playSoundAtBlockCenter(world, player, pos, SoundEvents.ENTITY_ITEM_FRAME_REMOVE_ITEM, 0.9f, 0.9f);
                 return true;
             }
@@ -62,11 +81,11 @@ public sealed interface BaseCandlestickLogic permits SimpleCandlestickLogic, Rus
     default boolean tryToLightTheCandle(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, ItemStack heldItemStack, Item heldItem) {
         if (
                 heldItem instanceof FlintAndSteelItem
-                        && state.get(ModProperties.CANDLE_COLOR) != CandleColor.NONE
-                        && !state.get(Properties.LIT)
-                        && !state.get(Properties.WATERLOGGED)
+                        && BlockStateWrapper.get(state, ModProperties.CANDLE_COLOR) != CandleColor.NONE
+                        && !BlockStateWrapper.get(state, PropertiesWrapper.LIT)
+                        && !BlockStateWrapper.get(state, PropertiesWrapper.WATERLOGGED)
         ) {
-            world.setBlockState(pos, state.with(Properties.LIT, true), Block.NOTIFY_ALL);
+            world.setBlockState(pos, BlockStateWrapper.with(state, PropertiesWrapper.LIT, true), Block.NOTIFY_ALL);
             damageItem(heldItemStack, player, hand);
             SoundUtils.playSoundAtBlockCenter(world, player, pos, SoundEvents.ITEM_FLINTANDSTEEL_USE);
             return true;

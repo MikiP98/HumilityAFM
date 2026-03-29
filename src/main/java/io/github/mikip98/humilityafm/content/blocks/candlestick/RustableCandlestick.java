@@ -2,6 +2,7 @@ package io.github.mikip98.humilityafm.content.blocks.candlestick;
 
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.RustableCandlestickLogic;
+import io.github.mikip98.humilityafm.util.wrappers.ActionResultWrapper;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.block.*;
@@ -85,7 +86,7 @@ public class RustableCandlestick extends Candlestick implements RustableCandlest
         if (onUseRustableLogic(state, world, pos, player, hand, x, y, z, randomSpread)) return ActionResult.SUCCESS;
         return super.onUse(state, world, pos, player, hand, hit);
         #else
-        if (onUseRustableLogic(state, world, pos, player, x, y, z, randomSpread)) return ActionResult.SUCCESS;
+        if (onUseRustableLogic(state, world, pos, player, x, y, z, randomSpread)) return ActionResultWrapper.SUCCESS;
         return super.onUse(state, world, pos, player, hit);
         #endif
     }

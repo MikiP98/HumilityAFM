@@ -3,9 +3,15 @@ package io.github.mikip98.humilityafm.content.blocks.candlestick;
 #if MC_VERSION >= 12004
 import com.mojang.serialization.MapCodec;
 #endif
+import io.github.mikip98.humilityafm.content.blocks.cabinet.CabinetBlock;
+import io.github.mikip98.humilityafm.content.blocks.templates.PlainHorizontalFacingBlock;
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.SimpleCandlestickLogic;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
+import io.github.mikip98.humilityafm.util.wrappers.ActionResultWrapper;
+import io.github.mikip98.humilityafm.util.wrappers.PropertiesWrapper;
+import io.github.mikip98.humilityafm.util.wrappers.VoxelUtils;
+#if MC_VERSION < 260000
 import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
@@ -31,126 +37,138 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+#else
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jspecify.annotations.NonNull;
+#endif
 
+import java.util.Map;
 import java.util.function.Supplier;
 
-public class Candlestick extends HorizontalFacingBlock implements SimpleCandlestickLogic, Waterloggable {
+public class Candlestick extends PlainHorizontalFacingBlock implements SimpleCandlestickLogic, Waterloggable {
+    #if MC_VERSION < 12006
     public static final Supplier<Settings> defaultSettingsSupplier = () -> Settings.create()
+    #else
+    public static final Supplier<Properties> defaultSettingsSupplier = () -> Properties.of()
+    #endif
             .strength(0.5f)
-            .requiresTool()
-            .nonOpaque()
-            .sounds(BlockSoundGroup.METAL)
-            .luminance(state -> state.get(Properties.LIT) ? 4 : 0);
+            #if MC_VERSION < 12006 .requiresTool() #else .requiresCorrectToolForDrops() #endif
+            #if MC_VERSION < 12006 .nonOpaque() #else .noOcclusion() #endif
+            #if MC_VERSION < 12006 .sounds(BlockSoundGroup.METAL) #else .sound(SoundType.METAL)
+            #if MC_VERSION < 12006
+            .luminance(state -> state.get(Properties.LIT) ? 4 : 0)
+            #else
+            .lightLevel(state -> state.getValue(PropertiesWrapper.LIT) ? 4 : 0)
+            #endif;
 
-    public static final Settings defaultSettings = defaultSettingsSupplier.get();
+    public static final #if MC_VERSION < 12006 Settings #else Properties #endif defaultSettings = defaultSettingsSupplier.get();
 
     // The below commented-out shapes are a simplified variants of the voxel shapes
     // They look more vanilla-like, but are in my opinion more ugly
     // IDK what to use.
     // I'll leave both here for now, while using the more complex ones
 //    protected static final VoxelShape voxelShapeEmptyNorth = VoxelShapes.union(
-//            Block.createCuboidShape(5.5, 4, 8, 10.5, 7, 16),
-//            Block.createCuboidShape(5.5, 7, 8, 10.5, 9, 12)
+//            VoxelUtils.cuboid(5.5, 4, 8, 10.5, 7, 16),
+//            VoxelUtils.cuboid(5.5, 7, 8, 10.5, 9, 12)
 //    );
 //    protected static final VoxelShape voxelShapeEmptySouth = VoxelShapes.union(
-//            Block.createCuboidShape(5.5, 4, 0, 10.5, 7, 8),
-//            Block.createCuboidShape(5.5, 7, 4, 10.5, 9, 8)
+//            VoxelUtils.cuboid(5.5, 4, 0, 10.5, 7, 8),
+//            VoxelUtils.cuboid(5.5, 7, 4, 10.5, 9, 8)
 //    );
 //    protected static final VoxelShape voxelShapeEmptyEast = VoxelShapes.union(
-//            Block.createCuboidShape(0, 4, 5.5, 8, 7, 10.5),
-//            Block.createCuboidShape(4, 7, 5.5, 8, 9, 10.5)
+//            VoxelUtils.cuboid(0, 4, 5.5, 8, 7, 10.5),
+//            VoxelUtils.cuboid(4, 7, 5.5, 8, 9, 10.5)
 //    );
 //    protected static final VoxelShape voxelShapeEmptyWest = VoxelShapes.union(
-//            Block.createCuboidShape(8, 4, 5.5, 16, 7, 10.5),
-//            Block.createCuboidShape(8, 7, 5.5, 12, 9, 10.5)
+//            VoxelUtils.cuboid(8, 4, 5.5, 16, 7, 10.5),
+//            VoxelUtils.cuboid(8, 7, 5.5, 12, 9, 10.5)
 //    );
 //
 //    protected static final VoxelShape voxelShapeCandleNorth = VoxelShapes.union(
 //            voxelShapeEmptyNorth,
-//            Block.createCuboidShape(5, 9, 8, 11, 12, 16)
+//            VoxelUtils.cuboid(5, 9, 8, 11, 12, 16)
 //    );
 //    protected static final VoxelShape voxelShapeCandleSouth = VoxelShapes.union(
 //            voxelShapeEmptySouth,
-//            Block.createCuboidShape(5, 9, 0, 11, 12, 8)
+//            VoxelUtils.cuboid(5, 9, 0, 11, 12, 8)
 //    );
 //    protected static final VoxelShape voxelShapeCandleEast = VoxelShapes.union(
 //            voxelShapeEmptyEast,
-//            Block.createCuboidShape(0, 9, 5, 8, 12, 11)
+//            VoxelUtils.cuboid(0, 9, 5, 8, 12, 11)
 //    );
 //    protected static final VoxelShape voxelShapeCandleWest = VoxelShapes.union(
 //            voxelShapeEmptyWest,
-//            Block.createCuboidShape(8, 9, 5, 16, 12, 11)
+//            VoxelUtils.cuboid(8, 9, 5, 16, 12, 11)
 //    );
 
-    protected static final VoxelShape voxelShapeEmptyNorth = VoxelShapes.union(
-            Block.createCuboidShape(7.5, 4, 10, 8.5, 5, 16),
-            Block.createCuboidShape(7.5, 5, 10, 8.5, 8, 11),
-            Block.createCuboidShape(6, 7.999, 8.5, 10, 8.001, 12.5),  // Dripper
-            Block.createCuboidShape(7, 8, 9.5, 9, 9, 11.5)  // Holder
+    protected static final VoxelShape voxelShapeEmptyNorth = VoxelUtils.union(
+            VoxelUtils.cuboid(7.5, 4, 10, 8.5, 5, 16),
+            VoxelUtils.cuboid(7.5, 5, 10, 8.5, 8, 11),
+            VoxelUtils.cuboid(6, 7.999, 8.5, 10, 8.001, 12.5),  // Dripper
+            VoxelUtils.cuboid(7, 8, 9.5, 9, 9, 11.5)  // Holder
     );
-    protected static final VoxelShape voxelShapeEmptySouth = VoxelShapes.union(
-            Block.createCuboidShape(7.5, 4, 0, 8.5, 5, 6),
-            Block.createCuboidShape(7.5, 5, 5, 8.5, 8, 6),
-            Block.createCuboidShape(6, 7.999, 3.5, 10, 8.001, 7.5),  // Dripper
-            Block.createCuboidShape(7, 8, 4.5, 9, 9, 6.5)  // Holder
+    protected static final VoxelShape voxelShapeEmptySouth = VoxelUtils.union(
+            VoxelUtils.cuboid(7.5, 4, 0, 8.5, 5, 6),
+            VoxelUtils.cuboid(7.5, 5, 5, 8.5, 8, 6),
+            VoxelUtils.cuboid(6, 7.999, 3.5, 10, 8.001, 7.5),  // Dripper
+            VoxelUtils.cuboid(7, 8, 4.5, 9, 9, 6.5)  // Holder
     );
-    protected static final VoxelShape voxelShapeEmptyEast = VoxelShapes.union(
-            Block.createCuboidShape(0, 4, 7.5, 6, 5, 8.5),
-            Block.createCuboidShape(5, 5, 7.5, 6, 8, 8.5),
-            Block.createCuboidShape(3.5, 7.999, 6, 7.5, 8.001, 10),  // Dripper
-            Block.createCuboidShape(4.5, 8, 7, 6.5, 9, 9)  // Holder
+    protected static final VoxelShape voxelShapeEmptyEast = VoxelUtils.union(
+            VoxelUtils.cuboid(0, 4, 7.5, 6, 5, 8.5),
+            VoxelUtils.cuboid(5, 5, 7.5, 6, 8, 8.5),
+            VoxelUtils.cuboid(3.5, 7.999, 6, 7.5, 8.001, 10),  // Dripper
+            VoxelUtils.cuboid(4.5, 8, 7, 6.5, 9, 9)  // Holder
     );
-    protected static final VoxelShape voxelShapeEmptyWest = VoxelShapes.union(
-            Block.createCuboidShape(10, 4, 7.5, 16, 5, 8.5),
-            Block.createCuboidShape(10, 5, 7.5, 11, 8, 8.5),
-            Block.createCuboidShape(8.5, 7.999, 6, 12.5, 8.001, 10),  // Dripper
-            Block.createCuboidShape(9.5, 8, 7, 11.5, 9, 9)  // Holder
+    protected static final VoxelShape voxelShapeEmptyWest = VoxelUtils.union(
+            VoxelUtils.cuboid(10, 4, 7.5, 16, 5, 8.5),
+            VoxelUtils.cuboid(10, 5, 7.5, 11, 8, 8.5),
+            VoxelUtils.cuboid(8.5, 7.999, 6, 12.5, 8.001, 10),  // Dripper
+            VoxelUtils.cuboid(9.5, 8, 7, 11.5, 9, 9)  // Holder
     );
 
-    protected static final VoxelShape voxelShapeCandleNorth = VoxelShapes.union(
+    protected static final VoxelShape voxelShapeCandleNorth = VoxelUtils.union(
             voxelShapeEmptyNorth,
-            Block.createCuboidShape(7, 9.0001, 9.5, 9, 11, 11.5)
+            VoxelUtils.cuboid(7, 9.0001, 9.5, 9, 11, 11.5)
     );  // Empty + Candle
-    protected static final VoxelShape voxelShapeCandleSouth = VoxelShapes.union(
+    protected static final VoxelShape voxelShapeCandleSouth = VoxelUtils.union(
             voxelShapeEmptySouth,
-            Block.createCuboidShape(7, 9.0001, 4.5, 9, 11, 6.5)
+            VoxelUtils.cuboid(7, 9.0001, 4.5, 9, 11, 6.5)
     );  // Empty + Candle
-    protected static final VoxelShape voxelShapeCandleEast = VoxelShapes.union(
+    protected static final VoxelShape voxelShapeCandleEast = VoxelUtils.union(
             voxelShapeEmptyEast,
-            Block.createCuboidShape(4.5, 9.0001, 7, 6.5, 11, 9)
+            VoxelUtils.cuboid(4.5, 9.0001, 7, 6.5, 11, 9)
     );  // Empty + Candle
-    protected static final VoxelShape voxelShapeCandleWest = VoxelShapes.union(
+    protected static final VoxelShape voxelShapeCandleWest = VoxelUtils.union(
             voxelShapeEmptyWest,
-            Block.createCuboidShape(9.5, 9.0001, 7, 11.5, 11, 9)
+            VoxelUtils.cuboid(9.5, 9.0001, 7, 11.5, 11, 9)
     );  // Empty + Candle
 
+    protected static final BooleanProperty WATERLOGGED = PropertiesWrapper.WATERLOGGED;
     protected static final EnumProperty<CandleColor> CANDLE_COLOR = ModProperties.CANDLE_COLOR;
+    protected static final BooleanProperty LIT = PropertiesWrapper.LIT;
 
     #if MC_VERSION >= 12004
     protected static final MapCodec<Candlestick> CODEC = createCodec(Candlestick::new);
 
     @Override
-    protected MapCodec<? extends HorizontalFacingBlock> getCodec() {
-        return CODEC;
-    }
+    protected @NonNull MapCodec<? extends Candlestick> #if MC_VERSION < 260000 getCodec() #else codec() #endif { return CODEC; }
     #endif
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(FACING);
-        builder.add(Properties.WATERLOGGED);
+        builder.add(WATERLOGGED);
         builder.add(CANDLE_COLOR);
-        builder.add(Properties.LIT);
+        builder.add(LIT);
     }
 
-    public Candlestick(Settings settings) {
+    public Candlestick(#if MC_VERSION < 260000 Settings #else Properties #endif settings) {
         super(settings);
-        setDefaultState(getDefaultState()
-                .with(FACING, Direction.SOUTH)
-                .with(Properties.WATERLOGGED, false)
-                .with(CANDLE_COLOR, CandleColor.NONE)
-                .with(Properties.LIT, false)
-        );
+        updateDefaultState(Map.of(WATERLOGGED, false, CANDLE_COLOR, CandleColor.NONE, LIT, false));
     }
 
     @Override
@@ -170,7 +188,7 @@ public class Candlestick extends HorizontalFacingBlock implements SimpleCandlest
     #else
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-        if (onUseLogic(state, world, pos, player)) return ActionResult.SUCCESS;
+        if (onUseLogic(state, world, pos, player)) return ActionResultWrapper.SUCCESS;
         return super.onUse(state, world, pos, player, hit);
     }
     #endif

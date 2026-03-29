@@ -1,6 +1,7 @@
 package io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns;
 
-import io.github.mikip98.humilityafm.util.SoundUtils;
+import io.github.mikip98.humilityafm.util.wrappers.ActionResultWrapper;
+import io.github.mikip98.humilityafm.util.wrappers.SoundUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -40,7 +41,7 @@ public class ColouredJackOLantern extends JackOLantern {
         if (player.isSneaking() && player.getStackInHand(hand).isEmpty() && currentPower > 3) {
             SoundUtils.playSoundAtBlockCenter(world, player, pos, SoundEvents.BLOCK_PUMPKIN_CARVE);
             world.setBlockState(pos, state.with(POWER, currentPower - 3));
-            return ActionResult.SUCCESS;
+            return ActionResultWrapper.SUCCESS;
         }
         #if MC_VERSION < 12006
         return super.onUse(state, world, pos, player, hand, hit);

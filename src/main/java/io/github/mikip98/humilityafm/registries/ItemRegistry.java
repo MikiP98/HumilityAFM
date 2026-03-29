@@ -7,6 +7,11 @@ import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
 import io.github.mikip98.humilityafm.util.generation_data.RawGenerationData;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.SizedIterable;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
+#if MC_VERSION >= 260000
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+#else
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 #if MC_VERSION < 12104
@@ -17,6 +22,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 #endif
 import net.minecraft.util.math.Direction;
+#endif
 
 import java.util.Arrays;
 import java.util.function.Function;

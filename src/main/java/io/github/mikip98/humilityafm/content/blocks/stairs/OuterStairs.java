@@ -4,6 +4,9 @@ package io.github.mikip98.humilityafm.content.blocks.stairs;
 import com.mojang.serialization.MapCodec;
 #endif
 import io.github.mikip98.humilityafm.content.blocks.cabinet.CabinetBlock;
+import io.github.mikip98.humilityafm.content.blocks.templates.PlainHorizontalFacingBlock;
+import io.github.mikip98.humilityafm.util.wrappers.BlockHalfWrapper;
+import io.github.mikip98.humilityafm.util.wrappers.VoxelUtils;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.fluid.FluidState;
@@ -17,10 +20,13 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.Half;
 
 import java.util.Map;
 
-public class OuterStairs extends HorizontalFacingBlock implements Waterloggable {
+public class OuterStairs extends PlainHorizontalFacingBlock implements Waterloggable {
     protected static final VoxelShape voxelShapeBottomNorth;
     protected static final VoxelShape voxelShapeBottomSouth;
     protected static final VoxelShape voxelShapeBottomEast;
@@ -32,20 +38,20 @@ public class OuterStairs extends HorizontalFacingBlock implements Waterloggable 
     protected static final VoxelShape voxelShapeTopWest;
 
     protected static Map<Direction, VoxelShape> getVoxelShapeMapOfY(double y) {
-        VoxelShape base = VoxelShapes.cuboid(
-                0f, 0.5f - y, 0f,
-                1f, 1f - y, 1f
+        VoxelShape base = VoxelUtils.cuboid(
+                0, 8 - y, 0,
+                16, 16 - y, 16
         );
         return Map.of(
-                Direction.NORTH, VoxelShapes.union(base, VoxelShapes.cuboid(0.5f, y, 0.5f, 1.0f, y+0.5f, 1.0f)),  // original
-                Direction.SOUTH, VoxelShapes.union(base, VoxelShapes.cuboid(0.0f, y, 0.0f, 0.5f, y+0.5f, 0.5f)),  // reverse original
-                Direction.EAST,  VoxelShapes.union(base, VoxelShapes.cuboid(0.0f, y, 0.5f, 0.5f, y+0.5f, 1.0f)),  // swap x <-> z + reverse
-                Direction.WEST,  VoxelShapes.union(base, VoxelShapes.cuboid(0.5f, y, 0.0f, 1.0f, y+0.5f, 0.5f))   // swap x <-> z
+                Direction.NORTH, VoxelUtils.union(base, VoxelUtils.cuboid(8, y, 8, 16, y+8, 16)),  // original
+                Direction.SOUTH, VoxelUtils.union(base, VoxelUtils.cuboid(0, y, 0, 8, y+8, 8)),  // reverse original
+                Direction.EAST,  VoxelUtils.union(base, VoxelUtils.cuboid(0, y, 8, 8, y+8, 16)),  // swap x <-> z + reverse
+                Direction.WEST,  VoxelUtils.union(base, VoxelUtils.cuboid(8, y, 0, 16, y+8, 8))   // swap x <-> z
         );
     }
     static {
-        final Map<Direction, VoxelShape> bottomVoxelShape = getVoxelShapeMapOfY(0.5f);
-        final Map<Direction, VoxelShape> topVoxelShape = getVoxelShapeMapOfY(0f);
+        final Map<Direction, VoxelShape> bottomVoxelShape = getVoxelShapeMapOfY(8);
+        final Map<Direction, VoxelShape> topVoxelShape = getVoxelShapeMapOfY(0);
 
         voxelShapeBottomNorth = bottomVoxelShape.get(Direction.NORTH);
         voxelShapeBottomSouth = bottomVoxelShape.get(Direction.SOUTH);
@@ -59,6 +65,11 @@ public class OuterStairs extends HorizontalFacingBlock implements Waterloggable 
     }
 
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
+    #if MC_VERSION < 260000
+    protected static final EnumProperty<BlockHalf> HALF = Properties.BLOCK_HALF;
+    #else
+    protected static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
+    #endif
 
     #if MC_VERSION >= 12004
     protected static final MapCodec<CabinetBlock> CODEC = createCodec(CabinetBlock::new);
@@ -74,7 +85,7 @@ public class OuterStairs extends HorizontalFacingBlock implements Waterloggable 
         setDefaultState(getStateManager().getDefaultState()
                 .with(FACING, Direction.SOUTH)
                 .with(WATERLOGGED, false)
-                .with(Properties.BLOCK_HALF, BlockHalf.BOTTOM));
+                .with(Properties.BLOCK_HALF, BlockHalfWrapper.BOTTOM));
     }
 
     @Override
