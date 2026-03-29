@@ -1,5 +1,6 @@
 package io.github.mikip98.humilityafm.util;
 
+#if MC_VERSION < 260000
 import net.minecraft.entity.Entity;
 #if MC_VERSION < 12105
 import net.minecraft.entity.player.PlayerEntity;
@@ -8,43 +9,69 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+#else
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+#endif
 import org.jetbrains.annotations.Nullable;
 
 public class SoundUtils {
-    public static void playSoundAtBlockCenter(World world, @Nullable Entity source, BlockPos pos, SoundEvent sound) {
+    public static void playSoundAtBlockCenter(
+            #if MC_VERSION < 260000 World #else Level #endif world,
+            @Nullable Entity source, BlockPos pos, SoundEvent sound
+    ) {
         playSoundAtBlockCenter(world, source, pos, sound, 1.0f, 1.0f);
     }
-    public static void playSoundAtBlockCenter(World world, @Nullable Entity source, BlockPos pos, SoundEvent sound, float baseVolume, float basePitch) {
-        final float volume = calculateVolume(baseVolume, world.random.nextFloat());
-        final float pitch = calculatePitch(basePitch, world.random.nextFloat());
+    public static void playSoundAtBlockCenter(
+            #if MC_VERSION < 260000 World #else Level #endif world,
+            @Nullable Entity source, BlockPos pos, SoundEvent sound, float baseVolume, float basePitch
+    ) {
+        final float volume = calculateVolume(baseVolume, world.getRandom().nextFloat());
+        final float pitch = calculatePitch(basePitch, world.getRandom().nextFloat());
 
         #if MC_VERSION < 12105
         // TODO: Check this
         //  Older versions required a PlayerEntity specifically, not a generic Entity
         PlayerEntity player = source instanceof PlayerEntity ? (PlayerEntity) source : null;
         world.playSound(player, pos, sound, SoundCategory.BLOCKS, volume, pitch);
-        #else
+        #elif MC_VERSION < 260000
         world.playSound(source, pos, sound, SoundCategory.BLOCKS, volume, pitch);
+        #else
+        world.playSound(source, pos, sound, SoundSource.BLOCKS, volume, pitch);
         #endif
     }
 
-    public static void playSound(World world, double x, double y, double z, SoundEvent sound) {
+    public static void playSound(
+            #if MC_VERSION < 260000 World #else Level #endif world,
+            double x, double y, double z, SoundEvent sound
+    ) {
         playSound(world, null, x, y, z, sound, 1.0f, 1.0f);
     }
-    public static void playSound(World world, @Nullable Entity source, double x, double y, double z, SoundEvent sound) {
-        playSound(world, null, x, y, z, sound, 1.0f, 1.0f);
+    public static void playSound(
+            #if MC_VERSION < 260000 World #else Level #endif world,
+            @Nullable Entity source, double x, double y, double z, SoundEvent sound
+    ) {
+        playSound(world, source, x, y, z, sound, 1.0f, 1.0f);
     }
-    public static void playSound(World world, @Nullable Entity source, double x, double y, double z, SoundEvent sound, float baseVolume, float basePitch) {
-        final float volume = calculateVolume(baseVolume, world.random.nextFloat());
-        final float pitch = calculatePitch(basePitch, world.random.nextFloat());
+    public static void playSound(
+            #if MC_VERSION < 260000 World #else Level #endif world,
+            @Nullable Entity source, double x, double y, double z, SoundEvent sound, float baseVolume, float basePitch
+    ) {
+        final float volume = calculateVolume(baseVolume, world.getRandom().nextFloat());
+        final float pitch = calculatePitch(basePitch, world.getRandom().nextFloat());
 
         #if MC_VERSION < 12105
         // TODO: Check this
         //  Older versions required a PlayerEntity specifically, not a generic Entity
         PlayerEntity player = source instanceof PlayerEntity ? (PlayerEntity) source : null;
         world.playSound(player, x, y, z, sound, SoundCategory.BLOCKS, volume, pitch);
-        #else
+        #elif MC_VERSION < 260000
         world.playSound(source, x, y, z, sound, SoundCategory.BLOCKS, volume, pitch);
+        #else
+        world.playSound(source, x, y, z, sound, SoundSource.BLOCKS, volume, pitch);
         #endif
     }
 
