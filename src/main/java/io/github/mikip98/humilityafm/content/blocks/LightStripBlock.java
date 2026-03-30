@@ -1,23 +1,23 @@
 package io.github.mikip98.humilityafm.content.blocks;
 
 import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntity;
-import io.github.mikip98.humilityafm.util.wrappers.VoxelUtils;
-import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.enums.BlockHalf;
-import net.minecraft.block.enums.StairShape;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Half;
+import net.minecraft.world.level.block.state.properties.StairsShape;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
+import javax.swing.text.html.BlockView;
 import java.util.Map;
 
-public class LightStripBlock extends StairsBlock implements BlockEntityProvider {
+public class LightStripBlock extends StairBlock implements EntityBlock {
     // Straight
     protected static final VoxelShape voxelShapeBottomStraightNorth;
     protected static final VoxelShape voxelShapeBottomStraightSouth;
@@ -129,44 +129,44 @@ public class LightStripBlock extends StairsBlock implements BlockEntityProvider 
     }
     protected static Map<Direction, VoxelShape> getStraightVoxelShape(double y) {
         return Map.of(
-                Direction.NORTH, VoxelUtils.cuboid(0, y, 0, 16, y + 1, 1),
-                Direction.SOUTH, VoxelUtils.cuboid(0, y, 15, 16, y + 1, 16),
-                Direction.EAST,  VoxelUtils.cuboid(15, y, 0, 16, y + 1, 16),
-                Direction.WEST,  VoxelUtils.cuboid(0, y, 0, 1, y + 1, 16)
+                Direction.NORTH, box(0, y, 0, 16, y + 1, 1),
+                Direction.SOUTH, box(0, y, 15, 16, y + 1, 16),
+                Direction.EAST,  box(15, y, 0, 16, y + 1, 16),
+                Direction.WEST,  box(0, y, 0, 1, y + 1, 16)
         );
     }
     protected static Map<Direction, VoxelShape> getInnerLeftVoxelShape(Map<Direction, VoxelShape> base) {
         return Map.of(
-                Direction.NORTH, VoxelUtils.union(base.get(Direction.NORTH), base.get(Direction.WEST)),
-                Direction.SOUTH, VoxelUtils.union(base.get(Direction.SOUTH), base.get(Direction.EAST)),
-                Direction.EAST,  VoxelUtils.union(base.get(Direction.EAST), base.get(Direction.NORTH)),
-                Direction.WEST,  VoxelUtils.union(base.get(Direction.WEST), base.get(Direction.SOUTH))
+                Direction.NORTH, Shapes.or(base.get(Direction.NORTH), base.get(Direction.WEST)),
+                Direction.SOUTH, Shapes.or(base.get(Direction.SOUTH), base.get(Direction.EAST)),
+                Direction.EAST,  Shapes.or(base.get(Direction.EAST), base.get(Direction.NORTH)),
+                Direction.WEST,  Shapes.or(base.get(Direction.WEST), base.get(Direction.SOUTH))
         );
     }
     protected static Map<Direction, VoxelShape> getOuterLeftVoxelShape(double y) {
         return Map.of(
-                Direction.NORTH, VoxelUtils.cuboid(0, y, 0, 1, y + 1, 1),
-                Direction.SOUTH, VoxelUtils.cuboid(15, y, 15, 16, y + 1, 16),
-                Direction.EAST,  VoxelUtils.cuboid(15, y, 0, 16, y + 1, 1),
-                Direction.WEST,  VoxelUtils.cuboid(0, y, 15, 1, y + 1, 16)
+                Direction.NORTH, box(0, y, 0, 1, y + 1, 1),
+                Direction.SOUTH, box(15, y, 15, 16, y + 1, 16),
+                Direction.EAST,  box(15, y, 0, 16, y + 1, 1),
+                Direction.WEST,  box(0, y, 15, 1, y + 1, 16)
         );
     }
 
 
-    public static final Settings defaultSettings = Settings.create().strength(0.5f).sounds(BlockSoundGroup.GLASS).luminance((state) -> 9);
+    public static final Properties defaultSettings = Properties.of().strength(0.5f).sound(SoundType.GLASS).luminance((state) -> 9);
 
     public LightStripBlock() {
-        super(Blocks.GLASS.getDefaultState(), defaultSettings);
+        super(Blocks.GLASS.defaultBlockState(), defaultSettings);
     }
-    public LightStripBlock(Settings settings) {
-        super(Blocks.GLASS.getDefaultState(), settings);
+    public LightStripBlock(Properties settings) {
+        super(Blocks.GLASS.defaultBlockState(), settings);
     }
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
-        Direction dir = state.get(FACING);
-        BlockHalf half = state.get(Properties.BLOCK_HALF);
-        StairShape shape = state.get(Properties.STAIR_SHAPE);
+        Direction dir = state.getValue(FACING);
+        Half half = state.getValue(Properties.HALF);
+        StairsShape shape = state.getValue(Properties.STAIR_SHAPE);
 
         if (half == BlockHalf.TOP) {
             return getVoxelShape(
@@ -189,7 +189,7 @@ public class LightStripBlock extends StairsBlock implements BlockEntityProvider 
         }
     }
     protected static VoxelShape getVoxelShape(
-            Direction dir, StairShape shape,
+            Direction dir, StairsShape shape,
             VoxelShape straightVoxelShapeNorth, VoxelShape straightVoxelShapeSouth, VoxelShape straightVoxelShapeEast, VoxelShape straightVoxelShapeWest,
             VoxelShape innerLeftVoxelShapeNorth, VoxelShape innerLeftVoxelShapeSouth, VoxelShape innerLeftVoxelShapeEast, VoxelShape innerLeftVoxelShapeWest,
             VoxelShape innerRightVoxelShapeNorth, VoxelShape innerRightVoxelShapeSouth, VoxelShape innerRightVoxelShapeEast, VoxelShape innerRightVoxelShapeWest,
@@ -219,10 +219,9 @@ public class LightStripBlock extends StairsBlock implements BlockEntityProvider 
             default -> null;
         };
     }
-
-    @Nullable
+    
     @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new LightStripBlockEntity(pos, state);
     }
 }

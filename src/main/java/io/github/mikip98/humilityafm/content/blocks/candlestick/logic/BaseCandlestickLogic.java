@@ -2,90 +2,66 @@ package io.github.mikip98.humilityafm.content.blocks.candlestick.logic;
 
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
-import io.github.mikip98.humilityafm.util.wrappers.BlockStateWrapper;
-import io.github.mikip98.humilityafm.util.wrappers.PropertiesWrapper;
-import io.github.mikip98.humilityafm.util.wrappers.SoundUtils;
-#if MC_VERSION >= 260000
-import io.github.mikip98.humilityafm.util.wrappers.WorldWrapper;
+import io.github.mikip98.humilityafm.util.SoundUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.FlintAndSteelItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CandleBlock;
-import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.Map;
-#else
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CandleBlock;
-#if MC_VERSION >= 12006 && MC_VERSION < 12111
-import net.minecraft.entity.LivingEntity;
-#endif
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.FlintAndSteelItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
-#endif
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public sealed interface BaseCandlestickLogic permits SimpleCandlestickLogic, RustableCandlestickLogic {
-    default boolean tryToInsertCandle(BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack heldItemStack, Item heldItem) {
+    default boolean tryToInsertCandle(BlockState state, Level world, BlockPos pos, Player player, ItemStack heldItemStack, Item heldItem) {
         if (heldItem instanceof BlockItem blockItem) {
             if (blockItem.getBlock() instanceof CandleBlock) {
                 // Check if the candlestick is already holding a candle
-                if (state.get(ModProperties.CANDLE_COLOR) != CandleColor.NONE) {
-                    // If the already inserted candle is the same as the one being inserted, do nothing
-                    if (heldItem == state.get(ModProperties.CANDLE_COLOR).asCandle()) return false;
-                    // if it's a different candle, drop the already held candle
-                    player.getInventory().offerOrDrop(new ItemStack(state.get(ModProperties.CANDLE_COLOR).asCandle()));
+                final CandleColor candleColor = state.getValue(ModProperties.CANDLE_COLOR);
+                if (candleColor != CandleColor.NONE) {
+                    final Item candleItem = candleColor.asCandle();
+                    if (heldItem == candleItem) return false;
+                    player.getInventory().placeItemBackInInventory(new ItemStack(candleItem));
                 }
-                world.setBlockState(pos, state.with(ModProperties.CANDLE_COLOR, CandleColor.getColor(heldItem)), Block.NOTIFY_ALL);
-                if (!player.isCreative()) heldItemStack.decrement(1);
-                SoundUtils.playSoundAtBlockCenter(world, player, pos, SoundEvents.BLOCK_STONE_BUTTON_CLICK_ON, 0.9f, 1.1f);
+                world.setBlockAndUpdate(pos, state.setValue(ModProperties.CANDLE_COLOR, CandleColor.getColor(heldItem)));
+                if (!player.isCreative()) heldItemStack.shrink(1);
+                SoundUtils.playSoundAtBlockCenter(world, player, pos, SoundEvents.STONE_BUTTON_CLICK_ON, 0.9f, 1.1f);
                 return true;
             }
         }
         return false;
     }
-    default boolean tryToExtinguishOrRemove(BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack heldItemStack) {
+    default boolean tryToExtinguishOrRemove(BlockState state, Level world, BlockPos pos, Player player, ItemStack heldItemStack) {
         if (heldItemStack.isEmpty() && player.isSneaking()) {
             // Extinguish the candle
-            if (BlockStateWrapper.get(state, PropertiesWrapper.LIT)) {
-                WorldWrapper.setBlockState(world, pos, BlockStateWrapper.with(state, PropertiesWrapper.LIT, false), Block.NOTIFY_ALL);
-                world.setBlockState(pos, state.with(), Block.NOTIFY_ALL);
-                SoundUtils.playSoundAtBlockCenter(world, player, pos, SoundEvents.BLOCK_CANDLE_EXTINGUISH);
+            if (state.getValue(BlockStateProperties.LIT)) {
+                world.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.LIT, false));
+                world.setBlockAndUpdate(pos, state.with());
+                SoundUtils.playSoundAtBlockCenter(world, player, pos, SoundEvents.CANDLE_EXTINGUISH);
                 return true;
             }
             // Remove the candle
-            else if (BlockStateWrapper.get(state, ModProperties.CANDLE_COLOR) != CandleColor.NONE) {
-                player.getInventory().offerOrDrop(new ItemStack(state.get(ModProperties.CANDLE_COLOR).asCandle()));
-                WorldWrapper.setBlockState(world, pos, state.with(ModProperties.CANDLE_COLOR, CandleColor.NONE), Block.NOTIFY_ALL);
-                SoundUtils.playSoundAtBlockCenter(world, player, pos, SoundEvents.ENTITY_ITEM_FRAME_REMOVE_ITEM, 0.9f, 0.9f);
+            else if (state.getValue(ModProperties.CANDLE_COLOR) != CandleColor.NONE) {
+                player.getInventory().placeItemBackInInventory(new ItemStack(state.get(ModProperties.CANDLE_COLOR).asCandle()));
+                world.setBlockAndUpdate(pos, state.with(ModProperties.CANDLE_COLOR, CandleColor.NONE));
+                SoundUtils.playSoundAtBlockCenter(world, player, pos, SoundEvents.ITEM_FRAME_REMOVE_ITEM, 0.9f, 0.9f);
                 return true;
             }
         }
         return false;
     }
-    default boolean tryToLightTheCandle(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, ItemStack heldItemStack, Item heldItem) {
+    default boolean tryToLightTheCandle(BlockState state, Level world, BlockPos pos, Player player, Hand hand, ItemStack heldItemStack, Item heldItem) {
         if (
                 heldItem instanceof FlintAndSteelItem
-                        && BlockStateWrapper.get(state, ModProperties.CANDLE_COLOR) != CandleColor.NONE
-                        && !BlockStateWrapper.get(state, PropertiesWrapper.LIT)
-                        && !BlockStateWrapper.get(state, PropertiesWrapper.WATERLOGGED)
+                        && state.getValue(ModProperties.CANDLE_COLOR) != CandleColor.NONE
+                        && !state.getValue(BlockStateProperties.LIT)
+                        && !state.getValue(BlockStateProperties.WATERLOGGED)
         ) {
-            world.setBlockState(pos, BlockStateWrapper.with(state, PropertiesWrapper.LIT, true), Block.NOTIFY_ALL);
+            world.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.LIT, true));
             damageItem(heldItemStack, player, hand);
             SoundUtils.playSoundAtBlockCenter(world, player, pos, SoundEvents.ITEM_FLINTANDSTEEL_USE);
             return true;

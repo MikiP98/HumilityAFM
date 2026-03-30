@@ -1,17 +1,11 @@
 package io.github.mikip98.humilityafm.content.properties.enums;
 
-#if MC_VERSION < 260000
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.util.StringIdentifiable;
-#else
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-#endif
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 
-public enum CandleColor implements #if MC_VERSION < 260000 StringIdentifiable #else StringRepresentable #endif {
+public enum CandleColor implements StringRepresentable {
     NONE,
     PLAIN,
     // Vanilla colors
@@ -33,7 +27,7 @@ public enum CandleColor implements #if MC_VERSION < 260000 StringIdentifiable #e
     BLACK;
 
     @Override
-    public @NonNull String #if MC_VERSION < 260000 asString() #else getSerializedName() #endif {
+    public @NotNull String getSerializedName() {
         return name().toLowerCase();
     }
 

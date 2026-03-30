@@ -6,12 +6,7 @@ import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
 import io.github.mikip98.humilityafm.util.mod_support.ModSupportManager;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import net.fabricmc.api.ModInitializer;
-
-#if MC_VERSION < 260000
-import net.minecraft.util.Identifier;
-#else
-import net.minecraft.resources.Identifier;
-#endif
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,29 +53,27 @@ public class HumilityAFM implements ModInitializer {
 	/**
 	 * Returns a new identifier for the given name, in 'humility-afm' namespace
 	 */
-	public static Identifier getId(String name) {
+	public static ResourceLocation getId(String name) {
 		return getId(MOD_ID, name);
 	}
 
 	/**
 	 * Returns a new identifier for the given name, in 'minecraft' namespace
 	 */
-	public static Identifier getVanillaId(String name) {
+	public static ResourceLocation getVanillaId(String name) {
 		return getId("minecraft", name);
 	}
 
 	/**
 	 * Returns a new identifier for the given name, in the given mod's namespace if not null, or 'minecraft' otherwise
 	 */
-	public static Identifier getVMId(@Nullable SupportedMods mod, String name) {
+	public static ResourceLocation getVMId(@Nullable SupportedMods mod, String name) {
 		return getId(mod != null ? mod.modId : "minecraft", name);
 	}
 
-	protected static Identifier getId(String namespace, String name) {
-		#if MC_VERSION < 260000
-		return Identifier.of(namespace, name);
-		#else
-		return Identifier.tryBuild(namespace, name);
-		#endif
+	protected static ResourceLocation getId(String namespace, String name) {
+		final ResourceLocation id = ResourceLocation.tryBuild(namespace, name);
+		if (id == null) throw new IllegalArgumentException("Broken block id: " + namespace + ":" + name);
+		return id;
 	}
 }

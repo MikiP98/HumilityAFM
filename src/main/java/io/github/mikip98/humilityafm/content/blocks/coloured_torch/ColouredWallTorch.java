@@ -1,7 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.coloured_torch;
 
 import io.github.mikip98.humilityafm.util.wrappers.ActionResultWrapper;
-import io.github.mikip98.humilityafm.util.wrappers.SoundUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.WallTorchBlock;

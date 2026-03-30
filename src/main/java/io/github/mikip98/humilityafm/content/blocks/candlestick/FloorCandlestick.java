@@ -1,77 +1,61 @@
 package io.github.mikip98.humilityafm.content.blocks.candlestick;
 
+import io.github.mikip98.humilityafm.content.blocks.Waterloggable;
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.SimpleCandlestickLogic;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
-import io.github.mikip98.humilityafm.util.wrappers.ActionResultWrapper;
-import io.github.mikip98.humilityafm.util.wrappers.VoxelUtils;
-#if MC_VERSION >= 260000
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
-#else
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.block.Waterloggable;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.registry.tag.FluidTags;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.EnumProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.ActionResult;
-#if MC_VERSION < 12006
-import net.minecraft.util.Hand;
-#endif
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
-#endif
+import org.jetbrains.annotations.NotNull;
 
 public class FloorCandlestick extends Block implements SimpleCandlestickLogic, Waterloggable {
-    protected static final VoxelShape voxelShape = VoxelUtils.cuboid(6, 0, 6, 10, 6, 10);
-    protected static final VoxelShape voxelShapeCandle = VoxelUtils.cuboid(6, 0, 6, 10, 10, 10);
+    protected static final VoxelShape voxelShape = Block.box(6, 0, 6, 10, 6, 10);
+    protected static final VoxelShape voxelShapeCandle = Block.box(6, 0, 6, 10, 10, 10);
 
+    protected static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     protected static final EnumProperty<CandleColor> CANDLE_COLOR = ModProperties.CANDLE_COLOR;
+    protected static final BooleanProperty LIT = BlockStateProperties.LIT;
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(Properties.WATERLOGGED);
+        builder.add(WATERLOGGED);
         builder.add(CANDLE_COLOR);
-        builder.add(Properties.LIT);
+        builder.add(LIT);
     }
 
-    public FloorCandlestick(Settings settings) {
+    public FloorCandlestick(Properties settings) {
         super(settings);
-        setDefaultState(getDefaultState()
-                .with(Properties.WATERLOGGED, false)
-                .with(CANDLE_COLOR, CandleColor.NONE)
-                .with(Properties.LIT, false)
-        );
+        registerDefaultState(defaultBlockState()
+                .setValue(WATERLOGGED, false)
+                .setValue(CANDLE_COLOR, CandleColor.NONE)
+                .setValue(LIT, false));
     }
 
     @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return getDefaultState()
-                .with(Properties.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).isIn(FluidTags.WATER));
+    public @NotNull BlockState getStateForPlacement(BlockPlaceContext ctx) {
+        return defaultBlockState().setValue(WATERLOGGED, isPlacedInWater(ctx));
     }
 
     @Override
     #if MC_VERSION < 12006
     @SuppressWarnings("deprecation")
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (onUseLogic(state, world, pos, player, hand)) return ActionResult.SUCCESS;
+    public @NotNull InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (onUseLogic(state, world, pos, player, hand)) return InteractionResult.SUCCESS;
         return super.onUse(state, world, pos, player, hand, hit);
     }
     #else
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
         if (onUseLogic(state, world, pos, player)) return ActionResultWrapper.SUCCESS;
         return super.onUse(state, world, pos, player, hit);
     }

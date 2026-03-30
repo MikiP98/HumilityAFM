@@ -2,22 +2,9 @@ package io.github.mikip98.humilityafm.content.blocks.candlestick;
 
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.RustableCandlestickLogic;
-import io.github.mikip98.humilityafm.util.wrappers.ActionResultWrapper;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.block.*;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.state.StateManager;
-import net.minecraft.util.ActionResult;
-#if MC_VERSION < 12006
-import net.minecraft.util.Hand;
-#endif
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
@@ -25,10 +12,10 @@ import java.util.function.Supplier;
 @Getter
 @Setter
 public class RustableCandlestick extends Candlestick implements RustableCandlestickLogic {
-    public static final Supplier<Settings> defaultSettingsSupplier = () -> Candlestick.defaultSettingsSupplier.get()
+    public static final Supplier<Properties> defaultSettingsSupplier = () -> Candlestick.defaultSettingsSupplier.get()
             .sounds(BlockSoundGroup.COPPER)
             .ticksRandomly();
-    public static final Settings defaultSettings = defaultSettingsSupplier.get();
+    public static final Properties defaultSettings = defaultSettingsSupplier.get();
 
     protected @Nullable BlockState rustPreviousLevel;
     protected @Nullable BlockState rustNextLevel;
@@ -39,10 +26,10 @@ public class RustableCandlestick extends Candlestick implements RustableCandlest
         builder.add(ModProperties.WAXED);
     }
 
-    public RustableCandlestick(Settings settings) {
+    public RustableCandlestick(Properties settings) {
         this(settings, null, null);
     }
-    public RustableCandlestick(Settings settings, @Nullable BlockState rustPreviousLevel, @Nullable BlockState rustNextLevel) {
+    public RustableCandlestick(Properties settings, @Nullable BlockState rustPreviousLevel, @Nullable BlockState rustNextLevel) {
         super(settings);
         this.rustPreviousLevel = rustPreviousLevel;
         this.rustNextLevel = rustNextLevel;

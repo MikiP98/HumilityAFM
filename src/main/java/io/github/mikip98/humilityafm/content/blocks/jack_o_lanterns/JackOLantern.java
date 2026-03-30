@@ -1,14 +1,14 @@
 package io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns;
 
 import io.github.mikip98.humilityafm.content.blocks.templates.PlainHorizontalFacingBlock;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.function.Supplier;
 
 public class JackOLantern extends PlainHorizontalFacingBlock {
-    public static final Supplier<Settings> defaultSettingsSupplier = () -> Settings.copy(Blocks.JACK_O_LANTERN);
-    public static final Settings defaultSettings = defaultSettingsSupplier.get();
-    public JackOLantern(Settings settings) {
+    public static final Supplier<Properties> defaultSettingsSupplier = () -> Properties.copy(Blocks.JACK_O_LANTERN);
+    public static final Properties defaultSettings = defaultSettingsSupplier.get();
+    public JackOLantern(Properties settings) {
         super(settings);
     }
 }
