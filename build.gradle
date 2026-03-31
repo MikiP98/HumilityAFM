@@ -159,12 +159,12 @@ processResources {
 	}
 
 	doLast {
-		// Skip when datagen
-		def isDatagen = gradle.startParameter.taskNames.any { it.toLowerCase().contains("datagen") }
-		if (isDatagen) {
-			println ">>> Skipping JSON modifications during Datagen..."
-			return
-		}
+//		// Skip when datagen
+//		def isDatagen = gradle.startParameter.taskNames.any { it.toLowerCase().contains("datagen") }
+//		if (isDatagen) {
+//			println ">>> Skipping JSON modifications during Datagen..."
+//			return
+//		}
 		println ">>> Running JSON modifications..."
 
 		// Minify JSON files to reduce the mod size a bit
