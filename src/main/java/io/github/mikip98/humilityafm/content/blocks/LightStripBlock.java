@@ -3,6 +3,7 @@ package io.github.mikip98.humilityafm.content.blocks;
 import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -11,10 +12,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.StairsShape;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
-import javax.swing.text.html.BlockView;
 import java.util.Map;
 
 public class LightStripBlock extends StairBlock implements EntityBlock {
@@ -153,22 +155,19 @@ public class LightStripBlock extends StairBlock implements EntityBlock {
     }
 
 
-    public static final Properties defaultSettings = Properties.of().strength(0.5f).sound(SoundType.GLASS).luminance((state) -> 9);
+    public static final Properties defaultSettings = Properties.of().strength(0.5f).sound(SoundType.GLASS).lightLevel((state) -> 9);
 
-    public LightStripBlock() {
-        super(Blocks.GLASS.defaultBlockState(), defaultSettings);
-    }
     public LightStripBlock(Properties settings) {
         super(Blocks.GLASS.defaultBlockState(), settings);
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
+    public @NotNull VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         Direction dir = state.getValue(FACING);
-        Half half = state.getValue(Properties.HALF);
-        StairsShape shape = state.getValue(Properties.STAIR_SHAPE);
+        Half half = state.getValue(HALF);
+        StairsShape shape = state.getValue(SHAPE);
 
-        if (half == BlockHalf.TOP) {
+        if (half == Half.TOP) {
             return getVoxelShape(
                     dir, shape,
                     voxelShapeTopStraightNorth, voxelShapeTopStraightSouth, voxelShapeTopStraightEast, voxelShapeTopStraightWest,
@@ -188,7 +187,7 @@ public class LightStripBlock extends StairBlock implements EntityBlock {
             );
         }
     }
-    protected static VoxelShape getVoxelShape(
+    protected static @NotNull VoxelShape getVoxelShape(
             Direction dir, StairsShape shape,
             VoxelShape straightVoxelShapeNorth, VoxelShape straightVoxelShapeSouth, VoxelShape straightVoxelShapeEast, VoxelShape straightVoxelShapeWest,
             VoxelShape innerLeftVoxelShapeNorth, VoxelShape innerLeftVoxelShapeSouth, VoxelShape innerLeftVoxelShapeEast, VoxelShape innerLeftVoxelShapeWest,
@@ -196,27 +195,21 @@ public class LightStripBlock extends StairBlock implements EntityBlock {
             VoxelShape outerLeftVoxelShapeNorth, VoxelShape outerLeftVoxelShapeSouth, VoxelShape outerLeftVoxelShapeEast, VoxelShape outerLeftVoxelShapeWest,
             VoxelShape outerRightVoxelShapeNorth, VoxelShape outerRightVoxelShapeSouth, VoxelShape outerRightVoxelShapeEast, VoxelShape outerRightVoxelShapeWest
     ) {
-        switch (shape) {
-            case STRAIGHT:
-                return getVoxelShape(dir, straightVoxelShapeNorth, straightVoxelShapeSouth, straightVoxelShapeEast, straightVoxelShapeWest);
-            case INNER_LEFT:
-                return getVoxelShape(dir, innerLeftVoxelShapeNorth, innerLeftVoxelShapeSouth, innerLeftVoxelShapeEast, innerLeftVoxelShapeWest);
-            case INNER_RIGHT:
-                return getVoxelShape(dir, innerRightVoxelShapeNorth, innerRightVoxelShapeSouth, innerRightVoxelShapeEast, innerRightVoxelShapeWest);
-            case OUTER_LEFT:
-                return getVoxelShape(dir, outerLeftVoxelShapeNorth, outerLeftVoxelShapeSouth, outerLeftVoxelShapeEast, outerLeftVoxelShapeWest);
-            case OUTER_RIGHT:
-                return getVoxelShape(dir, outerRightVoxelShapeNorth, outerRightVoxelShapeSouth, outerRightVoxelShapeEast, outerRightVoxelShapeWest);
-        }
-        return null;
+        return switch (shape) {
+            case STRAIGHT -> getVoxelShape(dir, straightVoxelShapeNorth, straightVoxelShapeSouth, straightVoxelShapeEast, straightVoxelShapeWest);
+            case INNER_LEFT -> getVoxelShape(dir, innerLeftVoxelShapeNorth, innerLeftVoxelShapeSouth, innerLeftVoxelShapeEast, innerLeftVoxelShapeWest);
+            case INNER_RIGHT -> getVoxelShape(dir, innerRightVoxelShapeNorth, innerRightVoxelShapeSouth, innerRightVoxelShapeEast, innerRightVoxelShapeWest);
+            case OUTER_LEFT -> getVoxelShape(dir, outerLeftVoxelShapeNorth, outerLeftVoxelShapeSouth, outerLeftVoxelShapeEast, outerLeftVoxelShapeWest);
+            case OUTER_RIGHT -> getVoxelShape(dir, outerRightVoxelShapeNorth, outerRightVoxelShapeSouth, outerRightVoxelShapeEast, outerRightVoxelShapeWest);
+        };
     }
-    protected static VoxelShape getVoxelShape(Direction dir, VoxelShape north, VoxelShape south, VoxelShape east, VoxelShape west) {
+    protected static @NotNull VoxelShape getVoxelShape(Direction dir, VoxelShape north, VoxelShape south, VoxelShape east, VoxelShape west) {
         return switch (dir) {
             case NORTH -> north;
             case SOUTH -> south;
             case EAST -> east;
             case WEST -> west;
-            default -> null;
+            default -> throw new IllegalStateException("It's not possible to get here...");
         };
     }
     

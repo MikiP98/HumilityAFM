@@ -1,51 +1,58 @@
 package io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns;
 
-import io.github.mikip98.humilityafm.util.wrappers.ActionResultWrapper;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import io.github.mikip98.humilityafm.util.SoundUtils;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 
 public class ColouredJackOLantern extends JackOLantern {
-    public static final IntProperty POWER = Properties.POWER;
+    public static final IntegerProperty POWER = BlockStateProperties.POWER;
 
-    public ColouredJackOLantern(Settings settings) {
-        super(settings.luminance((state) -> state.get(POWER)));
-        setDefaultState(getDefaultState().with(POWER, 15));
+    public ColouredJackOLantern(Properties settings) {
+        super(settings.lightLevel((state) -> state.getValue(POWER)));
+        registerDefaultState(defaultBlockState().setValue(POWER, 15));
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(POWER);
     }
 
     @Override
     #if MC_VERSION < 12006
     @SuppressWarnings("deprecation")
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public @NotNull InteractionResult use(
+            BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit
+    ) {
+        return onUseLogic(state, level, pos, player, hand) ? InteractionResult.SUCCESS : super.use(state, level, pos, player, hand, hit);
+    }
     #else
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-        final Hand hand = player.getActiveHand();
+    public @NonNull InteractionResult useWithoutItem(
+            @NonNull BlockState state, @NonNull Level level, @NonNull BlockPos pos, Player player, @NonNull BlockHitResult hit
+    ) {
+        final InteractionHand hand = player.getUsedItemHand();
+        return onUseLogic(state, level, pos, player, hand) ? InteractionResult.SUCCESS : super.use(state, level, pos, player, hit);
+    }
     #endif
-        final int currentPower = state.get(POWER);
-        if (player.isSneaking() && player.getStackInHand(hand).isEmpty() && currentPower > 3) {
-            SoundUtils.playSoundAtBlockCenter(world, player, pos, SoundEvents.BLOCK_PUMPKIN_CARVE);
-            world.setBlockState(pos, state.with(POWER, currentPower - 3));
-            return ActionResultWrapper.SUCCESS;
+
+    protected static boolean onUseLogic(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand) {
+        final int currentPower = state.getValue(POWER);
+        if (player.isShiftKeyDown() && player.getItemInHand(hand).isEmpty() && currentPower > 3) {
+            SoundUtils.playSoundAtBlockCenter(world, player, pos, SoundEvents.PUMPKIN_CARVE);
+            world.setBlockAndUpdate(pos, state.setValue(POWER, currentPower - 3));
+            return true;
         }
-        #if MC_VERSION < 12006
-        return super.onUse(state, world, pos, player, hand, hit);
-        #else
-        return super.onUse(state, world, pos, player, hit);
-        #endif
+        return false;
     }
 }

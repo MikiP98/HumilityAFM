@@ -19,7 +19,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.text.html.BlockView;
 import java.util.Map;
 
 public class OuterStairs extends PlainHorizontalFacingBlock implements Waterloggable {
@@ -34,15 +33,15 @@ public class OuterStairs extends PlainHorizontalFacingBlock implements Waterlogg
     protected static final VoxelShape voxelShapeTopWest;
 
     protected static Map<Direction, VoxelShape> getVoxelShapeMapOfY(double y) {
-        VoxelShape base = Block.box(
+        VoxelShape base = box(
                 0, 8 - y, 0,
                 16, 16 - y, 16
         );
         return Map.of(
-                Direction.NORTH, Shapes.or(base, Block.box(8, y, 8, 16, y+8, 16)),  // original
-                Direction.SOUTH, Shapes.or(base, Block.box(0, y, 0, 8, y+8, 8)),  // reverse original
-                Direction.EAST,  Shapes.or(base, Block.box(0, y, 8, 8, y+8, 16)),  // swap x <-> z + reverse
-                Direction.WEST,  Shapes.or(base, Block.box(8, y, 0, 16, y+8, 8))   // swap x <-> z
+                Direction.NORTH, Shapes.or(base, box(8, y, 8, 16, y+8, 16)),  // original
+                Direction.SOUTH, Shapes.or(base, box(0, y, 0, 8, y+8, 8)),  // reverse original
+                Direction.EAST,  Shapes.or(base, box(0, y, 8, 8, y+8, 16)),  // swap x <-> z + reverse
+                Direction.WEST,  Shapes.or(base, box(8, y, 0, 16, y+8, 8))   // swap x <-> z
         );
     }
     static {
@@ -103,7 +102,7 @@ public class OuterStairs extends PlainHorizontalFacingBlock implements Waterlogg
     @SuppressWarnings("deprecation")
     @Override
     public @NotNull VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        Direction dir = state.getValue(FACING);
+        final Direction dir = state.getValue(FACING);
         if (state.getValue(HALF) == Half.BOTTOM) {
             switch (dir) {
                 case NORTH: return voxelShapeBottomNorth;
