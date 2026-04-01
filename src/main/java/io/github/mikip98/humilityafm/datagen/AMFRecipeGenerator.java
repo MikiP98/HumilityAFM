@@ -14,28 +14,15 @@ import io.github.mikip98.humilityafm.util.generation_data.material_management.ma
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 #if MC_VERSION < 12006
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
-#endif
-#if MC_VERSION < 12004
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 #endif
 #if MC_VERSION >= 12006
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
-#endif
-#if MC_VERSION > 12001 && MC_VERSION < 12104
-import net.minecraft.data.server.recipe.RecipeExporter;
-#elif MC_VERSION > 12001
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.minecraft.data.recipe.RecipeExporter;
-import net.minecraft.data.recipe.RecipeGenerator;
-#endif
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.Items;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.registry.Registries;
-#if MC_VERSION >= 12006
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
 #endif
 
 import java.util.*;
@@ -50,6 +37,7 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
     public AMFRecipeGenerator(FabricDataOutput output) {
         super(output);
     }
+    
     #else
     public AMFRecipeGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
         super(output, registriesFuture);
@@ -58,23 +46,23 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
 
     #if MC_VERSION < 12104
     @Override
-    public void generate(
-            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
+    public void buildRecipes(
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif output
     ) {
     #else
     @Override
-    protected RecipeGenerator getRecipeGenerator(RegistryWrapper.WrapperLookup registryLookup, RecipeExporter exporter) {
-        return new AFMRecipeProvider(registryLookup, exporter) {
+    protected RecipeProvider.Runner getRecipeGenerator(HolderLookup.Provider registries, RecipeOutput output) {
+        return new AFMRecipeProvider(registries, output) {
             @Override
-            public void generate() {
-                RegistryWrapper.Impl<Item> itemLookup = registries.getOrThrow(RegistryKeys.ITEM);
+            public void buildRecipes() {
+                HolderLookup.RegistryLookup<Item> itemLookup = registries.lookupOrThrow(Registries.ITEM);
     #endif
 
         // ............ TEST BLOCKS & BLOCK ITEMS ............
 
         // Cabinet Blocks
         offerCabinetRecipe(
-                #if MC_VERSION >= 12104 itemLookup, #endif exporter,
+                #if MC_VERSION >= 12104 itemLookup, #endif output,
                 ItemRegistry.CABINET_ITEM,
                 Items.PETRIFIED_OAK_SLAB,
                 Items.WHITE_CARPET,
@@ -83,31 +71,31 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
 
         // Illuminated Cabinet Blocks
         offerIlluminatedCabinetRecipe(
-                #if MC_VERSION >= 12104 itemLookup, #endif exporter,
+                #if MC_VERSION >= 12104 itemLookup, #endif output,
                 ItemRegistry.ILLUMINATED_CABINET_ITEM,
                 ItemRegistry.CABINET_ITEM
         );
 
         // ............ FINAL BLOCKS & BLOCK ITEMS ............
-        generateCabinetRecipies(#if MC_VERSION >= 12104 itemLookup, #endif exporter);
-        generateWoodenMosaicRecipies(#if MC_VERSION >= 12104 itemLookup, #endif exporter);
-        generateTerracottaTileRecipies(#if MC_VERSION >= 12104 itemLookup, #endif exporter);
-        generateForcedCornerStairsRecipies(#if MC_VERSION >= 12104 itemLookup, #endif exporter);
-        generateSpecialJackOLanternRecipies(#if MC_VERSION >= 12104 itemLookup, #endif exporter);
+        generateCabinetRecipes(#if MC_VERSION >= 12104 itemLookup, #endif output);
+        generateWoodenMosaicRecipes(#if MC_VERSION >= 12104 itemLookup, #endif output);
+        generateTerracottaTileRecipes(#if MC_VERSION >= 12104 itemLookup, #endif output);
+        generateForcedCornerStairsRecipes(#if MC_VERSION >= 12104 itemLookup, #endif output);
+        generateSpecialJackOLanternRecipes(#if MC_VERSION >= 12104 itemLookup, #endif output);
         // Optional
-        generateCandlestickRecipies(#if MC_VERSION >= 12104 itemLookup, #endif exporter);
-        generateGlowingPowderRecipies(#if MC_VERSION >= 12104 itemLookup, #endif exporter);
-        generateLightStripRecipes(#if MC_VERSION >= 12104 itemLookup, #endif exporter);
-        generateColouredTorchRecipies(#if MC_VERSION >= 12104 itemLookup, #endif exporter);
-        generateColouredJackOLanternRecipies(#if MC_VERSION >= 12104 itemLookup, #endif exporter);
+        generateCandlestickRecipes(#if MC_VERSION >= 12104 itemLookup, #endif output);
+        generateGlowingPowderRecipes(#if MC_VERSION >= 12104 itemLookup, #endif output);
+        generateLightStripRecipes(#if MC_VERSION >= 12104 itemLookup, #endif output);
+        generateColouredTorchRecipes(#if MC_VERSION >= 12104 itemLookup, #endif output);
+        generateColouredJackOLanternRecipes(#if MC_VERSION >= 12104 itemLookup, #endif output);
     }
 
-    protected void generateCabinetRecipies(
-            #if MC_VERSION >= 12104 RegistryWrapper.Impl<Item> itemLookup, #endif
-            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
+    protected void generateCabinetRecipes(
+            #if MC_VERSION >= 12104 HolderLookup.RegistryLookup<Item> itemLookup, #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif output
     ) {
-        Map<Pair<SupportedMods, String>, List<Pair<ItemConvertible, String>>> perWoodCabinets = new HashMap<>();
-        Map<Pair<SupportedMods, String>, List<Pair<ItemConvertible, String>>> perWoodIlluminatedCabinets = new HashMap<>();
+        Map<Pair<SupportedMods, String>, List<Pair<ItemLike, String>>> perWoodCabinets = new HashMap<>();
+        Map<Pair<SupportedMods, String>, List<Pair<ItemLike, String>>> perWoodIlluminatedCabinets = new HashMap<>();
         int i = 0;
         for (BlockMaterial material : ActiveGenerationData.cabinetVariantMaterials) {
             Pair<SupportedMods, String> key = new Pair<>(material.layers()[0].metadata().sourceMod(), material.layers()[0].name());
@@ -130,35 +118,31 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
             final String colourName = material.layers()[1].name();
             final SupportedMods woodSourceMod = woodLayer.metadata().sourceMod();
 
-            #if MC_VERSION == 12001
-            Consumer<RecipeJsonProvider> currentExporter = exporter;
-            #else
-            RecipeExporter currentExporter = exporter;
-            #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif currentExporter = output;
 
             // Apply the condition if the source mod isn't vanilla Minecraft
             if (woodSourceMod != null) {
                 #if MC_VERSION < 12006
-                currentExporter = withConditions(exporter, DefaultResourceConditions.allModsLoaded(woodSourceMod.modId));
+                currentExporter = withConditions(output, DefaultResourceConditions.allModsLoaded(woodSourceMod.modId));
                 #else
-                currentExporter = withConditions(exporter, ResourceConditions.allModsLoaded(woodSourceMod.modId));
+                currentExporter = withConditions(output, ResourceConditions.allModsLoaded(woodSourceMod.modId));
                 #endif
             }
 
             final Pair<SupportedMods, String> key = new Pair<>(woodSourceMod, woodLayer.name());
-            final ItemConvertible[] sameWoodOtherColourCabinets = perWoodCabinets
+            final ItemLike[] sameWoodOtherColourCabinets = perWoodCabinets
                     .get(key)
                     .stream()
                     .filter(entry -> !entry.second().equals(colourName))
-                    .map(Pair::first).toArray(ItemConvertible[]::new);
-            final ItemConvertible[] sameWoodOtherColourIlluminatedCabinets = perWoodIlluminatedCabinets
+                    .map(Pair::first).toArray(ItemLike[]::new);
+            final ItemLike[] sameWoodOtherColourIlluminatedCabinets = perWoodIlluminatedCabinets
                     .get(key)
                     .stream()
                     .filter(entry -> !entry.second().equals(colourName))
-                    .map(Pair::first).toArray(ItemConvertible[]::new);
+                    .map(Pair::first).toArray(ItemLike[]::new);
 
-            final ItemConvertible cabinetBlockItemVariant = ItemRegistry.CABINET_ITEM_VARIANTS[i];
-            final ItemConvertible illuminatedCabinetBlockItemVariant = ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS[i];
+            final ItemLike cabinetBlockItemVariant = ItemRegistry.CABINET_ITEM_VARIANTS[i];
+            final ItemLike illuminatedCabinetBlockItemVariant = ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS[i];
 
             // Normal recipes
             offerCabinetRecipe(
@@ -180,7 +164,7 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
             offerColorChangeRecipie(
                     #if MC_VERSION >= 12104 itemLookup, #endif currentExporter,
                     cabinetBlockItemVariant,
-                    Ingredient.ofItems(sameWoodOtherColourCabinets),
+                    Ingredient.of(sameWoodOtherColourCabinets),
                     currentDye,
                     MOD_ID + "/cabinets",
                     "cabinets/color_change/"
@@ -188,7 +172,7 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
             offerColorChangeRecipie(
                     #if MC_VERSION >= 12104 itemLookup, #endif currentExporter,
                     illuminatedCabinetBlockItemVariant,
-                    Ingredient.ofItems(sameWoodOtherColourIlluminatedCabinets),
+                    Ingredient.of(sameWoodOtherColourIlluminatedCabinets),
                     currentDye,
                     MOD_ID + "/illuminated_cabinets",
                     "illuminated_cabinets/color_change/"
@@ -197,9 +181,9 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
         }
     }
 
-    protected void generateWoodenMosaicRecipies(
-            #if MC_VERSION >= 12104 RegistryWrapper.Impl<Item> itemLookup, #endif
-            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
+    protected void generateWoodenMosaicRecipes(
+            #if MC_VERSION >= 12104 HolderLookup.RegistryLookup<Item> itemLookup, #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif output
     ) {
         Iterable<BlockMaterial> woodenMosaicMaterials = ActiveGenerationData.woodenMosaicVariantMaterials;
         int i = 0;
@@ -210,24 +194,20 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
             SupportedMods sourceMod1 = woodMaterial1.metadata().sourceMod();
             SupportedMods sourceMod2 = woodMaterial2.metadata().sourceMod();
 
-            #if MC_VERSION == 12001
-            Consumer<RecipeJsonProvider> currentExporter = exporter;
-            #else
-            RecipeExporter currentExporter = exporter;
-            #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif currentExporter = output;
 
             // Apply the condition if the source mod isn't vanilla Minecraft
             if (sourceMod1 != null && sourceMod2 != null)
                 #if MC_VERSION < 12006
-                currentExporter = withConditions(exporter, DefaultResourceConditions.allModsLoaded(sourceMod1.modId, sourceMod2.modId));
+                currentExporter = withConditions(output, DefaultResourceConditions.allModsLoaded(sourceMod1.modId, sourceMod2.modId));
                 #else
-                currentExporter = withConditions(exporter, ResourceConditions.allModsLoaded(sourceMod1.modId, sourceMod2.modId));
+                currentExporter = withConditions(output, ResourceConditions.allModsLoaded(sourceMod1.modId, sourceMod2.modId));
                 #endif
             else if (sourceMod1 != null || sourceMod2 != null) {
                 #if MC_VERSION < 12006
-                currentExporter = withConditions(exporter, DefaultResourceConditions.allModsLoaded(Objects.requireNonNullElse(sourceMod1, sourceMod2).modId));
+                currentExporter = withConditions(output, DefaultResourceConditions.allModsLoaded(Objects.requireNonNullElse(sourceMod1, sourceMod2).modId));
                 #else
-                currentExporter = withConditions(exporter, ResourceConditions.allModsLoaded(Objects.requireNonNullElse(sourceMod1, sourceMod2).modId));
+                currentExporter = withConditions(output, ResourceConditions.allModsLoaded(Objects.requireNonNullElse(sourceMod1, sourceMod2).modId));
                 #endif
             }
 
@@ -266,9 +246,9 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
         }
     }
 
-    protected void generateTerracottaTileRecipies(
-            #if MC_VERSION >= 12104 RegistryWrapper.Impl<Item> itemLookup, #endif
-            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
+    protected void generateTerracottaTileRecipes(
+            #if MC_VERSION >= 12104 HolderLookup.RegistryLookup<Item> itemLookup, #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif output
     ) {
         int i = 0;
         for (BlockMaterial material : ActiveGenerationData.terracottaTilesMaterials) {
@@ -276,7 +256,7 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
             Item terracotta2 = getItemFromName(material.layers()[1].name() + "_terracotta");
 
             offerTerracottaTileRecipe(
-                    #if MC_VERSION >= 12104 itemLookup, #endif exporter,
+                    #if MC_VERSION >= 12104 itemLookup, #endif output,
                     BlockRegistry.TERRACOTTA_TILE_VARIANTS[i],
                     terracotta1,
                     terracotta2,
@@ -284,7 +264,7 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
             );
             final int j = getMirrorIndex(i, RawGenerationData.vanillaColorPallet.length);
             offerChangeRecipie(
-                    #if MC_VERSION >= 12104 itemLookup, #endif exporter,
+                    #if MC_VERSION >= 12104 itemLookup, #endif output,
                     BlockRegistry.TERRACOTTA_TILE_VARIANTS[i],
                     BlockRegistry.TERRACOTTA_TILE_VARIANTS[j],
                     MOD_ID + "/terracotta_tiles",
@@ -309,9 +289,9 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
         return result;
     }
 
-    protected void generateForcedCornerStairsRecipies(
-            #if MC_VERSION >= 12104 RegistryWrapper.Impl<Item> itemLookup, #endif
-            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
+    protected void generateForcedCornerStairsRecipes(
+            #if MC_VERSION >= 12104 HolderLookup.RegistryLookup<Item> itemLookup, #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif output
     ) {
         int i = 0;
         for (BlockMaterial stairMaterial : ActiveGenerationData.forcedCornerStairsVariantMaterials) {
@@ -332,23 +312,19 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
             final Item stairs = getItemFromName(materialName + "_stairs", sourceMod);
             final String modId = sourceMod != null ? sourceMod.modId : "vanilla";
 
-            #if MC_VERSION == 12001
-            Consumer<RecipeJsonProvider> currentExporter = exporter;
-            #else
-            RecipeExporter currentExporter = exporter;
-            #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif currentExporter = output;
 
             // Apply the condition if the source mod isn't vanilla Minecraft
             if (sourceMod != null) {
                 #if MC_VERSION < 12006
-                currentExporter = withConditions(exporter, DefaultResourceConditions.allModsLoaded(sourceMod.modId));
+                currentExporter = withConditions(output, DefaultResourceConditions.allModsLoaded(sourceMod.modId));
                 #else
-                currentExporter = withConditions(exporter, ResourceConditions.allModsLoaded(sourceMod.modId));
+                currentExporter = withConditions(output, ResourceConditions.allModsLoaded(sourceMod.modId));
                 #endif
             }
 
-            final ItemConvertible inner_stairs = BlockRegistry.INNER_STAIRS_BLOCK_VARIANTS[i];
-            final ItemConvertible outer_stairs = BlockRegistry.OUTER_STAIRS_BLOCK_VARIANTS[i];
+            final ItemLike inner_stairs = BlockRegistry.INNER_STAIRS_BLOCK_VARIANTS[i];
+            final ItemLike outer_stairs = BlockRegistry.OUTER_STAIRS_BLOCK_VARIANTS[i];
 
             offerChangeRecipie(#if MC_VERSION >= 12104 itemLookup, #endif currentExporter, inner_stairs, stairs, MOD_ID + "/stairs", "stairs/" + modId + "/inner/");
             offerChangeRecipie(#if MC_VERSION >= 12104 itemLookup, #endif currentExporter, outer_stairs, inner_stairs, MOD_ID + "/stairs", "stairs/" + modId + "/outer/");
@@ -357,13 +333,13 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
         }
     }
 
-    protected void generateSpecialJackOLanternRecipies(
-            #if MC_VERSION >= 12104 RegistryWrapper.Impl<Item> itemLookup, #endif
-            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
+    protected void generateSpecialJackOLanternRecipes(
+            #if MC_VERSION >= 12104 HolderLookup.RegistryLookup<Item> itemLookup, #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif output
     ) {
         Item carved_pumpkin = Items.CARVED_PUMPKIN;
         offerDoubleInputShapelessRecipe(
-                #if MC_VERSION >= 12104 itemLookup, #endif exporter,
+                #if MC_VERSION >= 12104 itemLookup, #endif output,
                 BlockRegistry.JACK_O_LANTERN_REDSTONE,
                 carved_pumpkin,
                 Items.REDSTONE_TORCH,
@@ -372,7 +348,7 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
                 "jack_o_lanterns/"
         );
         offerDoubleInputShapelessRecipe(
-                #if MC_VERSION >= 12104 itemLookup, #endif exporter,
+                #if MC_VERSION >= 12104 itemLookup, #endif output,
                 BlockRegistry.JACK_O_LANTERN_SOUL,
                 carved_pumpkin,
                 Items.SOUL_TORCH,
@@ -382,18 +358,18 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
         );
     }
 
-    protected void generateColouredJackOLanternRecipies(
-            #if MC_VERSION >= 12104 RegistryWrapper.Impl<Item> itemLookup, #endif
-            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
+    protected void generateColouredJackOLanternRecipes(
+            #if MC_VERSION >= 12104 HolderLookup.RegistryLookup<Item> itemLookup, #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif output
     ) {
         Item carved_pumpkin = Items.CARVED_PUMPKIN;
 
         for (int i = 0; i < RawGenerationData.vanillaColorPallet.length; ++i) {
-            ItemConvertible jackOLantern = BlockRegistry.COLOURED_JACK_O_LANTERNS[i];
-            ItemConvertible torch = BlockRegistry.COLOURED_TORCH_VARIANTS[i];
+            ItemLike jackOLantern = BlockRegistry.COLOURED_JACK_O_LANTERNS[i];
+            ItemLike torch = BlockRegistry.COLOURED_TORCH_VARIANTS[i];
 
             offerDoubleInputShapelessRecipe(
-                    #if MC_VERSION >= 12104 itemLookup, #endif exporter,
+                    #if MC_VERSION >= 12104 itemLookup, #endif output,
                     jackOLantern,
                     carved_pumpkin,
                     torch,
@@ -404,9 +380,9 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
         }
     }
 
-    protected void generateGlowingPowderRecipies(
-            #if MC_VERSION >= 12104 RegistryWrapper.Impl<Item> itemLookup, #endif
-            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
+    protected void generateGlowingPowderRecipes(
+            #if MC_VERSION >= 12104 HolderLookup.RegistryLookup<Item> itemLookup, #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif output
     ) {
         Item glowstoneDust = Items.GLOWSTONE_DUST;
         Item redstone = Items.REDSTONE;
@@ -415,7 +391,7 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
             Item glowingPowder = ItemRegistry.GLOWING_POWDER_VARIANTS[i];
             Item dye = getItemFromName(color + "_dye");
             offerTripleInputShapelessRecipe(
-                    #if MC_VERSION >= 12104 itemLookup, #endif exporter,
+                    #if MC_VERSION >= 12104 itemLookup, #endif output,
                     glowingPowder,
                     glowstoneDust,
                     redstone,
@@ -428,16 +404,16 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
         }
     }
 
-    protected void generateColouredTorchRecipies(
-            #if MC_VERSION >= 12104 RegistryWrapper.Impl<Item> itemLookup, #endif
-            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
+    protected void generateColouredTorchRecipes(
+            #if MC_VERSION >= 12104 HolderLookup.RegistryLookup<Item> itemLookup, #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif output
     ) {
         final int length = ActiveGenerationData.colouredFeatureSetMaterials.size();
         for (int i = 0; i < length; i++) {
-            ItemConvertible colouredTorch = BlockRegistry.COLOURED_TORCH_VARIANTS[i];
+            ItemLike colouredTorch = BlockRegistry.COLOURED_TORCH_VARIANTS[i];
             Item glowingPowder = ItemRegistry.GLOWING_POWDER_VARIANTS[i];
             offerColouredTorchRecipe(
-                    #if MC_VERSION >= 12104 itemLookup, #endif exporter,
+                    #if MC_VERSION >= 12104 itemLookup, #endif output,
                     colouredTorch,
                     glowingPowder, 3,
                     MOD_ID + "/coloured_torches",
@@ -446,33 +422,33 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
         }
     }
 
-    protected void generateCandlestickRecipies(
-            #if MC_VERSION >= 12104 RegistryWrapper.Impl<Item> itemLookup, #endif
-            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
+    protected void generateCandlestickRecipes(
+            #if MC_VERSION >= 12104 HolderLookup.RegistryLookup<Item> itemLookup, #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif output
     ) {
         int i = 0;
         for (BlockMaterial material : ActiveGenerationData.simpleCandlestickMaterials) {
             final String metal = material.layers()[0].name();
             final Item ingot = getItemFromName(metal + "_ingot");
-            offerCandlestickRecipie(#if MC_VERSION >= 12104 itemLookup, #endif exporter, ItemRegistry.CANDLESTICK_ITEM_VARIANTS[i], ingot, "candlesticks/");
+            offerCandlestickRecipie(#if MC_VERSION >= 12104 itemLookup, #endif output, ItemRegistry.CANDLESTICK_ITEM_VARIANTS[i], ingot, "candlesticks/");
             ++i;
         }
         i = 0;
         for (Iterable<BlockMaterial> meterials : ActiveGenerationData.rustingCandlestickMaterials) {
             final String metal = meterials.iterator().next().layers()[0].name();
             final Item ingot = getItemFromName(metal + "_ingot");
-            offerCandlestickRecipie(#if MC_VERSION >= 12104 itemLookup, #endif exporter, ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS[i][0], ingot, "candlesticks/");
+            offerCandlestickRecipie(#if MC_VERSION >= 12104 itemLookup, #endif output, ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS[i][0], ingot, "candlesticks/");
             ++i;
         }
     }
 
     protected void generateLightStripRecipes(
-            #if MC_VERSION >= 12104 RegistryWrapper.Impl<Item> itemLookup, #endif
-            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter
+            #if MC_VERSION >= 12104 HolderLookup.RegistryLookup<Item> itemLookup, #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif output
     ) {
         for (int i = 0; i < RawGenerationData.vanillaColorPallet.length; ++i) {
             offerLightStripRecipie(
-            #if MC_VERSION >= 12104 itemLookup, #endif exporter,
+            #if MC_VERSION >= 12104 itemLookup, #endif output,
                     BlockRegistry.LIGHT_STRIP_VARIANTS[i],
                     ItemRegistry.GLOWING_POWDER_VARIANTS[i],
                     "light_strips/"
@@ -486,10 +462,10 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
 
 
     protected static Item getItemFromName(String name) {
-        return Registries.ITEM.get(getVanillaId(name));
+        return BuiltInRegistries.ITEM.get(getVanillaId(name));
     }
     protected static Item getItemFromName(String name, SupportedMods mod) {
-        Item item = Registries.ITEM.get(getVMId(mod, name));
+        Item item = BuiltInRegistries.ITEM.get(getVMId(mod, name));
         if (item == Items.AIR)
             throw new IllegalStateException("Item not found: '" + name + "' in mod: '" + (mod != null ? mod.modId : "vanilla") + "'");
         return item;

@@ -1,35 +1,24 @@
 package io.github.mikip98.humilityafm.registries;
 
-#if MC_VERSION >= 12006
-import io.github.mikip98.humilityafm.HumilityAFM;
-#endif
 import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-#if MC_VERSION < 12006
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-#else
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-#endif
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.network.PacketByteBuf;
-#if MC_VERSION >= 12006
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
-#else
-import net.minecraft.util.Identifier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
-#endif
 
 public class NetworkRegistry {
     #if MC_VERSION >= 12006
     public static void registerPayload() {
-        PayloadTypeRegistry.playS2C().register(ConfigSyncPayload.ID, ConfigSyncPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(ConfigSyncPayload.TYPE, ConfigSyncPayload.CODEC);
     }
     #else
-    public static final Identifier CONFIG_SYNC = getId("config_sync");
+    // Identifier -> ResourceLocation
+    public static final ResourceLocation CONFIG_SYNC = getId("config_sync");
     #endif
 
     @Environment(EnvType.SERVER)
@@ -39,7 +28,7 @@ public class NetworkRegistry {
             int i = 0;
             for (SupportedMods mod : SupportedMods.values()) {
                 if (mod == SupportedMods.SHIMMER) continue;
-                modSupport[i] = (byte) ModConfig.modSupport.get(mod).ordinal();  // ModSupportState (AUTO, ON, OFF)
+                modSupport[i] = (byte) ModConfig.modSupport.get(mod).ordinal();
                 ++i;
             }
             final ConfigSyncPayload payload = new ConfigSyncPayload(
@@ -61,16 +50,16 @@ public class NetworkRegistry {
             boolean enableColouredFeature,
             float mosaicsStrength,
             byte[] modSupport
-    ) #if MC_VERSION >= 12006 implements CustomPayload #endif {
+    )#if MC_VERSION >= 12006 implements CustomPacketPayload #endif{
 
         #if MC_VERSION >= 12006
-        public static final Id<ConfigSyncPayload> ID = new Id<>(HumilityAFM.getId("config_sync"));
+        public static final CustomPacketPayload.Type<ConfigSyncPayload> TYPE = new CustomPacketPayload.Type<>(getId("config_sync"));
 
-        public static final PacketCodec<PacketByteBuf, ConfigSyncPayload> CODEC =
-                PacketCodec.of(ConfigSyncPayload::write, ConfigSyncPayload::new);
+        public static final StreamCodec<FriendlyByteBuf, ConfigSyncPayload> CODEC =
+                StreamCodec.ofMember(ConfigSyncPayload::write, ConfigSyncPayload::new);
         #endif
 
-        public ConfigSyncPayload(PacketByteBuf buf) {
+        public ConfigSyncPayload(FriendlyByteBuf buf) {
             this(
                     buf.readBoolean(),
                     buf.readBoolean(),
@@ -78,15 +67,15 @@ public class NetworkRegistry {
                     buf.readByteArray()
             );
         }
-        public void write(PacketByteBuf buf) {
+        public void write(FriendlyByteBuf buf) {
             buf.writeBoolean(enableCandlestick);
             buf.writeBoolean(enableColouredFeature);
             buf.writeFloat(mosaicsStrength);
             buf.writeByteArray(modSupport);
         }
         #if MC_VERSION < 12006
-        public PacketByteBuf save() {
-            PacketByteBuf buf = PacketByteBufs.create();
+        public FriendlyByteBuf save() {
+            FriendlyByteBuf buf = PacketByteBufs.create();
             write(buf);
             return buf;
         }
@@ -94,7 +83,7 @@ public class NetworkRegistry {
 
         #if MC_VERSION >= 12006
         @Override
-        public Id<? extends CustomPayload> getId() { return ID; }
+        public CustomPacketPayload.Type<? extends CustomPacketPayload> type() { return TYPE; }
         #endif
     }
 }

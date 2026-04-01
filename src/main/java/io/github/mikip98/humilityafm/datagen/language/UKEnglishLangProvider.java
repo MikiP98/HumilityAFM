@@ -27,9 +27,14 @@ public class UKEnglishLangProvider extends FabricLanguageProvider {
     @Override
     #if MC_VERSION < 12006
     public void generateTranslations(FabricLanguageProvider.TranslationBuilder translationBuilder) {
+        generateTranslationsInternal(translationBuilder);
+    }
     #else
     public void generateTranslations(RegistryWrapper.WrapperLookup registryLookup, FabricLanguageProvider.TranslationBuilder translationBuilder) {
+        generateTranslationsInternal(translationBuilder);
+    }
     #endif
+    protected void generateTranslationsInternal(FabricLanguageProvider.TranslationBuilder translationBuilder) {
         // Replace:
         // - "Gray" -> "Grey"
 

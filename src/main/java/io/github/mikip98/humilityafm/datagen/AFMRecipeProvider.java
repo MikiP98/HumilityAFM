@@ -4,31 +4,16 @@ package io.github.mikip98.humilityafm.datagen;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 #endif
-import net.minecraft.block.Blocks;
-#if MC_VERSION < 12004
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
-#elif MC_VERSION < 12104
-import net.minecraft.data.server.recipe.RecipeExporter;
-#endif
-#if MC_VERSION < 12104
-import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
-import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
-#else
-import net.minecraft.data.recipe.RecipeExporter;
-import net.minecraft.data.recipe.RecipeGenerator;
-import net.minecraft.data.recipe.ShapedRecipeJsonBuilder;
-import net.minecraft.data.recipe.ShapelessRecipeJsonBuilder;
-import net.minecraft.item.Item;
-#endif
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.Items;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.book.RecipeCategory;
-#if MC_VERSION >= 12006
-import net.minecraft.registry.RegistryWrapper;
-#endif
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
 
 #if MC_VERSION == 12001
@@ -54,105 +39,105 @@ public abstract class AFMRecipeProvider extends #if MC_VERSION < 12104 FabricRec
     #endif
 
     protected void offerCabinetRecipe(
-            #if MC_VERSION >= 12104 RegistryWrapper.Impl<Item> itemLookup, #endif
-            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter,
-            ItemConvertible output, ItemConvertible slab, ItemConvertible carpet, String path_prefix
+            #if MC_VERSION >= 12104 HolderLookup.RegistryLookup<Item> itemLookup, #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif exporter,
+            ItemLike output, ItemLike slab, ItemLike carpet, String path_prefix
     ) {
-        ShapedRecipeJsonBuilder
-                .create(#if MC_VERSION >= 12104 itemLookup, #endif RecipeCategory.MISC, output, 1)
+        ShapedRecipeBuilder
+                .shaped(#if MC_VERSION >= 12104 itemLookup, #endif RecipeCategory.MISC, output, 1)
                 .pattern(" G ")
                 .pattern("SCS")
                 .pattern(" S ")
-                .input('G', Items.GLASS_PANE)
-                .input('S', slab)
-                .input('C', carpet)
+                .define('G', Items.GLASS_PANE)
+                .define('S', slab)
+                .define('C', carpet)
                 .group(MOD_ID + "/cabinets")
-                .criterion(hasItem(Items.GLASS_PANE), conditionsFromItem(Items.GLASS_PANE))
-                .criterion(hasItem(slab), conditionsFromItem(slab))
-                .criterion(hasItem(carpet), conditionsFromItem(carpet))
-                .offerTo(exporter, path_prefix + getRecipeName(output));
+                .unlockedBy(getHasName(Items.GLASS_PANE), has(Items.GLASS_PANE))
+                .unlockedBy(getHasName(slab), has(slab))
+                .unlockedBy(getHasName(carpet), has(carpet))
+                .save(exporter, path_prefix + getItemName(output));
     }
 
     protected void offerAlternateWoodenMosaicRecipe(
-            #if MC_VERSION >= 12104 RegistryWrapper.Impl<Item> itemLookup, #endif
-            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter,
-            ItemConvertible output, ItemConvertible plank1, ItemConvertible plank2, String path_prefix
+            #if MC_VERSION >= 12104 HolderLookup.RegistryLookup<Item> itemLookup, #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif exporter,
+            ItemLike output, ItemLike plank1, ItemLike plank2, String path_prefix
     ) {
-        ShapedRecipeJsonBuilder
-                .create(#if MC_VERSION >= 12104 itemLookup, #endif RecipeCategory.MISC, output, 1)
+        ShapedRecipeBuilder
+                .shaped(#if MC_VERSION >= 12104 itemLookup, #endif RecipeCategory.MISC, output, 1)
                 .pattern("FS")
                 .pattern("  ")
                 .pattern("SF")
-                .input('F', plank1)
-                .input('S', plank2)
+                .define('F', plank1)
+                .define('S', plank2)
                 .group(MOD_ID + "/wooden_mosaics")
-                .criterion(hasItem(plank1), conditionsFromItem(plank1))
-                .criterion(hasItem(plank2), conditionsFromItem(plank2))
-                .offerTo(exporter, path_prefix + getRecipeName(output));
+                .unlockedBy(getHasName(plank1), has(plank1))
+                .unlockedBy(getHasName(plank2), has(plank2))
+                .save(exporter, path_prefix + getItemName(output));
     }
     protected void offerWoodenMosaicRecipe(
-            #if MC_VERSION >= 12104 RegistryWrapper.Impl<Item> itemLookup, #endif
-            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter,
-            ItemConvertible output, ItemConvertible plank1, ItemConvertible plank2, String path_prefix
+            #if MC_VERSION >= 12104 HolderLookup.RegistryLookup<Item> itemLookup, #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif exporter,
+            ItemLike output, ItemLike plank1, ItemLike plank2, String path_prefix
     ) {
         offerCheckerPatternRecipe(#if MC_VERSION >= 12104 itemLookup, #endif exporter, output, plank1, plank2, MOD_ID + "/wooden_mosaics", path_prefix);
     }
     protected void offerTerracottaTileRecipe(
-            #if MC_VERSION >= 12104 RegistryWrapper.Impl<Item> itemLookup, #endif
-            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter,
-            ItemConvertible output, ItemConvertible terracotta1, ItemConvertible terracotta2, String path_prefix
+            #if MC_VERSION >= 12104 HolderLookup.RegistryLookup<Item> itemLookup, #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif exporter,
+            ItemLike output, ItemLike terracotta1, ItemLike terracotta2, String path_prefix
     ) {
         offerCheckerPatternRecipe(#if MC_VERSION >= 12104 itemLookup, #endif exporter, output, terracotta1, terracotta2, MOD_ID + "/terracotta_tiles", path_prefix);
     }
 
     protected void offerCheckerPatternRecipe(
-            #if MC_VERSION >= 12104 RegistryWrapper.Impl<Item> itemLookup, #endif
-            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter,
-            ItemConvertible output, ItemConvertible input1, ItemConvertible input2, String group, String path_prefix
+            #if MC_VERSION >= 12104 HolderLookup.RegistryLookup<Item> itemLookup, #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif exporter,
+            ItemLike output, ItemLike input1, ItemLike input2, String group, String path_prefix
     ) {
-        ShapedRecipeJsonBuilder
-                .create(#if MC_VERSION >= 12104 itemLookup, #endif RecipeCategory.MISC, output, 1)
+        ShapedRecipeBuilder
+                .shaped(#if MC_VERSION >= 12104 itemLookup, #endif RecipeCategory.MISC, output, 1)
                 .pattern("FS")
                 .pattern("SF")
-                .input('F', input1)
-                .input('S', input2)
+                .define('F', input1)
+                .define('S', input2)
                 .group(group)
-                .criterion(hasItem(input1), conditionsFromItem(input1))
-                .criterion(hasItem(input2), conditionsFromItem(input2))
-                .offerTo(exporter, path_prefix + getRecipeName(output));
+                .unlockedBy(getHasName(input1), has(input1))
+                .unlockedBy(getHasName(input2), has(input2))
+                .save(exporter, path_prefix + getItemName(output));
     }
 
     protected void offerChangeRecipie(
-            #if MC_VERSION >= 12104 RegistryWrapper.Impl<Item> itemLookup, #endif
-            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter,
-            ItemConvertible output, ItemConvertible input, String group, String path_prefix
+            #if MC_VERSION >= 12104 HolderLookup.RegistryLookup<Item> itemLookup, #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif exporter,
+            ItemLike output, ItemLike input, String group, String path_prefix
     ) {
-        ShapelessRecipeJsonBuilder
-                .create(#if MC_VERSION >= 12104 itemLookup, #endif RecipeCategory.MISC, output, 1)
-                .input(input)
+        ShapelessRecipeBuilder
+                .shapeless(#if MC_VERSION >= 12104 itemLookup, #endif RecipeCategory.MISC, output, 1)
+                .requires(input)
                 .group(group)
-                .criterion(hasItem(input), conditionsFromItem(input))
-                .offerTo(exporter, path_prefix + getRecipeName(output));
+                .unlockedBy(getHasName(input), has(input))
+                .save(exporter, path_prefix + getItemName(output));
     }
 
     protected void offerColorChangeRecipie(
-            #if MC_VERSION >= 12104 RegistryWrapper.Impl<Item> itemLookup, #endif
-            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter,
-            ItemConvertible output, Ingredient input, ItemConvertible dye, String group, String path_prefix
+            #if MC_VERSION >= 12104 HolderLookup.RegistryLookup<Item> itemLookup, #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif exporter,
+            ItemLike output, Ingredient input, ItemLike dye, String group, String path_prefix
     ) {
-        ShapelessRecipeJsonBuilder
-                .create(#if MC_VERSION >= 12104 itemLookup, #endif RecipeCategory.MISC, output, 1)
-                .input(input)
-                .input(dye)
+        ShapelessRecipeBuilder
+                .shapeless(#if MC_VERSION >= 12104 itemLookup, #endif RecipeCategory.MISC, output, 1)
+                .requires(input)
+                .requires(dye)
                 .group(group)
-                .criterion(hasItem(dye), conditionsFromItem(dye))
-                .offerTo(exporter, path_prefix + getRecipeName(output) + "_color_change");
+                .unlockedBy(getHasName(dye), has(dye))
+                .save(exporter, path_prefix + getItemName(output) + "_color_change");
     }
 
     protected void offerIlluminatedCabinetRecipe(
-            #if MC_VERSION >= 12104 RegistryWrapper.Impl<Item> itemLookup, #endif
-            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter,
-            ItemConvertible illuminated_cabinet, ItemConvertible cabinet
+            #if MC_VERSION >= 12104 HolderLookup.RegistryLookup<Item> itemLookup, #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif exporter,
+            ItemLike illuminated_cabinet, ItemLike cabinet
     ) {
         offerDoubleInputShapelessRecipe(
                 #if MC_VERSION >= 12104 itemLookup, #endif
@@ -167,115 +152,115 @@ public abstract class AFMRecipeProvider extends #if MC_VERSION < 12104 FabricRec
     }
 
     protected void offerDoubleInputShapelessRecipe(
-            #if MC_VERSION >= 12104 RegistryWrapper.Impl<Item> itemLookup, #endif
-            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter,
-            ItemConvertible output, ItemConvertible input1, ItemConvertible input2,
+            #if MC_VERSION >= 12104 HolderLookup.RegistryLookup<Item> itemLookup, #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif exporter,
+            ItemLike output, ItemLike input1, ItemLike input2,
             @Nullable String group, int outputCount, String path_prefix
     ) {
-        ShapelessRecipeJsonBuilder
-                .create(#if MC_VERSION >= 12104 itemLookup, #endif RecipeCategory.MISC, output, outputCount)
-                .input(input1)
-                .input(input2)
+        ShapelessRecipeBuilder
+                .shapeless(#if MC_VERSION >= 12104 itemLookup, #endif RecipeCategory.MISC, output, outputCount)
+                .requires(input1)
+                .requires(input2)
                 .group(group)
-                .criterion(hasItem(input1), conditionsFromItem(input1))
-                .criterion(hasItem(input2), conditionsFromItem(input2))
-                .offerTo(exporter, path_prefix + getRecipeName(output));
+                .unlockedBy(getHasName(input1), has(input1))
+                .unlockedBy(getHasName(input2), has(input2))
+                .save(exporter, path_prefix + getItemName(output));
     }
     protected void offerTripleInputShapelessRecipe(
-            #if MC_VERSION >= 12104 RegistryWrapper.Impl<Item> itemLookup, #endif
-            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter,
-            ItemConvertible output, ItemConvertible input1, ItemConvertible input2, ItemConvertible input3,
+            #if MC_VERSION >= 12104 HolderLookup.RegistryLookup<Item> itemLookup, #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif exporter,
+            ItemLike output, ItemLike input1, ItemLike input2, ItemLike input3,
             @Nullable String group, int outputCount, String path_prefix
     ) {
-        ShapelessRecipeJsonBuilder
-                .create(#if MC_VERSION >= 12104 itemLookup, #endif RecipeCategory.MISC, output, outputCount)
-                .input(input1)
-                .input(input2)
-                .input(input3)
+        ShapelessRecipeBuilder
+                .shapeless(#if MC_VERSION >= 12104 itemLookup, #endif RecipeCategory.MISC, output, outputCount)
+                .requires(input1)
+                .requires(input2)
+                .requires(input3)
                 .group(group)
-                .criterion(hasItem(input1), conditionsFromItem(input1))
-                .criterion(hasItem(input2), conditionsFromItem(input2))
-                .criterion(hasItem(input3), conditionsFromItem(input3))
-                .offerTo(exporter, path_prefix + getRecipeName(output));
+                .unlockedBy(getHasName(input1), has(input1))
+                .unlockedBy(getHasName(input2), has(input2))
+                .unlockedBy(getHasName(input3), has(input3))
+                .save(exporter, path_prefix + getItemName(output));
     }
 
     protected void offerColouredTorchRecipe(
-            #if MC_VERSION >= 12104 RegistryWrapper.Impl<Item> itemLookup, #endif
-            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter,
-            ItemConvertible output, ItemConvertible glowingPowder, int glowingPowderAmount,
+            #if MC_VERSION >= 12104 HolderLookup.RegistryLookup<Item> itemLookup, #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif exporter,
+            ItemLike output, ItemLike glowingPowder, int glowingPowderAmount,
             @Nullable String group, String path_prefix
     ) {
-        ShapelessRecipeJsonBuilder
-                .create(#if MC_VERSION >= 12104 itemLookup, #endif RecipeCategory.MISC, output, 2)
-                .input(Items.STICK)
-                .input(Items.GLOW_INK_SAC)
-                .input(glowingPowder, glowingPowderAmount)
+        ShapelessRecipeBuilder
+                .shapeless(#if MC_VERSION >= 12104 itemLookup, #endif RecipeCategory.MISC, output, 2)
+                .requires(Items.STICK)
+                .requires(Items.GLOW_INK_SAC)
+                .requires(glowingPowder, glowingPowderAmount)
                 .group(group)
-                .criterion(hasItem(Items.STICK), conditionsFromItem(Items.STICK))
-                .criterion(hasItem(Items.QUARTZ), conditionsFromItem(Items.QUARTZ))
-                .criterion(hasItem(glowingPowder), conditionsFromItem(glowingPowder))
-                .offerTo(exporter, path_prefix + getRecipeName(output));
+                .unlockedBy(getHasName(Items.STICK), has(Items.STICK))
+                .unlockedBy(getHasName(Items.QUARTZ), has(Items.QUARTZ))
+                .unlockedBy(getHasName(glowingPowder), has(glowingPowder))
+                .save(exporter, path_prefix + getItemName(output));
     }
 
     protected void offerCandlestickRecipie(
-            #if MC_VERSION >= 12104 RegistryWrapper.Impl<Item> itemLookup, #endif
-            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter,
-            ItemConvertible output, ItemConvertible ingot, String path_prefix
+            #if MC_VERSION >= 12104 HolderLookup.RegistryLookup<Item> itemLookup, #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif exporter,
+            ItemLike output, ItemLike ingot, String path_prefix
     ) {
-        ShapedRecipeJsonBuilder
-                .create(#if MC_VERSION >= 12104 itemLookup, #endif RecipeCategory.DECORATIONS, output)
+        ShapedRecipeBuilder
+                .shaped(#if MC_VERSION >= 12104 itemLookup, #endif RecipeCategory.DECORATIONS, output)
                 .pattern("I ")
                 .pattern("II")
-                .input('I', ingot)
+                .define('I', ingot)
                 .group(MOD_ID + "/candlestick")
-                .criterion(hasItem(ingot), conditionsFromItem(ingot))
-                .offerTo(exporter, path_prefix + "classic/" + getRecipeName(output));
-        ShapedRecipeJsonBuilder
-                .create(#if MC_VERSION >= 12104 itemLookup, #endif RecipeCategory.DECORATIONS, output)
+                .unlockedBy(getHasName(ingot), has(ingot))
+                .save(exporter, path_prefix + "classic/" + getItemName(output));
+        ShapedRecipeBuilder
+                .shaped(#if MC_VERSION >= 12104 itemLookup, #endif RecipeCategory.DECORATIONS, output)
                 .pattern(" I")
                 .pattern("II")
-                .input('I', ingot)
+                .define('I', ingot)
                 .group(MOD_ID + "/candlestick")
-                .criterion(hasItem(ingot), conditionsFromItem(ingot))
-                .offerTo(exporter, path_prefix + "reversed/" + getRecipeName(output));
+                .unlockedBy(getHasName(ingot), has(ingot))
+                .save(exporter, path_prefix + "reversed/" + getItemName(output));
     }
 
     protected void offerLightStripRecipie(
-            #if MC_VERSION >= 12104 RegistryWrapper.Impl<Item> itemLookup, #endif
-            #if MC_VERSION == 12001 Consumer<RecipeJsonProvider> #else RecipeExporter #endif exporter,
-            ItemConvertible output, ItemConvertible glowingPowder, String path_prefix
+            #if MC_VERSION >= 12104 HolderLookup.RegistryLookup<Item> itemLookup, #endif
+            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif exporter,
+            ItemLike output, ItemLike glowingPowder, String path_prefix
     ) {
-        ShapedRecipeJsonBuilder
-                .create(#if MC_VERSION >= 12104 itemLookup, #endif RecipeCategory.DECORATIONS, output, 2)
+        ShapedRecipeBuilder
+                .shaped(#if MC_VERSION >= 12104 itemLookup, #endif RecipeCategory.DECORATIONS, output, 2)
                 .pattern("QQQ")
                 .pattern("PPP")
                 .pattern("GGG")
-                .input('Q', Items.QUARTZ)
-                .input('P', glowingPowder)
-                .input('G', Blocks.GLASS_PANE)
+                .define('Q', Items.QUARTZ)
+                .define('P', glowingPowder)
+                .define('G', Blocks.GLASS_PANE)
                 .group(MOD_ID + "/light_strip")
-                .criterion(hasItem(Items.QUARTZ), conditionsFromItem(Items.QUARTZ))
-                .criterion(hasItem(glowingPowder), conditionsFromItem(glowingPowder))
-                .criterion(hasItem(Blocks.GLASS_PANE), conditionsFromItem(Blocks.GLASS_PANE))
-                .offerTo(exporter, path_prefix + "classic/" + getRecipeName(output));
-        ShapedRecipeJsonBuilder
-                .create(#if MC_VERSION >= 12104 itemLookup, #endif RecipeCategory.DECORATIONS, output, 2)
+                .unlockedBy(getHasName(Items.QUARTZ), has(Items.QUARTZ))
+                .unlockedBy(getHasName(glowingPowder), has(glowingPowder))
+                .unlockedBy(getHasName(Blocks.GLASS_PANE), has(Blocks.GLASS_PANE))
+                .save(exporter, path_prefix + "classic/" + getItemName(output));
+        ShapedRecipeBuilder
+                .shaped(#if MC_VERSION >= 12104 itemLookup, #endif RecipeCategory.DECORATIONS, output, 2)
                 .pattern("GGG")
                 .pattern("PPP")
                 .pattern("QQQ")
-                .input('Q', Items.QUARTZ)
-                .input('P', glowingPowder)
-                .input('G', Blocks.GLASS_PANE)
+                .define('Q', Items.QUARTZ)
+                .define('P', glowingPowder)
+                .define('G', Blocks.GLASS_PANE)
                 .group(MOD_ID + "/light_strip")
-                .criterion(hasItem(Items.QUARTZ), conditionsFromItem(Items.QUARTZ))
-                .criterion(hasItem(glowingPowder), conditionsFromItem(glowingPowder))
-                .criterion(hasItem(Blocks.GLASS_PANE), conditionsFromItem(Blocks.GLASS_PANE))
-                .offerTo(exporter, path_prefix + "reversed/" + getRecipeName(output));
+                .unlockedBy(getHasName(Items.QUARTZ), has(Items.QUARTZ))
+                .unlockedBy(getHasName(glowingPowder), has(glowingPowder))
+                .unlockedBy(getHasName(Blocks.GLASS_PANE), has(Blocks.GLASS_PANE))
+                .save(exporter, path_prefix + "reversed/" + getItemName(output));
     }
 
     // Override for the vanilla method to be mod safe
-    public static String hasItem(ItemConvertible item) {
-        final Identifier itemId = Registries.ITEM.getId(item.asItem());
+    public static String getHasName(ItemLike item) {
+        final ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(item.asItem());
         return "has_" + itemId.getNamespace() + ":" + itemId.getPath();
     }
 }

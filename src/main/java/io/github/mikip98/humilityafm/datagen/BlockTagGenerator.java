@@ -8,16 +8,10 @@ import io.github.mikip98.humilityafm.util.generation_data.material_management.ma
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.MaterialType;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.minecraft.block.Block;
-#if MC_VERSION > 12105
-import net.minecraft.registry.Registries;
-#endif
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
-#if MC_VERSION > 12105
-import net.minecraft.registry.tag.TagBuilder;
-#endif
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -25,12 +19,11 @@ import java.util.concurrent.CompletableFuture;
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
 
 public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
-    public BlockTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
+    public BlockTagGenerator(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> completableFuture) {
         super(output, completableFuture);
     }
 
-    @Override
-    protected void configure(RegistryWrapper.WrapperLookup arg) {
+    protected void addTags(HolderLookup.Provider arg) {
         // ------------ Custom Tags ------------
         // Cabinet Block Tags
         generateCabinetTags();
@@ -215,7 +208,7 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
     }
 
     public static TagKey<Block> getTagKey(String name) {
-        return TagKey.of(RegistryKeys.BLOCK, getId(name));
+        return TagKey.create(Registries.BLOCK, getId(name));
     }
 
     protected TagBuilderWrapper getCommonTagBuilder(TagKey<Block> tag) {

@@ -2,25 +2,20 @@ package io.github.mikip98.humilityafm.content.blocks.candlestick.logic;
 
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.util.SoundUtils;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.HoneycombItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-#if MC_VERSION < 12006
-import net.minecraft.particle.DefaultParticleType;
-#else
-import net.minecraft.particle.ParticleEffect;
-#endif
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.HoneycombItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public non-sealed interface RustableCandlestickLogic extends BaseCandlestickLogic {
     BlockState getRustPreviousLevel();
@@ -29,49 +24,46 @@ public non-sealed interface RustableCandlestickLogic extends BaseCandlestickLogi
     void setRustNextLevel(BlockState rustNextLevel);
 
     default boolean onUseRustableLogic(
-            BlockState state, World world, BlockPos pos, PlayerEntity player, #if MC_VERSION < 12006 Hand hand, #endif
+            BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
             double x, double y, double z, double randomSpread
     ) {
-        #if MC_VERSION >= 12006
-        Hand hand = player.getActiveHand();
-        #endif
-        ItemStack heldItemStack = player.getStackInHand(hand);
+        ItemStack heldItemStack = player.getItemInHand(hand);
         Item heldItem = heldItemStack.getItem();
         if (tryToWax(state, world, pos, player, heldItemStack, heldItem, x, y, z, randomSpread)) return true;
         return tryToDeWaxOrDeRust(state, world, pos, player, hand, heldItemStack, heldItem, x, y, z, randomSpread);
     }
 
     default boolean tryToWax(
-            BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack heldItemStack, Item heldItem,
+            BlockState state, Level world, BlockPos pos, Player player, ItemStack heldItemStack, Item heldItem,
             double x, double y, double z, double randomSpread
     ) {
-        if (heldItem instanceof HoneycombItem && !state.get(ModProperties.WAXED)) {
-            world.setBlockState(pos, state.with(ModProperties.WAXED, true), Block.NOTIFY_ALL);
-            if (!player.isCreative()) heldItemStack.decrement(1);
+        if (heldItem instanceof HoneycombItem && !state.getValue(ModProperties.WAXED)) {
+            world.setBlockAndUpdate(pos, state.setValue(ModProperties.WAXED, true));
+            if (!player.isCreative()) heldItemStack.shrink(1);
             emmitWaxOnParticles(world, x, y, z, randomSpread);
-            SoundUtils.playSound(world, player, x, y, z, SoundEvents.ITEM_HONEYCOMB_WAX_ON);
+            SoundUtils.playSound(world, player, x, y, z, SoundEvents.HONEYCOMB_WAX_ON);
             return true;
         }
         return false;
     }
     default boolean tryToDeWaxOrDeRust(
-            BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, ItemStack heldItemStack, Item heldItem,
+            BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, ItemStack heldItemStack, Item heldItem,
             double x, double y, double z, double randomSpread
     ) {
         if (heldItem instanceof AxeItem) {
             // De-wax
-            if (state.get(ModProperties.WAXED)) {
-                world.setBlockState(pos, state.with(ModProperties.WAXED, false), Block.NOTIFY_ALL);
+            if (state.getValue(ModProperties.WAXED)) {
+                world.setBlockAndUpdate(pos, state.setValue(ModProperties.WAXED, false));
                 damageItem(heldItemStack, player, hand);
                 emmitWaxOffParticles(world, x, y, z, randomSpread);
-                SoundUtils.playSound(world, player, x, y, z, SoundEvents.ITEM_AXE_WAX_OFF);
+                SoundUtils.playSound(world, player, x, y, z, SoundEvents.AXE_WAX_OFF);
                 return true;
             }
             // De-rust
             else if (getRustPreviousLevel() != null) {
                 damageItem(heldItemStack, player, hand);
                 // ServerWorld check is required to be spam proof
-                if (!world.isClient()) derust(state, world, pos);  // isClient() is required past 1.21.11
+                if (!world.isClientSide()) derust(state, world, pos);  // isClient() is required past 1.21.11
                 // TODO: Check it still works in older versions and remove the comment
                 return true;
             }
@@ -82,48 +74,44 @@ public non-sealed interface RustableCandlestickLogic extends BaseCandlestickLogi
     BlockState getChangedBlockState(BlockState newBase, BlockState state);
     default BlockState getChangedBlockStateUniversal(BlockState newBase, BlockState state) {
         return newBase
-                .with(Properties.WATERLOGGED, state.get(Properties.WATERLOGGED))
-                .with(ModProperties.CANDLE_COLOR, state.get(ModProperties.CANDLE_COLOR))
-                .with(Properties.LIT, state.get(Properties.LIT))
-                .with(ModProperties.WAXED, state.get(ModProperties.WAXED));
+                .setValue(BlockStateProperties.WATERLOGGED, state.getValue(BlockStateProperties.WATERLOGGED))
+                .setValue(ModProperties.CANDLE_COLOR, state.getValue(ModProperties.CANDLE_COLOR))
+                .setValue(BlockStateProperties.LIT, state.getValue(BlockStateProperties.LIT))
+                .setValue(ModProperties.WAXED, state.getValue(ModProperties.WAXED));
     }
-    default void rust(BlockState state, World world, BlockPos pos) {
-        world.setBlockState(pos, getChangedBlockState(getRustNextLevel(), state), Block.NOTIFY_ALL);
+    default void rust(BlockState state, Level world, BlockPos pos) {
+        world.setBlockAndUpdate(pos, getChangedBlockState(getRustNextLevel(), state));
     }
-    default void derust(BlockState state, World world, BlockPos pos) {
-        world.setBlockState(pos, getChangedBlockState(getRustPreviousLevel(), state), Block.NOTIFY_ALL);
+    default void derust(BlockState state, Level world, BlockPos pos) {
+        world.setBlockAndUpdate(pos, getChangedBlockState(getRustPreviousLevel(), state));
     }
 
     default void emmitWaxingParticles(
-            World world,
+            Level world,
             #if MC_VERSION < 12006
-            DefaultParticleType particle,
+            SimpleParticleType particle,
             #else
             ParticleEffect particle,
             #endif
             double x, double y, double z,
             double randomSpread
     ) {
-        Random random = world.random;
+        RandomSource random = world.getRandom();
 
         for (int i = 0; i < 5; i++) {
             double randomX = x + ((random.nextDouble() - 0.5) * randomSpread);
             double randomY = y + ((random.nextDouble() - 0.5) * randomSpread);
             double randomZ = z + ((random.nextDouble() - 0.5) * randomSpread);
-            #if MC_VERSION < 12105
             world.addParticle(
-            #else
-            world.addParticleClient(
-            #endif
                     particle, randomX, randomY, randomZ, 0, 0, 0
             );
         }
     }
 
-    default void emmitWaxOnParticles(World world, double offsetX, double offsetY, double offsetZ, double randomSpread) {
+    default void emmitWaxOnParticles(Level world, double offsetX, double offsetY, double offsetZ, double randomSpread) {
         emmitWaxingParticles(world, ParticleTypes.WAX_ON, offsetX, offsetY, offsetZ, randomSpread);
     }
-    default void emmitWaxOffParticles(World world, double offsetX, double offsetY, double offsetZ, double randomSpread) {
+    default void emmitWaxOffParticles(Level world, double offsetX, double offsetY, double offsetZ, double randomSpread) {
         emmitWaxingParticles(world, ParticleTypes.WAX_OFF, offsetX, offsetY, offsetZ, randomSpread);
     }
 }

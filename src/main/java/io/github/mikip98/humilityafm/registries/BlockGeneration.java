@@ -22,6 +22,8 @@ import io.github.mikip98.humilityafm.util.generation_data.material_management.ma
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockStrength;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.MaterialType;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -36,9 +38,9 @@ import static io.github.mikip98.humilityafm.registries.BlockRegistry.*;
 public abstract class BlockGeneration {
     protected static CabinetBlockSet generateCabinetBlockSet() {
         final BlockBehaviour.Properties fireproofCabinetSettings = CabinetBlock.defaultSettings;
-        final BlockBehaviour.Properties burnableCabinetSettings = CabinetBlock.defaultSettingsSupplier.get().burnable();
+        final BlockBehaviour.Properties burnableCabinetSettings = CabinetBlock.defaultSettingsSupplier.get().ignitedByLava();
         final BlockBehaviour.Properties fireproofIlluminatedCabinetSettings = IlluminatedCabinetBlock.defaultSettings;
-        final BlockBehaviour.Properties burnableIlluminatedCabinetSettings = IlluminatedCabinetBlock.defaultSettingsSupplier.get().burnable();
+        final BlockBehaviour.Properties burnableIlluminatedCabinetSettings = IlluminatedCabinetBlock.defaultSettingsSupplier.get().ignitedByLava();
 
         List<Block> wallCabinetVariants = new ArrayList<>();
         List<Block> floorCabinetVariants = new ArrayList<>();
@@ -89,7 +91,7 @@ public abstract class BlockGeneration {
                 .sound(SoundType.WOOD);
 
         BlockBehaviour.Properties woodStairsBlockSettings = woodStairsBlockSettingsSupplier.get();
-        BlockBehaviour.Properties burnableWoodStairsBlockSettings = woodStairsBlockSettingsSupplier.get().burnable();
+        BlockBehaviour.Properties burnableWoodStairsBlockSettings = woodStairsBlockSettingsSupplier.get().ignitedByLava();
 
         BiFunction<Float, Float, BlockBehaviour.Properties> stonyStairsBlockSettingsGenerator =
                 (hardness, resistance) -> BlockBehaviour.Properties.of()
@@ -139,7 +141,7 @@ public abstract class BlockGeneration {
                 .requiresCorrectToolForDrops();
 
         final BlockBehaviour.Properties fireproofWoodenMosaicSettings = fireproofWoodenMosaicSettingsSupplier.get();
-        final BlockBehaviour.Properties burnableWoodenMosaicSettings = fireproofWoodenMosaicSettingsSupplier.get().burnable();
+        final BlockBehaviour.Properties burnableWoodenMosaicSettings = fireproofWoodenMosaicSettingsSupplier.get().ignitedByLava();
 
         final byte burn = (byte) Math.round(RawGenerationData.vanillaWoodBurnTime * ModConfig.mosaicsAndTilesStrengthMultiplayer);
         final byte spread = (byte) Math.round(RawGenerationData.vanillaWoodSpreadSpeed / ModConfig.mosaicsAndTilesStrengthMultiplayer);
@@ -232,12 +234,12 @@ public abstract class BlockGeneration {
     protected static void fillRustStages(RustableCandlestickLogic[] candlestickMetalSet) {
         int length = candlestickMetalSet.length;
         if (length >= 2) {
-            candlestickMetalSet[0].setRustNextLevel(((Block) candlestickMetalSet[1]).getDefaultState());
+            candlestickMetalSet[0].setRustNextLevel(((Block) candlestickMetalSet[1]).defaultBlockState());
             for (int i = 1; i < length - 1; i++) {
-                candlestickMetalSet[i].setRustPreviousLevel(((Block) candlestickMetalSet[i - 1]).getDefaultState());
-                candlestickMetalSet[i].setRustNextLevel(((Block) candlestickMetalSet[i + 1]).getDefaultState());
+                candlestickMetalSet[i].setRustPreviousLevel(((Block) candlestickMetalSet[i - 1]).defaultBlockState());
+                candlestickMetalSet[i].setRustNextLevel(((Block) candlestickMetalSet[i + 1]).defaultBlockState());
             }
-            candlestickMetalSet[length - 1].setRustPreviousLevel(((Block) candlestickMetalSet[length - 2]).getDefaultState());
+            candlestickMetalSet[length - 1].setRustPreviousLevel(((Block) candlestickMetalSet[length - 2]).defaultBlockState());
         }
     }
     protected record CandlestickBlockSet(
@@ -258,11 +260,7 @@ public abstract class BlockGeneration {
                     null
             );
         } else {
-            #if MC_VERSION < 12006
-            final DefaultParticleType torchParticle = ParticleTypes.FLAME;
-            #else
             final SimpleParticleType torchParticle = ParticleTypes.FLAME;
-            #endif
 
             List<Block> lightStripVariants = new ArrayList<>();
             List<Block> colouredTorchVariants = new ArrayList<>();

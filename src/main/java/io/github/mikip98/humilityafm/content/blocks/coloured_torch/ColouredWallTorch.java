@@ -1,73 +1,68 @@
 package io.github.mikip98.humilityafm.content.blocks.coloured_torch;
 
-import io.github.mikip98.humilityafm.util.wrappers.ActionResultWrapper;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.WallTorchBlock;
-import net.minecraft.entity.player.PlayerEntity;
-#if MC_VERSION == 12001
-import net.minecraft.particle.ParticleEffect;
-#elif MC_VERSION == 12004
-import net.minecraft.particle.DefaultParticleType;
-#else
-import net.minecraft.particle.SimpleParticleType;
-#endif
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import io.github.mikip98.humilityafm.util.SoundUtils;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.WallTorchBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 
 public class ColouredWallTorch extends WallTorchBlock {
-    public static final IntProperty POWER = Properties.POWER;
+    public static final IntegerProperty POWER = BlockStateProperties.POWER;
 
-    public static final Settings defaultSettings = ColouredTorch.defaultSettings;
+    public static final Properties defaultSettings = ColouredTorch.defaultSettings;
 
-    #if MC_VERSION == 12001
-    public ColouredWallTorch(ParticleEffect particle, Settings settings) {
-        super(settings, particle);
-        setDefaultState(getDefaultState().with(POWER, 15));
+    public ColouredWallTorch(SimpleParticleType particleType, Properties properties) {
+        #if MC_VERSION < 12004
+        super(properties, particleType);
+        #else
+        super(particleType, properties);
+        #endif
+        registerDefaultState(defaultBlockState().setValue(POWER, 15));
     }
-    #elif MC_VERSION == 12004
-    public ColouredWallTorch(DefaultParticleType particleType, Settings settings) {
-        super(particleType, settings);
-        setDefaultState(getDefaultState().with(POWER, 15));
-    }
-    #else
-    public ColouredWallTorch(SimpleParticleType particleType, Settings settings) {
-        super(particleType, settings);
-        setDefaultState(getDefaultState().with(POWER, 15));
-    }
-    #endif
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(POWER);
     }
 
     @Override
     #if MC_VERSION < 12006
     @SuppressWarnings("deprecation")
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public @NotNull InteractionResult use(
+            BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit
+    ) {
+        if (onUseLogicInternal(state, level, pos, player, hand)) return InteractionResult.SUCCESS;
+        return super.use(state, level, pos, player, hand, hit);
+    }
     #else
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-        final Hand hand = player.getActiveHand();
+    public @NonNull InteractionResult useWithoutItem(
+            @NonNull BlockState state, @NonNull Level world, @NonNull BlockPos pos, Player player, @NonNull BlockHitResult hit
+    ) {
+        final InteractionHand hand = player.getUsedItemHand();
+        if (onUseLogicInternal(state, level, pos, player, hand)) return InteractionResult.SUCCESS;
+        return super.use(state, level, pos, player, hit);
+    }
     #endif
-        final int currentPower = state.get(POWER);
-        if (player.isSneaking() && player.getStackInHand(hand).isEmpty() && currentPower > 3) {
-            SoundUtils.playSoundAtBlockCenter(world, player, pos, SoundEvents.BLOCK_CANDLE_EXTINGUISH, 1.2f, 0.75f);
-            world.setBlockState(pos, state.with(POWER, currentPower - 3));
-            return ActionResultWrapper.SUCCESS;
+
+    protected boolean onUseLogicInternal(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand) {
+        final int currentPower = state.getValue(POWER);
+        if (player.isShiftKeyDown() && player.getItemInHand(hand).isEmpty() && currentPower > 3) {
+            SoundUtils.playSoundAtBlockCenter(level, player, pos, SoundEvents.CANDLE_EXTINGUISH, 1.2f, 0.75f);
+            level.setBlockAndUpdate(pos, state.setValue(POWER, currentPower - 3));
+            return true;
         }
-        #if MC_VERSION < 12006
-        return super.onUse(state, world, pos, player, hand, hit);
-        #else
-        return super.onUse(state, world, pos, player, hit);
-        #endif
+        return false;
     }
 }

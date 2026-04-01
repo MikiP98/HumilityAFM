@@ -4,17 +4,19 @@ import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.config.enums.CreativeItemGroupCategorization;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.minecraft.block.Block;
-import net.minecraft.item.*;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.text.Text;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Supplier;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
 
@@ -44,7 +46,7 @@ public class ItemGroupRegistry {
                         BlockRegistry.TERRACOTTA_TILE_VARIANTS[0],
                         BlockRegistry.TERRACOTTA_TILE_VARIANTS
                 );
-                List<ItemConvertible[]> items = new ArrayList<>();
+                List<ItemLike[]> items = new ArrayList<>();
                 items.add(new Block[]{BlockRegistry.JACK_O_LANTERN_REDSTONE});
                 items.add(new Block[]{BlockRegistry.JACK_O_LANTERN_SOUL});
                 if (ModConfig.getEnableColouredFeatureSetBeta()) {
@@ -60,11 +62,11 @@ public class ItemGroupRegistry {
                 createAndRegisterItemGroup(
                         "humility_misc_group", "humilityMisc",
                         BlockRegistry.JACK_O_LANTERN_SOUL,
-                        items.toArray(new ItemConvertible[0][])
+                        items.toArray(new ItemLike[0][])
                 );
             }
             case BLOCKS_AND_ITEMS, SINGLE -> {
-                List<ItemConvertible[]> blocks = new ArrayList<>();
+                List<ItemLike[]> blocks = new ArrayList<>();
                 // --- Cabinets ---
                 blocks.add(ItemRegistry.CABINET_ITEM_VARIANTS);
                 blocks.add(ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS);
@@ -94,7 +96,7 @@ public class ItemGroupRegistry {
                     createAndRegisterItemGroup(
                             "humility_block_group", "humilityBlocks",
                             ItemRegistry.CABINET_ITEM,
-                            blocks.toArray(new ItemConvertible[0][])
+                            blocks.toArray(new ItemLike[0][])
                     );
                     if (ModConfig.getEnableColouredFeatureSetBeta()) {
                         createAndRegisterItemGroup(
@@ -111,7 +113,7 @@ public class ItemGroupRegistry {
                     createAndRegisterItemGroup(
                             "humility_content_group", "humilityContent",
                             ItemRegistry.CABINET_ITEM,
-                            blocks.toArray(new ItemConvertible[0][])
+                            blocks.toArray(new ItemLike[0][])
                     );
                 }
             }
@@ -123,77 +125,76 @@ public class ItemGroupRegistry {
         // -------------------------------------------------------------------------------------------------------------
         if (ModConfig.placeHumilityBlocksInVanillaCreativeCategories) {
             // Cabinets
-            putIntoItemGroup(ItemRegistry.CABINET_ITEM_VARIANTS, ItemGroups.COLORED_BLOCKS);
-            putIntoItemGroup(ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS, ItemGroups.COLORED_BLOCKS);
+            putIntoItemGroup(ItemRegistry.CABINET_ITEM_VARIANTS, CreativeModeTabs.COLORED_BLOCKS);
+            putIntoItemGroup(ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS, CreativeModeTabs.COLORED_BLOCKS);
 
             // Special Jack-O-Lanterns
-            putIntoItemGroup(BlockRegistry.JACK_O_LANTERN_REDSTONE, ItemGroups.COLORED_BLOCKS, ItemGroups.REDSTONE);
-            putIntoItemGroup(BlockRegistry.JACK_O_LANTERN_SOUL, ItemGroups.COLORED_BLOCKS);
+            putIntoItemGroup(BlockRegistry.JACK_O_LANTERN_REDSTONE, CreativeModeTabs.COLORED_BLOCKS, CreativeModeTabs.REDSTONE_BLOCKS);
+            putIntoItemGroup(BlockRegistry.JACK_O_LANTERN_SOUL, CreativeModeTabs.COLORED_BLOCKS);
 
             // Forced corner stairs
-            putIntoItemGroup(BlockRegistry.INNER_STAIRS_BLOCK_VARIANTS, ItemGroups.BUILDING_BLOCKS);
-            putIntoItemGroup(BlockRegistry.OUTER_STAIRS_BLOCK_VARIANTS, ItemGroups.BUILDING_BLOCKS);
+            putIntoItemGroup(BlockRegistry.INNER_STAIRS_BLOCK_VARIANTS, CreativeModeTabs.BUILDING_BLOCKS);
+            putIntoItemGroup(BlockRegistry.OUTER_STAIRS_BLOCK_VARIANTS, CreativeModeTabs.BUILDING_BLOCKS);
 
             // Wooden Mosaics
-            putIntoItemGroup(BlockRegistry.WOODEN_MOSAIC_VARIANTS, ItemGroups.BUILDING_BLOCKS);
+            putIntoItemGroup(BlockRegistry.WOODEN_MOSAIC_VARIANTS, CreativeModeTabs.BUILDING_BLOCKS);
 
             // Terracotta Tiles
-            putIntoItemGroup(BlockRegistry.TERRACOTTA_TILE_VARIANTS, ItemGroups.BUILDING_BLOCKS);
+            putIntoItemGroup(BlockRegistry.TERRACOTTA_TILE_VARIANTS, CreativeModeTabs.BUILDING_BLOCKS);
 
             // --- Candlestick beta ---
             if (ModConfig.getEnableCandlestickBeta()) {
                 // Simple Candlesticks
-                putIntoItemGroup(ItemRegistry.CANDLESTICK_ITEM_VARIANTS, ItemGroups.FUNCTIONAL);
+                putIntoItemGroup(ItemRegistry.CANDLESTICK_ITEM_VARIANTS, CreativeModeTabs.FUNCTIONAL_BLOCKS);
                 // Rustable Candlesticks
-                Arrays.stream(ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS).forEach(s -> putIntoItemGroup(s, ItemGroups.FUNCTIONAL));
+                Arrays.stream(ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS).forEach(s -> putIntoItemGroup(s, CreativeModeTabs.FUNCTIONAL_BLOCKS));
             }
 
             // --- Coloured feature set beta ---
             if (ModConfig.getEnableColouredFeatureSetBeta()) {
                 // Glowing powders
-                putIntoItemGroup(ItemRegistry.GLOWING_POWDER_VARIANTS, ItemGroups.INGREDIENTS);
+                putIntoItemGroup(ItemRegistry.GLOWING_POWDER_VARIANTS, CreativeModeTabs.INGREDIENTS);
                 // Light Strips
-                putIntoItemGroup(BlockRegistry.LIGHT_STRIP_VARIANTS, ItemGroups.COLORED_BLOCKS);
+                putIntoItemGroup(BlockRegistry.LIGHT_STRIP_VARIANTS, CreativeModeTabs.COLORED_BLOCKS);
                 // Coloured Torches
-                putIntoItemGroup(ItemRegistry.COLOURED_TORCH_ITEM_VARIANTS, ItemGroups.COLORED_BLOCKS);
+                putIntoItemGroup(ItemRegistry.COLOURED_TORCH_ITEM_VARIANTS, CreativeModeTabs.COLORED_BLOCKS);
                 // Coloured Jack o'Lanterns
-                putIntoItemGroup(BlockRegistry.COLOURED_JACK_O_LANTERNS, ItemGroups.COLORED_BLOCKS);
+                putIntoItemGroup(BlockRegistry.COLOURED_JACK_O_LANTERNS, CreativeModeTabs.COLORED_BLOCKS);
             }
         }
     }
 
 
-    protected static boolean itemGroupCreationCheck(ItemConvertible[]... itemSets) {
+    protected static boolean itemGroupCreationCheck(ItemLike[]... itemSets) {
         return itemSets == null || itemSets.length == 0 || Arrays.stream(itemSets).allMatch((items) -> items == null || items.length == 0);
     }
-    protected static void createAndRegisterItemGroup(String name, String translationId, Supplier<ItemConvertible> displayItemSupplier, ItemConvertible[]... itemSets) {
-        if (itemGroupCreationCheck(itemSets)) return;
-        createAndRegisterItemGroup(name, translationId, displayItemSupplier.get(), itemSets);
-    }
-    protected static void createAndRegisterItemGroup(String name, String translationId, ItemConvertible displayItem, ItemConvertible[]... itemSets) {
+    protected static void createAndRegisterItemGroup(String name, String translationId, ItemLike displayItem, ItemLike[]... itemSets) {
         if (itemGroupCreationCheck(itemSets)) return;
         Registry.register(
-                Registries.ITEM_GROUP,
+                BuiltInRegistries.CREATIVE_MODE_TAB,
                 getId(name),
                 FabricItemGroup.builder()
-                    .icon(() -> new ItemStack(displayItem))
-                    .displayName(Text.translatable("itemGroup." + translationId))
-                    .entries((displayContext, entries) -> Arrays.stream(itemSets).forEach(
-                            (items) -> { if (items != null) Arrays.stream(items).forEach(entries::add); }
-                    ))
-                    .build()
+                        .icon(() -> new ItemStack(displayItem))
+                        // displayName -> title
+                        .title(Component.translatable("itemGroup." + translationId))
+                        // entries -> displayItems
+                        .displayItems((displayContext, output) -> Arrays.stream(itemSets).forEach(
+                                // entries::add -> output::accept
+                                (items) -> { if (items != null) Arrays.stream(items).forEach(output::accept); }
+                        ))
+                        .build()
         );
     }
 
 
     @SafeVarargs
-    protected static void putIntoItemGroup(ItemConvertible[] items, RegistryKey<ItemGroup>... itemGroups) {
-        for (RegistryKey<ItemGroup> itemGroup : itemGroups)
-            ItemGroupEvents.modifyEntriesEvent(itemGroup).register(content -> Arrays.stream(items).forEach(content::add));
+    protected static void putIntoItemGroup(ItemLike[] items, ResourceKey<CreativeModeTab>... itemGroups) {
+        for (ResourceKey<CreativeModeTab> itemGroup : itemGroups)
+            ItemGroupEvents.modifyEntriesEvent(itemGroup).register(content -> Arrays.stream(items).forEach(content::accept));
     }
     @SafeVarargs
-    protected static void putIntoItemGroup(ItemConvertible item, RegistryKey<ItemGroup>... itemGroups) {
-        for (RegistryKey<ItemGroup> itemGroup : itemGroups)
-            ItemGroupEvents.modifyEntriesEvent(itemGroup).register(content -> content.add(item));
+    protected static void putIntoItemGroup(ItemLike item, ResourceKey<CreativeModeTab>... itemGroups) {
+        for (ResourceKey<CreativeModeTab> itemGroup : itemGroups)
+            ItemGroupEvents.modifyEntriesEvent(itemGroup).register(content -> content.accept(item));
     }
 }

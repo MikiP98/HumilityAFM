@@ -1,55 +1,71 @@
 package io.github.mikip98.humilityafm.content.blocks.coloured_torch;
 
+import io.github.mikip98.humilityafm.util.SoundUtils;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.TorchBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 
 public class ColouredTorch extends TorchBlock {
-    public static final IntProperty POWER = Properties.POWER;
+    public static final IntegerProperty POWER = BlockStateProperties.POWER;
 
-    public static final Properties defaultSettings = Properties.copy(Blocks.TORCH).luminance((state) -> state.getValue(POWER));
+    public static final Properties defaultSettings = Properties.copy(Blocks.TORCH).lightLevel((state) -> state.getValue(POWER));
 
-    #if MC_VERSION == 12001
-    public ColouredTorch(ParticleEffect particle, Properties settings) {
-        super(settings, particle);
+
+    public ColouredTorch(SimpleParticleType particleType, Properties properties) {
+        #if MC_VERSION < 12004
+        super(properties, particleType);
+        #else
+        super(particleType, properties);
+        #endif
         registerDefaultState(defaultBlockState().setValue(POWER, 15));
     }
-    #elif MC_VERSION == 12004
-    public ColouredTorch(DefaultParticleType particleType, Settings settings) {
-        super(particleType, settings);
-        setDefaultState(getDefaultState().with(POWER, 15));
-    }
-    #else
-     public ColouredTorch(SimpleParticleType particleType, Settings settings) {
-        super(particleType, settings);
-        setDefaultState(getDefaultState().with(POWER, 15));
-    }
-    #endif
 
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(POWER);
     }
 
     @Override
     #if MC_VERSION < 12006
     @SuppressWarnings("deprecation")
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public @NotNull InteractionResult use(
+            BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit
+    ) {
+        if (onUseLogicInternal(state, level, pos, player, hand)) return InteractionResult.SUCCESS;
+        return super.use(state, level, pos, player, hand, hit);
+    }
     #else
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-        final Hand hand = player.getActiveHand();
+    public @NonNull InteractionResult useWithoutItem(
+            @NonNull BlockState state, @NonNull Level world, @NonNull BlockPos pos, Player player, @NonNull BlockHitResult hit
+    ) {
+        final InteractionHand hand = player.getUsedItemHand();
+        if (onUseLogicInternal(state, level, pos, player, hand)) return InteractionResult.SUCCESS;
+        return super.use(state, level, pos, player, hit);
+    }
     #endif
-        final int currentPower = state.get(POWER);
-        if (player.isSneaking() && player.getStackInHand(hand).isEmpty() && currentPower > 3) {
-            SoundUtils.playSoundAtBlockCenter(world, player, pos, SoundEvents.BLOCK_CANDLE_EXTINGUISH, 1.2f, 0.75f);
-            world.setBlockState(pos, state.with(POWER, currentPower - 3));
-            return ActionResultWrapper.SUCCESS;
+
+    protected boolean onUseLogicInternal(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand) {
+        final int currentPower = state.getValue(POWER);
+        if (player.isShiftKeyDown() && player.getItemInHand(hand).isEmpty() && currentPower > 3) {
+            SoundUtils.playSoundAtBlockCenter(level, player, pos, SoundEvents.CANDLE_EXTINGUISH, 1.2f, 0.75f);
+            level.setBlockAndUpdate(pos, state.setValue(POWER, currentPower - 3));
+            return true;
         }
-        #if MC_VERSION < 12006
-        return super.onUse(state, world, pos, player, hand, hit);
-        #else
-        return super.onUse(state, world, pos, player, hit);
-        #endif
+        return false;
     }
 }

@@ -7,22 +7,10 @@ import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
 import io.github.mikip98.humilityafm.util.generation_data.RawGenerationData;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.SizedIterable;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
-#if MC_VERSION >= 260000
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-#else
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-#if MC_VERSION < 12104
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-#else
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-#endif
-import net.minecraft.util.math.Direction;
-#endif
 
 import java.util.Arrays;
 import java.util.function.Function;
@@ -139,12 +127,12 @@ public class ItemRegistry {
     public static Item register(String name) {
         return register(name, Item::new);
     }
-    public static Item register(String name, Function<Item.Settings, Item> factory) {
-        return register(name, factory, new Item.Settings());
+    public static Item register(String name, Function<Item.Properties, Item> factory) {
+        return register(name, factory, new Item.Properties());
     }
     #if MC_VERSION < 12104
-    public static Item register(String name, Function<Item.Settings, Item> factory, Item.Settings settings) {
-        return Registry.register(Registries.ITEM, getId(name), factory.apply(settings));
+    public static Item register(String name, Function<Item.Properties, Item> factory, Item.Properties settings) {
+        return Registry.register(BuiltInRegistries.ITEM, getId(name), factory.apply(settings));
     }
     #else
     public static Item register(String name, Function<Item.Settings, Item> factory, Item.Settings settings) {

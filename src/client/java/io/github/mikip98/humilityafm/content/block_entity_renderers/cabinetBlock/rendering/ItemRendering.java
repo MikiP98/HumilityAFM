@@ -1,91 +1,80 @@
 package io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.ImplementedInventory;
-import net.minecraft.block.BlockState;
-#if MC_VERSION >= 12104
-import net.minecraft.block.entity.BlockEntity;
-#endif
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.VertexConsumerProvider;
-#if MC_VERSION < 12104
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
-#endif
-#if MC_VERSION >= 12111
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-#endif
-import net.minecraft.client.util.math.MatrixStack;
-#if MC_VERSION >= 12108
-import net.minecraft.item.ItemDisplayContext;
-#endif
-import net.minecraft.item.ItemStack;
-#if MC_VERSION >= 12104 && MC_VERSION < 12108
-import net.minecraft.item.ModelTransformationMode;
-#endif
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 public sealed interface ItemRendering permits ItemFloorRendering, ItemWallRendering {
-    MatrixStack rotateMatrices(MatrixStack matrices, BlockState blockState);
+    PoseStack rotateMatrices(PoseStack poseStack, BlockState blockState);
 
     #if MC_VERSION < 12111
     default void renderItem(
             ImplementedInventory blockEntity, BlockState blockState,
-            MatrixStack matrices, VertexConsumerProvider vertexConsumers,
-            int light, int overlay
+            PoseStack poseStack, MultiBufferSource bufferSource,
+            int packedLight, int packedOverlay
     ) {
-        final ItemStack stack = blockEntity.getStack(0);
+        final ItemStack stack = blockEntity.getItem(0);
         if (stack.isEmpty()) return;
 
         float scale = 0.59375f;  // 19/32
 
         // Mandatory call before GL calls
-        matrices.push();
+        poseStack.pushPose();
         // Center in a block; Required for correct rotation
-        matrices.translate(0.5, 0.5, 0.5);
+        poseStack.translate(0.5, 0.5, 0.5);
         // Rotate the item
-        matrices = rotateMatrices(matrices, blockState);
+        poseStack = rotateMatrices(poseStack, blockState);
         // X -> Left/Right; positive is left; negative is right
         // Y -> Height
         // Z -> Depth; positive is deeper; negative is closer
-        matrices.translate(0, 0, 0.4375 - 3f/64*(1-scale));
-        matrices.scale(scale, scale, scale);
+        poseStack.translate(0, 0, 0.4375 - 3f/64*(1-scale));
+        poseStack.scale(scale, scale, scale);
 
         // Render the item inside the cabinet
+        final ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
         #if MC_VERSION < 12104
-        final BakedModel model = MinecraftClient.getInstance().getItemRenderer().getModel(stack, null, null, 0);
-        MinecraftClient.getInstance().getItemRenderer().renderItem(
-                stack, ModelTransformationMode.FIXED, false, matrices, vertexConsumers, light, overlay, model
+        final BakedModel model = itemRenderer.getModel(stack, null, null, 0);
+        itemRenderer.render(
+                stack, ItemDisplayContext.FIXED, false, poseStack, bufferSource, packedLight, packedOverlay, model
         );
         #else
-        MinecraftClient.getInstance().getItemRenderer().renderItem(
+        itemRenderer.renderStatic(
                 stack,
-                #if MC_VERSION < 12108 ModelTransformationMode.FIXED #else ItemDisplayContext.FIXED #endif,
-                light, overlay,
-                matrices, vertexConsumers,
-                ((BlockEntity) blockEntity).getWorld(),
+                ItemDisplayContext.FIXED,
+                packedLight, packedOverlay,
+                poseStack, bufferSource,
+                ((BlockEntity) blockEntity).getLevel(),
                 0
         );
         #endif
+        // TODO: Why on 1.21.4+ I pass the world, but not before?
 
         // Mandatory call after GL calls
-        matrices.pop();
+        poseStack.popPose();
     }
     #else
     default void renderItem(
             CabinetBlockEntityRenderState state,
-            MatrixStack matrices, OrderedRenderCommandQueue queue,
-            int light
+            PoseStack poseStack, OrderedRenderCommandQueue queue,
+            int packedLight
     ) {
         float scale = 0.59375f;
 
-        matrices.push();
-        matrices.translate(0.5, 0.5, 0.5);
-        matrices = rotateMatrices(matrices, state.blockState);
-        matrices.translate(0, 0, 0.4375 - 3f/64*(1-scale));
-        matrices.scale(scale, scale, scale);
+        poseStack.pushPose();
+        poseStack.translate(0.5, 0.5, 0.5);
+        poseStack = rotateMatrices(poseStack, state.blockState);
+        poseStack.translate(0, 0, 0.4375 - 3f/64*(1-scale));
+        poseStack.scale(scale, scale, scale);
 
-        state.itemRenderState.render(matrices, queue, light, state.overlay, 0);
+        state.itemRenderState.render(poseStack, queue, packedLight, state.overlay, 0);
 
-        matrices.pop();
+        poseStack.popPose();
     }
     #endif
 }

@@ -5,7 +5,7 @@ import io.github.mikip98.humilityafm.util.simple_iterables.MultiArrayIterable;
 import io.github.mikip98.humilityafm.util.simple_iterables.MultiIterableIterable;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockStrength;
 import io.github.mikip98.humilityafm.util.Pair;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.*;
 
@@ -22,8 +22,8 @@ public abstract class RawGenerationData {
             "white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray",
             "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black"
     };
-    public static final float vanillaTerracottaHardness = Blocks.WHITE_TERRACOTTA.getHardness();  // 1.25f
-    public static final float vanillaTerracottaResistance = Blocks.WHITE_TERRACOTTA.getBlastResistance();  // 4.2f
+    public static final float vanillaTerracottaHardness = Blocks.WHITE_TERRACOTTA.defaultDestroyTime();  // 1.25f
+    public static final float vanillaTerracottaResistance = Blocks.WHITE_TERRACOTTA.getExplosionResistance();  // 4.2f
 
     /***
      * All vanilla wood types
@@ -34,8 +34,8 @@ public abstract class RawGenerationData {
     };
     public static final String[] vanillaNetherWoodTypes = {"crimson", "warped"};
     public static final MultiArrayIterable<String> vanillaWoodTypes = MultiArrayIterable.of(vanillaOverworldWoodTypes, vanillaNetherWoodTypes);
-    public static final float vanillaWoodHardness = Blocks.OAK_PLANKS.getHardness();  // 2.0f;
-    public static final float vanillaWoodResistance = Blocks.OAK_PLANKS.getBlastResistance();  // 3.0f;
+    public static final float vanillaWoodHardness = Blocks.OAK_PLANKS.defaultDestroyTime();  // 2.0f;
+    public static final float vanillaWoodResistance = Blocks.OAK_PLANKS.getExplosionResistance();  // 3.0f;
     public static final int vanillaWoodBurnTime = 5;  // Values taken from FireBlock::registerDefaultFlammables
     public static final int vanillaWoodSpreadSpeed = 20;
     // TODO: Split nether and overworld wood types, as nether wood does not burn

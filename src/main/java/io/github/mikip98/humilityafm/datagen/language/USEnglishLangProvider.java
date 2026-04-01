@@ -34,9 +34,14 @@ public class USEnglishLangProvider extends FabricLanguageProvider {
     @Override
     #if MC_VERSION < 12006
     public void generateTranslations(FabricLanguageProvider.TranslationBuilder translationBuilder) {
+        generateTranslationsInternal(translationBuilder);
+    }
     #else
     public void generateTranslations(RegistryWrapper.WrapperLookup registryLookup, FabricLanguageProvider.TranslationBuilder translationBuilder) {
+        generateTranslationsInternal(translationBuilder);
+    }
     #endif
+    protected void generateTranslationsInternal(FabricLanguageProvider.TranslationBuilder translationBuilder) {
         for (Map.Entry<TranslationCategory, Map<String, String>> entry : generateBaseUSEnglishTranslations().entrySet()) {
             for (Map.Entry<String, String> subEntry : entry.getValue().entrySet()) {
                 translationBuilder.add(subEntry.getKey(), subEntry.getValue());

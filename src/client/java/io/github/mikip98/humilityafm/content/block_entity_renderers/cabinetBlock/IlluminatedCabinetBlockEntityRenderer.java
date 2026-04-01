@@ -3,36 +3,19 @@ package io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBloc
 #if MC_VERSION >= 12111
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering.CabinetBlockEntityRenderState;
 #endif
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering.ItemWallRendering;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering.RenderSelfBrightening;
-#if MC_VERSION >= 12111
-import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetBlockEntity;
-#endif
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.IlluminatedCabinetBlockEntity;
 import io.github.mikip98.humilityafm.content.blocks.cabinet.IlluminatedCabinetBlock;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-#if MC_VERSION >= 12111
-import net.minecraft.client.render.command.ModelCommandRenderer;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.state.CameraRenderState;
-#endif
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.math.BlockPos;
-#if MC_VERSION >= 12105
-import net.minecraft.util.math.Vec3d;
-#endif
-import net.minecraft.world.World;
-#if MC_VERSION >= 12111
-import org.jetbrains.annotations.Nullable;
-#endif
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-@Environment(EnvType.CLIENT)
 public class IlluminatedCabinetBlockEntityRenderer implements
         BlockEntityRenderer<IlluminatedCabinetBlockEntity #if MC_VERSION >= 12111, CabinetBlockEntityRenderState #endif>,
         ItemWallRendering
@@ -42,24 +25,24 @@ public class IlluminatedCabinetBlockEntityRenderer implements
     public static void disableBrightening() { renderFunction = IlluminatedCabinetBlockEntityRenderer::fakeRunnable; }
 
     @SuppressWarnings("unused")
-    public IlluminatedCabinetBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {}
+    public IlluminatedCabinetBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {}
 
     #if MC_VERSION < 12111
     @Override
     public void render(
             IlluminatedCabinetBlockEntity blockEntity, float tickDelta,
-            MatrixStack matrices, VertexConsumerProvider vertexConsumers,
+            PoseStack poseStack, MultiBufferSource bufferSource,
             int light, int overlay #if MC_VERSION >= 12105, Vec3d cameraPos #endif
     ) {
-        World world = blockEntity.getWorld();
-        BlockPos pos = blockEntity.getPos();
-        if (world == null || pos == null) return;
+        Level level = blockEntity.getLevel();
+        BlockPos pos = blockEntity.getBlockPos();
+        if (level == null) return;
 
-        BlockState blockState = world.getBlockState(pos);
-        if (blockState == null || !(blockState.getBlock() instanceof IlluminatedCabinetBlock)) return;
+        BlockState blockState = level.getBlockState(pos);
+        if (!(blockState.getBlock() instanceof IlluminatedCabinetBlock)) return;
 
-        renderItem(blockEntity, blockState, matrices, vertexConsumers, 255, overlay);
-        renderFunction.execute(blockState, matrices, vertexConsumers, light, overlay);
+        renderItem(blockEntity, blockState, poseStack, bufferSource, 255, overlay);
+        renderFunction.execute(blockState, poseStack, bufferSource, light, overlay);
     }
     #else
     @Override
@@ -91,15 +74,15 @@ public class IlluminatedCabinetBlockEntityRenderer implements
 
     protected static void selfBrighteningRunner(
             BlockState blockState,
-            MatrixStack matrices,
-            #if MC_VERSION < 12111 VertexConsumerProvider vertexConsumers, #endif
+            PoseStack poseStack,
+            #if MC_VERSION < 12111 MultiBufferSource bufferSource, #endif
             int light, int overlay
     ) {
         final float posisionConstant = 1.15f;
         float posisionConstantX = posisionConstant;
         float posisionConstantZ = posisionConstant;
 
-        switch (blockState.get(Properties.HORIZONTAL_FACING)) {
+        switch (blockState.getValue(BlockStateProperties.HORIZONTAL_FACING)) {
             case NORTH:
                 posisionConstantX = 4f;
                 posisionConstantZ = 2f;
@@ -115,16 +98,16 @@ public class IlluminatedCabinetBlockEntityRenderer implements
         RenderSelfBrightening.renderSelfBrightening(
                 blockState,
                 posisionConstant, posisionConstantX, posisionConstantZ,
-                matrices,
-                #if MC_VERSION < 12111 vertexConsumers, #endif
+                poseStack,
+                #if MC_VERSION < 12111 bufferSource, #endif
                 light, overlay
         );
     }
     @SuppressWarnings("unused")
     protected static void fakeRunnable(
             BlockState blockState,
-            MatrixStack matrices,
-            #if MC_VERSION < 12111 VertexConsumerProvider vertexConsumers, #endif
+            PoseStack poseStack,
+            #if MC_VERSION < 12111 MultiBufferSource bufferSource, #endif
             int light, int overlay
     ) {}
 
@@ -132,8 +115,8 @@ public class IlluminatedCabinetBlockEntityRenderer implements
     protected interface RenderFunction {
         void execute(
                 BlockState blockState,
-                MatrixStack matrices,
-                #if MC_VERSION < 12111 VertexConsumerProvider vertexConsumers, #endif
+                PoseStack poseStack,
+                #if MC_VERSION < 12111 MultiBufferSource bufferSource, #endif
                 int light, int overlay
         );
     }

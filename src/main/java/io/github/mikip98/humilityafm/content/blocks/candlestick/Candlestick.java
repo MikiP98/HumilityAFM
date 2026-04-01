@@ -7,20 +7,24 @@ import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
@@ -131,8 +135,8 @@ public class Candlestick extends PlainHorizontalFacingBlock implements SimpleCan
     #endif
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACING);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(WATERLOGGED);
         builder.add(CANDLE_COLOR);
         builder.add(LIT);
@@ -152,15 +156,14 @@ public class Candlestick extends PlainHorizontalFacingBlock implements SimpleCan
                 .setValue(BlockStateProperties.WATERLOGGED, isPlacedInWater(ctx));
     }
 
+    @Override
     #if MC_VERSION < 12006
     @SuppressWarnings("deprecation")
-    @Override
     public @NotNull InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (onUseLogic(state, world, pos, player, hand)) return InteractionResult.SUCCESS;
         return super.use(state, world, pos, player, hand, hit);
     }
     #else
-    @Override
     public @NotNull InteractionResult use(BlockState state, Level world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         if (onUseLogic(state, world, pos, player)) return ActionResultWrapper.SUCCESS;
         return super.use(state, world, pos, player, hit);
@@ -168,9 +171,9 @@ public class Candlestick extends PlainHorizontalFacingBlock implements SimpleCan
     #endif
 
     @Override
-    public void randomDisplayTick(BlockState state, Level world, BlockPos pos, Random random) {
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         // If the candle is lit, display flame and smoke particles + play sound
-        if (state.get(Properties.LIT)) {
+        if (state.getValue(LIT)) {
             // Unfortunately, the code below cannot be cached
             // as it would require making a block entity
             // and that would result in overall worse performance
@@ -184,27 +187,27 @@ public class Candlestick extends PlainHorizontalFacingBlock implements SimpleCan
                 case WEST -> candleWickX += 0.15;
             }
 
-            performRandomDisplayTick(world, candleWickX, candleWickY, candleWickZ, random);
+            performRandomDisplayTick(level, candleWickX, candleWickY, candleWickZ, random);
         }
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
+    public @NotNull VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         Direction dir = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
         if (state.getValue(ModProperties.CANDLE_COLOR) != CandleColor.NONE) {
             switch (dir) {
-                case NORTH: { return voxelShapeCandleNorth; }
-                case SOUTH: { return voxelShapeCandleSouth; }
-                case EAST: { return voxelShapeCandleEast; }
-                case WEST: { return voxelShapeCandleWest; }
+                case NORTH: return voxelShapeCandleNorth;
+                case SOUTH: return voxelShapeCandleSouth;
+                case EAST: return voxelShapeCandleEast;
+                case WEST: return voxelShapeCandleWest;
             }
         } else {
             switch (dir) {
-                case NORTH: { return voxelShapeEmptyNorth; }
-                case SOUTH: { return voxelShapeEmptySouth; }
-                case EAST: { return voxelShapeEmptyEast; }
-                case WEST: { return voxelShapeEmptyWest; }
+                case NORTH: return voxelShapeEmptyNorth;
+                case SOUTH: return voxelShapeEmptySouth;
+                case EAST: return voxelShapeEmptyEast;
+                case WEST: return voxelShapeEmptyWest;
             }
         }
         return null;

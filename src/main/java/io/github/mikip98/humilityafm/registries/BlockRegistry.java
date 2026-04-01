@@ -11,7 +11,7 @@ import io.github.mikip98.humilityafm.util.SettingsDuplicator;
 #endif
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -111,7 +111,7 @@ public class BlockRegistry extends BlockGeneration {
     #if MC_VERSION >= 12104 @SuppressWarnings("unchecked") #endif
     public static <T extends Block> T register(String name, Function<BlockBehaviour.Properties, T> blockFactory, BlockBehaviour.Properties settings) {
         #if MC_VERSION < 12104
-        return Registry.register(Registries.BLOCK, getId(name), blockFactory.apply(settings));
+        return Registry.register(BuiltInRegistries.BLOCK, getId(name), blockFactory.apply(settings));
         #else
         final BlockBehaviour.Properties settingsCopy = SettingsDuplicator.copy(settings);
         return (T) Blocks.register(keyOfBlock(name), (Function<BlockBehaviour.Properties, Block>) blockFactory, settingsCopy);
@@ -137,11 +137,7 @@ public class BlockRegistry extends BlockGeneration {
     #endif
 
 
-    #if MC_VERSION >= 12104 && MC_VERSION < 260000
-    public static RegistryKey<Block> keyOfBlock(String name) {
-        return RegistryKey.of(RegistryKeys.BLOCK, getId(name));
-    }
-    #elif MC_VERSION >= 260000
+    #if MC_VERSION >= 12104
     public static ResourceKey<Block> keyOfBlock(String name) {
         return ResourceKey.create(Registries.BLOCK, getId(name));
     }

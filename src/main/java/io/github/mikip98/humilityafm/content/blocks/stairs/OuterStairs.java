@@ -8,6 +8,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -80,17 +81,22 @@ public class OuterStairs extends PlainHorizontalFacingBlock implements Waterlogg
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACING);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(WATERLOGGED);
         builder.add(HALF);
     }
 
     @Override
     public @NotNull BlockState getStateForPlacement(BlockPlaceContext ctx) {
+        final Direction direction = ctx.getNearestLookingDirection();
         return super.getStateForPlacement(ctx)
                 .setValue(WATERLOGGED, isPlacedInWater(ctx))
-                .setValue(HALF, ctx.getHitPos().y - ctx.getBlockPos().getY() > 0.5 ? BlockHalf.TOP : BlockHalf.BOTTOM);
+                .setValue(HALF,
+                        direction != Direction.DOWN && (
+                                direction == Direction.UP || !(ctx.getClickLocation().y - ctx.getClickedPos().getY() > 0.5)
+                        ) ? Half.BOTTOM : Half.TOP
+                );
     }
 
     @SuppressWarnings("deprecation")

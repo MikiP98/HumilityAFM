@@ -1,18 +1,18 @@
 package io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.rendering_utils.LightManipulation;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.world.level.block.state.BlockState;
 
 public interface RenderSelfBrightening {
     static void renderSelfBrightening(
             BlockState blockState,
             float posisionConstant, float posisionConstantX, float posisionConstantZ,
-            MatrixStack matrices,
-            #if MC_VERSION < 12111 VertexConsumerProvider vertexConsumers, #endif
-            int light, int overlay
+            PoseStack poseStack,
+            #if MC_VERSION < 12111 MultiBufferSource bufferSource, #endif
+            int packedLight, int packedOverlay
     ) {
         final float blockSizeYZ = 0.875f;
         final float blockSizeX = 0.25f;
@@ -21,14 +21,14 @@ public interface RenderSelfBrightening {
         renderSelf(
                 1.1f, 1,
                 blockSizeX, blockSizeYZ, posisionConstant, posisionConstantX, posisionConstantZ, 1.005f,
-                blockState, matrices, #if MC_VERSION < 12111 vertexConsumers, #endif light, overlay
+                blockState, poseStack, #if MC_VERSION < 12111 bufferSource, #endif packedLight, packedOverlay
         );
 
         // Render the brightened inside walls of the cabinet
         renderSelf(
                 1.15f, 3,
                 blockSizeX, blockSizeYZ, posisionConstant, posisionConstantX, posisionConstantZ, 0.992f,
-                blockState, matrices, #if MC_VERSION < 12111 vertexConsumers, #endif light, overlay
+                blockState, poseStack, #if MC_VERSION < 12111 bufferSource, #endif packedLight, packedOverlay
         );
     }
 
@@ -36,32 +36,32 @@ public interface RenderSelfBrightening {
             float lightMultiplayer, int lightAddition,
             float blockSizeX, float blockSizeYZ,
             float posisionConstant, float posisionConstantX, float posisionConstantZ, float scale,
-            BlockState blockState, MatrixStack matrices,
-            #if MC_VERSION < 12111 VertexConsumerProvider vertexConsumers, #endif
-            int light, int overlay
+            BlockState blockState, PoseStack poseStack,
+            #if MC_VERSION < 12111 MultiBufferSource bufferSource, #endif
+            int packedLight, int packedOverlay
     ) {
-        matrices.push();
+        poseStack.pushPose();
 
-        matrices.translate(
+        poseStack.translate(
                 -blockSizeX /2*(scale-1)*posisionConstantX,
                 -blockSizeYZ/2*(scale-1)*posisionConstant,
                 -blockSizeYZ/2*(scale-1)*posisionConstantZ
         );
-        matrices.scale(scale, scale, scale);
+        poseStack.scale(scale, scale, scale);
 
-        int outsideLight = LightManipulation.multiplyLight(light, lightMultiplayer);
+        int outsideLight = LightManipulation.multiplyLight(packedLight, lightMultiplayer);
         outsideLight = LightManipulation.addLight(outsideLight, lightAddition);
 
         #if MC_VERSION >= 12111
         VertexConsumerProvider vertexConsumers = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
         #endif
 
-        MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(
-                blockState, matrices,
-                vertexConsumers,
-                outsideLight, overlay
+        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
+                blockState, poseStack,
+                bufferSource,
+                outsideLight, packedOverlay
         );
 
-        matrices.pop();
+        poseStack.popPose();
     }
 }

@@ -3,38 +3,18 @@ package io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBloc
 #if MC_VERSION >= 12111
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering.CabinetBlockEntityRenderState;
 #endif
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering.ItemFloorRendering;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering.RenderSelfBrightening;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorIlluminatedCabinetBlockEntity;
-#if MC_VERSION >= 12111
-import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.IlluminatedCabinetBlockEntity;
-#endif
 import io.github.mikip98.humilityafm.content.blocks.cabinet.FloorIlluminatedCabinetBlock;
-#if MC_VERSION >= 12111
-import io.github.mikip98.humilityafm.content.blocks.cabinet.IlluminatedCabinetBlock;
-#endif
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-#if MC_VERSION >= 12111
-import net.minecraft.client.render.command.ModelCommandRenderer;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.state.CameraRenderState;
-#endif
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.BlockPos;
-#if MC_VERSION >= 12105
-import net.minecraft.util.math.Vec3d;
-#endif
-import net.minecraft.world.World;
-#if MC_VERSION >= 12111
-import org.jetbrains.annotations.Nullable;
-#endif
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
-@Environment(EnvType.CLIENT)
 public class FloorIlluminatedCabinetBlockEntityRenderer implements
         BlockEntityRenderer<FloorIlluminatedCabinetBlockEntity #if MC_VERSION >= 12111, CabinetBlockEntityRenderState #endif>,
         ItemFloorRendering
@@ -44,23 +24,29 @@ public class FloorIlluminatedCabinetBlockEntityRenderer implements
     public static void disableBrightening() { renderFunction = FloorIlluminatedCabinetBlockEntityRenderer::fakeRunnable; }
 
     @SuppressWarnings("unused")
-    public FloorIlluminatedCabinetBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {}
+    public FloorIlluminatedCabinetBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {}
 
     #if MC_VERSION < 12111
     @Override
-    public void render(FloorIlluminatedCabinetBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay #if MC_VERSION >= 12105, Vec3d cameraPos #endif) {
-        World world = blockEntity.getWorld();
-        BlockPos pos = blockEntity.getPos();
-        if (world == null || pos == null) return;
+    public void render(
+            FloorIlluminatedCabinetBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource,
+            int packedLight, int packedOverlay #if MC_VERSION >= 12105, Vec3 cameraPos #endif
+    ) {
+        Level level = blockEntity.getLevel();
+        BlockPos pos = blockEntity.getBlockPos();
+        if (level == null) return;
 
-        BlockState blockState = world.getBlockState(pos);
-        if (blockState == null || !(blockState.getBlock() instanceof FloorIlluminatedCabinetBlock)) return;
+        BlockState blockState = level.getBlockState(pos);
+        if (!(blockState.getBlock() instanceof FloorIlluminatedCabinetBlock)) return;
 
-        renderItem(blockEntity, blockState, matrices, vertexConsumers, 255, overlay);
+        renderItem(blockEntity, blockState, poseStack, bufferSource, 255, packedOverlay);
         final float positionConstant = 1.15f;
-        renderFunction.execute(blockState, positionConstant, positionConstant, positionConstant, matrices, vertexConsumers, light, overlay);
+        renderFunction.execute(
+                blockState, positionConstant, positionConstant, positionConstant, poseStack, bufferSource, packedLight, packedOverlay
+        );
     }
-    #else@Override
+    #else
+    @Override
     public CabinetBlockEntityRenderState createRenderState() {
         return new CabinetBlockEntityRenderState();
     }
@@ -96,8 +82,8 @@ public class FloorIlluminatedCabinetBlockEntityRenderer implements
     static void fakeRunnable(
             BlockState blockState,
             float positionConstant, float positionConstantX, float positionConstantZ,
-            MatrixStack matrices,
-            #if MC_VERSION < 12111 VertexConsumerProvider vertexConsumers, #endif
+            PoseStack poseStack,
+            #if MC_VERSION < 12111 MultiBufferSource bufferSource, #endif
             int light, int overlay
     ) {}
 
@@ -106,8 +92,8 @@ public class FloorIlluminatedCabinetBlockEntityRenderer implements
         void execute(
                 BlockState blockState,
                 float positionConstant, float positionConstantX, float positionConstantZ,
-                MatrixStack matrices,
-                #if MC_VERSION < 12111 VertexConsumerProvider vertexConsumers, #endif
+                PoseStack poseStack,
+                #if MC_VERSION < 12111 MultiBufferSource bufferSource, #endif
                 int light, int overlay
         );
     }

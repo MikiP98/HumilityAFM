@@ -37,7 +37,7 @@ public class CabinetBlock extends PlainHorizontalFacingBlock implements Waterlog
     protected static final VoxelShape voxelShapeOpenNorth = Block.box(1, 1, 13.00032, 15, 15, 16);  //open, reverse original
     protected static final VoxelShape voxelShapeOpenSouth = Block.box(1, 1, 0, 15, 15, 2.99968);  //open, original
     protected static final VoxelShape voxelShapeOpenEast = Block.box(0, 1, 1, 2.99968, 15, 15);  //open, swap z <-> x
-    protected static final VoxelShape voxelShapeOpenWest = Block.box(13.00032, 1, 1, 1.0f, 15, 15);  //open, reverse + swap
+    protected static final VoxelShape voxelShapeOpenWest = Block.box(13.00032, 1, 1, 16, 15, 15);  //open, reverse + swap
 
     protected static final VoxelShape voxelShapeClosedNorth = Shapes.or(voxelShapeOpenNorth, Block.box(1, 1, 12, 15, 15, 12.99968));  //reverse original
     protected static final VoxelShape voxelShapeClosedSouth = Shapes.or(voxelShapeOpenSouth, Block.box(1, 1, 3.00032, 15, 15, 4));  //original
