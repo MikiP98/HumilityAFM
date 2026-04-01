@@ -104,7 +104,7 @@ public class ModelGenerator extends FabricModelProvider {
         for (String color : RawGenerationData.vanillaColorPallet) {
             final ResourceLocation colouredJackOLanternTexture = getId("block/coloured_jack_o_lantern/coloured_jack_o_lantern_" + color);
             final TextureMapping textureMap = new TextureMapping()
-                    .put(TextureSlot.FRONT, colouredJackOLanternTexture);
+                    .putForced(TextureSlot.FRONT, colouredJackOLanternTexture);
 
             final ResourceLocation jackOLanternModelId = JACK_O_LANTERN_TEMPLATE_MODEL.create(
                     getId("block/coloured_jack_o_lantern/coloured_jack_o_lantern_" + color),
@@ -168,7 +168,7 @@ public class ModelGenerator extends FabricModelProvider {
         for (String color : RawGenerationData.vanillaColorPallet) {
             final ResourceLocation coloured_torch_texture = getId("block/coloured_torch/coloured_torch_" + color);
             final TextureMapping textureMap = new TextureMapping()
-                    .put(TextureSlot.TORCH, coloured_torch_texture);
+                    .putForced(TextureSlot.TORCH, coloured_torch_texture);
 
             final ResourceLocation torchModelId = TORCH_TEMPLATE_MODEL.create(
                     getId("block/coloured_torch/coloured_torch_" + color),
@@ -195,7 +195,7 @@ public class ModelGenerator extends FabricModelProvider {
 
             final ResourceLocation coloured_concrete = getVanillaId("block/" + color + "_concrete");
             final TextureMapping textureMap = new TextureMapping()
-                    .put(TextureSlot.create("0"), coloured_concrete);
+                    .putForced(TextureSlot.create("0"), coloured_concrete);
 
             final String pathPrefix = "block/light_strip/";
             final ResourceLocation lightStripStraightModelId = LIGHT_STRIP_STRAIGHT_MODEL.create(
@@ -251,7 +251,7 @@ public class ModelGenerator extends FabricModelProvider {
 
             final String suffix = block_suffix_metals.contains(metal) ? "_block" : "";
             final TextureMapping metalTextureMapping = new TextureMapping()
-                    .put(TextureSlot.create("metal"), getVanillaId("block/" + metal + suffix));
+                    .putForced(TextureSlot.create("metal"), getVanillaId("block/" + metal + suffix));
 
             final ResourceLocation candlestickStandingMetalModelId = CANDLESTICK_STANDING_MODEL.create(
                     getId("block/candlestick/standing/" + metal + "/candlestick_" + metal),
@@ -309,7 +309,7 @@ public class ModelGenerator extends FabricModelProvider {
             for (String color : RawGenerationData.vanillaColorPallet) {
                 final CandleColor candleColor = CandleColor.getColor(color);
                 final TextureMapping candleColorTextureMapping = new TextureMapping()
-                        .put(TextureSlot.create("candle"), getVanillaId("block/" + color + "_candle_lit"));
+                        .putForced(TextureSlot.create("candle"), getVanillaId("block/" + color + "_candle_lit"));
 
                 String id = "block/candlestick/standing/" + metal + "/candlestick_" + metal + "_" + color;
                 final ResourceLocation standingCandlestickColoredModelId = candlestickWithCandleStandingMetalModel.create(
@@ -440,17 +440,17 @@ public class ModelGenerator extends FabricModelProvider {
             final ResourceLocation innerStairsModelId = INNER_CORNER_STAIRS_MODEL.create(
                     getId("block/corner_stairs/inner_stairs/inner_stairs_" + stairMaterial.getSafeName()),
                     new TextureMapping()
-                            .put(TextureSlot.TOP, topTextureId)
-                            .put(TextureSlot.BOTTOM, bottomTextureId)
-                            .put(TextureSlot.SIDE, sideTextureId),
+                            .putForced(TextureSlot.TOP, topTextureId)
+                            .putForced(TextureSlot.BOTTOM, bottomTextureId)
+                            .putForced(TextureSlot.SIDE, sideTextureId),
                     blockStateModelGenerator.modelOutput
             );
             final ResourceLocation outerStairsModelId = OUTER_CORNER_STAIRS_MODEL.create(
                     getId("block/corner_stairs/outer_stairs/outer_stairs_" + stairMaterial.getSafeName()),
                     new TextureMapping()
-                            .put(TextureSlot.TOP, topTextureId)
-                            .put(TextureSlot.BOTTOM, bottomTextureId)
-                            .put(TextureSlot.SIDE, sideTextureId),
+                            .putForced(TextureSlot.TOP, topTextureId)
+                            .putForced(TextureSlot.BOTTOM, bottomTextureId)
+                            .putForced(TextureSlot.SIDE, sideTextureId),
                     blockStateModelGenerator.modelOutput
             );
 
@@ -489,8 +489,8 @@ public class ModelGenerator extends FabricModelProvider {
             final ResourceLocation woodenMosaicModelId = CHECKER_2X2_MODEL.create(
                     modelLocationId,
                     new TextureMapping()
-                            .put(TextureSlot.create("1"), planks1Id)
-                            .put(TextureSlot.create("2"), planks2Id),
+                            .putForced(TextureSlot.create("1"), planks1Id)
+                            .putForced(TextureSlot.create("2"), planks2Id),
                     blockStateModelGenerator.modelOutput
             );
             blockStateModelGenerator.delegateItemModel(BlockRegistry.WOODEN_MOSAIC_VARIANTS[i], woodenMosaicModelId);
@@ -507,8 +507,8 @@ public class ModelGenerator extends FabricModelProvider {
                 final ResourceLocation terracottaTileModelId = CHECKER_2X2_MODEL.create(
                         getId("block/terracotta_tiles/terracotta_tiles_" + color + "_" + color2),
                         new TextureMapping()
-                                .put(TextureSlot.create("1"), getVanillaId("block/" + color + "_terracotta"))
-                                .put(TextureSlot.create("2"), getVanillaId("block/" + color2 + "_terracotta")),
+                                .putForced(TextureSlot.create("1"), getVanillaId("block/" + color + "_terracotta"))
+                                .putForced(TextureSlot.create("2"), getVanillaId("block/" + color2 + "_terracotta")),
                         blockStateModelGenerator.modelOutput
                 );
                 blockStateModelGenerator.delegateItemModel(BlockRegistry.TERRACOTTA_TILE_VARIANTS[i], terracottaTileModelId);
@@ -531,7 +531,7 @@ public class ModelGenerator extends FabricModelProvider {
 
             final BlockMaterial.Layer colorLayer = material.layers()[1];
 
-            final TextureMapping woolTextureMapping = new TextureMapping().put(
+            final TextureMapping woolTextureMapping = new TextureMapping().putForced(
                     TextureSlot.create("wool"),
                     getVanillaId("block/" + colorLayer.name() + "_wool")
             );
@@ -558,7 +558,7 @@ public class ModelGenerator extends FabricModelProvider {
     }
     protected CabinetModelWoodSet generateCabinetWoodSet(BlockMaterial.Layer wood) {
         final SupportedMods sourceMod = wood.metadata().sourceMod();
-        final TextureMapping plankTextureMapping = new TextureMapping().put(
+        final TextureMapping plankTextureMapping = new TextureMapping().putForced(
                 TextureSlot.create("planks"),
                 getBlockId(sourceMod, wood.name() + "_planks")
         );

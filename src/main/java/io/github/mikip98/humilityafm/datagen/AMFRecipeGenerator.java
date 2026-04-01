@@ -15,7 +15,11 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 #if MC_VERSION < 12006
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 import net.minecraft.core.registries.BuiltInRegistries;
+#if MC_VERSION < 12004
 import net.minecraft.data.recipes.FinishedRecipe;
+#else
+import net.minecraft.data.recipes.RecipeOutput;
+#endif
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;

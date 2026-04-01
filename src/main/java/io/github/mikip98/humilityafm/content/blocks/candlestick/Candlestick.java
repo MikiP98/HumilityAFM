@@ -1,5 +1,8 @@
 package io.github.mikip98.humilityafm.content.blocks.candlestick;
 
+#if MC_VERSION >= 12004
+import com.mojang.serialization.MapCodec;
+#endif
 import io.github.mikip98.humilityafm.content.blocks.Waterloggable;
 import io.github.mikip98.humilityafm.content.blocks.templates.PlainHorizontalFacingBlock;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.SimpleCandlestickLogic;
@@ -29,8 +32,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.text.html.BlockView;
-import java.util.Random;
 import java.util.function.Supplier;
 
 public class Candlestick extends PlainHorizontalFacingBlock implements SimpleCandlestickLogic, Waterloggable {
@@ -131,7 +132,7 @@ public class Candlestick extends PlainHorizontalFacingBlock implements SimpleCan
     protected static final MapCodec<Candlestick> CODEC = simpleCodec(Candlestick::new);
 
     @Override
-    protected @NonNull MapCodec<? extends Candlestick> #if MC_VERSION < 260000 getCodec() #else codec() #endif { return CODEC; }
+    protected @NotNull MapCodec<? extends Candlestick> codec() { return CODEC; }
     #endif
 
     @Override
@@ -210,7 +211,7 @@ public class Candlestick extends PlainHorizontalFacingBlock implements SimpleCan
                 case WEST: return voxelShapeEmptyWest;
             }
         }
-        return null;
+        throw new IllegalStateException("It's not possible to get here...");
     }
 
     @Override

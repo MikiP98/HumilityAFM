@@ -1,5 +1,8 @@
 package io.github.mikip98.humilityafm.content.blocks.cabinet;
 
+#if MC_VERSION >= 12004
+import com.mojang.serialization.MapCodec;
+#endif
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.ImplementedInventory;
 import io.github.mikip98.humilityafm.content.blocks.Waterloggable;
 import io.github.mikip98.humilityafm.content.blocks.templates.PlainHorizontalFacingBlock;
@@ -51,7 +54,7 @@ public class CabinetBlock extends PlainHorizontalFacingBlock implements Waterlog
     protected static final MapCodec<CabinetBlock> CODEC = simpleCodec(CabinetBlock::new);
 
     @Override
-    protected @NonNull MapCodec<? extends CabinetBlock> #if MC_VERSION < 260000 getCodec() #else codec() #endif { return CODEC; }
+    protected @NotNull MapCodec<? extends CabinetBlock> codec() { return CODEC; }
     #endif
 
     @Override

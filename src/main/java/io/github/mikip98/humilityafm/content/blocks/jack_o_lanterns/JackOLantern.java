@@ -6,7 +6,8 @@ import net.minecraft.world.level.block.Blocks;
 import java.util.function.Supplier;
 
 public class JackOLantern extends PlainHorizontalFacingBlock {
-    public static final Supplier<Properties> defaultSettingsSupplier = () -> Properties.copy(Blocks.JACK_O_LANTERN);
+    public static final Supplier<Properties> defaultSettingsSupplier =
+            () -> Properties.#if MC_VERSION < 12004 copy #else ofFullCopy #endif(Blocks.JACK_O_LANTERN);
     public static final Properties defaultSettings = defaultSettingsSupplier.get();
     public JackOLantern(Properties settings) {
         super(settings);

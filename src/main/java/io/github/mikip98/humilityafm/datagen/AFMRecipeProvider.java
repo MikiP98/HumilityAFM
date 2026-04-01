@@ -5,8 +5,13 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 #endif
 import net.minecraft.core.registries.BuiltInRegistries;
+#if MC_VERSION < 12004
 import net.minecraft.data.recipes.FinishedRecipe;
+#endif
 import net.minecraft.data.recipes.RecipeCategory;
+#if MC_VERSION >= 12004
+import net.minecraft.data.recipes.RecipeOutput;
+#endif
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
@@ -16,7 +21,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
 
-#if MC_VERSION == 12001
+#if MC_VERSION < 12004
 import java.util.function.Consumer;
 #endif
 #if MC_VERSION >= 12006 && MC_VERSION < 12104
@@ -40,7 +45,7 @@ public abstract class AFMRecipeProvider extends #if MC_VERSION < 12104 FabricRec
 
     protected void offerCabinetRecipe(
             #if MC_VERSION >= 12104 HolderLookup.RegistryLookup<Item> itemLookup, #endif
-            #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif exporter,
+            #if MC_VERSION < 12004 Consumer<FinishedRecipe> #else RecipeOutput #endif exporter,
             ItemLike output, ItemLike slab, ItemLike carpet, String path_prefix
     ) {
         ShapedRecipeBuilder

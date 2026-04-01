@@ -21,7 +21,8 @@ import org.jetbrains.annotations.NotNull;
 public class ColouredTorch extends TorchBlock {
     public static final IntegerProperty POWER = BlockStateProperties.POWER;
 
-    public static final Properties defaultSettings = Properties.copy(Blocks.TORCH).lightLevel((state) -> state.getValue(POWER));
+    public static final Properties defaultSettings =
+            Properties.#if MC_VERSION < 12004 copy #else ofFullCopy #endif(Blocks.TORCH).lightLevel((state) -> state.getValue(POWER));
 
 
     public ColouredTorch(SimpleParticleType particleType, Properties properties) {
