@@ -4,6 +4,9 @@ import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.config.enums.ModSupportState;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+#if MC_VERSION >= 12006
+import net.minecraft.client.Minecraft;
+#endif
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
@@ -17,7 +20,7 @@ import static io.github.mikip98.humilityafm.HumilityAFM.LOGGER;
 public class ClientNetworkRegistry {
     public static void register() {
         #if MC_VERSION >= 12006
-        ClientPlayNetworking.registerGlobalReceiver(NetworkRegistry.ConfigSyncPayload.ID, (payload, context) -> {
+        ClientPlayNetworking.registerGlobalReceiver(NetworkRegistry.ConfigSyncPayload.TYPE, (payload, context) -> {
         #else
         ClientPlayNetworking.registerGlobalReceiver(NetworkRegistry.CONFIG_SYNC, (client, handler, buf, responseSender) -> {
             final NetworkRegistry.ConfigSyncPayload payload = new NetworkRegistry.ConfigSyncPayload(buf);
@@ -67,7 +70,7 @@ public class ClientNetworkRegistry {
             // Log the differences
             if (!differences.isEmpty()) {
                 #if MC_VERSION >= 12006
-                MinecraftClient client = context.client();
+                Minecraft client = context.client();
                 #endif
                 client.execute(() -> {
                     printDiffs(LOGGER::error, differences, new String[]{"","",""});

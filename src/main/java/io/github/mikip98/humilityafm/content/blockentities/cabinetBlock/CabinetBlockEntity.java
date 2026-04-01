@@ -3,6 +3,9 @@ package io.github.mikip98.humilityafm.content.blockentities.cabinetBlock;
 import io.github.mikip98.humilityafm.registries.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+#if MC_VERSION < 12105
+import net.minecraft.core.HolderLookup;
+#endif
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -84,7 +87,7 @@ public class CabinetBlockEntity extends BlockEntity implements ImplementedInvent
     }
     #else
     // 1.20.6+
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         return this.saveCustomOnly(registries);
     }
     #endif

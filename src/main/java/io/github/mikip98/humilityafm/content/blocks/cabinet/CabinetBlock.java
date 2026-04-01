@@ -90,8 +90,8 @@ public class CabinetBlock extends PlainHorizontalFacingBlock implements Waterlog
         return onUseLogic(state, level, pos, player, hand);
     }
     #else
-    public @NonNull InteractionResult useWithoutItem(
-            @NonNull BlockState state, @NonNull Level world, @NonNull BlockPos pos, Player player, @NonNull BlockHitResult hit
+    public @NotNull InteractionResult useWithoutItem(
+            @NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, Player player, @NotNull BlockHitResult hit
     ) {
         final InteractionHand hand = player.getUsedItemHand();
         return onUseLogic(state, level, pos, player, hand);

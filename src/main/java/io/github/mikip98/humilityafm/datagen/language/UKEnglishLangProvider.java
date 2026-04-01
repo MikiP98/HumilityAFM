@@ -5,7 +5,7 @@ import io.github.mikip98.humilityafm.datagen.language.util.TranslationCategory;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 #if MC_VERSION >= 12006
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.core.HolderLookup;
 #endif
 
 import java.util.Map;
@@ -19,7 +19,7 @@ public class UKEnglishLangProvider extends FabricLanguageProvider {
         super(dataOutput, "en_gb");
     }
     #else
-    public UKEnglishLangProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+    public UKEnglishLangProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
         super(dataOutput, "en_gb", registryLookup);
     }
     #endif
@@ -30,7 +30,7 @@ public class UKEnglishLangProvider extends FabricLanguageProvider {
         generateTranslationsInternal(translationBuilder);
     }
     #else
-    public void generateTranslations(RegistryWrapper.WrapperLookup registryLookup, FabricLanguageProvider.TranslationBuilder translationBuilder) {
+    public void generateTranslations(HolderLookup.Provider registryLookup, FabricLanguageProvider.TranslationBuilder translationBuilder) {
         generateTranslationsInternal(translationBuilder);
     }
     #endif

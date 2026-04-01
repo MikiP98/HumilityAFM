@@ -11,7 +11,6 @@ import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -165,9 +164,10 @@ public class Candlestick extends PlainHorizontalFacingBlock implements SimpleCan
         return super.use(state, world, pos, player, hand, hit);
     }
     #else
-    public @NotNull InteractionResult use(BlockState state, Level world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-        if (onUseLogic(state, world, pos, player)) return ActionResultWrapper.SUCCESS;
-        return super.use(state, world, pos, player, hit);
+    // TODO: When I drop 1.20.x support, I should split it into separate `useWithItem` and `useWithoutItem`
+    public @NotNull InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
+        if (onUseLogic(state, world, pos, player)) return InteractionResult.SUCCESS;
+        return super.useWithoutItem(state, world, pos, player, hit);
     }
     #endif
 

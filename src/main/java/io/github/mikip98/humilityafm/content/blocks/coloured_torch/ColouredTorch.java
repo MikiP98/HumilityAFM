@@ -51,12 +51,12 @@ public class ColouredTorch extends TorchBlock {
         return super.use(state, level, pos, player, hand, hit);
     }
     #else
-    public @NonNull InteractionResult useWithoutItem(
-            @NonNull BlockState state, @NonNull Level world, @NonNull BlockPos pos, Player player, @NonNull BlockHitResult hit
+    public @NotNull InteractionResult useWithoutItem(
+            @NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, Player player, @NotNull BlockHitResult hit
     ) {
         final InteractionHand hand = player.getUsedItemHand();
         if (onUseLogicInternal(state, level, pos, player, hand)) return InteractionResult.SUCCESS;
-        return super.use(state, level, pos, player, hit);
+        return super.useWithoutItem(state, level, pos, player, hit);
     }
     #endif
 

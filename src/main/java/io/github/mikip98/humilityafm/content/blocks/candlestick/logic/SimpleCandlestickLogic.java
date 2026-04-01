@@ -16,7 +16,7 @@ public non-sealed interface SimpleCandlestickLogic extends BaseCandlestickLogic 
     default boolean onUseLogic(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand) {
     #else
     default boolean onUseLogic(BlockState state, Level world, BlockPos pos, Player player) {
-        Hand hand = player.getActiveHand();
+        InteractionHand hand = player.getUsedItemHand();
     #endif
         ItemStack heldItemStack = player.getItemInHand(hand);
         Item heldItem = heldItemStack.getItem();

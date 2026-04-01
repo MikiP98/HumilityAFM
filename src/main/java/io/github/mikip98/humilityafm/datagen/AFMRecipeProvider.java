@@ -3,6 +3,7 @@ package io.github.mikip98.humilityafm.datagen;
 #if MC_VERSION < 12104
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.minecraft.core.HolderLookup;
 #endif
 import net.minecraft.core.registries.BuiltInRegistries;
 #if MC_VERSION < 12004
@@ -34,7 +35,7 @@ public abstract class AFMRecipeProvider extends #if MC_VERSION < 12104 FabricRec
     #if MC_VERSION < 12006
     public AFMRecipeProvider(FabricDataOutput output) { super(output); }
     #elif MC_VERSION < 12104
-    public AFMRecipeProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+    public AFMRecipeProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
     }
     #else

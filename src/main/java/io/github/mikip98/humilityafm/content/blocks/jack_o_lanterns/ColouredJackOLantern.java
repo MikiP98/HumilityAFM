@@ -38,11 +38,11 @@ public class ColouredJackOLantern extends JackOLantern {
         return onUseLogic(state, level, pos, player, hand) ? InteractionResult.SUCCESS : super.use(state, level, pos, player, hand, hit);
     }
     #else
-    public @NonNull InteractionResult useWithoutItem(
-            @NonNull BlockState state, @NonNull Level level, @NonNull BlockPos pos, Player player, @NonNull BlockHitResult hit
+    public @NotNull InteractionResult useWithoutItem(
+            @NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, Player player, @NotNull BlockHitResult hit
     ) {
         final InteractionHand hand = player.getUsedItemHand();
-        return onUseLogic(state, level, pos, player, hand) ? InteractionResult.SUCCESS : super.use(state, level, pos, player, hit);
+        return onUseLogic(state, level, pos, player, hand) ? InteractionResult.SUCCESS : super.useWithoutItem(state, level, pos, player, hit);
     }
     #endif
 

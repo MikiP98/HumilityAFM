@@ -5,9 +5,17 @@ import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+#if MC_VERSION >= 12006
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+#endif
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.network.FriendlyByteBuf;
+#if MC_VERSION >= 12006
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+#else
 import net.minecraft.resources.ResourceLocation;
+#endif
 
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
 
@@ -17,7 +25,6 @@ public class NetworkRegistry {
         PayloadTypeRegistry.playS2C().register(ConfigSyncPayload.TYPE, ConfigSyncPayload.CODEC);
     }
     #else
-    // Identifier -> ResourceLocation
     public static final ResourceLocation CONFIG_SYNC = getId("config_sync");
     #endif
 

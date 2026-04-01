@@ -88,11 +88,7 @@ public non-sealed interface RustableCandlestickLogic extends BaseCandlestickLogi
 
     default void emmitWaxingParticles(
             Level world,
-            #if MC_VERSION < 12006
             SimpleParticleType particle,
-            #else
-            ParticleEffect particle,
-            #endif
             double x, double y, double z,
             double randomSpread
     ) {

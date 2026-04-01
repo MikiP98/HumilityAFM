@@ -5,9 +5,18 @@ import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
+#if MC_VERSION < 12006
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
+#else
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
+import net.minecraft.core.HolderLookup;
+#endif
 import net.minecraft.core.registries.BuiltInRegistries;
+#if MC_VERSION < 12006
 import net.minecraft.resources.ResourceLocation;
+#else
+import net.minecraft.resources.ResourceKey;
+#endif
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -27,7 +36,7 @@ public class BlockLootTableGenerator extends FabricBlockLootTableProvider {
         super(dataOutput);
     }
     #else
-    public BlockLootTableGenerator(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+    public BlockLootTableGenerator(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(dataOutput, registriesFuture);
     }
     #endif

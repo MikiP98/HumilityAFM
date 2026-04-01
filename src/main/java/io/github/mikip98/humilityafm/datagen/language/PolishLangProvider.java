@@ -5,7 +5,7 @@ import io.github.mikip98.humilityafm.datagen.language.util.TranslationCategory;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 #if MC_VERSION >= 12006
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.core.HolderLookup;
 #endif
 
 import java.util.Hashtable;
@@ -20,7 +20,7 @@ public class PolishLangProvider extends FabricLanguageProvider {
         super(dataOutput, "pl_pl");
     }
     #else
-    public PolishLangProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+    public PolishLangProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
         super(dataOutput, "pl_pl", registryLookup);
     }
     #endif
@@ -31,7 +31,7 @@ public class PolishLangProvider extends FabricLanguageProvider {
         generateTranslationsInternal(translationBuilder);
     }
     #else
-    public void generateTranslations(RegistryWrapper.WrapperLookup registryLookup, TranslationBuilder translationBuilder) {
+    public void generateTranslations(HolderLookup.Provider registryLookup, TranslationBuilder translationBuilder) {
         generateTranslationsInternal(translationBuilder);
     }
     #endif

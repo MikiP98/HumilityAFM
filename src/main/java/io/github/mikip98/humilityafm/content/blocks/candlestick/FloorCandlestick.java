@@ -6,7 +6,6 @@ import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.SimpleCand
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -62,9 +61,9 @@ public class FloorCandlestick extends Block implements SimpleCandlestickLogic, W
         return super.use(state, world, pos, player, hand, hit);
     }
     #else
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
-        if (onUseLogic(state, world, pos, player)) return ActionResultWrapper.SUCCESS;
-        return super.onUse(state, world, pos, player, hit);
+    public @NotNull InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
+        if (onUseLogic(state, world, pos, player)) return InteractionResult.SUCCESS;
+        return super.useWithoutItem(state, world, pos, player, hit);
     }
     #endif
 

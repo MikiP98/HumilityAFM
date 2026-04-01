@@ -14,6 +14,7 @@ import io.github.mikip98.humilityafm.util.generation_data.material_management.ma
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 #if MC_VERSION < 12006
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
+#endif
 import net.minecraft.core.registries.BuiltInRegistries;
 #if MC_VERSION < 12004
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -24,9 +25,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-#endif
 #if MC_VERSION >= 12006
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.recipes.RecipeOutput;
 #endif
 
 import java.util.*;
@@ -34,7 +36,9 @@ import java.util.*;
 import java.util.function.Consumer;
 #elif MC_VERSION >= 12006
 import java.util.concurrent.CompletableFuture;
-#endif import static io.github.mikip98.humilityafm.HumilityAFM.*;
+#endif
+
+import static io.github.mikip98.humilityafm.HumilityAFM.*;
 
 public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider #else FabricRecipeProvider #endif {
     #if MC_VERSION < 12006
@@ -43,7 +47,7 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
     }
     
     #else
-    public AMFRecipeGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+    public AMFRecipeGenerator(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
     }
     #endif
