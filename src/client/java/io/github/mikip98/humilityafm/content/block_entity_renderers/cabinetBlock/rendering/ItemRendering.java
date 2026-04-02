@@ -5,9 +5,14 @@ import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.Implemen
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+#if MC_VERSION < 12104
 import net.minecraft.client.resources.model.BakedModel;
+#endif
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+#if MC_VERSION >= 12104
+import net.minecraft.world.level.block.entity.BlockEntity;
+#endif
 import net.minecraft.world.level.block.state.BlockState;
 
 public sealed interface ItemRendering permits ItemFloorRendering, ItemWallRendering {

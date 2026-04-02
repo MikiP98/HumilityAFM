@@ -8,9 +8,17 @@ import io.github.mikip98.humilityafm.util.generation_data.RawGenerationData;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.SizedIterable;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
 import net.minecraft.core.Direction;
+#if MC_VERSION < 12104
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+#else
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+#endif
 import net.minecraft.world.item.Item;
+#if MC_VERSION >= 12104
+import net.minecraft.world.item.Items;
+#endif
 
 import java.util.Arrays;
 import java.util.function.Function;
@@ -135,9 +143,9 @@ public class ItemRegistry {
         return Registry.register(BuiltInRegistries.ITEM, getId(name), factory.apply(settings));
     }
     #else
-    public static Item register(String name, Function<Item.Settings, Item> factory, Item.Settings settings) {
-        final RegistryKey<Item> registryKey = RegistryKey.of(RegistryKeys.ITEM, getId(name));
-        return Items.register(registryKey, factory, settings);
+    public static Item register(String name, Function<Item.Properties, Item> factory, Item.Properties settings) {
+        final ResourceKey<Item> registryKey = ResourceKey.create(Registries.ITEM, getId(name));
+        return Items.registerItem(registryKey, factory, settings);
     }
     #endif
 }

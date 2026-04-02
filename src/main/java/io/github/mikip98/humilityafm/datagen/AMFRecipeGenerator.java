@@ -15,12 +15,19 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 #if MC_VERSION < 12006
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 #endif
+#if MC_VERSION >= 12104
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+#endif
 import net.minecraft.core.registries.BuiltInRegistries;
+#if MC_VERSION >= 12104
+import net.minecraft.core.registries.Registries;
+#endif
 #if MC_VERSION < 12004
 import net.minecraft.data.recipes.FinishedRecipe;
 #else
 import net.minecraft.data.recipes.RecipeOutput;
 #endif
+import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -28,7 +35,7 @@ import net.minecraft.world.level.ItemLike;
 #if MC_VERSION >= 12006
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.recipes.RecipeOutput;
+import org.jetbrains.annotations.NotNull;
 #endif
 
 import java.util.*;
@@ -59,8 +66,8 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
     ) {
     #else
     @Override
-    protected RecipeProvider.Runner getRecipeGenerator(HolderLookup.Provider registries, RecipeOutput output) {
-        return new AFMRecipeProvider(registries, output) {
+    protected @NotNull RecipeProvider createRecipeProvider(HolderLookup.Provider registryLookup, RecipeOutput output) {
+        return new AFMRecipeProvider(registryLookup, output) {
             @Override
             public void buildRecipes() {
                 HolderLookup.RegistryLookup<Item> itemLookup = registries.lookupOrThrow(Registries.ITEM);
@@ -470,18 +477,18 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
 
 
     protected static Item getItemFromName(String name) {
-        return BuiltInRegistries.ITEM.get(getVanillaId(name));
+        return getItemFromName(name, null);
     }
     protected static Item getItemFromName(String name, SupportedMods mod) {
-        Item item = BuiltInRegistries.ITEM.get(getVMId(mod, name));
-        if (item == Items.AIR)
-            throw new IllegalStateException("Item not found: '" + name + "' in mod: '" + (mod != null ? mod.modId : "vanilla") + "'");
-        return item;
+        return BuiltInRegistries.ITEM.getOptional(getVMId(mod, name))
+                .orElseThrow(() -> new IllegalStateException(
+                        "Item not found: '" + name + "' in mod: '" + (mod != null ? mod.modId : "vanilla") + "'"
+                ));
     }
 
     #if MC_VERSION >= 12104
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "AFMRecipeGenerator";
     }
     #endif

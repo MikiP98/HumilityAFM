@@ -5,17 +5,18 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.core.HolderLookup;
 #endif
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 #if MC_VERSION < 12004
 import net.minecraft.data.recipes.FinishedRecipe;
 #endif
-import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.*;
 #if MC_VERSION >= 12004
-import net.minecraft.data.recipes.RecipeOutput;
 #endif
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
+#if MC_VERSION >= 12104
+import net.minecraft.world.item.Item;
+#endif
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
@@ -31,7 +32,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.MOD_ID;
 
-public abstract class AFMRecipeProvider extends #if MC_VERSION < 12104 FabricRecipeProvider #else RecipeGenerator #endif {
+public abstract class AFMRecipeProvider extends #if MC_VERSION < 12104 FabricRecipeProvider #else RecipeProvider #endif {
     #if MC_VERSION < 12006
     public AFMRecipeProvider(FabricDataOutput output) { super(output); }
     #elif MC_VERSION < 12104
@@ -39,8 +40,8 @@ public abstract class AFMRecipeProvider extends #if MC_VERSION < 12104 FabricRec
         super(output, registriesFuture);
     }
     #else
-    protected AFMRecipeProvider(RegistryWrapper.WrapperLookup registries, RecipeExporter exporter) {
-        super(registries, exporter);
+    protected AFMRecipeProvider(HolderLookup.Provider registryLookup, RecipeOutput exporter) {
+        super(registryLookup, exporter);
     }
     #endif
 

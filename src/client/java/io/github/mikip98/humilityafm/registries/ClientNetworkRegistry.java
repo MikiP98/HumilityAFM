@@ -96,7 +96,7 @@ public class ClientNetworkRegistry {
     }
 
     protected static void sendMessage(Player player, String message) {
-        player.sendSystemMessage(Component.literal(message));
+        player.displayClientMessage(Component.literal(message), false);
     }
 
     protected static class DiffList extends ArrayList<String> {

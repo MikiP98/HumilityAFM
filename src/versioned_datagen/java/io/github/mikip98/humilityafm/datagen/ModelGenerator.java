@@ -16,8 +16,14 @@ import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 #if MC_VERSION < 12104
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
+#else
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.blockstates.*;
+import net.minecraft.client.data.models.model.*;
 #endif
 import net.minecraft.core.Direction;
+#if MC_VERSION < 12104
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.blockstates.*;
@@ -25,8 +31,10 @@ import net.minecraft.data.models.model.ModelTemplate;
 import net.minecraft.data.models.model.ModelTemplates;
 import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.data.models.model.TextureSlot;
+#endif
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -111,7 +119,7 @@ public class ModelGenerator extends FabricModelProvider {
                     textureMap,
                     blockStateModelGenerator.modelOutput
             );
-            blockStateModelGenerator.delegateItemModel(BlockRegistry.COLOURED_JACK_O_LANTERNS[i], jackOLanternModelId);
+            registerItemModel(BlockRegistry.COLOURED_JACK_O_LANTERNS[i], jackOLanternModelId);
             blockStateModelGenerator.blockStateOutput.accept(getOrientableBlockState(
                     BlockRegistry.COLOURED_JACK_O_LANTERNS[i],
                     jackOLanternModelId
@@ -213,7 +221,7 @@ public class ModelGenerator extends FabricModelProvider {
                     textureMap,
                     blockStateModelGenerator.modelOutput
             );
-            blockStateModelGenerator.delegateItemModel(BlockRegistry.LIGHT_STRIP_VARIANTS[i], lightStripStraightModelId);
+            registerItemModel(BlockRegistry.LIGHT_STRIP_VARIANTS[i], lightStripStraightModelId);
             blockStateModelGenerator.blockStateOutput.accept(getLightStripBlockstate(
                     BlockRegistry.LIGHT_STRIP_VARIANTS[i],
                     lightStripStraightModelId,
@@ -454,8 +462,8 @@ public class ModelGenerator extends FabricModelProvider {
                     blockStateModelGenerator.modelOutput
             );
 
-            blockStateModelGenerator.delegateItemModel(BlockRegistry.INNER_STAIRS_BLOCK_VARIANTS[i], innerStairsModelId);
-            blockStateModelGenerator.delegateItemModel(BlockRegistry.OUTER_STAIRS_BLOCK_VARIANTS[i], outerStairsModelId);
+            registerItemModel(BlockRegistry.INNER_STAIRS_BLOCK_VARIANTS[i], innerStairsModelId);
+            registerItemModel(BlockRegistry.OUTER_STAIRS_BLOCK_VARIANTS[i], outerStairsModelId);
             blockStateModelGenerator.blockStateOutput.accept(getForcedCornerStairsBlockstate(BlockRegistry.INNER_STAIRS_BLOCK_VARIANTS[i], innerStairsModelId));
             blockStateModelGenerator.blockStateOutput.accept(getForcedCornerStairsBlockstate(BlockRegistry.OUTER_STAIRS_BLOCK_VARIANTS[i], outerStairsModelId));
 
@@ -493,7 +501,7 @@ public class ModelGenerator extends FabricModelProvider {
                             .putForced(TextureSlot.create("2"), planks2Id),
                     blockStateModelGenerator.modelOutput
             );
-            blockStateModelGenerator.delegateItemModel(BlockRegistry.WOODEN_MOSAIC_VARIANTS[i], woodenMosaicModelId);
+            registerItemModel(BlockRegistry.WOODEN_MOSAIC_VARIANTS[i], woodenMosaicModelId);
             blockStateModelGenerator.blockStateOutput.accept(getDefaultBlockstate(BlockRegistry.WOODEN_MOSAIC_VARIANTS[i], woodenMosaicModelId));
             ++i;
         }
@@ -511,7 +519,7 @@ public class ModelGenerator extends FabricModelProvider {
                                 .putForced(TextureSlot.create("2"), getVanillaId("block/" + color2 + "_terracotta")),
                         blockStateModelGenerator.modelOutput
                 );
-                blockStateModelGenerator.delegateItemModel(BlockRegistry.TERRACOTTA_TILE_VARIANTS[i], terracottaTileModelId);
+                registerItemModel(BlockRegistry.TERRACOTTA_TILE_VARIANTS[i], terracottaTileModelId);
                 blockStateModelGenerator.blockStateOutput.accept(getDefaultBlockstate(BlockRegistry.TERRACOTTA_TILE_VARIANTS[i], terracottaTileModelId));
 
                 ++i;
@@ -1212,8 +1220,12 @@ public class ModelGenerator extends FabricModelProvider {
         }
     }
 
-    protected void registerItemModel(Item item, ResourceLocation modelId) {
-        blockStateModelGenerator.delegateItemModel(item, modelId);
+    protected void registerItemModel(ItemLike itemLike, ResourceLocation modelId) {
+        #if MC_VERSION < 12104
+        blockStateModelGenerator.delegateItemModel(itemLike.asItem(), modelId);
+        #else
+        blockStateModelGenerator.itemModelOutput.accept(itemLike.asItem(), ItemModelUtils.plainModel(modelId));
+        #endif
     }
 
     protected static ResourceLocation getBlockId(@Nullable SupportedMods mod, String name) {

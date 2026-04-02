@@ -11,6 +11,9 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import org.jetbrains.annotations.NotNull;
+#if MC_VERSION >= 12104
+import org.jetbrains.annotations.Nullable;
+#endif
 
 public class JackOLanternRedStone extends JackOLantern {
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
