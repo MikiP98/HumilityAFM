@@ -10,11 +10,11 @@ import io.github.mikip98.humilityafm.util.mod_support.ModSupportManager;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+#if MC_VERSION >= 12111
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+#endif
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-#if MC_VERSION >= 12111
-import net.minecraft.client.render.block.entity.state.BlockEntityRenderState;
-#endif
 
 public class BlockEntityRendererRegistry {
     public static void register() {

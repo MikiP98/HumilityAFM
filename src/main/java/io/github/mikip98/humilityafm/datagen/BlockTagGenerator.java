@@ -9,7 +9,13 @@ import io.github.mikip98.humilityafm.util.generation_data.material_management.ma
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
+#if MC_VERSION >= 12105
+import net.minecraft.core.registries.BuiltInRegistries;
+#endif
 import net.minecraft.core.registries.Registries;
+#if MC_VERSION >= 12105
+import net.minecraft.tags.TagBuilder;
+#endif
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
@@ -227,18 +233,18 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
         #else
         final protected TagBuilder builder;
         public TagBuilderWrapper(TagKey<Block> tag) {
-            this.builder = getTagBuilder(tag);
+            this.builder = getOrCreateRawBuilder(tag);
         }
         public TagBuilderWrapper add(Block... blocks) {
-            Arrays.stream(blocks).forEach((block) -> builder.add(Registries.BLOCK.getId(block)));
+            Arrays.stream(blocks).forEach((block) -> builder.addElement(BuiltInRegistries.BLOCK.getKey(block)));
             return this;
         }
         public TagBuilderWrapper addTag(TagKey<Block> tag) {
-            builder.addTag(tag.id());
+            builder.addTag(tag.location());
             return this;
         }
         public TagBuilderWrapper addOptionalTag(TagKey<Block> tag) {
-            builder.addOptionalTag(tag.id());
+            builder.addOptionalTag(tag.location());
             return this;
         }
         #endif

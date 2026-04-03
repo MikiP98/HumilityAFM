@@ -6,6 +6,9 @@ import io.github.mikip98.humilityafm.content.blocks.LightStripBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+#if MC_VERSION >= 12105
+import net.minecraft.client.renderer.block.ModelBlockRenderer;
+#endif
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
@@ -13,6 +16,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Half;
+#if MC_VERSION >= 12105
+import net.minecraft.world.phys.Vec3;
+#endif
 
 public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightStripBlockEntity #if MC_VERSION >= 12111, LightStripBlockEntityRenderer.LightStripRenderState #endif> {
     protected static RenderFunction renderFunction = LightStripBlockEntityRenderer::fakeRunnable;
@@ -27,7 +33,7 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
     public void render(
             LightStripBlockEntity blockEntity, float tickDelta,
             PoseStack poseStack, MultiBufferSource bufferSource,
-            int light, int overlay #if MC_VERSION >= 12105, Vec3d cameraPos #endif
+            int light, int overlay #if MC_VERSION >= 12105, Vec3 cameraPos #endif
     ) {
         renderFunction.execute(blockEntity, poseStack, bufferSource, overlay);
     }

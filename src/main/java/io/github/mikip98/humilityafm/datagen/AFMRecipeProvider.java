@@ -11,9 +11,11 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 #endif
 import net.minecraft.data.recipes.*;
-#if MC_VERSION >= 12004
-#endif
+#if MC_VERSION < 12111
 import net.minecraft.resources.ResourceLocation;
+#else
+import net.minecraft.resources.Identifier;
+#endif
 #if MC_VERSION >= 12104
 import net.minecraft.world.item.Item;
 #endif
@@ -267,7 +269,7 @@ public abstract class AFMRecipeProvider extends #if MC_VERSION < 12104 FabricRec
 
     // Override for the vanilla method to be mod safe
     public static String getHasName(ItemLike item) {
-        final ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(item.asItem());
+        final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif itemId = BuiltInRegistries.ITEM.getKey(item.asItem());
         return "has_" + itemId.getNamespace() + ":" + itemId.getPath();
     }
 }

@@ -3,6 +3,7 @@ package io.github.mikip98.humilityafm.content.blocks.candlestick.logic;
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -30,7 +31,7 @@ public non-sealed interface SimpleCandlestickLogic extends BaseCandlestickLogic 
         dropCandle(state, newState, world, pos);
     }
     #else
-    default void onStateReplacedLogic(BlockState state, ServerWorld world, BlockPos pos) {
+    default void onStateReplacedLogic(BlockState state, ServerLevel world, BlockPos pos) {
         // In 1.21.5+, the block is already replaced, before that is is yet to be replaced, so this cannot be merged
         BlockState newState = world.getBlockState(pos);
         dropCandle(state, newState, world, pos);

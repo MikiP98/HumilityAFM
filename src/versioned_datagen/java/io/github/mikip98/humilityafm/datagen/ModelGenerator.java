@@ -1,5 +1,8 @@
 package io.github.mikip98.humilityafm.datagen;
 
+#if MC_VERSION >= 12105
+import com.mojang.math.Quadrant;
+#endif
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
@@ -21,6 +24,16 @@ import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.blockstates.*;
 import net.minecraft.client.data.models.model.*;
+#if MC_VERSION < 12105
+import net.minecraft.client.data.models.blockstates.Variant;
+import net.minecraft.client.data.models.blockstates.Condition;
+#endif
+#endif
+#if MC_VERSION >= 12105
+import net.minecraft.client.renderer.block.model.Variant;
+import net.minecraft.client.renderer.block.model.multipart.Condition;
+import net.minecraft.client.data.models.MultiVariant;
+import net.minecraft.client.renderer.block.model.VariantMutator;
 #endif
 import net.minecraft.core.Direction;
 #if MC_VERSION < 12104
@@ -46,6 +59,9 @@ import java.util.*;
 import java.util.function.Function;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.*;
+#if MC_VERSION >= 12105
+import static net.minecraft.client.data.models.BlockModelGenerators.variant;
+#endif
 
 public class ModelGenerator extends FabricModelProvider {
     // Cabinet Models
@@ -129,8 +145,8 @@ public class ModelGenerator extends FabricModelProvider {
     }
 
     protected static MultiVariantGenerator getOrientableBlockState(Block block, ResourceLocation modelId) {
-        return MultiVariantGenerator.multiVariant(block)
-                .with(PropertyDispatch.property(BlockStateProperties.HORIZONTAL_FACING)
+        return createMultiVariantGenerator(block)
+                .with(PropertyDispatch #if MC_VERSION < 12105 .property #else .initial #endif (BlockStateProperties.HORIZONTAL_FACING)
                         .select(
                                 Direction.NORTH,
                                 getVariant(modelId)
@@ -150,8 +166,8 @@ public class ModelGenerator extends FabricModelProvider {
                 );
     }
     protected static MultiVariantGenerator getTorchOrientableBlockState(Block block, ResourceLocation modelId) {
-        return MultiVariantGenerator.multiVariant(block)
-                .with(PropertyDispatch.property(BlockStateProperties.HORIZONTAL_FACING)
+        return createMultiVariantGenerator(block)
+                .with(PropertyDispatch #if MC_VERSION < 12105 .property #else .initial #endif (BlockStateProperties.HORIZONTAL_FACING)
                         .select(
                                 Direction.NORTH,
                                 getVariantY(modelId, Rotation.R270)
@@ -612,13 +628,8 @@ public class ModelGenerator extends FabricModelProvider {
         final EnumProperty<Half> HALF = BlockStateProperties.HALF;
         final EnumProperty<StairsShape> SHAPE = BlockStateProperties.STAIRS_SHAPE;
 
-        #if MC_VERSION < 12105
-        return MultiVariantGenerator.multiVariant(block)
-                .with(PropertyDispatch.properties(FACING, HALF, SHAPE)
-        #else
-        return VariantsBlockModelDefinitionCreator.of(block)
-                .with(BlockStateVariantMap.models(FACING, HALF, SHAPE)
-        #endif
+        return createMultiVariantGenerator(block)
+                .with(#if MC_VERSION < 12105 PropertyDispatch.properties #else PropertyDispatch.initial #endif (FACING, HALF, SHAPE)
                         // East Bottom
                         .select(
                                 Direction.EAST, Half.BOTTOM, StairsShape.INNER_LEFT,
@@ -803,7 +814,7 @@ public class ModelGenerator extends FabricModelProvider {
         MultiPartGenerator multipart = MultiPartGenerator.multiPart(block)
                 // NO CANDLE
                 .with(
-                        Condition.condition().term(CANDLE_COLOR, CandleColor.NONE)#if MC_VERSION >= 12105 .build() #endif,
+                        #if MC_VERSION < 12105 Condition.condition() #else new ConditionBuilder() #endif.term(CANDLE_COLOR, CandleColor.NONE)#if MC_VERSION >= 12105 .build() #endif,
                         getVariant(emptyModel)
                 )
                 // PLAIN NON-LIT
@@ -834,7 +845,11 @@ public class ModelGenerator extends FabricModelProvider {
         return multipart;
     }
     protected static Condition candlestickWhenState(CandleColor candleColor, boolean lit) {
+        #if MC_VERSION < 12105
         return Condition.condition()
+        #else
+        return new ConditionBuilder()
+        #endif
                 .term(ModProperties.CANDLE_COLOR, candleColor)
                 .term(BlockStateProperties.LIT, lit)
                 #if MC_VERSION >= 12105 .build() #endif;
@@ -941,22 +956,30 @@ public class ModelGenerator extends FabricModelProvider {
         return multipart;
     }
     protected static Condition wallCandlestickWhenState(CandleColor candleColor, boolean lit, Direction facing) {
+        #if MC_VERSION < 12105
         return Condition.condition()
+        #else
+        return new ConditionBuilder()
+                #endif
                 .term(ModProperties.CANDLE_COLOR, candleColor)
                 .term(BlockStateProperties.LIT, lit)
                 .term(BlockStateProperties.HORIZONTAL_FACING, facing)
                 #if MC_VERSION >= 12105 .build() #endif;
     }
     protected static Condition wallCandlestickNoCandleWhenState(Direction facing) {
+        #if MC_VERSION < 12105
         return Condition.condition()
+        #else
+        return new ConditionBuilder()
+        #endif
                 .term(ModProperties.CANDLE_COLOR, CandleColor.NONE)
                 .term(BlockStateProperties.HORIZONTAL_FACING, facing)
                 #if MC_VERSION >= 12105 .build() #endif;
     }
 
     protected static MultiVariantGenerator getForcedCornerStairsBlockstate(Block block, ResourceLocation modelId) {
-        return MultiVariantGenerator.multiVariant(block)
-                .with(PropertyDispatch.properties(BlockStateProperties.HORIZONTAL_FACING, BlockStateProperties.HALF)
+        return createMultiVariantGenerator(block)
+                .with(PropertyDispatch #if MC_VERSION < 12105 .properties #else .initial #endif (BlockStateProperties.HORIZONTAL_FACING, BlockStateProperties.HALF)
                         .select(
                                 Direction.EAST, Half.BOTTOM,
                                 getUVLockedVariantY(modelId, Rotation.R90)
@@ -996,13 +1019,13 @@ public class ModelGenerator extends FabricModelProvider {
         #if MC_VERSION < 12105
         return MultiVariantGenerator.multiVariant(block, getVariant(modelId));
         #else
-        return VariantsBlockModelDefinitionCreator.of(block, variant(new ModelVariant(modelId)));
+        return MultiVariantGenerator.dispatch(block, getVariant(modelId));
         #endif
     }
 
     protected static MultiVariantGenerator getCabinetBlockstate(Block cabinetBlock, ResourceLocation cabinetModel, ResourceLocation cabinetOpenModel) {
-        return MultiVariantGenerator.multiVariant(cabinetBlock)
-                .with(PropertyDispatch.properties(BlockStateProperties.HORIZONTAL_FACING, BlockStateProperties.OPEN)
+        return createMultiVariantGenerator(cabinetBlock)
+                .with(PropertyDispatch #if MC_VERSION < 12105 .properties #else .initial #endif (BlockStateProperties.HORIZONTAL_FACING, BlockStateProperties.OPEN)
                         .select(
                                 Direction.NORTH, true,
                                 getVariantY(cabinetOpenModel, Rotation.R180)
@@ -1038,8 +1061,8 @@ public class ModelGenerator extends FabricModelProvider {
                 );
     }
     protected static MultiVariantGenerator getFloorCabinetBlockstate(Block cabinetBlock, ResourceLocation cabinetModel, ResourceLocation cabinetOpenModel) {
-        return MultiVariantGenerator.multiVariant(cabinetBlock)
-                .with(PropertyDispatch.properties(BlockStateProperties.HALF, BlockStateProperties.HORIZONTAL_FACING, BlockStateProperties.OPEN)
+        return createMultiVariantGenerator(cabinetBlock)
+                .with(PropertyDispatch #if MC_VERSION < 12105 .properties #else .initial #endif (BlockStateProperties.HALF, BlockStateProperties.HORIZONTAL_FACING, BlockStateProperties.OPEN)
                         .select(
                                 Half.BOTTOM, Direction.NORTH, true,
                                 getVariant90XY(cabinetOpenModel, Rotation.R180)
@@ -1149,41 +1172,41 @@ public class ModelGenerator extends FabricModelProvider {
     #else
     protected static MultiVariant getUVLockedUpsideDownVariantY(ResourceLocation model, Rotation rotationY) {
         return variant(new Variant(model)
-                .with(ModelVariantOperator.UV_LOCK.withValue(true))
-                .with(ModelVariantOperator.ROTATION_X.withValue(Rotation.R180.get()))
-                .with(ModelVariantOperator.ROTATION_Y.withValue(rotationY))
+                .with(VariantMutator.UV_LOCK.withValue(true))
+                .with(VariantMutator.X_ROT.withValue(Rotation.R180.get()))
+                .with(VariantMutator.Y_ROT.withValue(rotationY.get()))
         );
     }
     protected static MultiVariant getUVLockedUpsideDownVariant(ResourceLocation model) {
         return variant(new Variant(model)
-                .with(ModelVariantOperator.UV_LOCK.withValue(true))
-                .with(ModelVariantOperator.ROTATION_X.withValue(Rotation.R180.get()))
+                .with(VariantMutator.UV_LOCK.withValue(true))
+                .with(VariantMutator.X_ROT.withValue(Rotation.R180.get()))
         );
     }
 
     protected static MultiVariant getUVLockedVariantY(ResourceLocation model, Rotation rotationY) {
         return variant(new Variant(model)
-                .with(ModelVariantOperator.UV_LOCK.withValue(true))
-                .with(ModelVariantOperator.ROTATION_Y.withValue(rotationY.get()))
+                .with(VariantMutator.UV_LOCK.withValue(true))
+                .with(VariantMutator.Y_ROT.withValue(rotationY.get()))
         );
     }
 
     protected static MultiVariant getVariant90XY(ResourceLocation model, Rotation rotationY) {
         return variant(new Variant(model)
-                .with(ModelVariantOperator.ROTATION_X.withValue(VariantProperties.Rotation.R90))
-                .with(ModelVariantOperator.ROTATION_Y.withValue(rotationY.get()))
+                .with(VariantMutator.X_ROT.withValue(Rotation.R90.get()))
+                .with(VariantMutator.Y_ROT.withValue(rotationY.get()))
         );
     }
     protected static MultiVariant getVariant270XY(ResourceLocation model, Rotation rotationY) {
         return variant(new Variant(model)
-                .with(ModelVariantOperator.ROTATION_X.withValue(VariantProperties.Rotation.R270))
-                .with(ModelVariantOperator.ROTATION_Y.withValue(rotationY.get()))
+                .with(VariantMutator.X_ROT.withValue(Rotation.R270.get()))
+                .with(VariantMutator.Y_ROT.withValue(rotationY.get()))
         );
     }
 
     protected static MultiVariant getVariantY(ResourceLocation model, Rotation rotationY) {
         return variant(new Variant(model)
-                .with(ModelVariantOperator.ROTATION_Y.withValue(rotationY.get()))
+                .with(VariantMutator.Y_ROT.withValue(rotationY.get()))
         );
     }
 
@@ -1199,7 +1222,7 @@ public class ModelGenerator extends FabricModelProvider {
     }
     protected static MultiVariant getVariantX(ResourceLocation model, Rotation rotation) {
         return variant(new Variant(model)
-                .with(ModelVariantOperator.ROTATION_X.withValue(rotation.get()))
+                .with(VariantMutator.X_ROT.withValue(rotation.get()))
         );
     }
     #endif
@@ -1245,14 +1268,24 @@ public class ModelGenerator extends FabricModelProvider {
         Rotation(VariantProperties.Rotation rotation) { this.rotation = rotation; }
     
         #else
-        R0(VariantMutator.Rotation.R0),
-        R90(VariantMutator.Rotation.R90),
-        R180(VariantMutator.Rotation.R180),
-        R270(VariantMutator.Rotation.R270);
+        R0(Quadrant.R0),
+        R90(Quadrant.R90),
+        R180(Quadrant.R180),
+        R270(Quadrant.R270);
         
-        protected final VariantMutator.Rotation rotation;
-        public VariantMutator.Rotation get() { return rotation; }
-        Rotation(VariantMutator.Rotation rotation) { this.rotation = rotation; }
+        protected final Quadrant rotation;
+        public Quadrant get() { return rotation; }
+        Rotation(Quadrant rotation) { this.rotation = rotation; }
         #endif
     }
+
+
+    protected static #if MC_VERSION < 12105 MultiVariantGenerator #else MultiVariantGenerator.Empty #endif createMultiVariantGenerator(Block block) {
+        #if MC_VERSION < 12105
+        return MultiVariantGenerator.multiVariant(block);
+        #else
+        return MultiVariantGenerator.dispatch(block);
+        #endif
+    }
+    // TODO: protected static PropertyDispatch createPropertyDispatch()
 }

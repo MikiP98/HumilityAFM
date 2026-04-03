@@ -13,6 +13,9 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+#if MC_VERSION >= 12105
+import net.minecraft.world.phys.Vec3;
+#endif
 
 public class CabinetBlockEntityRenderer implements
         BlockEntityRenderer<CabinetBlockEntity #if MC_VERSION >= 12111, CabinetBlockEntityRenderState #endif>,

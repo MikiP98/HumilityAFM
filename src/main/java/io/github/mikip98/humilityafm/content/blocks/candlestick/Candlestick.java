@@ -10,7 +10,13 @@ import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+#if MC_VERSION >= 12105
+import net.minecraft.server.level.ServerLevel;
+#endif
 import net.minecraft.util.RandomSource;
+#if MC_VERSION < 12006
+import net.minecraft.world.InteractionHand;
+#endif
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -222,9 +228,9 @@ public class Candlestick extends PlainHorizontalFacingBlock implements SimpleCan
         super.onRemove(state, level, pos, newState, isMoving);
     }
     #else
-    public void onRemove(BlockState state, Level level, BlockPos pos, boolean isMoving) {
-        onStateReplacedLogic(state, world, pos);
-        super.onStateReplaced(state, world, pos, moved);
+    protected void affectNeighborsAfterRemoval(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, boolean bl) {
+        onStateReplacedLogic(blockState, serverLevel, blockPos);
+        super.affectNeighborsAfterRemoval(blockState, serverLevel, blockPos, bl);
     }
     #endif
 

@@ -15,6 +15,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+#if MC_VERSION >= 12105
+import net.minecraft.world.phys.Vec3;
+#endif
 
 public class IlluminatedCabinetBlockEntityRenderer implements
         BlockEntityRenderer<IlluminatedCabinetBlockEntity #if MC_VERSION >= 12111, CabinetBlockEntityRenderState #endif>,
@@ -32,7 +35,7 @@ public class IlluminatedCabinetBlockEntityRenderer implements
     public void render(
             IlluminatedCabinetBlockEntity blockEntity, float tickDelta,
             PoseStack poseStack, MultiBufferSource bufferSource,
-            int light, int overlay #if MC_VERSION >= 12105, Vec3d cameraPos #endif
+            int light, int overlay #if MC_VERSION >= 12105, Vec3 cameraPos #endif
     ) {
         Level level = blockEntity.getLevel();
         BlockPos pos = blockEntity.getBlockPos();

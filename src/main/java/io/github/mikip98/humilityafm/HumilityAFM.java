@@ -6,7 +6,11 @@ import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
 import io.github.mikip98.humilityafm.util.mod_support.ModSupportManager;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import net.fabricmc.api.ModInitializer;
+#if MC_VERSION < 12111
 import net.minecraft.resources.ResourceLocation;
+#else
+import net.minecraft.resources.Identifier;
+#endif
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,26 +57,26 @@ public class HumilityAFM implements ModInitializer {
 	/**
 	 * Returns a new identifier for the given name, in 'humility-afm' namespace
 	 */
-	public static ResourceLocation getId(String name) {
+	public static #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif getId(String name) {
 		return getId(MOD_ID, name);
 	}
 
 	/**
 	 * Returns a new identifier for the given name, in 'minecraft' namespace
 	 */
-	public static ResourceLocation getVanillaId(String name) {
+	public static #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif getVanillaId(String name) {
 		return getId("minecraft", name);
 	}
 
 	/**
 	 * Returns a new identifier for the given name, in the given mod's namespace if not null, or 'minecraft' otherwise
 	 */
-	public static ResourceLocation getVMId(@Nullable SupportedMods mod, String name) {
+	public static #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif getVMId(@Nullable SupportedMods mod, String name) {
 		return getId(mod != null ? mod.modId : "minecraft", name);
 	}
 
-	protected static ResourceLocation getId(String namespace, String name) {
-		final ResourceLocation id = ResourceLocation.tryBuild(namespace, name);
+	protected static #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif getId(String namespace, String name) {
+		final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif id =  #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif .tryBuild(namespace, name);
 		if (id == null) throw new IllegalArgumentException("Broken block id: " + namespace + ":" + name);
 		return id;
 	}
