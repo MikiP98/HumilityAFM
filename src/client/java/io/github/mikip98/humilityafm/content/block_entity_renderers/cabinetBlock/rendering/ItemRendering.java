@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.ImplementedInventory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 #if MC_VERSION < 12104
 import net.minecraft.client.resources.model.BakedModel;
@@ -66,7 +67,7 @@ public sealed interface ItemRendering permits ItemFloorRendering, ItemWallRender
     #else
     default void renderItem(
             CabinetBlockEntityRenderState state,
-            PoseStack poseStack, OrderedRenderCommandQueue queue,
+            PoseStack poseStack, SubmitNodeCollector collector,
             int packedLight
     ) {
         float scale = 0.59375f;
@@ -77,7 +78,7 @@ public sealed interface ItemRendering permits ItemFloorRendering, ItemWallRender
         poseStack.translate(0, 0, 0.4375 - 3f/64*(1-scale));
         poseStack.scale(scale, scale, scale);
 
-        state.itemRenderState.render(poseStack, queue, packedLight, state.overlay, 0);
+        state.itemRenderState.submit(poseStack, collector, packedLight, state.overlay, 0);
 
         poseStack.popPose();
     }

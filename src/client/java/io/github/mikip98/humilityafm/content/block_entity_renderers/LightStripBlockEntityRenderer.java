@@ -5,19 +5,30 @@ import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntity
 import io.github.mikip98.humilityafm.content.blocks.LightStripBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+#if MC_VERSION < 12111
 import net.minecraft.client.renderer.RenderType;
+#endif
 #if MC_VERSION >= 12105
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 #endif
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Half;
 #if MC_VERSION >= 12105
 import net.minecraft.world.phys.Vec3;
+#endif
+#if MC_VERSION >= 12111
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 #endif
 
 public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightStripBlockEntity #if MC_VERSION >= 12111, LightStripBlockEntityRenderer.LightStripRenderState #endif> {
@@ -39,25 +50,31 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
     }
     #else
     @Override
-    public LightStripRenderState createRenderState() {
+    public @NonNull LightStripRenderState createRenderState() {
         return new LightStripRenderState();
     }
 
     @Override
-    public void updateRenderState(
-            LightStripBlockEntity blockEntity, LightStripRenderState renderState,
-            float tickDelta, Vec3d cameraPos,
-            @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlayCommand
+    public void extractRenderState(
+            @NonNull LightStripBlockEntity blockEntity,
+            @NonNull LightStripRenderState renderState,
+            float tickDelta, @NonNull Vec3 cameraPos,
+            @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay
     ) {
-        BlockEntityRenderer.super.updateRenderState(blockEntity, renderState, tickDelta, cameraPos, crumblingOverlayCommand);
-        renderState.blockState = blockEntity.getCachedState();
-        renderState.overlay = net.minecraft.client.render.OverlayTexture.DEFAULT_UV;
+        BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, tickDelta, cameraPos, crumblingOverlay);
+        renderState.blockState = blockEntity.getBlockState();
+        renderState.overlay = OverlayTexture.NO_OVERLAY;
+        renderState.model = Minecraft.getInstance().getBlockRenderer().getBlockModel(renderState.blockState);
     }
 
     @Override
-    public void render(LightStripRenderState state, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState cameraState) {
-        VertexConsumerProvider vertexConsumers = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
-        renderFunction.execute(state, matrices, queue, state.overlay);
+    public void submit(
+            @NonNull LightStripRenderState renderState,
+            @NonNull PoseStack poseStack,
+            @NonNull SubmitNodeCollector collector,
+            @NonNull CameraRenderState cameraState
+    ) {
+        renderFunction.execute(renderState, poseStack, collector, renderState.overlay);
     }
     #endif
 
@@ -65,7 +82,7 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
     #if MC_VERSION < 12111
     protected static void fakeRunnable(LightStripBlockEntity entity, PoseStack poseStack, MultiBufferSource bufferSource, int overlay) {}
     #else
-    protected static void fakeRunnable(LightStripRenderState state, MatrixStack matrices, OrderedRenderCommandQueue queue, int overlay) {}
+    protected static void fakeRunnable(LightStripRenderState state, PoseStack poseStack, SubmitNodeCollector collector, int overlay) {}
     #endif
 
     #if MC_VERSION < 12111
@@ -75,16 +92,17 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
         if (level == null) return;
 
         final BlockState blockState = level.getBlockState(pos);
+        final BlockStateModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
         renderBrighteningInternal(blockState, poseStack, bufferSource, packedOverlay);
     }
     #else
-    protected static void renderBrightening(LightStripRenderState state, PoseStack poseStack, OrderedRenderCommandQueue queue, int packedOverlay) {
+    protected static void renderBrightening(LightStripRenderState state, PoseStack poseStack, SubmitNodeCollector collector, int packedOverlay) {
         final MultiBufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
         final BlockState blockState = state.blockState;
-        renderBrighteningInternal(blockState, poseStack, bufferSource, packedOverlay);
+        renderBrighteningInternal(blockState, poseStack, bufferSource, packedOverlay, state.model);
     }
     #endif
-    protected static void renderBrighteningInternal(BlockState blockState, PoseStack poseStack, MultiBufferSource bufferSource, int packedOverlay) {
+    protected static void renderBrighteningInternal(BlockState blockState, PoseStack poseStack, MultiBufferSource bufferSource, int packedOverlay, BlockStateModel model) {
         if (blockState == null || !(blockState.getBlock() instanceof LightStripBlock)) return;
 
         poseStack.pushPose();
@@ -239,15 +257,27 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
                 poseStack.last(),
                 bufferSource.getBuffer(RenderType.solid()),
                 blockState,
-                Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState),
+                model,
                 1.0f, 1.0f, 1.0f,
                 0xF000F0,
                 packedOverlay
         );
         #else
+        // TODO: switch to this?
+//        collector.add(RenderTypes.solidMovingBlock(), (pose, vertexConsumer) -> {
+//            // This perfectly matches your 8-parameter signature!
+//            ModelBlockRenderer.renderModel(
+//                    pose,                   // The thread-safe pose passed from the lambda
+//                    vertexConsumer,         // The thread-safe buffer passed from the lambda
+//                    renderState.model,      // The model we safely extracted earlier
+//                    1.0f, 1.0f, 1.0f,       // Red, Green, Blue
+//                    0xF000F0,               // Your custom light value!
+//                    renderState.overlay     // Packed overlay
+//            );
+//        });
         ModelBlockRenderer.renderModel(
                 poseStack.last(),
-                bufferSource.getBuffer(RenderType.solid()), // No inner #if needed here!
+                bufferSource.getBuffer(RenderTypes.solidMovingBlock()),
                 Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState),
                 1.0f, 1.0f, 1.0f,
                 0xF000F0,
@@ -266,12 +296,13 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
     #else
     @FunctionalInterface
     protected interface RenderFunction {
-        void execute(LightStripRenderState state, PoseStack poseStack, OrderedRenderCommandQueue queue, int overlay);
+        void execute(LightStripRenderState state, PoseStack poseStack, SubmitNodeCollector collector, int overlay);
     }
 
     public static class LightStripRenderState extends BlockEntityRenderState {
         public BlockState blockState;
         public int overlay;
+        public BlockStateModel model;
     }
     #endif
 }

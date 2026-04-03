@@ -45,7 +45,11 @@ import net.minecraft.data.models.model.ModelTemplates;
 import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.data.models.model.TextureSlot;
 #endif
+#if MC_VERSION < 12111
 import net.minecraft.resources.ResourceLocation;
+#else
+import net.minecraft.resources.Identifier;
+#endif
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -126,11 +130,11 @@ public class ModelGenerator extends FabricModelProvider {
     protected void generateColouredJackOLanternModelsAndBlockStates() {
         int i = 0;
         for (String color : RawGenerationData.vanillaColorPallet) {
-            final ResourceLocation colouredJackOLanternTexture = getId("block/coloured_jack_o_lantern/coloured_jack_o_lantern_" + color);
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif colouredJackOLanternTexture = getId("block/coloured_jack_o_lantern/coloured_jack_o_lantern_" + color);
             final TextureMapping textureMap = new TextureMapping()
                     .putForced(TextureSlot.FRONT, colouredJackOLanternTexture);
 
-            final ResourceLocation jackOLanternModelId = JACK_O_LANTERN_TEMPLATE_MODEL.create(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif jackOLanternModelId = JACK_O_LANTERN_TEMPLATE_MODEL.create(
                     getId("block/coloured_jack_o_lantern/coloured_jack_o_lantern_" + color),
                     textureMap,
                     blockStateModelGenerator.modelOutput
@@ -144,7 +148,7 @@ public class ModelGenerator extends FabricModelProvider {
         }
     }
 
-    protected static MultiVariantGenerator getOrientableBlockState(Block block, ResourceLocation modelId) {
+    protected static MultiVariantGenerator getOrientableBlockState(Block block, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif modelId) {
         return createMultiVariantGenerator(block)
                 .with(PropertyDispatch #if MC_VERSION < 12105 .property #else .initial #endif (BlockStateProperties.HORIZONTAL_FACING)
                         .select(
@@ -165,7 +169,7 @@ public class ModelGenerator extends FabricModelProvider {
                         )
                 );
     }
-    protected static MultiVariantGenerator getTorchOrientableBlockState(Block block, ResourceLocation modelId) {
+    protected static MultiVariantGenerator getTorchOrientableBlockState(Block block, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif modelId) {
         return createMultiVariantGenerator(block)
                 .with(PropertyDispatch #if MC_VERSION < 12105 .property #else .initial #endif (BlockStateProperties.HORIZONTAL_FACING)
                         .select(
@@ -190,16 +194,16 @@ public class ModelGenerator extends FabricModelProvider {
     protected void generateColouredTorchModelsAndBlockStates() {
         int i = 0;
         for (String color : RawGenerationData.vanillaColorPallet) {
-            final ResourceLocation coloured_torch_texture = getId("block/coloured_torch/coloured_torch_" + color);
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif coloured_torch_texture = getId("block/coloured_torch/coloured_torch_" + color);
             final TextureMapping textureMap = new TextureMapping()
                     .putForced(TextureSlot.TORCH, coloured_torch_texture);
 
-            final ResourceLocation torchModelId = TORCH_TEMPLATE_MODEL.create(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif torchModelId = TORCH_TEMPLATE_MODEL.create(
                     getId("block/coloured_torch/coloured_torch_" + color),
                     textureMap,
                     blockStateModelGenerator.modelOutput
             );
-            final ResourceLocation wallTorchModelId = TORCH_WALL_TEMPLATE_MODEL.create(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif wallTorchModelId = TORCH_WALL_TEMPLATE_MODEL.create(
                     getId("block/coloured_torch/coloured_torch_wall_" + color),
                     textureMap,
                     blockStateModelGenerator.modelOutput
@@ -217,22 +221,22 @@ public class ModelGenerator extends FabricModelProvider {
         for (BlockMaterial material : ActiveGenerationData.colouredFeatureSetMaterials) {
             final String color = material.layers()[0].name();
 
-            final ResourceLocation coloured_concrete = getVanillaId("block/" + color + "_concrete");
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif coloured_concrete = getVanillaId("block/" + color + "_concrete");
             final TextureMapping textureMap = new TextureMapping()
                     .putForced(TextureSlot.create("0"), coloured_concrete);
 
             final String pathPrefix = "block/light_strip/";
-            final ResourceLocation lightStripStraightModelId = LIGHT_STRIP_STRAIGHT_MODEL.create(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif lightStripStraightModelId = LIGHT_STRIP_STRAIGHT_MODEL.create(
                     getId(pathPrefix + "straight/light_strip_" + material.getSafeName()),
                     textureMap,
                     blockStateModelGenerator.modelOutput
             );
-            final ResourceLocation lightStripInnerModelId = LIGHT_STRIP_INNER_MODEL.create(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif lightStripInnerModelId = LIGHT_STRIP_INNER_MODEL.create(
                     getId(pathPrefix + "inner/light_strip_inner_" + material.getSafeName()),
                     textureMap,
                     blockStateModelGenerator.modelOutput
             );
-            final ResourceLocation lightStripOuterModelId = LIGHT_STRIP_OUTER_MODEL.create(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif lightStripOuterModelId = LIGHT_STRIP_OUTER_MODEL.create(
                     getId(pathPrefix + "outer/light_strip_outer_" + material.getSafeName()),
                     textureMap,
                     blockStateModelGenerator.modelOutput
@@ -277,33 +281,33 @@ public class ModelGenerator extends FabricModelProvider {
             final TextureMapping metalTextureMapping = new TextureMapping()
                     .putForced(TextureSlot.create("metal"), getVanillaId("block/" + metal + suffix));
 
-            final ResourceLocation candlestickStandingMetalModelId = CANDLESTICK_STANDING_MODEL.create(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif candlestickStandingMetalModelId = CANDLESTICK_STANDING_MODEL.create(
                     getId("block/candlestick/standing/" + metal + "/candlestick_" + metal),
                     metalTextureMapping,
                     blockStateModelGenerator.modelOutput
             );
-            final ResourceLocation candlestickWallMetalModelId = CANDLESTICK_WALL_MODEL.create(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif candlestickWallMetalModelId = CANDLESTICK_WALL_MODEL.create(
                     getId("block/candlestick/wall/" + metal + "/candlestick_wall_" + metal),
                     metalTextureMapping,
                     blockStateModelGenerator.modelOutput
             );
 
-            final ResourceLocation candlestickWithCandleStandingMetalModelId = CANDLESTICK_STANDING_WITH_CANDLE_MODEL.create(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif candlestickWithCandleStandingMetalModelId = CANDLESTICK_STANDING_WITH_CANDLE_MODEL.create(
                     getId("block/candlestick/standing/" + metal + "/candlestick_" + metal + "_candle"),
                     metalTextureMapping,
                     blockStateModelGenerator.modelOutput
             );
-            final ResourceLocation candlestickWithCandleLitStandingMetalModelId = CANDLESTICK_STANDING_WITH_CANDLE_LIT_MODEL.create(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif candlestickWithCandleLitStandingMetalModelId = CANDLESTICK_STANDING_WITH_CANDLE_LIT_MODEL.create(
                     getId("block/candlestick/standing/" + metal + "/candlestick_" + metal + "_candle_lit"),
                     metalTextureMapping,
                     blockStateModelGenerator.modelOutput
             );
-            final ResourceLocation candlestickWithCandleWallMetalModelId = CANDLESTICK_WALL_WITH_CANDLE_MODEL.create(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif candlestickWithCandleWallMetalModelId = CANDLESTICK_WALL_WITH_CANDLE_MODEL.create(
                     getId("block/candlestick/wall/" + metal + "/candlestick_wall_" + metal + "_candle"),
                     metalTextureMapping,
                     blockStateModelGenerator.modelOutput
             );
-            final ResourceLocation candlestickWithCandleLitWallMetalModelId = CANDLESTICK_WALL_WITH_CANDLE_LIT_MODEL.create(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif candlestickWithCandleLitWallMetalModelId = CANDLESTICK_WALL_WITH_CANDLE_LIT_MODEL.create(
                     getId("block/candlestick/wall/" + metal + "/candlestick_wall_" + metal + "_candle_lit"),
                     metalTextureMapping,
                     blockStateModelGenerator.modelOutput
@@ -326,23 +330,23 @@ public class ModelGenerator extends FabricModelProvider {
                     Optional.empty()
             );
 
-            Map<CandleColor, ResourceLocation> wallCandleColorModelMap = new HashMap<>();
-            Map<CandleColor, ResourceLocation> wallLitCandleColorModelMap = new HashMap<>();
-            Map<CandleColor, ResourceLocation> standingCandleColorModelMap = new HashMap<>();
-            Map<CandleColor, ResourceLocation> standingLitCandleColorModelMap = new HashMap<>();
+            Map<CandleColor, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif> wallCandleColorModelMap = new HashMap<>();
+            Map<CandleColor, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif> wallLitCandleColorModelMap = new HashMap<>();
+            Map<CandleColor, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif> standingCandleColorModelMap = new HashMap<>();
+            Map<CandleColor, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif> standingLitCandleColorModelMap = new HashMap<>();
             for (String color : RawGenerationData.vanillaColorPallet) {
                 final CandleColor candleColor = CandleColor.getColor(color);
                 final TextureMapping candleColorTextureMapping = new TextureMapping()
                         .putForced(TextureSlot.create("candle"), getVanillaId("block/" + color + "_candle_lit"));
 
                 String id = "block/candlestick/standing/" + metal + "/candlestick_" + metal + "_" + color;
-                final ResourceLocation standingCandlestickColoredModelId = candlestickWithCandleStandingMetalModel.create(
+                final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif standingCandlestickColoredModelId = candlestickWithCandleStandingMetalModel.create(
                         getId(id),
                         candleColorTextureMapping,
                         blockStateModelGenerator.modelOutput
                 );
                 standingCandleColorModelMap.put(candleColor, standingCandlestickColoredModelId);
-                final ResourceLocation standingCandlestickLitColoredModelId = candlestickWithCandleLitStandingMetalModel.create(
+                final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif standingCandlestickLitColoredModelId = candlestickWithCandleLitStandingMetalModel.create(
                         getId(id + "_lit"),
                         candleColorTextureMapping,
                         blockStateModelGenerator.modelOutput
@@ -350,13 +354,13 @@ public class ModelGenerator extends FabricModelProvider {
                 standingLitCandleColorModelMap.put(candleColor, standingCandlestickLitColoredModelId);
 
                 id = "block/candlestick/wall/" + metal + "/candlestick_wall_" + metal + "_" + color;
-                final ResourceLocation wallCandlestickColoredModelId = candlestickWithCandleWallMetalModel.create(
+                final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif wallCandlestickColoredModelId = candlestickWithCandleWallMetalModel.create(
                         getId(id),
                         candleColorTextureMapping,
                         blockStateModelGenerator.modelOutput
                 );
                 wallCandleColorModelMap.put(candleColor, wallCandlestickColoredModelId);
-                final ResourceLocation wallCandlestickLitColoredModelId = candlestickWithCandleLitWallMetalModel.create(
+                final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif wallCandlestickLitColoredModelId = candlestickWithCandleLitWallMetalModel.create(
                         getId(id + "_lit"),
                         candleColorTextureMapping,
                         blockStateModelGenerator.modelOutput
@@ -394,21 +398,21 @@ public class ModelGenerator extends FabricModelProvider {
             final BlockMaterial.Layer materialLayer = stairMaterial.layers()[0];
 
             final SupportedMods sourceMod = materialLayer.metadata().sourceMod();
-            final Function<String, ResourceLocation> getBlockId = (name) -> getBlockId(sourceMod, name);
+            final Function<String, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif> getBlockId = (name) -> getBlockId(sourceMod, name);
 
             final MaterialType materialType = materialLayer.metadata().type();
             if (materialType == null)
                 throw new IllegalStateException("Material type is null for forced corner stairs material layer: " + materialLayer.name());
 
-            ResourceLocation topTextureId;
-            ResourceLocation sideTextureId;
-            ResourceLocation bottomTextureId;
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif topTextureId;
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif sideTextureId;
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif bottomTextureId;
 
             String textureBlockName;
             switch (materialType) {
                 case BURNABLE_WOOD, FIREPROOF_WOOD -> {
                     textureBlockName = materialLayer.name() + "_planks";
-                    final ResourceLocation textureId = getBlockId.apply(textureBlockName);
+                    final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif textureId = getBlockId.apply(textureBlockName);
                     topTextureId = textureId;
                     sideTextureId = textureId;
                     bottomTextureId = textureId;
@@ -461,7 +465,7 @@ public class ModelGenerator extends FabricModelProvider {
                 default -> throw new IllegalArgumentException("Unsupported material type for forced corner stairs: " + materialType);
             }
 
-            final ResourceLocation innerStairsModelId = INNER_CORNER_STAIRS_MODEL.create(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif innerStairsModelId = INNER_CORNER_STAIRS_MODEL.create(
                     getId("block/corner_stairs/inner_stairs/inner_stairs_" + stairMaterial.getSafeName()),
                     new TextureMapping()
                             .putForced(TextureSlot.TOP, topTextureId)
@@ -469,7 +473,7 @@ public class ModelGenerator extends FabricModelProvider {
                             .putForced(TextureSlot.SIDE, sideTextureId),
                     blockStateModelGenerator.modelOutput
             );
-            final ResourceLocation outerStairsModelId = OUTER_CORNER_STAIRS_MODEL.create(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif outerStairsModelId = OUTER_CORNER_STAIRS_MODEL.create(
                     getId("block/corner_stairs/outer_stairs/outer_stairs_" + stairMaterial.getSafeName()),
                     new TextureMapping()
                             .putForced(TextureSlot.TOP, topTextureId)
@@ -498,8 +502,8 @@ public class ModelGenerator extends FabricModelProvider {
             final SupportedMods mod1 = layer1.metadata().sourceMod();
             final SupportedMods mod2 = layer2.metadata().sourceMod();
 
-            final ResourceLocation planks1Id = getBlockId(mod1, layer1.name() + "_planks");
-            final ResourceLocation planks2Id = getBlockId(mod2, layer2.name() + "_planks");
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif planks1Id = getBlockId(mod1, layer1.name() + "_planks");
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif planks2Id = getBlockId(mod2, layer2.name() + "_planks");
 
             String modFolders = "";
             if (mod1 != null) modFolders += mod1.modId;
@@ -508,9 +512,9 @@ public class ModelGenerator extends FabricModelProvider {
             if (!modFolders.isEmpty()) modFolders += '/';
 
             // TODO: Add the modFolders to other blocks
-            final ResourceLocation modelLocationId = getId("block/wooden_mosaic/" + modFolders + "wooden_mosaic_" + variantMaterial.getSafeName());
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif modelLocationId = getId("block/wooden_mosaic/" + modFolders + "wooden_mosaic_" + variantMaterial.getSafeName());
 
-            final ResourceLocation woodenMosaicModelId = CHECKER_2X2_MODEL.create(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif woodenMosaicModelId = CHECKER_2X2_MODEL.create(
                     modelLocationId,
                     new TextureMapping()
                             .putForced(TextureSlot.create("1"), planks1Id)
@@ -528,7 +532,7 @@ public class ModelGenerator extends FabricModelProvider {
             for (String color2 : RawGenerationData.vanillaColorPallet) {
                 if (color.equals(color2)) continue;
 
-                final ResourceLocation terracottaTileModelId = CHECKER_2X2_MODEL.create(
+                final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif terracottaTileModelId = CHECKER_2X2_MODEL.create(
                         getId("block/terracotta_tiles/terracotta_tiles_" + color + "_" + color2),
                         new TextureMapping()
                                 .putForced(TextureSlot.create("1"), getVanillaId("block/" + color + "_terracotta"))
@@ -560,12 +564,12 @@ public class ModelGenerator extends FabricModelProvider {
                     getVanillaId("block/" + colorLayer.name() + "_wool")
             );
 
-            final ResourceLocation coloredCabinet = baseWoodSet.wallClosed.create(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif coloredCabinet = baseWoodSet.wallClosed.create(
                     getCabinetCompleteModelId("wall", "closed", woodLayer, colorLayer),
                     woolTextureMapping,
                     blockStateModelGenerator.modelOutput
             );
-            final ResourceLocation coloredCabinetOpen = baseWoodSet.wallOpen.create(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif coloredCabinetOpen = baseWoodSet.wallOpen.create(
                     getCabinetCompleteModelId("wall", "open", woodLayer, colorLayer),
                     woolTextureMapping,
                     blockStateModelGenerator.modelOutput
@@ -587,13 +591,13 @@ public class ModelGenerator extends FabricModelProvider {
                 getBlockId(sourceMod, wood.name() + "_planks")
         );
 
-        final ResourceLocation woodTypeCabinetId = CABINET_BLOCK_MODEL.create(
+        final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif woodTypeCabinetId = CABINET_BLOCK_MODEL.create(
                 getCabinetBaseWoodModelId(sourceMod, "wall", "closed", wood.name()),
                 plankTextureMapping,
                 blockStateModelGenerator.modelOutput
         );
 
-        final ResourceLocation woodTypeCabinetOpenId = CABINET_BLOCK_OPEN_MODEL.create(
+        final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif woodTypeCabinetOpenId = CABINET_BLOCK_OPEN_MODEL.create(
                 getCabinetBaseWoodModelId(sourceMod, "wall", "open", wood.name()),
                 plankTextureMapping,
                 blockStateModelGenerator.modelOutput
@@ -601,12 +605,12 @@ public class ModelGenerator extends FabricModelProvider {
 
         return new CabinetModelWoodSet(getModel(woodTypeCabinetId), getModel(woodTypeCabinetOpenId));
     }
-    protected static ResourceLocation getCabinetBaseWoodModelId(SupportedMods sourceMod, String wallFloor, String openClosed, String woodName) {
+    protected static #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif getCabinetBaseWoodModelId(SupportedMods sourceMod, String wallFloor, String openClosed, String woodName) {
         final String cabinetPath = "block/cabinet/" + (sourceMod != null ? sourceMod.modId : "vanilla") + "/" + wallFloor + "/" + openClosed;
         final String cabinetName = "cabinet_block_" + (sourceMod != null ? sourceMod.modId + "_" : "") + woodName;
         return getId(cabinetPath + "/" + cabinetName);
     }
-    protected static ResourceLocation getCabinetCompleteModelId(String wallFloor, String openClosed, BlockMaterial.Layer woodLayer, BlockMaterial.Layer colorLayer) {
+    protected static #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif getCabinetCompleteModelId(String wallFloor, String openClosed, BlockMaterial.Layer woodLayer, BlockMaterial.Layer colorLayer) {
         final SupportedMods woodSourceMod = woodLayer.metadata().sourceMod();
         final String woodName = woodLayer.name();
         final String cabinetPath = "block/cabinet/" + (woodSourceMod != null ? woodSourceMod.modId : "vanilla") + "/" + wallFloor + "/" + openClosed + "/" + woodName;
@@ -620,9 +624,9 @@ public class ModelGenerator extends FabricModelProvider {
 
     protected static MultiVariantGenerator getLightStripBlockstate(
             Block block,
-            ResourceLocation straightModel,
-            ResourceLocation innerModel,
-            ResourceLocation outerModel
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif straightModel,
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif innerModel,
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif outerModel
     ) {
         EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
         final EnumProperty<Half> HALF = BlockStateProperties.HALF;
@@ -803,11 +807,11 @@ public class ModelGenerator extends FabricModelProvider {
 
     protected static MultiPartGenerator getStandingCandlestickBlockstate(
             Block block,
-            ResourceLocation emptyModel,
-            ResourceLocation plainCandleModel,
-            ResourceLocation litPlainCandleModel,
-            Map<CandleColor, ResourceLocation> colouredCandleModels,
-            Map<CandleColor, ResourceLocation> litColouredCandleModels
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif emptyModel,
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif plainCandleModel,
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif litPlainCandleModel,
+            Map<CandleColor, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif> colouredCandleModels,
+            Map<CandleColor, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif> litColouredCandleModels
     ) {
         final EnumProperty<CandleColor> CANDLE_COLOR = ModProperties.CANDLE_COLOR;
 
@@ -857,11 +861,11 @@ public class ModelGenerator extends FabricModelProvider {
 
     protected static MultiPartGenerator getWallCandlestickBlockstate(
             Block block,
-            ResourceLocation emptyModel,
-            ResourceLocation plainCandleModel,
-            ResourceLocation litPlainCandleModel,
-            Map<CandleColor, ResourceLocation> colouredCandleModels,
-            Map<CandleColor, ResourceLocation> litColouredCandleModels
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif emptyModel,
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif plainCandleModel,
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif litPlainCandleModel,
+            Map<CandleColor, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif> colouredCandleModels,
+            Map<CandleColor, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif> litColouredCandleModels
     ) {
         MultiPartGenerator multipart = MultiPartGenerator.multiPart(block)
                 // NO CANDLE
@@ -977,7 +981,7 @@ public class ModelGenerator extends FabricModelProvider {
                 #if MC_VERSION >= 12105 .build() #endif;
     }
 
-    protected static MultiVariantGenerator getForcedCornerStairsBlockstate(Block block, ResourceLocation modelId) {
+    protected static MultiVariantGenerator getForcedCornerStairsBlockstate(Block block, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif modelId) {
         return createMultiVariantGenerator(block)
                 .with(PropertyDispatch #if MC_VERSION < 12105 .properties #else .initial #endif (BlockStateProperties.HORIZONTAL_FACING, BlockStateProperties.HALF)
                         .select(
@@ -1015,7 +1019,7 @@ public class ModelGenerator extends FabricModelProvider {
                 );
     }
 
-    protected static MultiVariantGenerator getDefaultBlockstate(Block block, ResourceLocation modelId) {
+    protected static MultiVariantGenerator getDefaultBlockstate(Block block, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif modelId) {
         #if MC_VERSION < 12105
         return MultiVariantGenerator.multiVariant(block, getVariant(modelId));
         #else
@@ -1023,7 +1027,7 @@ public class ModelGenerator extends FabricModelProvider {
         #endif
     }
 
-    protected static MultiVariantGenerator getCabinetBlockstate(Block cabinetBlock, ResourceLocation cabinetModel, ResourceLocation cabinetOpenModel) {
+    protected static MultiVariantGenerator getCabinetBlockstate(Block cabinetBlock, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif cabinetModel, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif cabinetOpenModel) {
         return createMultiVariantGenerator(cabinetBlock)
                 .with(PropertyDispatch #if MC_VERSION < 12105 .properties #else .initial #endif (BlockStateProperties.HORIZONTAL_FACING, BlockStateProperties.OPEN)
                         .select(
@@ -1060,7 +1064,7 @@ public class ModelGenerator extends FabricModelProvider {
                         )
                 );
     }
-    protected static MultiVariantGenerator getFloorCabinetBlockstate(Block cabinetBlock, ResourceLocation cabinetModel, ResourceLocation cabinetOpenModel) {
+    protected static MultiVariantGenerator getFloorCabinetBlockstate(Block cabinetBlock, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif cabinetModel, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif cabinetOpenModel) {
         return createMultiVariantGenerator(cabinetBlock)
                 .with(PropertyDispatch #if MC_VERSION < 12105 .properties #else .initial #endif (BlockStateProperties.HALF, BlockStateProperties.HORIZONTAL_FACING, BlockStateProperties.OPEN)
                         .select(
@@ -1170,57 +1174,57 @@ public class ModelGenerator extends FabricModelProvider {
         return getVariant(model).with(VariantProperties.X_ROT, rotation.get());
     }
     #else
-    protected static MultiVariant getUVLockedUpsideDownVariantY(ResourceLocation model, Rotation rotationY) {
+    protected static MultiVariant getUVLockedUpsideDownVariantY(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif model, Rotation rotationY) {
         return variant(new Variant(model)
                 .with(VariantMutator.UV_LOCK.withValue(true))
                 .with(VariantMutator.X_ROT.withValue(Rotation.R180.get()))
                 .with(VariantMutator.Y_ROT.withValue(rotationY.get()))
         );
     }
-    protected static MultiVariant getUVLockedUpsideDownVariant(ResourceLocation model) {
+    protected static MultiVariant getUVLockedUpsideDownVariant(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif model) {
         return variant(new Variant(model)
                 .with(VariantMutator.UV_LOCK.withValue(true))
                 .with(VariantMutator.X_ROT.withValue(Rotation.R180.get()))
         );
     }
 
-    protected static MultiVariant getUVLockedVariantY(ResourceLocation model, Rotation rotationY) {
+    protected static MultiVariant getUVLockedVariantY(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif model, Rotation rotationY) {
         return variant(new Variant(model)
                 .with(VariantMutator.UV_LOCK.withValue(true))
                 .with(VariantMutator.Y_ROT.withValue(rotationY.get()))
         );
     }
 
-    protected static MultiVariant getVariant90XY(ResourceLocation model, Rotation rotationY) {
+    protected static MultiVariant getVariant90XY(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif model, Rotation rotationY) {
         return variant(new Variant(model)
                 .with(VariantMutator.X_ROT.withValue(Rotation.R90.get()))
                 .with(VariantMutator.Y_ROT.withValue(rotationY.get()))
         );
     }
-    protected static MultiVariant getVariant270XY(ResourceLocation model, Rotation rotationY) {
+    protected static MultiVariant getVariant270XY(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif model, Rotation rotationY) {
         return variant(new Variant(model)
                 .with(VariantMutator.X_ROT.withValue(Rotation.R270.get()))
                 .with(VariantMutator.Y_ROT.withValue(rotationY.get()))
         );
     }
 
-    protected static MultiVariant getVariantY(ResourceLocation model, Rotation rotationY) {
+    protected static MultiVariant getVariantY(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif model, Rotation rotationY) {
         return variant(new Variant(model)
                 .with(VariantMutator.Y_ROT.withValue(rotationY.get()))
         );
     }
 
-    protected static MultiVariant getVariant(ResourceLocation model) {
+    protected static MultiVariant getVariant(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif model) {
         return variant(new Variant(model));
     }
 
-    protected static MultiVariant getVariant90X(ResourceLocation model) {
+    protected static MultiVariant getVariant90X(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif model) {
         return getVariantX(model, Rotation.R90);
     }
-    protected static MultiVariant getVariant270X(ResourceLocation model) {
+    protected static MultiVariant getVariant270X(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif model) {
         return getVariantX(model, Rotation.R270);
     }
-    protected static MultiVariant getVariantX(ResourceLocation model, Rotation rotation) {
+    protected static MultiVariant getVariantX(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif model, Rotation rotation) {
         return variant(new Variant(model)
                 .with(VariantMutator.X_ROT.withValue(rotation.get()))
         );
@@ -1231,7 +1235,7 @@ public class ModelGenerator extends FabricModelProvider {
     protected static ModelTemplate getModel(String id) {
         return new ModelTemplate(Optional.of(getId(id)), Optional.empty());
     }
-    protected static ModelTemplate getModel(ResourceLocation id) {
+    protected static ModelTemplate getModel(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif id) {
         return new ModelTemplate(Optional.of(id), Optional.empty());
     }
 
@@ -1243,7 +1247,7 @@ public class ModelGenerator extends FabricModelProvider {
         }
     }
 
-    protected void registerItemModel(ItemLike itemLike, ResourceLocation modelId) {
+    protected void registerItemModel(ItemLike itemLike, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif modelId) {
         #if MC_VERSION < 12104
         blockStateModelGenerator.delegateItemModel(itemLike.asItem(), modelId);
         #else
@@ -1251,7 +1255,7 @@ public class ModelGenerator extends FabricModelProvider {
         #endif
     }
 
-    protected static ResourceLocation getBlockId(@Nullable SupportedMods mod, String name) {
+    protected static #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif getBlockId(@Nullable SupportedMods mod, String name) {
         return getVMId(mod, "block/" + name);
     }
 

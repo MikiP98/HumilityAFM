@@ -1,20 +1,22 @@
 package io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock;
 
 #if MC_VERSION >= 12111
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering.CabinetBlockEntityRenderState;
 #endif
-import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering.ItemFloorRendering;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorCabinetBlockEntity;
-import io.github.mikip98.humilityafm.content.blocks.cabinet.FloorCabinetBlock;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 #if MC_VERSION >= 12105
 import net.minecraft.world.phys.Vec3;
+#endif
+#if MC_VERSION >= 12111
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 #endif
 
 public class FloorCabinetBlockEntityRenderer implements
@@ -47,21 +49,26 @@ public class FloorCabinetBlockEntityRenderer implements
 
     @Override
     public void extractRenderState(
-            FloorCabinetBlockEntity blockEntity,
-            CabinetBlockEntityRenderState renderState,
-            float partialTick, Vec3 cameraPos,
-            @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlayCommand
+            @NonNull FloorCabinetBlockEntity blockEntity,
+            @NonNull CabinetBlockEntityRenderState renderState,
+            float partialTick, @NonNull Vec3 cameraPos,
+            @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay
     ) {
-        BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, partialTick, cameraPos, crumblingOverlayCommand);
+        BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, partialTick, cameraPos, crumblingOverlay);
         renderState.extractSharedState(blockEntity);
     }
 
     @Override
-    public void render(CabinetBlockEntityRenderState renderState, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState cameraState) {
+    public void submit(
+            CabinetBlockEntityRenderState renderState,
+            @NonNull PoseStack poseStack,
+            @NonNull SubmitNodeCollector collector,
+            @NonNull CameraRenderState cameraState
+    ) {
         // If there's no item, or the extraction failed, skip rendering to save frames
         // TODO: Check if these checks are required, if yes, move to the interface
         if (!renderState.hasItem || renderState.blockState == null) return;
-        renderItem(renderState, matrices, queue, renderState.light);
+        renderItem(renderState, poseStack, collector, renderState.light);
     }
     #endif
 }

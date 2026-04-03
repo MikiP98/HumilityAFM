@@ -53,7 +53,7 @@ public interface RenderSelfBrightening {
         outsideLight = LightManipulation.addLight(outsideLight, lightAddition);
 
         #if MC_VERSION >= 12111
-        VertexConsumerProvider vertexConsumers = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
+        MultiBufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
         #endif
 
         Minecraft.getInstance().getBlockRenderer().renderSingleBlock(

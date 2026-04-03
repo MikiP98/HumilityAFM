@@ -7,15 +7,19 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering.ItemFloorRendering;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering.RenderSelfBrightening;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorIlluminatedCabinetBlockEntity;
-import io.github.mikip98.humilityafm.content.blocks.cabinet.FloorIlluminatedCabinetBlock;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 #if MC_VERSION >= 12105
 import net.minecraft.world.phys.Vec3;
+#endif
+#if MC_VERSION >= 12111
+import io.github.mikip98.humilityafm.content.blocks.cabinet.IlluminatedCabinetBlock;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 #endif
 
 public class FloorIlluminatedCabinetBlockEntityRenderer implements
@@ -50,33 +54,38 @@ public class FloorIlluminatedCabinetBlockEntityRenderer implements
     }
     #else
     @Override
-    public CabinetBlockEntityRenderState createRenderState() {
+    public @NonNull CabinetBlockEntityRenderState createRenderState() {
         return new CabinetBlockEntityRenderState();
     }
 
     @Override
-    public void updateRenderState(
-            FloorIlluminatedCabinetBlockEntity blockEntity,
-            CabinetBlockEntityRenderState renderState,
-            float tickDelta, Vec3d cameraPos,
-            @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlayCommand
+    public void extractRenderState(
+            @NonNull FloorIlluminatedCabinetBlockEntity blockEntity,
+            @NonNull CabinetBlockEntityRenderState renderState,
+            float tickDelta, @NonNull Vec3 cameraPos,
+            @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay
     ) {
-        BlockEntityRenderer.super.updateRenderState(blockEntity, renderState, tickDelta, cameraPos, crumblingOverlayCommand);
+        BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, tickDelta, cameraPos, crumblingOverlay);
         renderState.extractSharedState(blockEntity);
     }
 
     @Override
-    public void render(CabinetBlockEntityRenderState renderState, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState cameraState) {
+    public void submit(
+            CabinetBlockEntityRenderState renderState,
+            @NonNull PoseStack poseStack,
+            @NonNull SubmitNodeCollector collector,
+            @NonNull CameraRenderState cameraState
+    ) {
         if (renderState.blockState == null || !(renderState.blockState.getBlock() instanceof IlluminatedCabinetBlock)) return;
         // TODO: Why the check above?
         if (renderState.hasItem) {
-            renderItem(renderState, matrices, queue, 255);
+            renderItem(renderState, poseStack, collector, 255);
         }
         final float positionConstant = 1.15f;
         renderFunction.execute(
                 renderState.blockState,
                 positionConstant, positionConstant, positionConstant,
-                matrices, renderState.light, renderState.overlay
+                poseStack, renderState.light, renderState.overlay
         );
     }
     #endif
