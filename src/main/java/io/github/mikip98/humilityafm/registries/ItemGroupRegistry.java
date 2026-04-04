@@ -2,8 +2,13 @@ package io.github.mikip98.humilityafm.registries;
 
 import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.config.enums.CreativeItemGroupCategorization;
+#if MC_VERSION < 260000
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+#else
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
+#endif
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -173,13 +178,10 @@ public class ItemGroupRegistry {
         Registry.register(
                 BuiltInRegistries.CREATIVE_MODE_TAB,
                 getId(name),
-                FabricItemGroup.builder()
+                #if MC_VERSION < 260000 FabricItemGroup #else FabricCreativeModeTab #endif.builder()
                         .icon(() -> new ItemStack(displayItem))
-                        // displayName -> title
                         .title(Component.translatable("itemGroup." + translationId))
-                        // entries -> displayItems
-                        .displayItems((displayContext, output) -> Arrays.stream(itemSets).forEach(
-                                // entries::add -> output::accept
+                        .displayItems((ignored, output) -> Arrays.stream(itemSets).forEach(
                                 (items) -> { if (items != null) Arrays.stream(items).forEach(output::accept); }
                         ))
                         .build()
@@ -189,12 +191,20 @@ public class ItemGroupRegistry {
 
     @SafeVarargs
     protected static void putIntoItemGroup(ItemLike[] items, ResourceKey<CreativeModeTab>... itemGroups) {
-        for (ResourceKey<CreativeModeTab> itemGroup : itemGroups)
-            ItemGroupEvents.modifyEntriesEvent(itemGroup).register(content -> Arrays.stream(items).forEach(content::accept));
+        for (ResourceKey<CreativeModeTab> itemGroup : itemGroups) {
+            #if MC_VERSION < 260000
+            ItemGroupEvents.modifyEntriesEvent(itemGroup).register(
+                content -> Arrays.stream(items).forEach(content::accept)
+            );
+            #else
+            CreativeModeTabEvents.modifyOutputEvent(itemGroup).register(
+                    (creativeTab) ->  Arrays.stream(items).forEach(creativeTab::accept)
+            );
+            #endif
+        }
     }
     @SafeVarargs
     protected static void putIntoItemGroup(ItemLike item, ResourceKey<CreativeModeTab>... itemGroups) {
-        for (ResourceKey<CreativeModeTab> itemGroup : itemGroups)
-            ItemGroupEvents.modifyEntriesEvent(itemGroup).register(content -> content.accept(item));
+        putIntoItemGroup(new ItemLike[]{item}, itemGroups);
     }
 }

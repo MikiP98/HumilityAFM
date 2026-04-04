@@ -3,8 +3,13 @@ package io.github.mikip98.humilityafm.datagen;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
+#if MC_VERSION < 260000
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
+#else
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootSubProvider;
+#endif
 #if MC_VERSION < 12006
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 #else
@@ -20,6 +25,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -30,13 +36,16 @@ import java.util.function.BiConsumer;
 import java.util.concurrent.CompletableFuture;
 #endif
 
-public class BlockLootTableGenerator extends FabricBlockLootTableProvider {
+public class BlockLootTableGenerator extends #if MC_VERSION < 260000 FabricBlockLootTableProvider #else FabricBlockLootSubProvider #endif {
     #if MC_VERSION < 12006
     public BlockLootTableGenerator(FabricDataOutput dataOutput) {
         super(dataOutput);
     }
     #else
-    public BlockLootTableGenerator(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+    public BlockLootTableGenerator(
+            #if MC_VERSION < 260000 FabricDataOutput #else FabricPackOutput #endif dataOutput,
+            CompletableFuture<HolderLookup.Provider> registriesFuture
+    ) {
         super(dataOutput, registriesFuture);
     }
     #endif
@@ -46,12 +55,13 @@ public class BlockLootTableGenerator extends FabricBlockLootTableProvider {
 
     @Override
     #if MC_VERSION < 12006
-    public void generate(BiConsumer<ResourceLocation, LootTable.Builder> exporter) {
+    public void generate(BiConsumer<ResourceLocation, LootTable.Builder> exporter)
     #elif MC_VERSION < 12101
-    public void generate(HolderLookup.Provider registryLookup, BiConsumer<ResourceKey<LootTable>, LootTable.Builder> exporter) {
+    public void generate(HolderLookup.Provider registryLookup, BiConsumer<ResourceKey<LootTable>, LootTable.Builder> exporter)
     #else
-    public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> exporter) {
+    public void generate(@NotNull BiConsumer<ResourceKey<LootTable>, LootTable.Builder> exporter)
     #endif
+    {
         Exporter exp = new Exporter(exporter, this);
 
         // Cabinet blocks

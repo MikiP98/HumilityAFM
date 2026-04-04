@@ -4,10 +4,22 @@ package io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBloc
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering.CabinetBlockEntityRenderState;
 #endif
+#if MC_VERSION < 12111
+import com.mojang.blaze3d.vertex.PoseStack;
+#endif
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering.ItemFloorRendering;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorCabinetBlockEntity;
+#if MC_VERSION < 12111
+import io.github.mikip98.humilityafm.content.blocks.cabinet.FloorCabinetBlock;
+import net.minecraft.client.renderer.MultiBufferSource;
+#endif
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+#if MC_VERSION < 12111
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+#endif
 #if MC_VERSION >= 12105
 import net.minecraft.world.phys.Vec3;
 #endif

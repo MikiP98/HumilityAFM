@@ -6,8 +6,13 @@ import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.MaterialType;
+#if MC_VERSION < 260000
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+#else
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
+#endif
 import net.minecraft.core.HolderLookup;
 #if MC_VERSION >= 12105
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -24,8 +29,13 @@ import java.util.concurrent.CompletableFuture;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
 
-public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
-    public BlockTagGenerator(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> completableFuture) {
+public class BlockTagGenerator
+        extends #if MC_VERSION < 260000 FabricTagProvider.BlockTagProvider #else FabricTagsProvider.BlockTagsProvider #endif
+{
+    public BlockTagGenerator(
+            #if MC_VERSION < 260000 FabricDataOutput #else FabricPackOutput #endif output,
+            CompletableFuture<HolderLookup.Provider> completableFuture
+    ) {
         super(output, completableFuture);
     }
 

@@ -10,6 +10,12 @@ import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorIll
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.state.BlockState;
+#if MC_VERSION < 12111
+import io.github.mikip98.humilityafm.content.blocks.cabinet.FloorIlluminatedCabinetBlock;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+#endif
 #if MC_VERSION >= 12105
 import net.minecraft.world.phys.Vec3;
 #endif

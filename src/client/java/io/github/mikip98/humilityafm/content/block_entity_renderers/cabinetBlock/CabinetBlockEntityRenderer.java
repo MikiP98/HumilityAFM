@@ -6,6 +6,13 @@ import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.rendering.ItemWallRendering;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetBlockEntity;
+#if MC_VERSION < 12111
+import io.github.mikip98.humilityafm.content.blocks.cabinet.CabinetBlock;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+#endif
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 #if MC_VERSION >= 12105

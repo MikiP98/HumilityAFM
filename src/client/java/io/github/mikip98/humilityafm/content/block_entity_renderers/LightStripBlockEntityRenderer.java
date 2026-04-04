@@ -12,11 +12,19 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 #endif
+#if MC_VERSION >= 12111
 import net.minecraft.client.renderer.block.model.BlockStateModel;
+#endif
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+#if MC_VERSION >= 12111
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+#else
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+#endif
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Half;
@@ -92,8 +100,8 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
         if (level == null) return;
 
         final BlockState blockState = level.getBlockState(pos);
-        final BlockStateModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
-        renderBrighteningInternal(blockState, poseStack, bufferSource, packedOverlay);
+        final BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
+        renderBrighteningInternal(blockState, poseStack, bufferSource, packedOverlay, model);
     }
     #else
     protected static void renderBrightening(LightStripRenderState state, PoseStack poseStack, SubmitNodeCollector collector, int packedOverlay) {
@@ -102,7 +110,7 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
         renderBrighteningInternal(blockState, poseStack, bufferSource, packedOverlay, state.model);
     }
     #endif
-    protected static void renderBrighteningInternal(BlockState blockState, PoseStack poseStack, MultiBufferSource bufferSource, int packedOverlay, BlockStateModel model) {
+    protected static void renderBrighteningInternal(BlockState blockState, PoseStack poseStack, MultiBufferSource bufferSource, int packedOverlay, #if MC_VERSION < 260000 BakedModel #else BlockStateModel #endif model) {
         if (blockState == null || !(blockState.getBlock() instanceof LightStripBlock)) return;
 
         poseStack.pushPose();

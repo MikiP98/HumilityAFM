@@ -4,7 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.ImplementedInventory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+#if MC_VERSION >= 12111
 import net.minecraft.client.renderer.SubmitNodeCollector;
+#endif
 import net.minecraft.client.renderer.entity.ItemRenderer;
 #if MC_VERSION < 12104
 import net.minecraft.client.resources.model.BakedModel;

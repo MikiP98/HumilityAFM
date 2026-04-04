@@ -11,7 +11,11 @@ import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import io.github.mikip98.humilityafm.util.Pair;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.MaterialType;
+#if MC_VERSION < 260000
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+#else
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+#endif
 #if MC_VERSION < 12006
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 #endif
@@ -54,7 +58,10 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
     }
     
     #else
-    public AMFRecipeGenerator(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+    public AMFRecipeGenerator(
+            #if MC_VERSION < 260000 FabricDataOutput #else FabricPackOutput #endif output,
+            CompletableFuture<HolderLookup.Provider> registriesFuture
+    ) {
         super(output, registriesFuture);
     }
     #endif

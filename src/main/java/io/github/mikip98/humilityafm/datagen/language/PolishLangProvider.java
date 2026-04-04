@@ -2,7 +2,11 @@ package io.github.mikip98.humilityafm.datagen.language;
 
 import io.github.mikip98.humilityafm.datagen.language.util.Translation;
 import io.github.mikip98.humilityafm.datagen.language.util.TranslationCategory;
+#if MC_VERSION < 260000
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+#else
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+#endif
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 #if MC_VERSION >= 12006
 import net.minecraft.core.HolderLookup;
@@ -20,7 +24,10 @@ public class PolishLangProvider extends FabricLanguageProvider {
         super(dataOutput, "pl_pl");
     }
     #else
-    public PolishLangProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
+    public PolishLangProvider(
+            #if MC_VERSION < 260000 FabricDataOutput #else FabricPackOutput #endif dataOutput,
+            CompletableFuture<HolderLookup.Provider> registryLookup
+    ) {
         super(dataOutput, "pl_pl", registryLookup);
     }
     #endif

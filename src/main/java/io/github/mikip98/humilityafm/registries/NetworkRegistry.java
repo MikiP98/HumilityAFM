@@ -4,7 +4,9 @@ import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+#if MC_VERSION < 260000
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+#endif
 #if MC_VERSION >= 12006
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 #endif
@@ -13,6 +15,7 @@ import net.minecraft.network.FriendlyByteBuf;
 #if MC_VERSION >= 12006
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 #else
 import net.minecraft.resources.ResourceLocation;
 #endif
@@ -22,10 +25,11 @@ import static io.github.mikip98.humilityafm.HumilityAFM.getId;
 public class NetworkRegistry {
     #if MC_VERSION >= 12006
     public static void registerPayload() {
-        PayloadTypeRegistry.playS2C().register(ConfigSyncPayload.TYPE, ConfigSyncPayload.CODEC);
+        PayloadTypeRegistry #if MC_VERSION < 260000 .playS2C() #else .clientboundPlay() #endif
+                .register(ConfigSyncPayload.TYPE, ConfigSyncPayload.CODEC);
     }
     #else
-    public static final ResourceLocation CONFIG_SYNC = getId("config_sync");
+    public static final #if MC_VERSION < 260000 ResourceLocation #else Identifier #endif CONFIG_SYNC = getId("config_sync");
     #endif
 
     @Environment(EnvType.SERVER)
