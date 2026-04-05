@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.block.model.BlockStateModel;
 #elif MC_VERSION >= 260000
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 #endif
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 #if MC_VERSION >= 12111
@@ -27,6 +28,9 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 #endif
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Half;
@@ -43,6 +47,8 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
+
+import java.util.List;
 #endif
 
 public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightStripBlockEntity #if MC_VERSION >= 12111, LightStripBlockEntityRenderer.LightStripRenderState #endif> {
@@ -78,7 +84,11 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
         BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, tickDelta, cameraPos, crumblingOverlay);
         renderState.blockState = blockEntity.getBlockState();
         renderState.overlay = OverlayTexture.NO_OVERLAY;
-        renderState.model = Minecraft.getInstance().getBlockRenderer().getBlockModel(renderState.blockState);
+        #if MC_VERSION < 260000
+        renderState.model = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState)
+        #else
+        renderState.model = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(renderState.blockState);
+        #endif
     }
 
     @Override
@@ -276,7 +286,7 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
                 0xF000F0,
                 packedOverlay
         );
-        #else
+        #elif MC_VERSION < 260000
         // TODO: switch to this?
 //        collector.add(RenderTypes.solidMovingBlock(), (pose, vertexConsumer) -> {
 //            // This perfectly matches your 8-parameter signature!
@@ -292,11 +302,30 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
         ModelBlockRenderer.renderModel(
                 poseStack.last(),
                 bufferSource.getBuffer(RenderTypes.solidMovingBlock()),
-                Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState),
+                model,
                 1.0f, 1.0f, 1.0f,
                 0xF000F0,
                 packedOverlay
         );
+        #else
+        // TODO !!!
+//        List<BlockStateModelPart> parts = new List<BlockStateModelPart>();
+//        model.collectParts(RandomSource.create(42L), parts)
+//        for (BlockStateModelPart part : parts) {
+//
+//            // 1. Render Culled Faces (Directional)
+//            for (Direction direction : Direction.values()) {
+//                for (BakedQuad quad : part.getQuads(direction)) {
+//                    // putBulkData safely writes the geometry with your injected light!
+//                    vertexConsumer.putBulkData(pose, quad, r, g, b, 1.0f, customLight, overlay);
+//                }
+//            }
+//
+//            // 2. Render Unculled Faces (Null Direction)
+//            for (BakedQuad quad : part.getQuads(null)) {
+//                vertexConsumer.putBulkData(pose, quad, r, g, b, 1.0f, customLight, overlay);
+//            }
+//        }
         #endif
 
         poseStack.popPose();

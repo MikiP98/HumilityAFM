@@ -25,7 +25,9 @@ public class ConfigJSON {
 
         // Create a JSON object to store the configuration
         JsonObject configJson = new JsonObject();
+        #if MC_VERSION < 260000
         configJson.addProperty("transparentCabinetBlocks", ModConfig.transparentCabinetBlocks);
+        #endif
         configJson.addProperty("illuminatedCabinetBlockBrightening", ModConfig.illuminatedCabinetBlockBrightening);
         configJson.addProperty("enableLightStripBrightening", ModConfig.enableLightStripBrightening);
         configJson.addProperty("enableLightStripRadiusColorCompensation", ModConfig.enableLightStripRadiusColorCompensation);
@@ -69,7 +71,9 @@ public class ConfigJSON {
                 boolean needsUpdating = false;
                 if (configJson != null) {
                     // Load the static fields from the JSON object
+                    #if MC_VERSION < 260000
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "transparentCabinetBlocks");
+                    #endif
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "illuminatedCabinetBlockBrightening");
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableLightStripBrightening");
                     needsUpdating |= tryLoad(configJson, JsonElement::getAsBoolean, "enableLightStripRadiusColorCompensation");

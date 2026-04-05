@@ -27,6 +27,7 @@ public class ModConfigScreen {
         // Create a root category
         ConfigCategory rootCategory = builder.getOrCreateCategory(Component.literal("General Settings"));
 
+        #if MC_VERSION < 260000
         rootCategory.addEntry(ConfigEntryBuilder.create()
                 .startBooleanToggle(Component.literal("Transparent Cabinet Blocks"), ModConfig.transparentCabinetBlocks)
                 .setDefaultValue(ModConfig.defaultTransparentCabinetBlocks)
@@ -37,6 +38,7 @@ public class ModConfigScreen {
                 })
                 .build()
         );
+        #endif
         rootCategory.addEntry(ConfigEntryBuilder.create()
                 .startBooleanToggle(Component.literal("Enable Illuminated Cabinet Brightening"), ModConfig.illuminatedCabinetBlockBrightening)
                 .setDefaultValue(ModConfig.defaultIlluminatedCabinetBlockBrightening)

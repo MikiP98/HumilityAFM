@@ -1,3 +1,4 @@
+#if MC_VERSION < 260000
 package io.github.mikip98.humilityafm.registries;
 
 import io.github.mikip98.humilityafm.config.ModConfig;
@@ -44,3 +45,4 @@ public class RenderLayerRegistry {
     }
     #endif
 }
+#endif

@@ -9,7 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ModDefaultConfig {
+    #if MC_VERSION < 260000
     public static final boolean defaultTransparentCabinetBlocks = true;
+    #endif
     public static final boolean defaultIlluminatedCabinetBlockBrightening = true;
     public static final boolean defaultEnableLightStripBrightening = true;
     public static final boolean defaultEnableLightStripRadiusColorCompensation = true;

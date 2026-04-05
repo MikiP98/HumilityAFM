@@ -98,10 +98,12 @@ public abstract class RawGenerationData {
                     "tenanea", "helix_tree", "umbrella_tree", "jellyshroom", "lucernia"
             },
             #endif
+            #if MC_VERSION < 260000
             BIOMES_O_PLENTY, new String[]{
                     "fir", "pine", "maple", "redwood", "mahogany", "jacaranda", "palm",
                     "willow", "dead", "magic", "umbran", "hellbark", "empyreal"
             }
+            #endif
     );
     /***
      * All fireproof modded wood types, sorted by the mod they come from.

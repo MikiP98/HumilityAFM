@@ -7,7 +7,9 @@ public enum SupportedMods {
     BETTER_NETHER("Better Nether", "betternether"),
     BETTER_END("Better End", "betterend"),
     #endif
+    #if MC_VERSION < 260000
     BIOMES_O_PLENTY("Biomes o' Plenty", "biomesoplenty"),
+    #endif
 
     SHIMMER("Shimmer", "shimmer");
 

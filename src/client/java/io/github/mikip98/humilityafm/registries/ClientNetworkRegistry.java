@@ -96,7 +96,11 @@ public class ClientNetworkRegistry {
     }
 
     protected static void sendMessage(Player player, String message) {
+        #if MC_VERSION < 260000
         player.displayClientMessage(Component.literal(message), false);
+        #else
+        player.sendSystemMessage(Component.literal(message));
+        #endif
     }
 
     protected static class DiffList extends ArrayList<String> {

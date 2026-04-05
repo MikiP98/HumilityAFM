@@ -14,6 +14,8 @@ public class HumilityAFMClient implements ClientModInitializer {
 		// ............ Network ............
 		ClientNetworkRegistry.register();
 		// ............ Render Layers ............
+		#if MC_VERSION < 260000
 		RenderLayerRegistry.register();
+		#endif
 	}
 }

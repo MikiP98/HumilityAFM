@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.rendering_utils.LightManipulation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.world.level.block.state.BlockState;
 
 public interface RenderSelfBrightening {
@@ -56,11 +57,17 @@ public interface RenderSelfBrightening {
         MultiBufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
         #endif
 
+        #if MC_VERSION < 260000
         Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
                 blockState, poseStack,
                 bufferSource,
                 outsideLight, packedOverlay
         );
+        #else
+        // TODO !!!
+        BlockModel selfModel = Minecraft.getInstance().getModelManager().getBlockModelSet().get(blockState);
+
+        #endif
 
         poseStack.popPose();
     }

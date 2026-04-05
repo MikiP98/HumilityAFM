@@ -8,7 +8,9 @@ import lombok.Setter;
 import java.util.Map;
 
 public class ModConfig extends ModDefaultConfig {
+    #if MC_VERSION < 260000
     public static boolean transparentCabinetBlocks = defaultTransparentCabinetBlocks;
+    #endif
     public static boolean illuminatedCabinetBlockBrightening = defaultIlluminatedCabinetBlockBrightening;
     public static boolean enableLightStripBrightening = defaultEnableLightStripBrightening;
     public static boolean enableLightStripRadiusColorCompensation = defaultEnableLightStripRadiusColorCompensation;

@@ -3,6 +3,7 @@ package io.github.mikip98.humilityafm.datagen;
 #if MC_VERSION >= 12105
 import com.mojang.math.Quadrant;
 #endif
+import io.github.mikip98.humilityafm.HumilityAFM;
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
@@ -45,6 +46,7 @@ import net.minecraft.client.renderer.block.dispatch.VariantMutator;
 import net.minecraft.client.renderer.block.dispatch.multipart.Condition;
 #endif
 #endif
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 #if MC_VERSION < 12104
 import net.minecraft.data.models.BlockModelGenerators;
@@ -140,9 +142,11 @@ public class ModelGenerator extends FabricModelProvider {
     protected void generateColouredJackOLanternModelsAndBlockStates() {
         int i = 0;
         for (String color : RawGenerationData.vanillaColorPallet) {
-            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif colouredJackOLanternTexture = getId("block/coloured_jack_o_lantern/coloured_jack_o_lantern_" + color);
             final TextureMapping textureMap = new TextureMapping()
-                    .putForced(TextureSlot.FRONT, colouredJackOLanternTexture);
+                    .putForced(
+                            TextureSlot.FRONT,
+                            getTexture("block/coloured_jack_o_lantern/coloured_jack_o_lantern_" + color)
+                    );
 
             final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif jackOLanternModelId = JACK_O_LANTERN_TEMPLATE_MODEL.create(
                     getId("block/coloured_jack_o_lantern/coloured_jack_o_lantern_" + color),
@@ -204,9 +208,8 @@ public class ModelGenerator extends FabricModelProvider {
     protected void generateColouredTorchModelsAndBlockStates() {
         int i = 0;
         for (String color : RawGenerationData.vanillaColorPallet) {
-            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif coloured_torch_texture = getId("block/coloured_torch/coloured_torch_" + color);
             final TextureMapping textureMap = new TextureMapping()
-                    .putForced(TextureSlot.TORCH, coloured_torch_texture);
+                    .putForced(TextureSlot.TORCH, getTexture("block/coloured_torch/coloured_torch_" + color));
 
             final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif torchModelId = TORCH_TEMPLATE_MODEL.create(
                     getId("block/coloured_torch/coloured_torch_" + color),
@@ -231,9 +234,8 @@ public class ModelGenerator extends FabricModelProvider {
         for (BlockMaterial material : ActiveGenerationData.colouredFeatureSetMaterials) {
             final String color = material.layers()[0].name();
 
-            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif coloured_concrete = getVanillaId("block/" + color + "_concrete");
             final TextureMapping textureMap = new TextureMapping()
-                    .putForced(TextureSlot.create("0"), coloured_concrete);
+                    .putForced(TextureSlot.create("0"), getVanillaTexture("block/" + color + "_concrete"));
 
             final String pathPrefix = "block/light_strip/";
             final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif lightStripStraightModelId = LIGHT_STRIP_STRAIGHT_MODEL.create(
@@ -289,7 +291,7 @@ public class ModelGenerator extends FabricModelProvider {
 
             final String suffix = block_suffix_metals.contains(metal) ? "_block" : "";
             final TextureMapping metalTextureMapping = new TextureMapping()
-                    .putForced(TextureSlot.create("metal"), getVanillaId("block/" + metal + suffix));
+                    .putForced(TextureSlot.create("metal"), getVanillaTexture("block/" + metal + suffix));
 
             final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif candlestickStandingMetalModelId = CANDLESTICK_STANDING_MODEL.create(
                     getId("block/candlestick/standing/" + metal + "/candlestick_" + metal),
@@ -347,7 +349,7 @@ public class ModelGenerator extends FabricModelProvider {
             for (String color : RawGenerationData.vanillaColorPallet) {
                 final CandleColor candleColor = CandleColor.getColor(color);
                 final TextureMapping candleColorTextureMapping = new TextureMapping()
-                        .putForced(TextureSlot.create("candle"), getVanillaId("block/" + color + "_candle_lit"));
+                        .putForced(TextureSlot.create("candle"), getVanillaTexture("block/" + color + "_candle_lit"));
 
                 String id = "block/candlestick/standing/" + metal + "/candlestick_" + metal + "_" + color;
                 final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif standingCandlestickColoredModelId = candlestickWithCandleStandingMetalModel.create(
@@ -478,17 +480,17 @@ public class ModelGenerator extends FabricModelProvider {
             final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif innerStairsModelId = INNER_CORNER_STAIRS_MODEL.create(
                     getId("block/corner_stairs/inner_stairs/inner_stairs_" + stairMaterial.getSafeName()),
                     new TextureMapping()
-                            .putForced(TextureSlot.TOP, topTextureId)
-                            .putForced(TextureSlot.BOTTOM, bottomTextureId)
-                            .putForced(TextureSlot.SIDE, sideTextureId),
+                            .putForced(TextureSlot.TOP, getTexture(topTextureId))
+                            .putForced(TextureSlot.BOTTOM, getTexture(bottomTextureId))
+                            .putForced(TextureSlot.SIDE, getTexture(sideTextureId)),
                     blockStateModelGenerator.modelOutput
             );
             final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif outerStairsModelId = OUTER_CORNER_STAIRS_MODEL.create(
                     getId("block/corner_stairs/outer_stairs/outer_stairs_" + stairMaterial.getSafeName()),
                     new TextureMapping()
-                            .putForced(TextureSlot.TOP, topTextureId)
-                            .putForced(TextureSlot.BOTTOM, bottomTextureId)
-                            .putForced(TextureSlot.SIDE, sideTextureId),
+                            .putForced(TextureSlot.TOP, getTexture(topTextureId))
+                            .putForced(TextureSlot.BOTTOM, getTexture(bottomTextureId))
+                            .putForced(TextureSlot.SIDE, getTexture(sideTextureId)),
                     blockStateModelGenerator.modelOutput
             );
 
@@ -527,8 +529,8 @@ public class ModelGenerator extends FabricModelProvider {
             final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif woodenMosaicModelId = CHECKER_2X2_MODEL.create(
                     modelLocationId,
                     new TextureMapping()
-                            .putForced(TextureSlot.create("1"), planks1Id)
-                            .putForced(TextureSlot.create("2"), planks2Id),
+                            .putForced(TextureSlot.create("1"), getTexture(planks1Id))
+                            .putForced(TextureSlot.create("2"), getTexture(planks2Id)),
                     blockStateModelGenerator.modelOutput
             );
             registerItemModel(BlockRegistry.WOODEN_MOSAIC_VARIANTS[i], woodenMosaicModelId);
@@ -545,8 +547,8 @@ public class ModelGenerator extends FabricModelProvider {
                 final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif terracottaTileModelId = CHECKER_2X2_MODEL.create(
                         getId("block/terracotta_tiles/terracotta_tiles_" + color + "_" + color2),
                         new TextureMapping()
-                                .putForced(TextureSlot.create("1"), getVanillaId("block/" + color + "_terracotta"))
-                                .putForced(TextureSlot.create("2"), getVanillaId("block/" + color2 + "_terracotta")),
+                                .putForced(TextureSlot.create("1"), getVanillaTexture("block/" + color + "_terracotta"))
+                                .putForced(TextureSlot.create("2"), getVanillaTexture("block/" + color2 + "_terracotta")),
                         blockStateModelGenerator.modelOutput
                 );
                 registerItemModel(BlockRegistry.TERRACOTTA_TILE_VARIANTS[i], terracottaTileModelId);
@@ -571,7 +573,7 @@ public class ModelGenerator extends FabricModelProvider {
 
             final TextureMapping woolTextureMapping = new TextureMapping().putForced(
                     TextureSlot.create("wool"),
-                    getVanillaId("block/" + colorLayer.name() + "_wool")
+                    getVanillaTexture("block/" + colorLayer.name() + "_wool")
             );
 
             final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif coloredCabinet = baseWoodSet.wallClosed.create(
@@ -598,7 +600,7 @@ public class ModelGenerator extends FabricModelProvider {
         final SupportedMods sourceMod = wood.metadata().sourceMod();
         final TextureMapping plankTextureMapping = new TextureMapping().putForced(
                 TextureSlot.create("planks"),
-                getBlockId(sourceMod, wood.name() + "_planks")
+                getTexture(getBlockId(sourceMod, wood.name() + "_planks"))
         );
 
         final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif woodTypeCabinetId = CABINET_BLOCK_MODEL.create(
@@ -1302,4 +1304,45 @@ public class ModelGenerator extends FabricModelProvider {
         #endif
     }
     // TODO: protected static PropertyDispatch createPropertyDispatch()
+
+
+    protected static
+        #if MC_VERSION < 12111 ResourceLocation #elif MC_VERSION < 260000 Identifier #else Material #endif
+    getVanillaTexture(String name) {
+        return getVanillaTexture(name, false);
+    }
+
+    protected static
+        #if MC_VERSION < 12111 ResourceLocation #elif MC_VERSION < 260000 Identifier #else Material #endif
+    getVanillaTexture(String name, boolean forceTranslucent) {
+        return getTexture(getVanillaId(name), forceTranslucent);
+    }
+
+    protected static
+        #if MC_VERSION < 12111 ResourceLocation #elif MC_VERSION < 260000 Identifier #else Material #endif
+    getTexture(String name) {
+        return getTexture(name, false);
+    }
+
+    protected static
+        #if MC_VERSION < 12111 ResourceLocation #elif MC_VERSION < 260000 Identifier #else Material #endif
+    getTexture(String name, boolean forceTranslucent) {
+        return getTexture(getId(name), forceTranslucent);
+    }
+
+    protected static
+        #if MC_VERSION < 12111 ResourceLocation #elif MC_VERSION < 260000 Identifier #else Material #endif
+    getTexture(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif id) {
+        return getTexture(id, false);
+    }
+
+    protected static
+        #if MC_VERSION < 12111 ResourceLocation #elif MC_VERSION < 260000 Identifier #else Material #endif
+    getTexture(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif id, boolean forceTranslucent) {
+        #if MC_VERSION < 260000
+        return id;
+        #else
+        return new Material(id, forceTranslucent);
+        #endif
+    }
 }
