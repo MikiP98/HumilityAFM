@@ -104,6 +104,7 @@ Lighten up your builds with unobtrusive light source
 - Fix coloured torches not dropping and their dropped model size
 - Double check if the correct model (texture) is used for the non-lit candlesticks with candles
 - Check that the polymorph to suggested Gradle code is disabled on 1.20.1 and so
+- Fix light strip voxel shape
 - Add Unit tests
 
 [//]: # (- Improve Cabinet PBR texture: Roughness of zero, f0/reflectance of like either 0.02 or 0.1)
