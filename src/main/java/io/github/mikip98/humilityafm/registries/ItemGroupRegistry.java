@@ -79,12 +79,16 @@ public class ItemGroupRegistry {
                 blocks.add(new Block[]{BlockRegistry.JACK_O_LANTERN_REDSTONE});
                 blocks.add(new Block[]{BlockRegistry.JACK_O_LANTERN_SOUL});
                 // Coloured Feature Set Beta
-                blocks.add(BlockRegistry.LIGHT_STRIP_VARIANTS);
-                blocks.add(ItemRegistry.COLOURED_TORCH_ITEM_VARIANTS);
-                blocks.add(BlockRegistry.COLOURED_JACK_O_LANTERNS);
+                if (ModConfig.getEnableColouredFeatureSetBeta()) {
+                    blocks.add(BlockRegistry.LIGHT_STRIP_VARIANTS);
+                    blocks.add(ItemRegistry.COLOURED_TORCH_ITEM_VARIANTS);
+                    blocks.add(BlockRegistry.COLOURED_JACK_O_LANTERNS);
+                }
                 // Candlestick Beta
-                blocks.add(ItemRegistry.CANDLESTICK_ITEM_VARIANTS);
-                blocks.addAll(Arrays.asList(ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS));
+                if (ModConfig.getEnableCandlestickBeta()) {
+                    blocks.add(ItemRegistry.CANDLESTICK_ITEM_VARIANTS);
+                    blocks.addAll(Arrays.asList(ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS));
+                }
 
                 if (ModConfig.creativeItemGroupCategorization == CreativeItemGroupCategorization.BLOCKS_AND_ITEMS) {
                     createAndRegisterItemGroup(
@@ -92,14 +96,18 @@ public class ItemGroupRegistry {
                             ItemRegistry.CABINET_ITEM,
                             blocks.toArray(new ItemConvertible[0][])
                     );
-                    createAndRegisterItemGroup(
-                            "humility_item_group", "humilityItems",
-                            () -> ItemRegistry.GLOWING_POWDER_VARIANTS[10],
-                            ItemRegistry.GLOWING_POWDER_VARIANTS
-                    );
+                    if (ModConfig.getEnableColouredFeatureSetBeta()) {
+                        createAndRegisterItemGroup(
+                                "humility_item_group", "humilityItems",
+                                () -> ItemRegistry.GLOWING_POWDER_VARIANTS[10],
+                                ItemRegistry.GLOWING_POWDER_VARIANTS
+                        );
+                    }
                 }
                 else {
-                    blocks.add(ItemRegistry.GLOWING_POWDER_VARIANTS);
+                    if (ModConfig.getEnableColouredFeatureSetBeta()) {
+                        blocks.add(ItemRegistry.GLOWING_POWDER_VARIANTS);
+                    }
                     createAndRegisterItemGroup(
                             "humility_content_group", "humilityContent",
                             ItemRegistry.CABINET_ITEM,
