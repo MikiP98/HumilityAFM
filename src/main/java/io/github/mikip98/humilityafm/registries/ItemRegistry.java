@@ -12,9 +12,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 #else
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 #endif
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 #if MC_VERSION >= 12104
 import net.minecraft.world.item.Items;
@@ -145,7 +148,17 @@ public class ItemRegistry {
     #else
     public static Item register(String name, Function<Item.Properties, Item> factory, Item.Properties settings) {
         final ResourceKey<Item> registryKey = ResourceKey.create(Registries.ITEM, getId(name));
-        return Items.registerItem(registryKey, factory, settings);
+        return #if MC_VERSION < 260000 Items. #endif registerItem(registryKey, factory, settings);
+    }
+    #endif
+    #if MC_VERSION > 260000
+    protected static Item registerItem(final ResourceKey<Item> key, final Function<Item.Properties, Item> itemFactory, final Item.Properties properties) {
+        Item item = (Item) itemFactory.apply(properties.setId(key));
+        if (item instanceof BlockItem blockItem) {
+            blockItem.registerBlocks(Item.BY_BLOCK, item);
+        }
+
+        return (Item) Registry.register(BuiltInRegistries.ITEM, key, item);
     }
     #endif
 }

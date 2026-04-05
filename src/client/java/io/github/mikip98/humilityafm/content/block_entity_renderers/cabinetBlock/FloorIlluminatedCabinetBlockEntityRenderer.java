@@ -22,7 +22,11 @@ import net.minecraft.world.phys.Vec3;
 #if MC_VERSION >= 12111
 import io.github.mikip98.humilityafm.content.blocks.cabinet.IlluminatedCabinetBlock;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+#if MC_VERSION < 260000
 import net.minecraft.client.renderer.state.CameraRenderState;
+#else
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+#endif
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;

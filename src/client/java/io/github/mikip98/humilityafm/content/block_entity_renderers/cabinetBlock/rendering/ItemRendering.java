@@ -7,7 +7,9 @@ import net.minecraft.client.renderer.MultiBufferSource;
 #if MC_VERSION >= 12111
 import net.minecraft.client.renderer.SubmitNodeCollector;
 #endif
+#if MC_VERSION < 12111
 import net.minecraft.client.renderer.entity.ItemRenderer;
+#endif
 #if MC_VERSION < 12104
 import net.minecraft.client.resources.model.BakedModel;
 #endif

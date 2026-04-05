@@ -16,7 +16,11 @@ import io.github.mikip98.humilityafm.util.generation_data.material_management.ma
 #if MC_VERSION >= 12104
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 #endif
+#if MC_VERSION < 260000
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+#else
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+#endif
 #if MC_VERSION < 12104
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 #else
@@ -30,10 +34,16 @@ import net.minecraft.client.data.models.blockstates.Condition;
 #endif
 #endif
 #if MC_VERSION >= 12105
+import net.minecraft.client.data.models.MultiVariant;
+#if MC_VERSION < 260000
 import net.minecraft.client.renderer.block.model.Variant;
 import net.minecraft.client.renderer.block.model.multipart.Condition;
-import net.minecraft.client.data.models.MultiVariant;
 import net.minecraft.client.renderer.block.model.VariantMutator;
+#else
+import net.minecraft.client.renderer.block.dispatch.Variant;
+import net.minecraft.client.renderer.block.dispatch.VariantMutator;
+import net.minecraft.client.renderer.block.dispatch.multipart.Condition;
+#endif
 #endif
 import net.minecraft.core.Direction;
 #if MC_VERSION < 12104
@@ -97,7 +107,7 @@ public class ModelGenerator extends FabricModelProvider {
     protected BlockModelGenerators blockStateModelGenerator;
 
 
-    public ModelGenerator(FabricDataOutput output) {
+    public ModelGenerator(#if MC_VERSION < 260000 FabricDataOutput #else FabricPackOutput #endif output) {
         super(output);
     }
 

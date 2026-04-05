@@ -28,7 +28,7 @@ public class CabinetBlockEntityRenderState extends BlockEntityRenderState {
         if (level == null) return;
 
         this.blockState = blockEntity.getBlockState();
-        this.light = light != null ? light : LevelRenderer.getLightColor(level, blockEntity.getBlockPos());
+        this.light = light != null ? light : LevelRenderer #if MC_VERSION < 260000 .getLightColor #else .getLightCoords #endif (level, blockEntity.getBlockPos());
         this.overlay = OverlayTexture.NO_OVERLAY;
 
         ItemStack stack = blockEntity.getItem(0);

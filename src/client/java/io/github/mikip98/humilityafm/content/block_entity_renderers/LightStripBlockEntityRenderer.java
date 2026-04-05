@@ -12,8 +12,10 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 #endif
-#if MC_VERSION >= 12111
+#if MC_VERSION >= 12111 && MC_VERSION < 260000
 import net.minecraft.client.renderer.block.model.BlockStateModel;
+#elif MC_VERSION >= 260000
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 #endif
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -33,7 +35,11 @@ import net.minecraft.world.phys.Vec3;
 #endif
 #if MC_VERSION >= 12111
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+#if MC_VERSION < 260000
 import net.minecraft.client.renderer.state.CameraRenderState;
+#else
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+#endif
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
