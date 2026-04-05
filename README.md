@@ -101,6 +101,9 @@ Lighten up your builds with unobtrusive light source
 - Consider making ParticleUtil for particle creation
 - Update the building instructions
 - Why floor and wall cabinets have separate models? Remove one!
+- Fix coloured torches not dropping and their dropped model size
+- Double check if the correct model (texture) is used for the non-lit candlesticks with candles
+- Check that the polymorph to suggested Gradle code is disabled on 1.20.1 and so
 - Add Unit tests
 
 [//]: # (- Improve Cabinet PBR texture: Roughness of zero, f0/reflectance of like either 0.02 or 0.1)
@@ -173,13 +176,8 @@ Lighten up your builds with unobtrusive light source
 
 ### Done:
 
-- Fixed a massive log error spam on world loading/creation
-- Merged all versions into a single manifold branch
-- Improve sounds by varying the pitch and volume slightly
-- Moved from 1.21.6 to 1.21.8
-- Ported to 1.21.11
-- Improved networking
-- Improved performance by optimising the block models
+- Moved to mojmap :(
+- Updated to Minecraft 26.1
 
 <br>
 
