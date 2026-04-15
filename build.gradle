@@ -99,31 +99,25 @@ dependencies {
 	annotationProcessor "systems.manifold:manifold-preprocessor:${project.manifold_version}"
 	compileOnly "systems.manifold:manifold-preprocessor:${project.manifold_version}"
 
+	def loomGradle = activeMcVersionNum < 260000
+	String implementationConfig = loomGradle ? "modImplementation" : "implementation"
+	String apiConfig			= loomGradle ? "modApi"            : "api"
+	String compileOnlyConfig 	= loomGradle ? "modCompileOnly"    : "compileOnly"
+	String runtimeOnlyConfig 	= loomGradle ? "modRuntimeOnly"    : "runtimeOnly"
+
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	if (activeMcVersionNum < 260000) {
 		mappings loom.officialMojangMappings()
-
-		modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
-		// Fabric API. This is technically optional, but you probably want it anyway.
-		modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-		modApi("me.shedaniel.cloth:cloth-config-fabric:${project.config2_version}") {
-			exclude(group: "net.fabricmc.fabric-api")
-		}
-		modApi "com.terraformersmc:modmenu:${project.modmenu_version}"
-	} else {
-		implementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
-		// Fabric API. This is technically optional, but you probably want it anyway.
-		implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-		api("me.shedaniel.cloth:cloth-config-fabric:${project.config2_version}") {
-			exclude(group: "net.fabricmc.fabric-api")
-		}
-		api "com.terraformersmc:modmenu:${project.modmenu_version}"
 	}
+
+	add(implementationConfig, "net.fabricmc:fabric-loader:${project.loader_version}")
+	add(implementationConfig, "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
+
+	add(apiConfig, "me.shedaniel.cloth:cloth-config-fabric:${project.config2_version}") {
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+	add(apiConfig, "com.terraformersmc:modmenu:${project.modmenu_version}")
 }
 
 processResources {
