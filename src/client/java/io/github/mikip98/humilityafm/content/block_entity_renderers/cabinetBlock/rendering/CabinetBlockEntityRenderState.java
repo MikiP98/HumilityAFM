@@ -3,7 +3,9 @@ package io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBloc
 
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetBlockEntity;
 import net.minecraft.client.Minecraft;
+#if MC_VERSION < 260200
 import net.minecraft.client.renderer.LevelRenderer;
+#endif
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -28,7 +30,11 @@ public class CabinetBlockEntityRenderState extends BlockEntityRenderState {
         if (level == null) return;
 
         this.blockState = blockEntity.getBlockState();
+        #if MC_VERSION < 260200
         this.light = light != null ? light : LevelRenderer #if MC_VERSION < 260000 .getLightColor #else .getLightCoords #endif (level, blockEntity.getBlockPos());
+        #else
+        this.light = light != null ? light : this.lightCoords;
+        #endif
         this.overlay = OverlayTexture.NO_OVERLAY;
 
         ItemStack stack = blockEntity.getItem(0);

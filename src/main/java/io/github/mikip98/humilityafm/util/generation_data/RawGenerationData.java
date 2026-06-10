@@ -22,8 +22,10 @@ public abstract class RawGenerationData {
             "white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray",
             "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black"
     };
-    public static final float vanillaTerracottaHardness = Blocks.WHITE_TERRACOTTA.defaultDestroyTime();  // 1.25f
-    public static final float vanillaTerracottaResistance = Blocks.WHITE_TERRACOTTA.getExplosionResistance();  // 4.2f
+    public static final float vanillaTerracottaHardness =
+            Blocks.#if MC_VERSION < 260200 WHITE_TERRACOTTA #else TERRACOTTA #endif.defaultDestroyTime();  // 1.25f
+    public static final float vanillaTerracottaResistance =
+            Blocks.#if MC_VERSION < 260200 WHITE_TERRACOTTA #else TERRACOTTA #endif.getExplosionResistance();  // 4.2f
 
     /***
      * All vanilla wood types

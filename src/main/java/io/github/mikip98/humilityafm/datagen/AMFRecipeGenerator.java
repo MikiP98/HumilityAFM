@@ -87,7 +87,7 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
                 #if MC_VERSION >= 12104 itemLookup, #endif output,
                 ItemRegistry.CABINET_ITEM,
                 Items.PETRIFIED_OAK_SLAB,
-                Items.WHITE_CARPET,
+                #if MC_VERSION < 260200 Items.WHITE_CARPET #else Items.CARPET.white() #endif,
                 "cabinets/"
         );
 

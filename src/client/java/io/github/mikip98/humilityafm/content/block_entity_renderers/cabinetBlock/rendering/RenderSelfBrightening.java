@@ -3,7 +3,9 @@ package io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBloc
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.rendering_utils.LightManipulation;
 import net.minecraft.client.Minecraft;
+#if MC_VERSION < 260000
 import net.minecraft.client.renderer.MultiBufferSource;
+#endif
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -53,7 +55,7 @@ public interface RenderSelfBrightening {
         int outsideLight = LightManipulation.multiplyLight(packedLight, lightMultiplayer);
         outsideLight = LightManipulation.addLight(outsideLight, lightAddition);
 
-        #if MC_VERSION >= 12111
+        #if MC_VERSION >= 12111 && MC_VERSION < 260000
         MultiBufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
         #endif
 

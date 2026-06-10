@@ -4,7 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntity;
 import io.github.mikip98.humilityafm.content.blocks.LightStripBlock;
 import net.minecraft.client.Minecraft;
+#if MC_VERSION < 260200
 import net.minecraft.client.renderer.MultiBufferSource;
+#endif
 #if MC_VERSION < 12111
 import net.minecraft.client.renderer.RenderType;
 #endif
@@ -121,12 +123,14 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
     }
     #else
     protected static void renderBrightening(LightStripRenderState state, PoseStack poseStack, SubmitNodeCollector collector, int packedOverlay) {
+        #if MC_VERSION < 260200
         final MultiBufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+        #endif
         final BlockState blockState = state.blockState;
-        renderBrighteningInternal(blockState, poseStack, bufferSource, packedOverlay, state.model);
+        renderBrighteningInternal(blockState, poseStack, #if MC_VERSION < 260200 bufferSource,#endif packedOverlay, state.model);
     }
     #endif
-    protected static void renderBrighteningInternal(BlockState blockState, PoseStack poseStack, MultiBufferSource bufferSource, int packedOverlay, #if MC_VERSION < 260000 BakedModel #else BlockStateModel #endif model) {
+    protected static void renderBrighteningInternal(BlockState blockState, PoseStack poseStack, #if MC_VERSION < 260200 bufferSource MultiBufferSource bufferSource,#endif int packedOverlay, #if MC_VERSION < 260000 BakedModel #else BlockStateModel #endif model) {
         if (blockState == null || !(blockState.getBlock() instanceof LightStripBlock)) return;
 
         poseStack.pushPose();
@@ -274,7 +278,6 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
         poseStack.translate(deltaX, deltaY, deltaZ);
         poseStack.scale(scale, scale, scale);
 
-        // Render the LED strip block with custom light value
         // Render the LED strip block with custom light value
         #if MC_VERSION < 12105
         Minecraft.getInstance().getBlockRenderer().getModelRenderer().renderModel(

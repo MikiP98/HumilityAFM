@@ -3,7 +3,9 @@ package io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBloc
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.ImplementedInventory;
 import net.minecraft.client.Minecraft;
+#if MC_VERSION < 12111
 import net.minecraft.client.renderer.MultiBufferSource;
+#endif
 #if MC_VERSION >= 12111
 import net.minecraft.client.renderer.SubmitNodeCollector;
 #endif

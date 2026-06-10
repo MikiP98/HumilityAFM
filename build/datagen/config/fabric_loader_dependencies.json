@@ -3,7 +3,8 @@
   "overrides": {
     "humility-afm": {
       "-depends": {
-        "polymorph": "IGNORED"
+        "polymorph": "IGNORED",
+        "minecraft": "IGNORED"
       }
     }
   }
