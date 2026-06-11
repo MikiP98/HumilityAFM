@@ -130,7 +130,7 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
         renderBrighteningInternal(blockState, poseStack, #if MC_VERSION < 260200 bufferSource,#endif packedOverlay, state.model);
     }
     #endif
-    protected static void renderBrighteningInternal(BlockState blockState, PoseStack poseStack, #if MC_VERSION < 260200 bufferSource MultiBufferSource bufferSource,#endif int packedOverlay, #if MC_VERSION < 260000 BakedModel #else BlockStateModel #endif model) {
+    protected static void renderBrighteningInternal(BlockState blockState, PoseStack poseStack, #if MC_VERSION < 260200 MultiBufferSource bufferSource,#endif int packedOverlay, #if MC_VERSION < 260000 BakedModel #else BlockStateModel #endif model) {
         if (blockState == null || !(blockState.getBlock() instanceof LightStripBlock)) return;
 
         poseStack.pushPose();
