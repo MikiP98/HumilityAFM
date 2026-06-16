@@ -117,9 +117,7 @@ dependencies {
 	add(apiConfig, "me.shedaniel.cloth:cloth-config-fabric:${project.config2_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
-	if (activeMcVersionNum < 260200) {
-		add(apiConfig, "com.terraformersmc:modmenu:${project.modmenu_version}")
-	}
+	add(apiConfig, "com.terraformersmc:modmenu:${project.modmenu_version}")
 }
 
 processResources {
