@@ -106,6 +106,7 @@ Lighten up your builds with unobtrusive light source
 - Check that the polymorph to suggested Gradle code is disabled on 1.20.1 and so
 - Fix light strip voxel shape
 - Add Unit tests
+- Check if Cabinets drop their item on destruction in 26.1+
 
 [//]: # (- Improve Cabinet PBR texture: Roughness of zero, f0/reflectance of like either 0.02 or 0.1)
 
