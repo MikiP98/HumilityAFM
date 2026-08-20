@@ -11,7 +11,7 @@ plugins {
 	id 'systems.manifold.manifold-gradle-plugin' version "${manifold_plugin_version}"
 }
 
-// Load version-specific properties dynamically
+// Load version-specific properties
 def activeVersion = project.properties['active_mc_version']
 def versionPropsFile = file("versions/${activeVersion}.properties")
 if (versionPropsFile.exists()) {
@@ -26,7 +26,7 @@ if (versionPropsFile.exists()) {
 def activeMcVersionNum = project.mc_version_number.toInteger()
 
 
-// Apply the correct Loom variant dynamically
+// Apply the correct Loom variant
 if (activeMcVersionNum < 260000) {
 	apply plugin: 'fabric-loom'
 } else {
@@ -43,6 +43,7 @@ manifold {
 // Auto-generate build.properties so the Manifold IDE plugin and compiler stay in sync
 file("build.properties").text = "MC_VERSION=${project.ext.mc_version_number}\n"
 
+// TODO: Why is this here?
 base {
 	archivesName = project.archives_base_name
 }
@@ -53,8 +54,10 @@ repositories {
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
-	
+
+	// cloth-config
 	maven { url "https://maven.shedaniel.me/" }
+	// Mod Menu
 	maven { url "https://maven.terraformersmc.com/releases/" }
 }
 
@@ -113,6 +116,14 @@ dependencies {
 
 	add(implementationConfig, "net.fabricmc:fabric-loader:${project.loader_version}")
 	add(implementationConfig, "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
+
+	def localVersion = "${project.humility_val_version}+${project.minecraft_version}"
+	def localM2Path = file("${System.getProperty('user.home')}/.m2/repository/io/mikip98/humilityval/humility-val/${localVersion}/humility-val-${localVersion}.jar")
+	if (localM2Path.exists()) {
+		add(implementationConfig, "io.mikip98.humilityval:humility-val:${localVersion}")
+	} else {
+		add(implementationConfig, "maven.modrinth:humilityval:${localVersion}")
+	}
 
 	add(apiConfig, "me.shedaniel.cloth:cloth-config-fabric:${project.config2_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
