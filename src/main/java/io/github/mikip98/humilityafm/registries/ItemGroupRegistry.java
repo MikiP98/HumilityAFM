@@ -106,7 +106,7 @@ public class ItemGroupRegistry {
                     if (ModConfig.getEnableColouredFeatureSetBeta()) {
                         createAndRegisterItemGroup(
                                 "humility_item_group", "humilityItems",
-                                () -> ItemRegistry.GLOWING_POWDER_VARIANTS[10],
+                                ItemRegistry.GLOWING_POWDER_VARIANTS[10],
                                 ItemRegistry.GLOWING_POWDER_VARIANTS
                         );
                     }
@@ -198,7 +198,7 @@ public class ItemGroupRegistry {
             );
             #else
             CreativeModeTabEvents.modifyOutputEvent(itemGroup).register(
-                    (creativeTab) ->  Arrays.stream(items).forEach(creativeTab::accept)
+                    creativeTab ->  Arrays.stream(items).forEach(creativeTab::accept)
             );
             #endif
         }
