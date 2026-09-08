@@ -6,12 +6,9 @@ import io.github.mikip98.humilityafm.content.blocks.cabinet.FloorIlluminatedCabi
 import io.github.mikip98.humilityafm.content.blocks.cabinet.IlluminatedCabinetBlock;
 import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.JackOLanternRedStone;
 import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.JackOLanternSoul;
-#if MC_VERSION >= 12104
-import io.github.mikip98.humilityafm.util.SettingsDuplicator;
-#endif
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
+#if MC_VERSION < 12104 import net.minecraft.core.Registry; #endif
+#if MC_VERSION < 12104 import net.minecraft.core.registries.BuiltInRegistries; #endif
 #if MC_VERSION >= 12104
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -23,6 +20,8 @@ import net.minecraft.world.level.block.Blocks;
 #endif
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
@@ -91,57 +90,52 @@ public class BlockRegistry extends BlockGeneration {
     }
 
 
-    /**
-     * This method is called from the main mod class to ensure the static initialisation of this class.
-     */
     public static void init() {
         #if MC_VERSION >= 12104
-        SettingsDuplicator.cache.clear();
-        SettingsDuplicator.cache = null;
-        SettingsDuplicator.count = null;
+        cache = null;
         #endif
     }
 
 
-    #if MC_VERSION < 260000
     public static Block registerWithItem(String name, BlockBehaviour.Properties settings) {
         return registerWithItem(name, Block::new, settings);
     }
+
     public static <T extends Block> T registerWithItem(String name, Function<BlockBehaviour.Properties, T> blockFactory, BlockBehaviour.Properties settings) {
         T block = register(name, blockFactory, settings);
         ItemRegistry.register(name, (itemSettings) -> new BlockItem(block, itemSettings));
         return block;
     }
+
     public static Block register(String name, BlockBehaviour.Properties settings) {
         return register(name, Block::new, settings);
     }
-    #if MC_VERSION >= 12104 @SuppressWarnings("unchecked") #endif
+
+    #if MC_VERSION >= 12104
+    protected static Map<BlockBehaviour.Properties, Block> cache = new IdentityHashMap<>();
+    #endif
+
     public static <T extends Block> T register(String name, Function<BlockBehaviour.Properties, T> blockFactory, BlockBehaviour.Properties settings) {
         #if MC_VERSION < 12104
         return Registry.register(BuiltInRegistries.BLOCK, getId(name), blockFactory.apply(settings));
         #else
-        final BlockBehaviour.Properties settingsCopy = SettingsDuplicator.copy(settings);
-        return (T) Blocks.register(keyOfBlock(name), (Function<BlockBehaviour.Properties, Block>) blockFactory, settingsCopy);
+        assert cache != null;
+        if (cache.containsKey(settings)) {
+            return registerRaw(name, blockFactory, BlockBehaviour.Properties.ofFullCopy(cache.get(settings)));
+        }
+        final T block = registerRaw(name, blockFactory, settings);
+        cache.put(settings, block);
+        return block;
         #endif
     }
-    #else
-    public static Block registerWithItem(String name, BlockBehaviour.Properties settings) {
-        return registerWithItem(name, Block::new, settings);
-    }
-    public static <T extends Block> T registerWithItem(String name, Function<BlockBehaviour.Properties, T> blockFactory, BlockBehaviour.Properties settings) {
-        T block = register(name, blockFactory, settings);
-        ItemRegistry.register(name, (itemSettings) -> new BlockItem(block, itemSettings));
-        return block;
-    }
-    public static Block register(String name, BlockBehaviour.Properties settings) {
-        return register(name, Block::new, settings);
-    }
+
+    #if MC_VERSION >= 12104
     @SuppressWarnings("unchecked")
-    public static <T extends Block> T register(String name, Function<BlockBehaviour.Properties, T> blockFactory, BlockBehaviour.Properties settings) {
-        final BlockBehaviour.Properties settingsCopy = SettingsDuplicator.copy(settings);
-        return (T) Blocks.register(keyOfBlock(name), (Function<BlockBehaviour.Properties, Block>) blockFactory, settingsCopy);
+    public static <T extends Block> T registerRaw(String name, Function<BlockBehaviour.Properties, T> blockFactory, BlockBehaviour.Properties settings) {
+        return (T) Blocks.register(keyOfBlock(name), (Function<BlockBehaviour.Properties, Block>) blockFactory, settings);
     }
     #endif
+
 
 
     #if MC_VERSION >= 12104
