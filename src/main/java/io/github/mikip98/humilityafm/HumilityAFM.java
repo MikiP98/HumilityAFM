@@ -28,6 +28,7 @@ public class HumilityAFM implements ModInitializer {
 		// ------------------------------------ INITIALIZATION ------------------------------------
 		LOGGER.info(MOD_NAME + " is initializing! {}", getRandomFunSymbol());
 		if (Math.random() < 0.05) printPumpkin();
+
 		// Ensure correct loading order of the first crucial static classes
 		// Those 3 have to be loaded in this order before anything else
 		ConfigJSON.loadConfigFromFile();  // Load the config file
