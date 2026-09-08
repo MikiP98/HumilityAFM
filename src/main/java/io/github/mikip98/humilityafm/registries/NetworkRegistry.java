@@ -4,21 +4,13 @@ import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-#if MC_VERSION < 260000
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-#endif
-#if MC_VERSION >= 12006
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-#endif
+#if MC_VERSION < 12006 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs; #endif
+#if MC_VERSION >= 12006 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry; #endif
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.network.FriendlyByteBuf;
-#if MC_VERSION >= 12006
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
-#else
-import net.minecraft.resources.ResourceLocation;
-#endif
+#if MC_VERSION >= 12006 import net.minecraft.network.codec.StreamCodec; #endif
+#if MC_VERSION >= 12006 import net.minecraft.network.protocol.common.custom.CustomPacketPayload; #endif
+#if MC_VERSION < 12006 import net.minecraft.resources.ResourceLocation; #endif
 
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
 
@@ -29,7 +21,7 @@ public class NetworkRegistry {
                 .register(ConfigSyncPayload.TYPE, ConfigSyncPayload.CODEC);
     }
     #else
-    public static final #if MC_VERSION < 260000 ResourceLocation #else Identifier #endif CONFIG_SYNC = getId("config_sync");
+    public static final ResourceLocation CONFIG_SYNC = getId("config_sync");
     #endif
 
     @Environment(EnvType.SERVER)
