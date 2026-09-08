@@ -11,28 +11,27 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 #endif
 #if MC_VERSION >= 12105
-import net.minecraft.client.renderer.SubmitNodeCollector;
+#if MC_VERSION >= 12111 import net.minecraft.client.renderer.SubmitNodeCollector; #endif
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 #endif
-#if MC_VERSION >= 12111 && MC_VERSION < 260000
+#if  MC_VERSION < 260000
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 #elif MC_VERSION >= 260000
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 #endif
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+#if MC_VERSION >= 260000 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart; #endif
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 #if MC_VERSION >= 12111
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 #else
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 #endif
-import net.minecraft.client.resources.model.geometry.BakedQuad;
-import net.minecraft.core.Direction;
-import net.minecraft.util.RandomSource;
+#if MC_VERSION >= 260000 import net.minecraft.client.resources.model.geometry.BakedQuad; #endif
+#if MC_VERSION >= 260000 import net.minecraft.core.Direction; #endif
+#if MC_VERSION >= 260000 import net.minecraft.util.RandomSource; #endif
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Half;
@@ -118,7 +117,8 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
         if (level == null) return;
 
         final BlockState blockState = level.getBlockState(pos);
-        final BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
+//        final BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
+        final BlockStateModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
         renderBrighteningInternal(blockState, poseStack, bufferSource, packedOverlay, model);
     }
     #else
@@ -130,7 +130,14 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
         renderBrighteningInternal(blockState, poseStack, #if MC_VERSION < 260200 bufferSource,#endif packedOverlay, state.model);
     }
     #endif
-    protected static void renderBrighteningInternal(BlockState blockState, PoseStack poseStack, #if MC_VERSION < 260200 MultiBufferSource bufferSource,#endif int packedOverlay, #if MC_VERSION < 260000 BakedModel #else BlockStateModel #endif model) {
+    protected static void renderBrighteningInternal(
+            BlockState blockState,
+            PoseStack poseStack,
+            #if MC_VERSION < 260200 MultiBufferSource bufferSource,#endif
+            int packedOverlay,
+//            #if MC_VERSION < 260000 BakedModel #else BlockStateModel #endif model
+            BlockStateModel model
+    ) {
         if (blockState == null || !(blockState.getBlock() instanceof LightStripBlock)) return;
 
         poseStack.pushPose();
@@ -304,7 +311,8 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
 //        });
         ModelBlockRenderer.renderModel(
                 poseStack.last(),
-                bufferSource.getBuffer(RenderTypes.solidMovingBlock()),
+//                bufferSource.getBuffer(RenderTypes.solidMovingBlock()),
+                bufferSource.getBuffer(RenderType.solid()),
                 model,
                 1.0f, 1.0f, 1.0f,
                 0xF000F0,
