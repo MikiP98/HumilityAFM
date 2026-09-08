@@ -3,7 +3,6 @@ package io.github.mikip98.humilityafm.datagen;
 #if MC_VERSION >= 12105
 import com.mojang.math.Quadrant;
 #endif
-import io.github.mikip98.humilityafm.HumilityAFM;
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
@@ -46,7 +45,6 @@ import net.minecraft.client.renderer.block.dispatch.VariantMutator;
 import net.minecraft.client.renderer.block.dispatch.multipart.Condition;
 #endif
 #endif
-import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 #if MC_VERSION < 12104
 import net.minecraft.data.models.BlockModelGenerators;
