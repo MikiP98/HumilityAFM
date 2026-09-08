@@ -55,6 +55,8 @@ repositories {
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
 
+	// Humility VAL
+	mavenLocal()
 	// cloth-config
 	maven { url "https://maven.shedaniel.me/" }
 	// Mod Menu
@@ -117,13 +119,7 @@ dependencies {
 	add(implementationConfig, "net.fabricmc:fabric-loader:${project.loader_version}")
 	add(implementationConfig, "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
 
-	def localVersion = "${project.humility_val_version}+${project.minecraft_version}"
-	def localM2Path = file("${System.getProperty('user.home')}/.m2/repository/io/mikip98/humilityval/humility-val/${localVersion}/humility-val-${localVersion}.jar")
-	if (localM2Path.exists()) {
-		add(implementationConfig, "io.mikip98.humilityval:humility-val:${localVersion}")
-	} else {
-		add(implementationConfig, "maven.modrinth:humilityval:${localVersion}")
-	}
+	add(implementationConfig, "io.mikip98.humilityval:humility-val:${project.humility_val_version}+${project.minecraft_version}")
 
 	add(apiConfig, "me.shedaniel.cloth:cloth-config-fabric:${project.config2_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
