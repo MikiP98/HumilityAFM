@@ -22,9 +22,12 @@ if (versionPropsFile.exists()) {
 	throw new GradleException("Could not find property file for MC version: ${activeVersion}")
 }
 
+manifold {
+	manifoldVersion = project.manifold_version
+}
 
 def activeMcVersionNum = project.mc_version_number.toInteger()
-
+def isPolymer = project.hasProperty('polymer') && project.polymer == 'true'
 
 // Apply the correct Loom variant
 if (activeMcVersionNum < 260000) {
@@ -33,19 +36,21 @@ if (activeMcVersionNum < 260000) {
 	apply plugin: 'net.fabricmc.fabric-loom'
 }
 
+def baseArchivesName = project.archives_base_name
+if (isPolymer) {
+	baseArchivesName += "-polymer"
+}
+
 version = "${project.mod_version}+${project.minecraft_version}"
 group = project.maven_group
 
-manifold {
-	manifoldVersion = project.manifold_version
-}
-
 // Auto-generate build.properties so the Manifold IDE plugin and compiler stay in sync
-file("build.properties").text = "MC_VERSION=${project.ext.mc_version_number}\n"
+def buildPropsContent = "MC_VERSION=${project.ext.mc_version_number}\n"
+if (isPolymer) buildPropsContent += "POLYMER=true\n"
+file("build.properties").text = buildPropsContent
 
-// TODO: Why is this here?
 base {
-	archivesName = project.archives_base_name
+	archivesName = baseArchivesName
 }
 
 repositories {
@@ -61,6 +66,9 @@ repositories {
 	maven { url "https://maven.shedaniel.me/" }
 	// Mod Menu
 	maven { url "https://maven.terraformersmc.com/releases/" }
+
+	// Polymer
+	if (isPolymer) maven { url 'https://maven.nucleoid.xyz' }
 }
 
 loom {
@@ -125,6 +133,14 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 	add(apiConfig, "com.terraformersmc:modmenu:${project.modmenu_version}")
+
+	if (isPolymer) {
+		add(implementationConfig, include("eu.pb4:polymer-core:${project.polymer_version}"))
+		add(implementationConfig, include("eu.pb4:polymer-blocks:${project.polymer_version}"))
+		add(implementationConfig, include("eu.pb4:polymer-resource-pack:${project.polymer_version}"))
+		add(implementationConfig, include("eu.pb4:polymer-virtual-entity:${project.polymer_version}"))
+		add(runtimeOnlyConfig, include("eu.pb4:polymer-autohost:${project.polymer_version}"))
+	}
 }
 
 processResources {
@@ -235,7 +251,7 @@ jar {
 publishing {
 	publications {
 		create("mavenJava", MavenPublication) {
-			artifactId = project.archives_base_name
+			artifactId = base.archivesName.get()
 			from components.java
 		}
 	}
