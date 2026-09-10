@@ -5,6 +5,7 @@ package io.github.mikip98.humilityafm.content.blockentities.cabinetBlock;
 #if POLYMER import eu.pb4.polymer.virtualentity.api.attachment.HolderAttachment; #endif
 #if POLYMER import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement; #endif
 import io.github.mikip98.humilityafm.registries.BlockEntityRegistry;
+#if POLYMER import io.github.mikip98.humilityafm.registries.ItemRegistry; #endif
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -15,6 +16,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
+#if POLYMER import net.minecraft.world.item.Item; #endif
 #if POLYMER import net.minecraft.world.item.ItemDisplayContext; #endif
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -95,6 +97,9 @@ public class CabinetBlockEntity extends BlockEntity implements ImplementedInvent
 
         this.holder.addElement(cabinetDisplay);
         this.holder.addElement(storedItemDisplay);
+
+        boolean isOpen = state.getValue(BlockStateProperties.OPEN);
+        updateVisualState(isOpen);
         #endif
     }
     public CabinetBlockEntity(BlockPos pos, BlockState state) {
@@ -223,8 +228,15 @@ public class CabinetBlockEntity extends BlockEntity implements ImplementedInvent
         }
     }
 
-    public void updateVisualState(boolean isOpen, ItemStack closedItem, ItemStack openItem) {
-        this.cabinetDisplay.setItem(isOpen ? openItem : closedItem);
+    public void updateVisualState(boolean isOpen) {
+        if (isOpen) {
+            Item openItem = ItemRegistry.OPEN_CABINET_ITEMS.get(this.getBlockState().getBlock());
+            if (openItem != null) {
+                this.cabinetDisplay.setItem(openItem.getDefaultInstance());
+            }
+        } else {
+            this.cabinetDisplay.setItem(this.getBlockState().getBlock().asItem().getDefaultInstance());
+        }
     }
     #endif
 }

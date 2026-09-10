@@ -18,9 +18,12 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 #endif
 import net.minecraft.world.item.Item;
+#if POLYMER import net.minecraft.world.level.block.Block; #endif
 #if MC_VERSION >= 12104 import net.minecraft.world.item.Items; #endif
 
 import java.util.Arrays;
+#if POLYMER import java.util.IdentityHashMap; #endif
+#if POLYMER import java.util.Map; #endif
 import java.util.function.Function;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
@@ -46,6 +49,10 @@ public class ItemRegistry {
 
     public static Item[] COLOURED_TORCH_ITEM_VARIANTS;
 
+    #if POLYMER
+    public static final Map<Block, Item> OPEN_CABINET_ITEMS = new IdentityHashMap<>();
+    #endif
+
 
     public static void register() {
         int cabinetAmount = BlockRegistry.WALL_CABINET_BLOCK_VARIANTS.length;
@@ -70,6 +77,19 @@ public class ItemRegistry {
                             settings
                     )
             );
+
+            #if POLYMER
+            Item openWall = register("open_wall_cabinet_" + material.getSafeName());
+            Item openFloor = register("open_floor_cabinet_" + material.getSafeName());
+            Item openWallIllum = register("open_wall_illuminated_cabinet_" + material.getSafeName());
+            Item openFloorIllum = register("open_floor_illuminated_cabinet_" + material.getSafeName());
+
+            OPEN_CABINET_ITEMS.put(BlockRegistry.WALL_CABINET_BLOCK_VARIANTS[i], openWall);
+            OPEN_CABINET_ITEMS.put(BlockRegistry.FLOOR_CABINET_BLOCK_VARIANTS[i], openFloor);
+            OPEN_CABINET_ITEMS.put(BlockRegistry.WALL_ILLUMINATED_CABINET_BLOCK_VARIANTS[i], openWallIllum);
+            OPEN_CABINET_ITEMS.put(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_VARIANTS[i], openFloorIllum);
+            #endif
+
             ++i;
         }
 

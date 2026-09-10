@@ -124,8 +124,21 @@ public class CabinetBlock extends PlainHorizontalFacingBlock implements Waterlog
                     cabinetBlockEntity.clearContent();
                 }
                 world.setBlockAndUpdate(pos, state.setValue(OPEN, false));
+                #if POLYMER
+                if (cabinetBlockEntity instanceof CabinetBlockEntity entity) {
+                    entity.updateVisualState(false);
+                }
+                #endif
             }
-        } else world.setBlockAndUpdate(pos, state.setValue(OPEN, true));
+        } else {
+            world.setBlockAndUpdate(pos, state.setValue(OPEN, true));
+            #if POLYMER
+            final BlockEntity blockEntity = world.getBlockEntity(pos);
+            if (blockEntity instanceof CabinetBlockEntity entity) {
+                entity.updateVisualState(true);
+            }
+            #endif
+        }
 
         playCabinetSound(world, pos, player);
         return InteractionResult.SUCCESS;
