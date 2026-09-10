@@ -34,5 +34,10 @@ public class ModConfig extends ModDefaultConfig {
     public static boolean printInChatServerClientMissmatch = defaultPrintInChatServerClientMissmatch;
 
     public static Map<SupportedMods, ModSupportState> modSupport = defaultModSupport;
+
+    #if POLYMER
+    public static boolean polymerAllowOptimisedMosaicsAndTiles = defaultPolymerAllowOptimisedMosaicsAndTiles;
+    public static boolean polymerAllowOptimisedJackOLanterns = defaultPolymerAllowOptimisedJackOLanterns;
+    #endif
 }
 

@@ -138,6 +138,29 @@ public class ModConfigScreen {
             );
         }
 
+        #if POLYMER
+        modSupportCategory.addEntry(ConfigEntryBuilder.create()
+                .startBooleanToggle(
+                        Component.literal("Polymer Allow Optimised Mosaics & Tiles"),
+                        ModConfig.polymerAllowOptimisedMosaicsAndTiles
+                )
+                .setDefaultValue(ModConfig.defaultPolymerAllowOptimisedMosaicsAndTiles)
+                .setTooltip(Component.literal("")) // TODO
+                .setSaveConsumer(value -> ModConfig.polymerAllowOptimisedMosaicsAndTiles = value)
+                .build()
+        );
+        modSupportCategory.addEntry(ConfigEntryBuilder.create()
+                .startBooleanToggle(
+                        Component.literal("Polymer Allow Optimised Jack O'Lanterns"),
+                        ModConfig.polymerAllowOptimisedJackOLanterns
+                )
+                .setDefaultValue(ModConfig.defaultPolymerAllowOptimisedJackOLanterns)
+                .setTooltip(Component.literal("")) // TODO
+                .setSaveConsumer(value -> ModConfig.polymerAllowOptimisedJackOLanterns = value)
+                .build()
+        );
+        #endif
+
         ConfigCategory customizationCategory = builder.getOrCreateCategory(Component.literal("Blocks Customization"));
 
         customizationCategory.addEntry(ConfigEntryBuilder.create()

@@ -33,4 +33,9 @@ public class ModDefaultConfig {
     public static final Map<SupportedMods, ModSupportState> defaultModSupport = Arrays.stream(SupportedMods.values()).map(
             mod -> Map.entry(mod, ModSupportState.AUTO)
     ).collect(HashMap::new, (map, entry) -> map.put(entry.getKey(), entry.getValue()), HashMap::putAll);
+
+    #if POLYMER
+    public static boolean defaultPolymerAllowOptimisedMosaicsAndTiles = true;
+    public static boolean defaultPolymerAllowOptimisedJackOLanterns = true;
+    #endif
 }
