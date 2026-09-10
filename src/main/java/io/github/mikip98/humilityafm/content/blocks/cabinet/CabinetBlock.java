@@ -1,8 +1,7 @@
 package io.github.mikip98.humilityafm.content.blocks.cabinet;
 
-#if MC_VERSION >= 12004
-import com.mojang.serialization.MapCodec;
-#endif
+#if MC_VERSION >= 12004 import com.mojang.serialization.MapCodec; #endif
+#if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.ImplementedInventory;
 import io.github.mikip98.humilityafm.content.blocks.Waterloggable;
 import io.github.mikip98.humilityafm.content.blocks.templates.PlainHorizontalFacingBlock;
@@ -19,6 +18,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+#if POLYMER import net.minecraft.world.level.block.Blocks; #endif
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -36,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
-public class CabinetBlock extends PlainHorizontalFacingBlock implements Waterloggable, EntityBlock {
+public class CabinetBlock extends PlainHorizontalFacingBlock implements Waterloggable, EntityBlock #if POLYMER, PolymerBlock #endif {
     protected static final VoxelShape voxelShapeOpenNorth = Block.box(1, 1, 13.00032, 15, 15, 16);  //open, reverse original
     protected static final VoxelShape voxelShapeOpenSouth = Block.box(1, 1, 0, 15, 15, 2.99968);  //open, original
     protected static final VoxelShape voxelShapeOpenEast = Block.box(0, 1, 1, 2.99968, 15, 15);  //open, swap z <-> x
@@ -109,22 +109,18 @@ public class CabinetBlock extends PlainHorizontalFacingBlock implements Waterlog
             final boolean playerHoldsItem = !playerItemStack.isEmpty();
             if (playerHoldsItem) {
                 if (playerItemStack.getItem() != oldCabinetItemStack.getItem()) {
-                    // Take from the player the new ItemStack to insert into the Cabinet
                     ItemStack newCabinetItemStack = playerItemStack.split(1);
 
-                    // If the Cabinet already holds an item, give it to the player
-                    if (!oldCabinetItemStack.isEmpty())
+                    if (!oldCabinetItemStack.isEmpty()) {
                         player.getInventory().placeItemBackInInventory(oldCabinetItemStack);
+                    }
 
-                    // Put the new ItemStack inside the Cabinet
                     cabinetBlockEntity.setItem(0, newCabinetItemStack);
                 }
                 else return InteractionResult.FAIL;
             } else {
                 if (player.isShiftKeyDown()) {
-                    // Give the player the stack from the Cabinet inventory
                     player.getInventory().placeItemBackInInventory(oldCabinetItemStack);
-                    // Remove the stack from Cabinet the inventory
                     cabinetBlockEntity.clearContent();
                 }
                 world.setBlockAndUpdate(pos, state.setValue(OPEN, false));
@@ -196,4 +192,16 @@ public class CabinetBlock extends PlainHorizontalFacingBlock implements Waterlog
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new CabinetBlockEntity(pos, state);
     }
+
+    #if POLYMER
+    @Override
+    public Block getPolymerBlock(BlockState state) {
+        return Blocks.BARRIER;
+    }
+
+    @Override
+    public BlockState getPolymerBlockState(BlockState state) {
+        return Blocks.BARRIER.defaultBlockState();
+    }
+    #endif
 }

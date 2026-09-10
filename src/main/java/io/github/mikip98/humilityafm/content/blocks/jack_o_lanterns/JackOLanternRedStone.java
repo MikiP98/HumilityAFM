@@ -1,16 +1,22 @@
 package io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns;
 
+import io.github.mikip98.humilityafm.registries.Polymer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import static io.github.mikip98.humilityafm.HumilityAFM.LOGGER;
 #if MC_VERSION >= 12104
 import org.jetbrains.annotations.Nullable;
 #endif
@@ -70,4 +76,29 @@ public class JackOLanternRedStone extends JackOLantern {
             level.setBlock(pos, state.cycle(LIT), 2);
         }
     }
+
+    #if POLYMER
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (state.is(newState.getBlock()) && state.getValue(LIT) && !newState.getValue(LIT)) {
+            level.removeBlockEntity(pos);
+        }
+        super.onRemove(state, level, pos, newState, isMoving);
+    }
+    @Override
+    public Block getPolymerBlock(BlockState state) {
+        return state.getValue(LIT) ? super.getPolymerBlock(state) : Blocks.CARVED_PUMPKIN;
+    }
+    @Override
+    public BlockState getPolymerBlockState(BlockState state) {
+        return state.getValue(LIT) ? super.getPolymerBlockState(state) : getPolymerBlock(state).defaultBlockState()
+                .setValue(BlockStateProperties.HORIZONTAL_FACING, state.getValue(FACING));
+    }
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return state.getValue(LIT) ? super.newBlockEntity(pos, state) : null;
+    }
+    #endif
 }

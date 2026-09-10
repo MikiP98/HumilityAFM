@@ -1,13 +1,11 @@
 package io.github.mikip98.humilityafm.content.blocks;
 
+#if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
 import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Half;
@@ -19,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public class LightStripBlock extends StairBlock implements EntityBlock {
+public class LightStripBlock extends StairBlock implements EntityBlock #if POLYMER, PolymerBlock #endif {
     // Straight
     protected static final VoxelShape voxelShapeBottomStraightNorth;
     protected static final VoxelShape voxelShapeBottomStraightSouth;
@@ -217,4 +215,19 @@ public class LightStripBlock extends StairBlock implements EntityBlock {
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new LightStripBlockEntity(pos, state);
     }
+
+    #if POLYMER
+    @Override
+    public Block getPolymerBlock(BlockState state) {
+        return Blocks.SMOOTH_QUARTZ_STAIRS;
+    }
+
+    @Override
+    public BlockState getPolymerBlockState(BlockState state) {
+        return getPolymerBlock(state).defaultBlockState()
+                .setValue(StairBlock.FACING, state.getValue(FACING))
+                .setValue(StairBlock.HALF, state.getValue(HALF))
+                .setValue(StairBlock.SHAPE, state.getValue(SHAPE));
+    }
+    #endif
 }

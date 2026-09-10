@@ -1,5 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.coloured_torch;
 
+#if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
 import io.github.mikip98.humilityafm.util.SoundUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -9,6 +10,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+#if POLYMER import net.minecraft.world.level.block.Blocks; #endif
 import net.minecraft.world.level.block.WallTorchBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -17,7 +19,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
-public class ColouredWallTorch extends WallTorchBlock {
+public class ColouredWallTorch extends WallTorchBlock #if POLYMER implements PolymerBlock #endif {
     public static final IntegerProperty POWER = BlockStateProperties.POWER;
 
     public static final Properties defaultSettings = ColouredTorch.defaultSettings;
@@ -56,7 +58,7 @@ public class ColouredWallTorch extends WallTorchBlock {
     }
     #endif
 
-    protected boolean onUseLogicInternal(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand) {
+    protected static boolean onUseLogicInternal(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand) {
         final int currentPower = state.getValue(POWER);
         if (player.isShiftKeyDown() && player.getItemInHand(hand).isEmpty() && currentPower > 3) {
             SoundUtils.playSoundAtBlockCenter(level, player, pos, SoundEvents.CANDLE_EXTINGUISH, 1.2f, 0.75f);
@@ -65,4 +67,17 @@ public class ColouredWallTorch extends WallTorchBlock {
         }
         return false;
     }
+
+    #if POLYMER
+    @Override
+    public Block getPolymerBlock(BlockState state) {
+        return Blocks.WALL_TORCH;
+    }
+
+    @Override
+    public BlockState getPolymerBlockState(BlockState state) {
+        return getPolymerBlock(state).defaultBlockState()
+                .setValue(WallTorchBlock.FACING, state.getValue(FACING));
+    }
+    #endif
 }

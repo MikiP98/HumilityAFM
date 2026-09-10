@@ -1,8 +1,7 @@
 package io.github.mikip98.humilityafm.content.blocks.templates;
 
-#if MC_VERSION >= 12004
-import com.mojang.serialization.MapCodec;
-#endif
+#if MC_VERSION >= 12004 import com.mojang.serialization.MapCodec; #endif
+#if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
@@ -11,7 +10,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import org.jetbrains.annotations.NotNull;
 
-public class PlainHorizontalFacingBlock extends HorizontalDirectionalBlock {
+public abstract class PlainHorizontalFacingBlock extends HorizontalDirectionalBlock #if POLYMER implements PolymerBlock #endif {
     #if MC_VERSION >= 12004
     protected static final MapCodec<PlainHorizontalFacingBlock> CODEC = simpleCodec(PlainHorizontalFacingBlock::new);
 

@@ -1,5 +1,6 @@
 package io.github.mikip98.humilityafm;
 
+#if POLYMER import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils; #endif
 import io.github.mikip98.humilityafm.config.ConfigJSON;
 import io.github.mikip98.humilityafm.registries.*;
 import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
@@ -34,6 +35,12 @@ public class HumilityAFM implements ModInitializer {
 		ConfigJSON.loadConfigFromFile();  // Load the config file
 		ModSupportManager.init();  // Check for supported mods (if datagen mode is enabled, all will be marked as preset)
 		ActiveGenerationData.init();  // Initialize active generation data according to which of the supported mods are loaded
+
+		#if POLYMER
+		Polymer.init();
+		PolymerResourcePackUtils.addModAssets(MOD_ID);
+		PolymerResourcePackUtils.markAsRequired();
+		#endif
 
 
 		// ------------------------------------ REGISTRATION --------------------------------------
@@ -74,6 +81,14 @@ public class HumilityAFM implements ModInitializer {
 	 */
 	public static #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif getVMId(@Nullable SupportedMods mod, String name) {
 		return getId(mod != null ? mod.modId : "minecraft", name);
+	}
+
+	public static #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif getIdRaw(String path) {
+		#if MC_VERSION < 12111
+		return new ResourceLocation(path);
+		#else
+		return Identifier.of(path);
+		#endif
 	}
 
 	protected static #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif getId(String namespace, String name) {

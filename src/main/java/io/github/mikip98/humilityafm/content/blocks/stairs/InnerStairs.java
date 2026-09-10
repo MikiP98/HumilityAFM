@@ -3,8 +3,10 @@ package io.github.mikip98.humilityafm.content.blocks.stairs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
+#if POLYMER import net.minecraft.world.level.block.StairBlock; #endif
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Half;
+#if POLYMER import net.minecraft.world.level.block.state.properties.StairsShape; #endif
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -90,4 +92,12 @@ public class InnerStairs extends OuterStairs {
         }
         throw new IllegalStateException("It's not possible to get here...");
     }
+
+    #if POLYMER
+    @Override
+    public BlockState getPolymerBlockState(BlockState state) {
+        return super.getPolymerBlockState(state)
+                .setValue(StairBlock.SHAPE, StairsShape.INNER_LEFT);
+    }
+    #endif
 }

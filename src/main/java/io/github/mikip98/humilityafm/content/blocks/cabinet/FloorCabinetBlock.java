@@ -55,4 +55,14 @@ public class FloorCabinetBlock extends CabinetBlock implements EntityBlock {
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new FloorCabinetBlockEntity(pos, state);
     }
+
+//    #if POLYMER
+//    @Override
+//    public BlockState getPolymerBlockState(BlockState state) {
+//        return getPolymerBlock(state).defaultBlockState()
+//                .setValue(BlockStateProperties.HALF, state.getValue(HALF))
+//                .setValue(BlockStateProperties.WATERLOGGED, state.getValue(WATERLOGGED))
+//                .setValue(BlockStateProperties.OPEN, false); // Force being on the floor
+//    }
+//    #endif
 }

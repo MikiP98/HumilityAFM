@@ -25,6 +25,7 @@ import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
@@ -156,9 +157,13 @@ public abstract class BlockGeneration {
 
             Block block;
             if (isFirstWoodFireproof && isSecondWoodFireproof) {
-                block = registerWithItem("wooden_mosaic_" + variantName, fireproofWoodenMosaicSettings);
+                block = registerWithItem(
+                        "wooden_mosaic_" + variantName, fireproofWoodenMosaicSettings #if POLYMER, Blocks.WARPED_PLANKS #endif
+                );
             } else {
-                block = registerWithItem("wooden_mosaic_" + variantName, burnableWoodenMosaicSettings);
+                block = registerWithItem(
+                        "wooden_mosaic_" + variantName, burnableWoodenMosaicSettings #if POLYMER, Blocks.OAK_PLANKS #endif
+                );
                 if (isFirstWoodFireproof || isSecondWoodFireproof) {
                     registerFlammable(block, burn * 4, spread / 4);
                 } else {
@@ -181,7 +186,9 @@ public abstract class BlockGeneration {
         List<Block> terracottaTilesVariants = new ArrayList<>();
         for (BlockMaterial material : ActiveGenerationData.terracottaTilesMaterials) {
             terracottaTilesVariants.add(
-                    registerWithItem("terracotta_tiles_" + material.getSafeName(), terracottaTilesSettings)
+                    registerWithItem(
+                            "terracotta_tiles_" + material.getSafeName(), terracottaTilesSettings #if POLYMER, Blocks.TERRACOTTA #endif
+                    )
             );
         }
         return terracottaTilesVariants.toArray(Block[]::new);

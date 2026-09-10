@@ -1,5 +1,6 @@
 package io.github.mikip98.humilityafm.registries;
 
+#if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlockUtils; #endif
 import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntity;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetBlockEntity;
@@ -26,6 +27,10 @@ public class BlockEntityRegistry {
     public static BlockEntityType<FloorIlluminatedCabinetBlockEntity> FLOOR_ILLUMINATED_CABINET_BLOCK_ENTITY;
     // Light strip block entity
     public static BlockEntityType<LightStripBlockEntity> LIGHT_STRIP_BLOCK_ENTITY;
+
+    #if POLYMER
+    public static BlockEntityType<Polymer.FallbackBlockEntity> FALLBACK_BLOCK_ENTITY;
+    #endif
 
     public static void register() {
         //Register cabinet block entity
@@ -61,6 +66,14 @@ public class BlockEntityRegistry {
                     BlockRegistry.LIGHT_STRIP_VARIANTS
             );
         }
+
+        #if POLYMER
+        FALLBACK_BLOCK_ENTITY = register(
+                "polymer_fallback_block_entity",
+                Polymer.FallbackBlockEntity::new,
+                concat(BlockRegistry.WOODEN_MOSAIC_VARIANTS, BlockRegistry.TERRACOTTA_TILE_VARIANTS)
+        );
+        #endif
     }
 
     protected static Block[] concat(Block block, Block... blocks) {
@@ -69,15 +82,23 @@ public class BlockEntityRegistry {
                 Arrays.stream(blocks)
         ).toArray(Block[]::new);
     }
+    protected static Block[] concat(Block[] blocks1, Block... blocks2) {
+        return Stream.concat(
+                Arrays.stream(blocks1),
+                Arrays.stream(blocks2)
+        ).toArray(Block[]::new);
+    }
 
     protected static <T extends BlockEntity> BlockEntityType<T> register(
             String name,
             FabricBlockEntityTypeBuilder.Factory<? extends T> entityFactory,
             Block... blocks
     ) {
-        return Registry.register(
+        final BlockEntityType<T> type = Registry.register(
                 BuiltInRegistries.BLOCK_ENTITY_TYPE, getId(name),
                 FabricBlockEntityTypeBuilder.<T>create(entityFactory, blocks).build()
         );
+        #if POLYMER PolymerBlockUtils.registerBlockEntity(type); #endif
+        return type;
     }
 }

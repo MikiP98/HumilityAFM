@@ -1,23 +1,21 @@
 package io.github.mikip98.humilityafm.content.blocks.candlestick;
 
+#if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
 import io.github.mikip98.humilityafm.content.blocks.Waterloggable;
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.SimpleCandlestickLogic;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
 import net.minecraft.core.BlockPos;
-#if MC_VERSION >= 12105
-import net.minecraft.server.level.ServerLevel;
-#endif
+#if MC_VERSION >= 12105 import net.minecraft.server.level.ServerLevel; #endif
 import net.minecraft.util.RandomSource;
-#if MC_VERSION < 12006
-import net.minecraft.world.InteractionHand;
-#endif
+#if MC_VERSION < 12006 import net.minecraft.world.InteractionHand; #endif
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+#if POLYMER import net.minecraft.world.level.block.Blocks; #endif
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -30,7 +28,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-public class FloorCandlestick extends Block implements SimpleCandlestickLogic, Waterloggable {
+public class FloorCandlestick extends Block implements SimpleCandlestickLogic, Waterloggable #if POLYMER, PolymerBlock #endif {
     protected static final VoxelShape voxelShape = Block.box(6, 0, 6, 10, 6, 10);
     protected static final VoxelShape voxelShapeCandle = Block.box(6, 0, 6, 10, 10, 10);
 
@@ -110,4 +108,18 @@ public class FloorCandlestick extends Block implements SimpleCandlestickLogic, W
     public @NotNull FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : Fluids.EMPTY.defaultFluidState();
     }
+
+    #if POLYMER
+    @Override
+    public Block getPolymerBlock(BlockState state) {
+        return Blocks.CANDLE;
+    }
+
+    @Override
+    public BlockState getPolymerBlockState(BlockState state) {
+        return getPolymerBlock(state).defaultBlockState()
+                .setValue(BlockStateProperties.WATERLOGGED, state.getValue(WATERLOGGED))
+                .setValue(BlockStateProperties.LIT, state.getValue(LIT));
+    }
+#endif
 }

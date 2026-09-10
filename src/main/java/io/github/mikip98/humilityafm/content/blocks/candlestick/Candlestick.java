@@ -1,8 +1,7 @@
 package io.github.mikip98.humilityafm.content.blocks.candlestick;
 
-#if MC_VERSION >= 12004
-import com.mojang.serialization.MapCodec;
-#endif
+#if MC_VERSION >= 12004 import com.mojang.serialization.MapCodec; #endif
+#if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
 import io.github.mikip98.humilityafm.content.blocks.Waterloggable;
 import io.github.mikip98.humilityafm.content.blocks.templates.PlainHorizontalFacingBlock;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.SimpleCandlestickLogic;
@@ -10,19 +9,16 @@ import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-#if MC_VERSION >= 12105
-import net.minecraft.server.level.ServerLevel;
-#endif
+#if MC_VERSION >= 12105 import net.minecraft.server.level.ServerLevel; #endif
 import net.minecraft.util.RandomSource;
-#if MC_VERSION < 12006
-import net.minecraft.world.InteractionHand;
-#endif
+#if MC_VERSION < 12006 import net.minecraft.world.InteractionHand; #endif
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+#if POLYMER import net.minecraft.world.level.block.Blocks; #endif
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -39,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
-public class Candlestick extends PlainHorizontalFacingBlock implements SimpleCandlestickLogic, Waterloggable {
+public class Candlestick extends PlainHorizontalFacingBlock implements SimpleCandlestickLogic, Waterloggable #if POLYMER, PolymerBlock #endif {
     public static final Supplier<Properties> defaultSettingsSupplier = () -> Properties.of()
             .strength(0.5f)
             .requiresCorrectToolForDrops()
@@ -239,4 +235,17 @@ public class Candlestick extends PlainHorizontalFacingBlock implements SimpleCan
     public @NotNull FluidState getFluidState(BlockState state) {
         return state.getValue(BlockStateProperties.WATERLOGGED) ? Fluids.WATER.getSource(false) : Fluids.EMPTY.defaultFluidState();
     }
+
+    #if POLYMER
+    @Override
+    public Block getPolymerBlock(BlockState state) {
+        return Blocks.WALL_TORCH;
+    }
+
+    @Override
+    public BlockState getPolymerBlockState(BlockState state) {
+        return getPolymerBlock(state).defaultBlockState()
+                .setValue(BlockStateProperties.HORIZONTAL_FACING, state.getValue(FACING));
+    }
+    #endif
 }

@@ -1,8 +1,7 @@
 package io.github.mikip98.humilityafm.content.blocks.stairs;
 
-#if MC_VERSION >= 12004
-import com.mojang.serialization.MapCodec;
-#endif
+#if MC_VERSION >= 12004 import com.mojang.serialization.MapCodec; #endif
+#if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
 import io.github.mikip98.humilityafm.content.blocks.Waterloggable;
 import io.github.mikip98.humilityafm.content.blocks.templates.PlainHorizontalFacingBlock;
 import net.minecraft.core.BlockPos;
@@ -10,12 +9,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
+#if POLYMER import net.minecraft.world.level.block.Blocks; #endif
+#if POLYMER import net.minecraft.world.level.block.StairBlock; #endif
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.block.state.properties.Half;
+import net.minecraft.world.level.block.state.properties.*;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -25,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public class OuterStairs extends PlainHorizontalFacingBlock implements Waterloggable {
+public class OuterStairs extends PlainHorizontalFacingBlock implements Waterloggable #if POLYMER, PolymerBlock #endif {
     protected static final VoxelShape voxelShapeBottomNorth;
     protected static final VoxelShape voxelShapeBottomSouth;
     protected static final VoxelShape voxelShapeBottomEast;
@@ -129,4 +127,20 @@ public class OuterStairs extends PlainHorizontalFacingBlock implements Waterlogg
         }
         throw new IllegalStateException("It's not possible to get here...");
     }
+
+    #if POLYMER
+    @Override
+    public Block getPolymerBlock(BlockState state) {
+        return Blocks.OAK_STAIRS;
+    }
+
+    @Override
+    public BlockState getPolymerBlockState(BlockState state) {
+        return getPolymerBlock(state).defaultBlockState()
+                .setValue(StairBlock.FACING, state.getValue(FACING))
+                .setValue(StairBlock.HALF, state.getValue(HALF))
+                .setValue(StairBlock.WATERLOGGED, state.getValue(WATERLOGGED))
+                .setValue(StairBlock.SHAPE, StairsShape.OUTER_LEFT);
+    }
+    #endif
 }

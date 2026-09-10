@@ -17,11 +17,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 #endif
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-#if MC_VERSION >= 12104
-import net.minecraft.world.item.Items;
-#endif
+#if MC_VERSION >= 12104 import net.minecraft.world.item.Items; #endif
 
 import java.util.Arrays;
 import java.util.function.Function;
@@ -136,19 +133,23 @@ public class ItemRegistry {
 
 
     public static Item register(String name) {
-        return register(name, Item::new);
+        return register(name, #if POLYMER Polymer.PolymerItemImpl::new #else Item::new #endif);
     }
     public static Item register(String name, Function<Item.Properties, Item> factory) {
         return register(name, factory, new Item.Properties());
     }
     #if MC_VERSION < 12104
     public static Item register(String name, Function<Item.Properties, Item> factory, Item.Properties settings) {
-        return Registry.register(BuiltInRegistries.ITEM, getId(name), factory.apply(settings));
+        final Item item = Registry.register(BuiltInRegistries.ITEM, getId(name), factory.apply(settings));
+        #if POLYMER Polymer.requestPolymerModel(item, name); #endif
+        return item;
     }
     #else
     public static Item register(String name, Function<Item.Properties, Item> factory, Item.Properties settings) {
         final ResourceKey<Item> registryKey = ResourceKey.create(Registries.ITEM, getId(name));
-        return #if MC_VERSION < 260000 Items. #endif registerItem(registryKey, factory, settings);
+        final Item item = #if MC_VERSION < 260000 Items. #endif registerItem(registryKey, factory, settings);
+        #if POLYMER Polymer.requestPolymerModel(item, name); #endif
+        return item;
     }
     #endif
     #if MC_VERSION > 260000
