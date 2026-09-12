@@ -11,5 +11,6 @@ Due to Polymer's mod limitation, this is quite a compromised experience compared
 - Incorrect hitboxes
 - Lower server and rendering performance
 - Missing or changed sounds
+- Buggy interactions
 
 Plus the downsides that come with using Polymer itself, that is VERY HIGH CHANCE OF WORLD CORRUPTION.
