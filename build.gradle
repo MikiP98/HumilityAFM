@@ -170,6 +170,7 @@ processResources {
 	def recipeDirName = (activeMcVersionNum >= 12100) ? "recipe" : "recipes"
 
 	exclude "data/${modId}/${recipeDirName}/datapack"
+	if (!isPolymer) exclude "assets/${modId}/models/block/empty.json"
 
 	from("src/main/generated/${activeVersion}/data/${modId}/${recipeDirName}/datapack") {
 		into "resourcepacks/alternate_wooden_mosaic_recipies/data/${modId}/${recipeDirName}"
