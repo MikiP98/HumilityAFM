@@ -1,6 +1,7 @@
 package io.github.mikip98.humilityafm.content.blocks.cabinet;
 
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorCabinetBlockEntity;
+#if POLYMER import io.github.mikip98.humilityafm.registries.Polymer; #endif
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -56,13 +57,10 @@ public class FloorCabinetBlock extends CabinetBlock implements EntityBlock {
         return new FloorCabinetBlockEntity(pos, state);
     }
 
-//    #if POLYMER
-//    @Override
-//    public BlockState getPolymerBlockState(BlockState state) {
-//        return getPolymerBlock(state).defaultBlockState()
-//                .setValue(BlockStateProperties.HALF, state.getValue(HALF))
-//                .setValue(BlockStateProperties.WATERLOGGED, state.getValue(WATERLOGGED))
-//                .setValue(BlockStateProperties.OPEN, false); // Force being on the floor
-//    }
-//    #endif
+    #if POLYMER
+    @Override
+    public BlockState getPolymerBlockState(BlockState state) {
+        return state.getValue(HALF) == Half.BOTTOM ? Polymer.CABINET_BOTTOM_DISGUISE : Polymer.CABINET_TOP_DISGUISE;
+    }
+    #endif
 }

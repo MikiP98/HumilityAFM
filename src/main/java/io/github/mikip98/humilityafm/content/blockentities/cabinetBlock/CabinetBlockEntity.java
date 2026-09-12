@@ -1,11 +1,12 @@
 package io.github.mikip98.humilityafm.content.blockentities.cabinetBlock;
 
+#if POLYMER import eu.pb4.polymer.resourcepack.api.PolymerModelData; #endif
 #if POLYMER import eu.pb4.polymer.virtualentity.api.ElementHolder; #endif
 #if POLYMER import eu.pb4.polymer.virtualentity.api.attachment.ChunkAttachment; #endif
 #if POLYMER import eu.pb4.polymer.virtualentity.api.attachment.HolderAttachment; #endif
 #if POLYMER import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement; #endif
 import io.github.mikip98.humilityafm.registries.BlockEntityRegistry;
-#if POLYMER import io.github.mikip98.humilityafm.registries.ItemRegistry; #endif
+#if POLYMER import io.github.mikip98.humilityafm.registries.Polymer; #endif
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -16,9 +17,9 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
-#if POLYMER import net.minecraft.world.item.Item; #endif
 #if POLYMER import net.minecraft.world.item.ItemDisplayContext; #endif
 import net.minecraft.world.item.ItemStack;
+#if POLYMER import net.minecraft.world.item.Items; #endif
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -34,13 +35,13 @@ import org.jetbrains.annotations.Nullable;
 #if POLYMER import org.joml.Vector3f; #endif
 
 public class CabinetBlockEntity extends BlockEntity implements ImplementedInventory, WorldlyContainer {
-    private final NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
+    protected final NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
 
     #if POLYMER
-    private final ElementHolder holder = new ElementHolder();
-    private HolderAttachment attachment;
-    private final ItemDisplayElement cabinetDisplay = new ItemDisplayElement();
-    private final ItemDisplayElement storedItemDisplay = new ItemDisplayElement();
+    protected final ElementHolder holder = new ElementHolder();
+    protected HolderAttachment attachment;
+    protected final ItemDisplayElement cabinetDisplay = new ItemDisplayElement();
+    protected final ItemDisplayElement storedItemDisplay = new ItemDisplayElement();
     #endif
 
     public CabinetBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -54,46 +55,10 @@ public class CabinetBlockEntity extends BlockEntity implements ImplementedInvent
         storedItemDisplay.setModelTransformation(ItemDisplayContext.FIXED);
         storedItemDisplay.setScale(new Vector3f(0.59375f));
 
-        if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-            net.minecraft.core.Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
-            float angle = 0f;
+        cabinetDisplay.setLeftRotation(getCabinetRotation(state));
+        storedItemDisplay.setLeftRotation(getBaseRotation(state));
 
-            float pushBack = 0.4525f;
-            float itemPushBack = 0.41f;
-
-            Vector3f cabTrans = new Vector3f();
-            Vector3f itemTrans = new Vector3f();
-
-            switch (facing) {
-                case NORTH -> {
-                    angle = (float) Math.PI;
-                    cabTrans.set(0, 0, pushBack);
-                    itemTrans.set(0, 0, itemPushBack);
-                }
-                case SOUTH -> {
-                    angle = 0f;
-                    cabTrans.set(0, 0, -pushBack);
-                    itemTrans.set(0, 0, -itemPushBack);
-                }
-                case EAST -> {
-                    angle = (float) (Math.PI * 0.5);
-                    cabTrans.set(-pushBack, 0, 0);
-                    itemTrans.set(-itemPushBack, 0, 0);
-                }
-                case WEST -> {
-                    angle = (float) (Math.PI * 1.5);
-                    cabTrans.set(pushBack, 0, 0);
-                    itemTrans.set(itemPushBack, 0, 0);
-                }
-            }
-
-            Quaternionf rot = new Quaternionf().rotationY(angle);
-            cabinetDisplay.setLeftRotation(rot);
-            cabinetDisplay.setTranslation(cabTrans);
-
-            storedItemDisplay.setLeftRotation(rot);
-            storedItemDisplay.setTranslation(itemTrans);
-        }
+        applyTranslations(state, cabinetDisplay, storedItemDisplay);
 
         this.holder.addElement(cabinetDisplay);
         this.holder.addElement(storedItemDisplay);
@@ -113,7 +78,7 @@ public class CabinetBlockEntity extends BlockEntity implements ImplementedInvent
     }
 
 
-    // Required for the stored item to show up
+    // TODO: Move to AVLBlockEntity
     #if MC_VERSION < 12006
     // 1.20.0 to 1.20.4
     @Override
@@ -182,6 +147,42 @@ public class CabinetBlockEntity extends BlockEntity implements ImplementedInvent
 
 
     #if POLYMER
+    protected Quaternionf getCabinetRotation(BlockState state) {
+        Quaternionf rot = getBaseRotation(state);
+        rot.rotateZ((float) Math.PI);
+        return rot;
+    }
+    protected Quaternionf getBaseRotation(BlockState state) {
+        Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+        float angle = switch (facing) {
+            case NORTH -> (float) Math.PI;
+            case SOUTH -> 0f;
+            case EAST -> (float) (Math.PI * 0.5);
+            case WEST -> (float) (Math.PI * 1.5);
+            default -> throw new IllegalStateException();
+        };
+        return new Quaternionf().rotationY(angle);
+    }
+    protected void applyTranslations(BlockState state, ItemDisplayElement cabDisplay, ItemDisplayElement itemDisplay) {
+        Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+
+        float pushBack = 0.4525f;
+        float itemPushBack = 0.41f;
+
+        Vector3f cabTrans = new Vector3f();
+        Vector3f itemTrans = new Vector3f();
+
+        switch (facing) {
+            case NORTH -> { cabTrans.set(0, 0, pushBack); itemTrans.set(0, 0, itemPushBack); }
+            case SOUTH -> { cabTrans.set(0, 0, -pushBack); itemTrans.set(0, 0, -itemPushBack); }
+            case EAST -> { cabTrans.set(-pushBack, 0, 0); itemTrans.set(-itemPushBack, 0, 0); }
+            case WEST -> { cabTrans.set(pushBack, 0, 0); itemTrans.set(itemPushBack, 0, 0); }
+        }
+
+        cabDisplay.setTranslation(cabTrans);
+        itemDisplay.setTranslation(itemTrans);
+    }
+
     //TODO: Check if the 4 overrides below are necessary
 
     @Override
@@ -230,9 +231,17 @@ public class CabinetBlockEntity extends BlockEntity implements ImplementedInvent
 
     public void updateVisualState(boolean isOpen) {
         if (isOpen) {
-            Item openItem = ItemRegistry.OPEN_CABINET_ITEMS.get(this.getBlockState().getBlock());
-            if (openItem != null) {
-                this.cabinetDisplay.setItem(openItem.getDefaultInstance());
+            final PolymerModelData openData = Polymer.CABINET_OPEN_MODELS.get(this.getBlockState().getBlock());
+            if (openData != null) {
+                ItemStack openStack = new ItemStack(Items.GLOWSTONE_DUST);
+
+                #if MC_VERSION < 12006
+                openStack.getOrCreateTag().putInt("CustomModelData", openData.value());
+                #else
+                openStack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(openData.value()));
+                #endif
+
+                this.cabinetDisplay.setItem(openStack);
             }
         } else {
             this.cabinetDisplay.setItem(this.getBlockState().getBlock().asItem().getDefaultInstance());

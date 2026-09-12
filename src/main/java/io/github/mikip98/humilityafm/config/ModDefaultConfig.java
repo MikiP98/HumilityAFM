@@ -2,6 +2,7 @@ package io.github.mikip98.humilityafm.config;
 
 import io.github.mikip98.humilityafm.config.enums.CreativeItemGroupCategorization;
 import io.github.mikip98.humilityafm.config.enums.ModSupportState;
+import io.github.mikip98.humilityafm.config.enums.PolymerCabinetFallback;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 
 import java.util.Arrays;
@@ -37,5 +38,7 @@ public class ModDefaultConfig {
     #if POLYMER
     public static boolean defaultPolymerAllowOptimisedMosaicsAndTiles = true;
     public static boolean defaultPolymerAllowOptimisedJackOLanterns = true;
+    public static boolean defaultPolymerAllowSemiFunctionalCabinetStates = true;
+    public static PolymerCabinetFallback defaultPolymerCabinetFinalFallback = PolymerCabinetFallback.GLASS;
     #endif
 }

@@ -1,11 +1,12 @@
 package io.github.mikip98.humilityafm.content.blocks.cabinet;
 
 #if MC_VERSION >= 12004 import com.mojang.serialization.MapCodec; #endif
-#if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
+#if POLYMER import eu.pb4.polymer.blocks.api.PolymerTexturedBlock; #endif
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.ImplementedInventory;
 import io.github.mikip98.humilityafm.content.blocks.Waterloggable;
 import io.github.mikip98.humilityafm.content.blocks.templates.PlainHorizontalFacingBlock;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetBlockEntity;
+#if POLYMER import io.github.mikip98.humilityafm.registries.Polymer; #endif
 import io.github.mikip98.humilityafm.util.SoundUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,7 +19,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-#if POLYMER import net.minecraft.world.level.block.Blocks; #endif
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -36,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
-public class CabinetBlock extends PlainHorizontalFacingBlock implements Waterloggable, EntityBlock #if POLYMER, PolymerBlock #endif {
+public class CabinetBlock extends PlainHorizontalFacingBlock implements Waterloggable, EntityBlock #if POLYMER, PolymerTexturedBlock #endif {
     protected static final VoxelShape voxelShapeOpenNorth = Block.box(1, 1, 13.00032, 15, 15, 16);  //open, reverse original
     protected static final VoxelShape voxelShapeOpenSouth = Block.box(1, 1, 0, 15, 15, 2.99968);  //open, original
     protected static final VoxelShape voxelShapeOpenEast = Block.box(0, 1, 1, 2.99968, 15, 15);  //open, swap z <-> x
@@ -209,12 +209,19 @@ public class CabinetBlock extends PlainHorizontalFacingBlock implements Waterlog
     #if POLYMER
     @Override
     public Block getPolymerBlock(BlockState state) {
-        return Blocks.BARRIER;
+        return getPolymerBlockState(state).getBlock();
     }
 
     @Override
     public BlockState getPolymerBlockState(BlockState state) {
-        return Blocks.BARRIER.defaultBlockState();
+        final Direction dir = state.getValue(FACING);
+        return switch (dir) {
+            case NORTH -> Polymer.CABINET_NORTH_DISGUISE;
+            case EAST -> Polymer.CABINET_EAST_DISGUISE;
+            case SOUTH -> Polymer.CABINET_SOUTH_DISGUISE;
+            case WEST -> Polymer.CABINET_WEST_DISGUISE;
+            default -> throw new IllegalStateException();
+        };
     }
     #endif
 }

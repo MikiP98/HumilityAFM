@@ -20,6 +20,7 @@ import eu.pb4.polymer.virtualentity.api.attachment.ChunkAttachment;
 import eu.pb4.polymer.virtualentity.api.attachment.HolderAttachment;
 import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
 import io.github.mikip98.humilityafm.config.ModConfig;
+import io.github.mikip98.humilityafm.config.enums.PolymerCabinetFallback;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -27,12 +28,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.block.state.properties.*;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
@@ -41,12 +42,75 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.*;
 
 public class Polymer {
     public static final Map<Item, PolymerModelData> POLYMER_ITEM_MODEL_CACHE = new IdentityHashMap<>();
     public static final Map<BlockState, BlockState> POLYMER_BLOCK_CACHE = new IdentityHashMap<>();
+    public static final Map<Block, PolymerModelData> CABINET_OPEN_MODELS = new IdentityHashMap<>();
+
+    public static BlockState CABINET_TOP_DISGUISE = null;
+    public static BlockState CABINET_NORTH_DISGUISE = null;
+    public static BlockState CABINET_EAST_DISGUISE = null;
+    public static BlockState CABINET_SOUTH_DISGUISE = null;
+    public static BlockState CABINET_WEST_DISGUISE = null;
+    public static BlockState CABINET_BOTTOM_DISGUISE = null;
+
+    static {
+        PolymerBlockModel emptyModel = PolymerBlockModel.of(getId("block/empty"));
+
+        // TODO: For all the below use .requestEmpty() instead of .requestBlock() when available
+        final Function<BlockModelType, BlockState> remapper =
+                (type) -> PolymerBlockResourceUtils.requestBlock(type, emptyModel);
+
+        // TODO: Try BlockModelType.{dir}_TRAPDOOR first when available
+        // TODO: Try BlockModelType.{dir}_DOOR first when available
+        if (ModConfig.polymerAllowSemiFunctionalCabinetStates) {
+            if (
+                    CABINET_TOP_DISGUISE == null ||
+                    CABINET_NORTH_DISGUISE == null ||
+                    CABINET_EAST_DISGUISE == null ||
+                    CABINET_SOUTH_DISGUISE == null ||
+                    CABINET_WEST_DISGUISE == null ||
+                    CABINET_BOTTOM_DISGUISE == null
+            ) {
+                final BlockState mappedState = remapper.apply(BlockModelType.TRANSPARENT_BLOCK);
+                if (CABINET_TOP_DISGUISE == null) CABINET_TOP_DISGUISE = mappedState;
+                if (CABINET_NORTH_DISGUISE == null) CABINET_NORTH_DISGUISE = mappedState;
+                if (CABINET_EAST_DISGUISE == null) CABINET_EAST_DISGUISE = mappedState;
+                if (CABINET_SOUTH_DISGUISE == null) CABINET_SOUTH_DISGUISE = mappedState;
+                if (CABINET_WEST_DISGUISE == null) CABINET_WEST_DISGUISE = mappedState;
+                if (CABINET_BOTTOM_DISGUISE == null) CABINET_BOTTOM_DISGUISE = mappedState;
+            }
+        }
+        if (
+                ModConfig.polymerAllowSemiFunctionalCabinetStates &&
+                ModConfig.polymerCabinetFinalFallback == PolymerCabinetFallback.GLASS
+        ) {
+            final BlockState lastFallback = Blocks.GLASS.defaultBlockState();
+            if (CABINET_TOP_DISGUISE == null) CABINET_TOP_DISGUISE = lastFallback;
+            if (CABINET_NORTH_DISGUISE == null) CABINET_NORTH_DISGUISE = lastFallback;
+            if (CABINET_EAST_DISGUISE == null) CABINET_EAST_DISGUISE = lastFallback;
+            if (CABINET_SOUTH_DISGUISE == null) CABINET_SOUTH_DISGUISE = lastFallback;
+            if (CABINET_WEST_DISGUISE == null) CABINET_WEST_DISGUISE = lastFallback;
+            if (CABINET_BOTTOM_DISGUISE == null) CABINET_BOTTOM_DISGUISE = lastFallback;
+        } else {
+            final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
+            final EnumProperty<Half> HALF = BlockStateProperties.HALF;
+            final BooleanProperty OPEN = BlockStateProperties.OPEN;
+            final BlockState lastFallbackBase = Blocks.OAK_TRAPDOOR.defaultBlockState()
+                    .setValue(HALF, Half.BOTTOM)
+                    .setValue(OPEN, false);
+            if (CABINET_TOP_DISGUISE == null) CABINET_TOP_DISGUISE = lastFallbackBase.setValue(HALF, Half.TOP).setValue(OPEN, true);
+            if (CABINET_NORTH_DISGUISE == null) CABINET_NORTH_DISGUISE = lastFallbackBase.setValue(FACING, Direction.NORTH);
+            if (CABINET_EAST_DISGUISE == null) CABINET_EAST_DISGUISE = lastFallbackBase.setValue(FACING, Direction.EAST);
+            if (CABINET_SOUTH_DISGUISE == null) CABINET_SOUTH_DISGUISE = lastFallbackBase.setValue(FACING, Direction.SOUTH);
+            if (CABINET_WEST_DISGUISE == null) CABINET_WEST_DISGUISE = lastFallbackBase.setValue(FACING, Direction.WEST);
+            if (CABINET_BOTTOM_DISGUISE == null) CABINET_BOTTOM_DISGUISE = lastFallbackBase.setValue(OPEN, true);
+        }
+    }
 
 
     public static void init() {}
@@ -274,6 +338,29 @@ public class Polymer {
         public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
             return new FallbackBlockEntity(pos, state);
         }
+    }
+
+    protected static #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif getRawModelIdFromBlockstateVariant(String name, String variantString) {
+        final InputStream stream = Polymer.class.getResourceAsStream("/assets/humility-afm/blockstates/" + name + ".json");
+        if (stream != null) {
+            final JsonObject json = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
+            final JsonObject variants = json.getAsJsonObject("variants");
+            if (variants.has(variantString)) {
+                return getIdRaw(variants.getAsJsonObject(variantString).get("model").getAsString());
+            }
+        }
+        throw new IllegalStateException("Could not find variant " + variantString + " in " + name);
+    }
+
+    public static void cacheOpenCabinetModel(Block block, String name) {
+        #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif openModelId;
+        try {
+            openModelId = getRawModelIdFromBlockstateVariant(name, "facing=north,open=true");
+        } catch (IllegalStateException e) {
+            openModelId = getRawModelIdFromBlockstateVariant(name, "facing=north,half=bottom,open=true");
+        }
+        PolymerModelData data = PolymerResourcePackUtils.requestModel(Items.GLOWSTONE_DUST, openModelId);
+        CABINET_OPEN_MODELS.put(block, data);
     }
 
 

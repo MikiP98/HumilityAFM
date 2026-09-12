@@ -63,6 +63,13 @@ public abstract class BlockGeneration {
             final Block illuminatedCabinetBlock = register("wall_illuminated_cabinet_block_" + name, IlluminatedCabinetBlock::new, illuminatedSettingToUse);
             final Block floorIlluminatedCabinetBlock = register("illuminated_cabinet_block_" + name, FloorIlluminatedCabinetBlock::new, illuminatedSettingToUse);
 
+            #if POLYMER
+            Polymer.cacheOpenCabinetModel(cabinetBlock, "wall_cabinet_block_" + name);
+            Polymer.cacheOpenCabinetModel(floorCabinetBlock, "cabinet_block_" + name);
+            Polymer.cacheOpenCabinetModel(illuminatedCabinetBlock, "wall_illuminated_cabinet_block_" + name);
+            Polymer.cacheOpenCabinetModel(floorIlluminatedCabinetBlock, "illuminated_cabinet_block_" + name);
+            #endif
+
             wallCabinetVariants.add(cabinetBlock);
             floorCabinetVariants.add(floorCabinetBlock);
             wallIlluminatedCabinetVariants.add(illuminatedCabinetBlock);
