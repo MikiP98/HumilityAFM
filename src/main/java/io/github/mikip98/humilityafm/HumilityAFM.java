@@ -92,7 +92,7 @@ public class HumilityAFM implements ModInitializer {
 	}
 
 	protected static #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif getId(String namespace, String name) {
-		final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif id =  #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif .tryBuild(namespace, name);
+		final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif id = #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif .tryBuild(namespace, name);
 		if (id == null) throw new IllegalArgumentException("Broken block id: " + namespace + ":" + name);
 		return id;
 	}
