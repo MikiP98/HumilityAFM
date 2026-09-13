@@ -1,6 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.stairs;
 
-#if MC_VERSION >= 12004 import com.mojang.serialization.MapCodec; #endif
+#if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
 #if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
 import io.github.mikip98.humilityafm.content.blocks.Waterloggable;
 import io.github.mikip98.humilityafm.content.blocks.templates.PlainHorizontalFacingBlock;

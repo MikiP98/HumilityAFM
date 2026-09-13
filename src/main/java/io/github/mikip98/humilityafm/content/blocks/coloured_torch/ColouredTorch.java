@@ -1,5 +1,7 @@
 package io.github.mikip98.humilityafm.content.blocks.coloured_torch;
 
+#if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
+#if MC_VERSION >= 12003 import com.mojang.serialization.codecs.RecordCodecBuilder; #endif
 #if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
 import io.github.mikip98.humilityafm.util.SoundUtils;
 import net.minecraft.core.BlockPos;
@@ -20,6 +22,18 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
 public class ColouredTorch extends TorchBlock #if POLYMER implements PolymerBlock #endif {
+    #if MC_VERSION >= 12003
+    protected static final MapCodec<ColouredTorch> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
+            PARTICLE_OPTIONS_FIELD.forGetter((torchBlock) -> torchBlock.flameParticle),
+            propertiesCodec()
+    ).apply(instance, ColouredTorch::new));
+
+    @Override
+    public @NotNull MapCodec<? extends ColouredTorch> codec() {
+        return CODEC;
+    }
+    #endif
+
     public static final IntegerProperty POWER = BlockStateProperties.POWER;
 
     public static final Properties defaultSettings =

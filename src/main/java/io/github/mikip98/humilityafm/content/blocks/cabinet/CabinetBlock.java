@@ -1,6 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.cabinet;
 
-#if MC_VERSION >= 12004 import com.mojang.serialization.MapCodec; #endif
+#if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
 #if POLYMER import eu.pb4.polymer.blocks.api.PolymerTexturedBlock; #endif
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.ImplementedInventory;
 import io.github.mikip98.humilityafm.content.blocks.Waterloggable;
@@ -50,7 +50,7 @@ public class CabinetBlock extends PlainHorizontalFacingBlock implements Waterlog
     protected static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     protected static final BooleanProperty OPEN = BlockStateProperties.OPEN;
 
-    #if MC_VERSION >= 12004
+    #if MC_VERSION >= 12003
     protected static final MapCodec<CabinetBlock> CODEC = simpleCodec(CabinetBlock::new);
 
     @Override

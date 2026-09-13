@@ -1,5 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.cabinet;
 
+#if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorCabinetBlockEntity;
 #if POLYMER import io.github.mikip98.humilityafm.registries.Polymer; #endif
 import net.minecraft.core.BlockPos;
@@ -20,6 +21,15 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
 public class FloorCabinetBlock extends CabinetBlock implements EntityBlock {
+    #if MC_VERSION >= 12003
+    protected static final MapCodec<FloorCabinetBlock> CODEC = simpleCodec(FloorCabinetBlock::new);
+
+    @Override
+    protected @NotNull MapCodec<? extends FloorCabinetBlock> codec() {
+        return CODEC;
+    }
+    #endif
+
     protected static final VoxelShape voxelShapeOpenBottom = Block.box(1, 0, 1, 15, 3, 15);
     protected static final VoxelShape voxelShapeOpenTop = Block.box(1, 13, 1, 15, 16, 15);
     protected static final VoxelShape voxelShapeBottom = Shapes.or(voxelShapeOpenBottom, Block.box(1, 3.001, 1, 15, 4, 15));

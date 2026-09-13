@@ -1,5 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.stairs;
 
+#if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
@@ -67,6 +68,15 @@ public class InnerStairs extends OuterStairs {
         voxelShapeTopEast = topVoxelShape.get(Direction.EAST);
         voxelShapeTopWest = topVoxelShape.get(Direction.WEST);
     }
+
+    #if MC_VERSION >= 12004
+    protected static final MapCodec<InnerStairs> CODEC = simpleCodec(InnerStairs::new);
+
+    @Override
+    protected @NotNull MapCodec<? extends InnerStairs> codec() {
+        return CODEC;
+    }
+    #endif
 
     public InnerStairs(Properties settings) {
         super(settings);

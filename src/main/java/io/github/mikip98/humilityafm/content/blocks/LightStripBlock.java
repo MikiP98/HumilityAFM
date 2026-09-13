@@ -1,5 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks;
 
+#if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
 #if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
 import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -151,6 +152,13 @@ public class LightStripBlock extends StairBlock implements EntityBlock #if POLYM
                 Direction.WEST,  box(0, y, 15, 1, y + 1, 16)
         );
     }
+
+    #if MC_VERSION >= 12003
+    protected static final MapCodec<LightStripBlock> CODEC = simpleCodec(LightStripBlock::new);
+
+    @Override
+    public @NotNull MapCodec<? extends LightStripBlock> codec() { return CODEC; }
+    #endif
 
 
     public static final Properties defaultSettings = Properties.of().strength(0.5f).sound(SoundType.GLASS).lightLevel((state) -> 9);

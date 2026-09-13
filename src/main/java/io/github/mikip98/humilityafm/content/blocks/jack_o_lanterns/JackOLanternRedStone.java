@@ -1,6 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns;
 
-#if POLYMER import io.github.mikip98.humilityafm.registries.Polymer; #endif
+#if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -17,6 +17,15 @@ import org.jetbrains.annotations.NotNull;
 #if MC_VERSION >= 12104 || POLYMER import org.jetbrains.annotations.Nullable; #endif
 
 public class JackOLanternRedStone extends JackOLantern {
+    #if MC_VERSION >= 12003
+    protected static final MapCodec<JackOLanternRedStone> CODEC = simpleCodec(JackOLanternRedStone::new);
+
+    @Override
+    protected @NotNull MapCodec<? extends JackOLanternRedStone> codec() {
+        return CODEC;
+    }
+    #endif
+
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
     @Override

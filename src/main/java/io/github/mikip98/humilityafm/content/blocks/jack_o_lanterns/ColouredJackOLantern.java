@@ -1,5 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns;
 
+#if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
 import io.github.mikip98.humilityafm.util.SoundUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
@@ -8,7 +9,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -17,6 +17,15 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
 public class ColouredJackOLantern extends JackOLantern {
+    #if MC_VERSION >= 12003
+    protected static final MapCodec<ColouredJackOLantern> CODEC = simpleCodec(ColouredJackOLantern::new);
+
+    @Override
+    protected @NotNull MapCodec<? extends ColouredJackOLantern> codec() {
+        return CODEC;
+    }
+    #endif
+
     public static final IntegerProperty POWER = BlockStateProperties.POWER;
 
     public ColouredJackOLantern(Properties settings) {

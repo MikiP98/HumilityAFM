@@ -1,5 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.candlestick;
 
+#if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
 #if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
 import io.github.mikip98.humilityafm.content.blocks.Waterloggable;
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
@@ -29,6 +30,15 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
 public class FloorCandlestick extends Block implements SimpleCandlestickLogic, Waterloggable #if POLYMER, PolymerBlock #endif {
+    #if MC_VERSION >= 12003
+    protected static final MapCodec<FloorCandlestick> CODEC = simpleCodec(FloorCandlestick::new);
+
+    @Override
+    protected @NotNull MapCodec<? extends FloorCandlestick> codec() {
+        return CODEC;
+    }
+    #endif
+
     protected static final VoxelShape voxelShape = Block.box(6, 0, 6, 10, 6, 10);
     protected static final VoxelShape voxelShapeCandle = Block.box(6, 0, 6, 10, 10, 10);
 
