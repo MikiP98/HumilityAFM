@@ -1,7 +1,6 @@
 #if POLYMER
 package io.github.mikip98.humilityafm.registries;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -21,8 +20,10 @@ import eu.pb4.polymer.virtualentity.api.attachment.HolderAttachment;
 import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
 import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.config.enums.PolymerCabinetFallback;
+import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -49,6 +50,7 @@ import static io.github.mikip98.humilityafm.HumilityAFM.*;
 public class Polymer {
     public static final Map<Item, PolymerModelData> POLYMER_ITEM_MODEL_CACHE = new IdentityHashMap<>();
     public static final Map<BlockState, BlockState> POLYMER_BLOCK_CACHE = new IdentityHashMap<>();
+    public static final Map<Block, Block> STAIR_BASE_CACHE = new IdentityHashMap<>();
     public static final Map<Block, PolymerModelData> CABINET_OPEN_MODELS = new IdentityHashMap<>();
 
     public static BlockState CABINET_TOP_DISGUISE = null;
@@ -211,19 +213,19 @@ public class Polymer {
         return getModelFromBlockstateVariant(name, (BlockState) null);
     }
 
-    protected static String getModelFromBlockstateVariant(String name, String variantString) {
-        final InputStream stream = Polymer.class.getResourceAsStream("/assets/humility-afm/blockstates/" + name + ".json");
-        if (stream != null) {
-            final JsonObject json = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
-            final JsonObject variants = json.getAsJsonObject("variants");
-
-            if (variants.has(variantString)) {
-                return variants.getAsJsonObject(variantString).get("model").getAsString();
-            }
-            throw new JsonSyntaxException("Variant '" + variantString + "' not found in '" + name + "'");
-        }
-        throw new IllegalStateException("Could not find blockstate for block -> " + name);
-    }
+//    protected static String getModelFromBlockstateVariant(String name, String variantString) {
+//        final InputStream stream = Polymer.class.getResourceAsStream("/assets/humility-afm/blockstates/" + name + ".json");
+//        if (stream != null) {
+//            final JsonObject json = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
+//            final JsonObject variants = json.getAsJsonObject("variants");
+//
+//            if (variants.has(variantString)) {
+//                return variants.getAsJsonObject(variantString).get("model").getAsString();
+//            }
+//            throw new JsonSyntaxException("Variant '" + variantString + "' not found in '" + name + "'");
+//        }
+//        throw new IllegalStateException("Could not find blockstate for block -> " + name);
+//    }
     protected static PolymerBlockModel getModelFromBlockstateVariant(String name, @Nullable BlockState state) {
         final InputStream stream = Polymer.class.getResourceAsStream("/assets/humility-afm/blockstates/" + name + ".json");
         if (stream != null) {
@@ -283,16 +285,26 @@ public class Polymer {
         return true;
     }
 
-    protected static String getVariantStringFromState(BlockState state) {
-        final ImmutableMap<Property<?>, Comparable<?>> combinations = state.getValues();
-        if (state.getValues().isEmpty()) return "";
+//    protected static String getVariantStringFromState(BlockState state) {
+//        final ImmutableMap<Property<?>, Comparable<?>> combinations = state.getValues();
+//        if (state.getValues().isEmpty()) return "";
+//
+//        StringBuilder sb = new StringBuilder();
+//        combinations.forEach((property, value) -> {
+//            if (!sb.isEmpty()) sb.append(",");
+//            sb.append(property.getName()).append("=").append(value.toString().toLowerCase());
+//        });
+//        return sb.toString();
+//    }
 
-        StringBuilder sb = new StringBuilder();
-        combinations.forEach((property, value) -> {
-            if (!sb.isEmpty()) sb.append(",");
-            sb.append(property.getName()).append("=").append(value.toString().toLowerCase());
-        });
-        return sb.toString();
+    public static void cacheStairBase(Block customStair, SupportedMods mod, String material) {
+        if (material.endsWith("bricks")) material = material.substring(0, material.length() - 1);
+        final String stairPath = material + "_stairs";
+        final Block base = BuiltInRegistries.BLOCK.get(getVMId(mod, stairPath));
+        if (base == Blocks.AIR) throw new IllegalArgumentException(
+                "Custom stair block is not found -> " + (mod == null ? "minecraft" : mod.modId) + ":" + stairPath
+        );
+        STAIR_BASE_CACHE.put(customStair, base);
     }
 
     // TODO: Consider changing to PolymerSimpleBlock

@@ -25,13 +25,14 @@ import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
+#if POLYMER import net.minecraft.world.level.block.Blocks; #endif
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static io.github.mikip98.humilityafm.registries.BlockRegistry.*;
@@ -131,8 +132,27 @@ public abstract class BlockGeneration {
             SupportedMods sourceMod = materialMetadata.sourceMod();
             if (sourceMod != null) variantName = sourceMod.modId + "_" + variantName;
 
-            innerStairs.add(registerWithItem("inner_stairs_" + variantName, InnerStairs::new, settingsToUse));
-            outerStairs.add(registerWithItem("outer_stairs_" + variantName, OuterStairs::new, woodStairsBlockSettings));
+            Function<BlockBehaviour.Properties, Block> innerStairsConstructor = InnerStairs::new;
+            Function<BlockBehaviour.Properties, Block> outerStairsConstructor = OuterStairs::new;
+
+            #if POLYMER
+            innerStairsConstructor = (properties) -> {
+                final Block stairs = new InnerStairs(properties);
+                Polymer.cacheStairBase(stairs, sourceMod, variant.name());
+                return stairs;
+            };
+            outerStairsConstructor = (properties) -> {
+                final Block stairs = new OuterStairs(properties);
+                Polymer.cacheStairBase(stairs, sourceMod, variant.name());
+                return stairs;
+            };
+            #endif
+
+            final Block innerStair = registerWithItem("inner_stairs_" + variantName, innerStairsConstructor, settingsToUse);
+            final Block outerStair = registerWithItem("outer_stairs_" + variantName, outerStairsConstructor, settingsToUse);
+
+            innerStairs.add(innerStair);
+            outerStairs.add(outerStair);
         }
         return new ForcedCornerStairsBlockSet(innerStairs.toArray(Block[]::new), outerStairs.toArray(Block[]::new));
     }
