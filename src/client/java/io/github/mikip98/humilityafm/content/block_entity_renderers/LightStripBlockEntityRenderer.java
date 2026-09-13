@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 #endif
 #if  MC_VERSION < 260000
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+//import net.minecraft.client.renderer.block.model.BlockStateModel;
 #elif MC_VERSION >= 260000
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 #endif
@@ -26,6 +26,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 #else
+import net.minecraft.client.resources.model.BakedModel; // There is some version that uses BlockStateModel instead
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 #endif
@@ -117,8 +118,8 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
         if (level == null) return;
 
         final BlockState blockState = level.getBlockState(pos);
-//        final BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
-        final BlockStateModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
+        final BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
+//        final BlockStateModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
         renderBrighteningInternal(blockState, poseStack, bufferSource, packedOverlay, model);
     }
     #else
@@ -135,8 +136,8 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
             PoseStack poseStack,
             #if MC_VERSION < 260200 MultiBufferSource bufferSource,#endif
             int packedOverlay,
-//            #if MC_VERSION < 260000 BakedModel #else BlockStateModel #endif model
-            BlockStateModel model
+            #if MC_VERSION < 260000 BakedModel #else BlockStateModel #endif model
+//            BlockStateModel model
     ) {
         if (blockState == null || !(blockState.getBlock() instanceof LightStripBlock)) return;
 

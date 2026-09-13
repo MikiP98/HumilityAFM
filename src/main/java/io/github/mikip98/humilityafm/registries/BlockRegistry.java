@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 #if MC_VERSION < 12104 import net.minecraft.core.registries.BuiltInRegistries; #endif
 #if MC_VERSION >= 12104 import net.minecraft.core.registries.Registries; #endif
 #if MC_VERSION >= 12104 import net.minecraft.resources.ResourceKey; #endif
+#if !POLYMER import net.minecraft.world.item.BlockItem; #endif
 import net.minecraft.world.level.block.Block;
 #if MC_VERSION >= 12104 import net.minecraft.world.level.block.Blocks; #endif
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -105,7 +106,9 @@ public class BlockRegistry extends BlockGeneration {
 
     public static <T extends Block> T registerWithItem(String name, Function<BlockBehaviour.Properties, T> blockFactory, BlockBehaviour.Properties settings) {
         final T block = register(name, blockFactory, settings);
-        ItemRegistry.register(name, (itemSettings) -> new #if POLYMER Polymer.PolymerBlockItemImpl #else BlockItem #endif(block, itemSettings));
+        ItemRegistry.register(
+                name, (itemSettings) -> new #if POLYMER Polymer.PolymerBlockItemImpl #else BlockItem #endif(block, itemSettings)
+        );
         return block;
     }
 

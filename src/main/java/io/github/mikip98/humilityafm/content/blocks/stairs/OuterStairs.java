@@ -4,12 +4,12 @@ package io.github.mikip98.humilityafm.content.blocks.stairs;
 #if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
 import io.github.mikip98.humilityafm.content.blocks.Waterloggable;
 import io.github.mikip98.humilityafm.content.blocks.templates.PlainHorizontalFacingBlock;
+#if POLYMER import io.github.mikip98.humilityafm.registries.Polymer; #endif
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
-#if POLYMER import net.minecraft.world.level.block.Blocks; #endif
 #if POLYMER import net.minecraft.world.level.block.StairBlock; #endif
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -131,13 +131,15 @@ public class OuterStairs extends PlainHorizontalFacingBlock implements Waterlogg
     #if POLYMER
     @Override
     public Block getPolymerBlock(BlockState state) {
-        return Blocks.OAK_STAIRS;
+        if (!Polymer.STAIR_BASE_CACHE.containsKey(this))
+            throw new IllegalStateException("Block '" + state.getBlock() + "' has not been properly cached!");
+        return Polymer.STAIR_BASE_CACHE.get(this);
     }
 
     @Override
     public BlockState getPolymerBlockState(BlockState state) {
         return getPolymerBlock(state).defaultBlockState()
-                .setValue(StairBlock.FACING, state.getValue(FACING))
+                .setValue(StairBlock.FACING, state.getValue(FACING).getOpposite())
                 .setValue(StairBlock.HALF, state.getValue(HALF))
                 .setValue(StairBlock.WATERLOGGED, state.getValue(WATERLOGGED))
                 .setValue(StairBlock.SHAPE, StairsShape.OUTER_LEFT);

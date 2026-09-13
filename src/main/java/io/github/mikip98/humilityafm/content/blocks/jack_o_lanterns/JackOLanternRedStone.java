@@ -1,25 +1,20 @@
 package io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns;
 
-import io.github.mikip98.humilityafm.registries.Polymer;
+#if POLYMER import io.github.mikip98.humilityafm.registries.Polymer; #endif
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
+#if POLYMER import net.minecraft.world.level.block.Blocks; #endif
+#if POLYMER import net.minecraft.world.level.block.entity.BlockEntity; #endif
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import static io.github.mikip98.humilityafm.HumilityAFM.LOGGER;
-#if MC_VERSION >= 12104
-import org.jetbrains.annotations.Nullable;
-#endif
+#if MC_VERSION >= 12104 || POLYMER import org.jetbrains.annotations.Nullable; #endif
 
 public class JackOLanternRedStone extends JackOLantern {
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
@@ -49,7 +44,7 @@ public class JackOLanternRedStone extends JackOLantern {
     #if MC_VERSION < 12104 public #else protected #endif void neighborChanged(
             BlockState state, Level level, BlockPos pos,
             Block sourceBlock,
-            #if MC_VERSION < 12104 BlockPos sourcePos #else @Nullable net.minecraft.world.level.redstone.Orientation orientation #endif,
+            #if MC_VERSION < 12104 BlockPos sourcePos #else @Nullable Orientation orientation #endif,
             boolean isMoving
     ) {
         if (!level.isClientSide()) {

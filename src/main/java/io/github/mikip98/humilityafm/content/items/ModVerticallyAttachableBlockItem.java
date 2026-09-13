@@ -2,8 +2,7 @@ package io.github.mikip98.humilityafm.content.items;
 
 #if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
 #if POLYMER import eu.pb4.polymer.core.api.item.PolymerItem; #endif
-import io.github.mikip98.humilityafm.registries.ItemRegistry;
-import io.github.mikip98.humilityafm.registries.Polymer;
+#if POLYMER import io.github.mikip98.humilityafm.registries.Polymer; #endif
 import net.minecraft.core.Direction;
 #if POLYMER import net.minecraft.server.level.ServerPlayer; #endif
 import net.minecraft.world.item.BlockItem;
