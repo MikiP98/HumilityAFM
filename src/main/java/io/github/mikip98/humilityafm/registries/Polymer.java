@@ -31,12 +31,14 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.WallTorchBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.*;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import java.io.InputStream;
@@ -444,6 +446,69 @@ public class Polymer {
             super.clearRemoved();
             if (this.level instanceof ServerLevel serverLevel) {
                 final Vec3 offsetPos = Vec3.atCenterOf(this.worldPosition).add(0, 0.51, 0);
+                this.attachment = ChunkAttachment.of(this.holder, serverLevel, offsetPos);
+            }
+        }
+
+        @Override
+        public void setRemoved() {
+            super.setRemoved();
+            if (this.attachment != null) {
+                this.attachment.destroy();
+                this.attachment = null;
+            }
+        }
+    }
+
+    public static class ColouredTorchBlockEntity extends BlockEntity {
+        protected final ElementHolder holder = new ElementHolder();
+        protected HolderAttachment attachment;
+
+        public ColouredTorchBlockEntity(BlockPos pos, BlockState state) {
+            super(BlockEntityRegistry.COLOURED_TORCH_BLOCK_ENTITY, pos, state);
+
+            final ItemDisplayElement display = new ItemDisplayElement();
+
+            display.setItem(state.getBlock().asItem().getDefaultInstance());
+            display.setModelTransformation(ItemDisplayContext.FIXED);
+
+            display.setScale(new Vector3f(1.005f));  // TODO: Make the scale into a config (same for FallbackBlockEntity)
+
+            if (state.hasProperty(WallTorchBlock.FACING)) {
+                Direction facing = state.getValue(WallTorchBlock.FACING);
+
+                float angleY = 0f;
+                switch (facing) {
+                    case NORTH -> angleY = (float) Math.PI;         // 180 deg
+                    case EAST -> angleY = (float) (Math.PI / 2);    // 90 deg
+                    case SOUTH -> angleY = 0f;                      // 0 deg
+                    case WEST -> angleY = (float) (Math.PI * 1.5);  // 270 deg
+                }
+
+                Quaternionf rotation = new Quaternionf()
+                        .rotateY(angleY)
+                        .rotateX((float) (Math.PI / 8));
+
+                display.setLeftRotation(rotation);
+
+                float offsetAmount = 0.30845f;
+                float xOffset = facing.getStepX() * -offsetAmount;
+                float zOffset = facing.getStepZ() * -offsetAmount;
+                float yOffset = 0.18045f;
+
+                display.setTranslation(new Vector3f(xOffset, yOffset, zOffset));
+            } else {
+                display.setTranslation(new Vector3f(0f, 0f, 0f));
+            }
+
+            this.holder.addElement(display);
+        }
+
+        @Override
+        public void clearRemoved() {
+            super.clearRemoved();
+            if (this.level instanceof ServerLevel serverLevel) {
+                final Vec3 offsetPos = Vec3.atCenterOf(this.worldPosition);
                 this.attachment = ChunkAttachment.of(this.holder, serverLevel, offsetPos);
             }
         }

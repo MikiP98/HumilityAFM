@@ -3,6 +3,7 @@ package io.github.mikip98.humilityafm.content.blocks.coloured_torch;
 #if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
 #if MC_VERSION >= 12003 import com.mojang.serialization.codecs.RecordCodecBuilder; #endif
 #if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
+#if POLYMER import io.github.mikip98.humilityafm.registries.Polymer; #endif
 import io.github.mikip98.humilityafm.util.SoundUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -13,7 +14,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 #if POLYMER import net.minecraft.world.level.block.Blocks; #endif
+#if POLYMER import net.minecraft.world.level.block.EntityBlock; #endif
 import net.minecraft.world.level.block.WallTorchBlock;
+#if POLYMER import net.minecraft.world.level.block.entity.BlockEntity; #endif
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -21,7 +24,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
-public class ColouredWallTorch extends WallTorchBlock #if POLYMER implements PolymerBlock #endif {
+public class ColouredWallTorch extends WallTorchBlock #if POLYMER implements EntityBlock, PolymerBlock #endif {
     #if MC_VERSION >= 12003
     protected static final MapCodec<ColouredWallTorch> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
             PARTICLE_OPTIONS_FIELD.forGetter((torchBlock) -> torchBlock.flameParticle),
@@ -93,6 +96,11 @@ public class ColouredWallTorch extends WallTorchBlock #if POLYMER implements Pol
     public BlockState getPolymerBlockState(BlockState state) {
         return getPolymerBlock(state).defaultBlockState()
                 .setValue(WallTorchBlock.FACING, state.getValue(FACING));
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new Polymer.ColouredTorchBlockEntity(pos, state);
     }
     #endif
 }

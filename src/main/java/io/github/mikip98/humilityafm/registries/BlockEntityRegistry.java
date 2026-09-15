@@ -30,6 +30,7 @@ public class BlockEntityRegistry {
 
     #if POLYMER
     public static BlockEntityType<Polymer.FallbackBlockEntity> FALLBACK_BLOCK_ENTITY;
+    public static BlockEntityType<Polymer.ColouredTorchBlockEntity> COLOURED_TORCH_BLOCK_ENTITY;
     #endif
 
     public static void register() {
@@ -72,6 +73,11 @@ public class BlockEntityRegistry {
                 "polymer_fallback_block_entity",
                 Polymer.FallbackBlockEntity::new,
                 concat(BlockRegistry.WOODEN_MOSAIC_VARIANTS, BlockRegistry.TERRACOTTA_TILE_VARIANTS)
+        );
+        COLOURED_TORCH_BLOCK_ENTITY = register(
+                "polymer_coloured_torch_block_entity",
+                Polymer.ColouredTorchBlockEntity::new,
+                concat(BlockRegistry.COLOURED_TORCH_VARIANTS, BlockRegistry.COLOURED_WALL_TORCH_VARIANTS)
         );
         #endif
     }
