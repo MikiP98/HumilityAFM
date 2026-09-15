@@ -176,6 +176,7 @@ Lighten up your builds with unobtrusive light source
   - [Message on Fabric DC server](https://discord.com/channels/507304429255393322/507982478276034570/1414634100610044004)
 - Runtime resourcepack generation? (datapacks)
 - Add all the coloured blocks to Fabric's `DYED` tag categories
+- Add waterlogging support to Polymer port
 
 ### Done:
 
