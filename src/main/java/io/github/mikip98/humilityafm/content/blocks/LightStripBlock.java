@@ -1,11 +1,15 @@
 package io.github.mikip98.humilityafm.content.blocks;
 
 #if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
-#if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
+#if POLYMER import eu.pb4.polymer.blocks.api.PolymerTexturedBlock; #endif
 import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntity;
+#if POLYMER import io.github.mikip98.humilityafm.registries.Polymer; #endif
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+#if POLYMER import net.minecraft.server.level.ServerLevel; #endif
 import net.minecraft.world.level.BlockGetter;
+#if POLYMER import net.minecraft.world.level.Level; #endif
+#if POLYMER import net.minecraft.world.level.LevelAccessor; #endif
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -18,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public class LightStripBlock extends StairBlock implements EntityBlock #if POLYMER, PolymerBlock #endif {
+public class LightStripBlock extends StairBlock implements EntityBlock #if POLYMER, PolymerTexturedBlock #endif {
     // Straight
     protected static final VoxelShape voxelShapeBottomStraightNorth;
     protected static final VoxelShape voxelShapeBottomStraightSouth;
@@ -169,9 +173,9 @@ public class LightStripBlock extends StairBlock implements EntityBlock #if POLYM
 
     @Override
     public @NotNull VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        Direction dir = state.getValue(FACING);
-        Half half = state.getValue(HALF);
-        StairsShape shape = state.getValue(SHAPE);
+        final Direction dir = state.getValue(FACING);
+        final Half half = state.getValue(HALF);
+        final StairsShape shape = state.getValue(SHAPE);
 
         if (half == Half.TOP) {
             return getVoxelShape(
@@ -218,7 +222,7 @@ public class LightStripBlock extends StairBlock implements EntityBlock #if POLYM
             default -> throw new IllegalStateException("It's not possible to get here...");
         };
     }
-    
+
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new LightStripBlockEntity(pos, state);
@@ -227,15 +231,41 @@ public class LightStripBlock extends StairBlock implements EntityBlock #if POLYM
     #if POLYMER
     @Override
     public Block getPolymerBlock(BlockState state) {
-        return Blocks.SMOOTH_QUARTZ_STAIRS;
+        return getPolymerBlockState(state).getBlock();
     }
 
     @Override
     public BlockState getPolymerBlockState(BlockState state) {
-        return getPolymerBlock(state).defaultBlockState()
-                .setValue(StairBlock.FACING, state.getValue(FACING))
-                .setValue(StairBlock.HALF, state.getValue(HALF))
-                .setValue(StairBlock.SHAPE, state.getValue(SHAPE));
+        return state.getValue(HALF) == Half.TOP ? Polymer.LIGHT_STRIP_TOP_DISGUISE : Polymer.LIGHT_STRIP_BOTTOM_DISGUISE;
     }
+
+    @Override
+    public @NotNull BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        final BlockState newState = super.updateShape(state, direction, neighborState, level, pos, neighborPos);
+        if (state != newState && level instanceof ServerLevel serverLevel) {
+            final BlockEntity blockEntity = serverLevel.getBlockEntity(pos);
+            if (blockEntity instanceof LightStripBlockEntity lightStripEntity) {
+                lightStripEntity.updateVisualState(newState);
+            }
+        }
+        return newState;
+    }
+
+    #if MC_VERSION < 12105
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!state.is(newState.getBlock())) {
+            level.removeBlockEntity(pos);
+        }
+        super.onRemove(state, level, pos, newState, isMoving);
+    }
+    #else
+    // TODO: Make sure this is necessary
+    @Override
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean isMoving) {
+        level.removeBlockEntity(pos);
+        super.affectNeighborsAfterRemoval(state, level, pos, isMoving);
+    }
+    #endif
     #endif
 }

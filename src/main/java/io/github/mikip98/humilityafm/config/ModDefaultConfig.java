@@ -40,5 +40,6 @@ public class ModDefaultConfig {
     public static boolean defaultPolymerAllowOptimisedJackOLanterns = true;
     public static boolean defaultPolymerAllowSemiFunctionalCabinetStates = true;
     public static PolymerCabinetFallback defaultPolymerCabinetFinalFallback = PolymerCabinetFallback.GLASS;
+    public static boolean defaultPolymerPreferNonCollidingLightstrip = true;
     #endif
 }

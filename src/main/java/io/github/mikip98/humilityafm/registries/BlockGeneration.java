@@ -304,7 +304,13 @@ public abstract class BlockGeneration {
             for (BlockMaterial material : ActiveGenerationData.colouredFeatureSetMaterials) {
                 final String name = material.getSafeName();
                 // Light Strip
-                lightStripVariants.add(registerWithItem("light_strip_" + name, LightStripBlock::new, LightStripBlock.defaultSettings));
+                final Block lightStrip = registerWithItem("light_strip_" + name, LightStripBlock::new, LightStripBlock.defaultSettings);
+                lightStripVariants.add(lightStrip);
+
+                #if POLYMER
+                Polymer.cacheLightStripModels(lightStrip, "light_strip_" + name);
+                #endif
+
                 // Coloured Torch
                 colouredTorchVariants.add(
                         register("coloured_torch_" + name, (settings) -> new ColouredTorch(torchParticle, settings), ColouredTorch.defaultSettings)

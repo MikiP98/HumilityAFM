@@ -51,8 +51,8 @@ public class Polymer {
     public static final Map<Item, PolymerModelData> POLYMER_ITEM_MODEL_CACHE = new IdentityHashMap<>();
     public static final Map<BlockState, BlockState> POLYMER_BLOCK_CACHE = new IdentityHashMap<>();
     public static final Map<Block, Block> STAIR_BASE_CACHE = new IdentityHashMap<>();
-    public static final Map<Block, PolymerModelData> CABINET_OPEN_MODELS = new IdentityHashMap<>();
 
+    public static final Map<Block, PolymerModelData> CABINET_OPEN_MODELS = new IdentityHashMap<>();
     public static BlockState CABINET_TOP_DISGUISE = null;
     public static BlockState CABINET_NORTH_DISGUISE = null;
     public static BlockState CABINET_EAST_DISGUISE = null;
@@ -60,8 +60,13 @@ public class Polymer {
     public static BlockState CABINET_WEST_DISGUISE = null;
     public static BlockState CABINET_BOTTOM_DISGUISE = null;
 
+    public static final Map<Block, PolymerModelData> LIGHT_STRIP_INNER_MODELS = new IdentityHashMap<>();
+    public static final Map<Block, PolymerModelData> LIGHT_STRIP_OUTER_MODELS = new IdentityHashMap<>();
+    public static BlockState LIGHT_STRIP_TOP_DISGUISE = null;
+    public static BlockState LIGHT_STRIP_BOTTOM_DISGUISE = null;
+
     static {
-        PolymerBlockModel emptyModel = PolymerBlockModel.of(getId("block/empty"));
+        final PolymerBlockModel emptyModel = PolymerBlockModel.of(getId("block/empty"));
 
         // TODO: For all the below use .requestEmpty() instead of .requestBlock() when available
         final Function<BlockModelType, BlockState> remapper =
@@ -112,6 +117,21 @@ public class Polymer {
             if (CABINET_WEST_DISGUISE == null) CABINET_WEST_DISGUISE = lastFallbackBase.setValue(FACING, Direction.WEST);
             if (CABINET_BOTTOM_DISGUISE == null) CABINET_BOTTOM_DISGUISE = lastFallbackBase.setValue(OPEN, true);
         }
+
+        final boolean trapdoor = false; // TODO: #if the correct MC version
+        if (ModConfig.polymerPreferNonCollidingLightstrip || !trapdoor) {
+            final BlockState mappedState = remapper.apply(BlockModelType.VINES_BLOCK);
+            LIGHT_STRIP_TOP_DISGUISE = mappedState;
+            LIGHT_STRIP_BOTTOM_DISGUISE = mappedState;
+        }
+        // TODO: Trapdoor when available
+//        if (LIGHT_STRIP_TOP_DISGUISE == null) LIGHT_STRIP_TOP_DISGUISE = remapper.apply(BlockModelType.TOP_TRAPDOOR);
+//        if (LIGHT_STRIP_BOTTOM_DISGUISE == null) LIGHT_STRIP_BOTTOM_DISGUISE = remapper.apply(BlockModelType.BOTTOM_TRAPDOOR);
+        // TODO: Slab when available
+//        if (LIGHT_STRIP_TOP_DISGUISE == null) LIGHT_STRIP_TOP_DISGUISE = remapper.apply(BlockModelType.TOP_SLAB);
+//        if (LIGHT_STRIP_BOTTOM_DISGUISE == null) LIGHT_STRIP_BOTTOM_DISGUISE = remapper.apply(BlockModelType.BOTTOM_SLAB);
+        if (LIGHT_STRIP_TOP_DISGUISE == null) LIGHT_STRIP_TOP_DISGUISE = Blocks.GLASS.defaultBlockState();
+        if (LIGHT_STRIP_BOTTOM_DISGUISE == null) LIGHT_STRIP_BOTTOM_DISGUISE = Blocks.GLASS.defaultBlockState();
     }
 
 
@@ -210,7 +230,7 @@ public class Polymer {
     }
 
     protected static PolymerBlockModel getModelFromBlockstate(String name) {
-        return getModelFromBlockstateVariant(name, (BlockState) null);
+        return getModelFromBlockstateVariant(name, null);
     }
 
 //    protected static String getModelFromBlockstateVariant(String name, String variantString) {
@@ -305,6 +325,19 @@ public class Polymer {
                 "Custom stair block is not found -> " + (mod == null ? "minecraft" : mod.modId) + ":" + stairPath
         );
         STAIR_BASE_CACHE.put(customStair, base);
+    }
+
+    public static void cacheLightStripModels(Block customStrip, String blockstateName) {
+        #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif innerId =
+                getRawModelIdFromBlockstateVariant(blockstateName, "facing=south,half=bottom,shape=inner_left");
+        #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif outerId =
+                getRawModelIdFromBlockstateVariant(blockstateName, "facing=south,half=bottom,shape=outer_left");
+
+        final PolymerModelData innerData = PolymerResourcePackUtils.requestModel(Items.GLOWSTONE_DUST, innerId);
+        final PolymerModelData outerData = PolymerResourcePackUtils.requestModel(Items.GLOWSTONE_DUST, outerId);
+
+        LIGHT_STRIP_INNER_MODELS.put(customStrip, innerData);
+        LIGHT_STRIP_OUTER_MODELS.put(customStrip, outerData);
     }
 
     // TODO: Consider changing to PolymerSimpleBlock

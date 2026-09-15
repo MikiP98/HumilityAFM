@@ -41,6 +41,8 @@ public class ModConfig extends ModDefaultConfig {
     public static boolean polymerAllowOptimisedJackOLanterns = defaultPolymerAllowOptimisedJackOLanterns;
     public static boolean polymerAllowSemiFunctionalCabinetStates = defaultPolymerAllowSemiFunctionalCabinetStates;
     public static PolymerCabinetFallback polymerCabinetFinalFallback = defaultPolymerCabinetFinalFallback;
+    public static boolean polymerPreferNonCollidingLightstrip = defaultPolymerPreferNonCollidingLightstrip;
+    // TODO: Config option 'polymerPreferVerticalLightstripHitbox' or maybe do lower half as vertical and top as horizontal
     #endif
 }
 
