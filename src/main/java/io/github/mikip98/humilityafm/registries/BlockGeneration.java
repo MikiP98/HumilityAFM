@@ -233,7 +233,6 @@ public abstract class BlockGeneration {
             for (BlockMaterial material : ActiveGenerationData.simpleCandlestickMaterials) {
                 simpleCandlestickWallVariants.add(register("candlestick_wall_" + material.getSafeName(), Candlestick::new, Candlestick.defaultSettings));
                 simpleCandlestickFloorVariants.add(register("candlestick_" + material.getSafeName(), FloorCandlestick::new, Candlestick.defaultSettings));
-                // FloorCandlestick does not have its own default settings
             }
 
             // Rustable Candlesticks
