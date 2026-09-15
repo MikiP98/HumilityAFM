@@ -10,6 +10,7 @@ import io.github.mikip98.humilityafm.registries.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
 #if POLYMER import net.minecraft.core.Direction; #endif
 #if POLYMER import net.minecraft.server.level.ServerLevel; #endif
+#if POLYMER import net.minecraft.util.Brightness; #endif
 #if POLYMER import net.minecraft.world.item.ItemDisplayContext; #endif
 #if POLYMER import net.minecraft.world.item.ItemStack; #endif
 #if POLYMER import net.minecraft.world.item.Items; #endif
@@ -30,6 +31,7 @@ public class LightStripBlockEntity extends BlockEntity {
 
         #if POLYMER
         this.holder.addElement(display);
+        display.setBrightness(new Brightness(15, 15));
         this.updateVisualState(state);
         #endif
     }
