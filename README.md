@@ -177,11 +177,17 @@ Lighten up your builds with unobtrusive light source
 - Runtime resourcepack generation? (datapacks)
 - Add all the coloured blocks to Fabric's `DYED` tag categories
 - Add waterlogging support to Polymer port
+- Add separate configurable Polymer fallback tree for Candlesticks
+- Fix Polymer Candlesticks not emmiting particles:
+  - option 1 -> Server-Side Ticker + serverLevel.sendParticles(...)
+  - option 2 -> custom particle system from Polymer displays
 
 ### Done:
 
 - Moved to mojmap :(
 - Updated to Minecraft 26.1
+- Added Polymer support
+- Fixed all the codecs
 
 <br>
 
