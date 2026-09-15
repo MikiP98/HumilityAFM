@@ -14,7 +14,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
+#if POLYMER import java.util.ArrayList; #endif
 import java.util.Arrays;
+#if POLYMER import java.util.List; #endif
 import java.util.stream.Stream;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
@@ -31,6 +33,7 @@ public class BlockEntityRegistry {
     #if POLYMER
     public static BlockEntityType<Polymer.FallbackBlockEntity> FALLBACK_BLOCK_ENTITY;
     public static BlockEntityType<Polymer.ColouredTorchBlockEntity> COLOURED_TORCH_BLOCK_ENTITY;
+    public static BlockEntityType<Polymer.CandlestickBlockEntity> CANDLESTICK_BLOCK_ENTITY;
     #endif
 
     public static void register() {
@@ -79,9 +82,20 @@ public class BlockEntityRegistry {
                 Polymer.ColouredTorchBlockEntity::new,
                 concat(BlockRegistry.COLOURED_TORCH_VARIANTS, BlockRegistry.COLOURED_WALL_TORCH_VARIANTS)
         );
+        CANDLESTICK_BLOCK_ENTITY = register(
+                "polymer_candlestick_block_entity",
+                Polymer.CandlestickBlockEntity::new,
+                concat(
+                        BlockRegistry.SIMPLE_CANDLESTICK_FLOOR_VARIANTS,
+                        BlockRegistry.SIMPLE_CANDLESTICK_WALL_VARIANTS,
+                        flatten(BlockRegistry.RUSTABLE_CANDLESTICK_FLOOR_VARIANTS),
+                        flatten(BlockRegistry.RUSTABLE_CANDLESTICK_WALL_VARIANTS)
+                )
+        );
         #endif
     }
 
+    // TODO: Check if the below can be simplified/combined
     protected static Block[] concat(Block block, Block... blocks) {
         return Stream.concat(
                 Stream.of(block),
@@ -94,6 +108,18 @@ public class BlockEntityRegistry {
                 Arrays.stream(blocks2)
         ).toArray(Block[]::new);
     }
+    #if POLYMER
+    protected static Block[] concat(Block[] blocks1, Block[]... blocks2) {
+        List<Block> blockList = new ArrayList<>(List.of(blocks1));
+        for (Block[] blocks : blocks2) blockList.addAll(Arrays.asList(blocks));
+        return blockList.toArray(new Block[0]);
+    }
+    protected static Block[] flatten(Block[][] blocks) {
+        List<Block> blockList = new ArrayList<>();
+        for (Block[] blockSet : blocks) blockList.addAll(Arrays.asList(blockSet));
+        return blockList.toArray(new Block[0]);
+    }
+    #endif
 
     protected static <T extends BlockEntity> BlockEntityType<T> register(
             String name,

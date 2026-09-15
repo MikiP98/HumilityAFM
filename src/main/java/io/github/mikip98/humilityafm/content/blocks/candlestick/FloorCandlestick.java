@@ -1,11 +1,12 @@
 package io.github.mikip98.humilityafm.content.blocks.candlestick;
 
 #if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
-#if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
+#if POLYMER import eu.pb4.polymer.blocks.api.PolymerTexturedBlock; #endif
 import io.github.mikip98.humilityafm.content.blocks.Waterloggable;
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.SimpleCandlestickLogic;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
+#if POLYMER import io.github.mikip98.humilityafm.registries.Polymer; #endif
 import net.minecraft.core.BlockPos;
 #if MC_VERSION >= 12105 import net.minecraft.server.level.ServerLevel; #endif
 import net.minecraft.util.RandomSource;
@@ -16,7 +17,8 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-#if POLYMER import net.minecraft.world.level.block.Blocks; #endif
+#if POLYMER import net.minecraft.world.level.block.EntityBlock; #endif
+#if POLYMER import net.minecraft.world.level.block.entity.BlockEntity; #endif
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -29,7 +31,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-public class FloorCandlestick extends Block implements SimpleCandlestickLogic, Waterloggable #if POLYMER, PolymerBlock #endif {
+public class FloorCandlestick extends Block implements SimpleCandlestickLogic, Waterloggable #if POLYMER, EntityBlock, PolymerTexturedBlock #endif {
     #if MC_VERSION >= 12003
     protected static final MapCodec<FloorCandlestick> CODEC = simpleCodec(FloorCandlestick::new);
 
@@ -122,14 +124,17 @@ public class FloorCandlestick extends Block implements SimpleCandlestickLogic, W
     #if POLYMER
     @Override
     public Block getPolymerBlock(BlockState state) {
-        return Blocks.CANDLE;
+        return getPolymerBlockState(state).getBlock();
     }
 
     @Override
     public BlockState getPolymerBlockState(BlockState state) {
-        return getPolymerBlock(state).defaultBlockState()
-                .setValue(BlockStateProperties.WATERLOGGED, state.getValue(WATERLOGGED))
-                .setValue(BlockStateProperties.LIT, state.getValue(LIT));
+        return Polymer.LIGHT_STRIP_BOTTOM_DISGUISE;
     }
-#endif
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new Polymer.CandlestickBlockEntity(pos, state);
+    }
+    #endif
 }

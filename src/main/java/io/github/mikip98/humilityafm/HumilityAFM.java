@@ -57,6 +57,10 @@ public class HumilityAFM implements ModInitializer {
 		NetworkRegistry.registerPayload();
 		#endif
 
+		#if POLYMER
+		Polymer.initLateCache();
+		#endif
+
 
 		// ------------------------------------ CLEANUP -------------------------------------------
 		ActiveGenerationData.clear();

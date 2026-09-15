@@ -20,6 +20,10 @@ import eu.pb4.polymer.virtualentity.api.attachment.HolderAttachment;
 import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
 import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.config.enums.PolymerCabinetFallback;
+import io.github.mikip98.humilityafm.content.blocks.candlestick.Candlestick;
+import io.github.mikip98.humilityafm.content.blocks.candlestick.FloorCandlestick;
+import io.github.mikip98.humilityafm.content.properties.ModProperties;
+import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
 import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -53,6 +57,7 @@ public class Polymer {
     public static final Map<Item, PolymerModelData> POLYMER_ITEM_MODEL_CACHE = new IdentityHashMap<>();
     public static final Map<BlockState, BlockState> POLYMER_BLOCK_CACHE = new IdentityHashMap<>();
     public static final Map<Block, Block> STAIR_BASE_CACHE = new IdentityHashMap<>();
+    public static final Map<Block, Map<BlockState, PolymerModelData>> CANDLESTICK_MODEL_CACHE = new IdentityHashMap<>();
 
     public static final Map<Block, PolymerModelData> CABINET_OPEN_MODELS = new IdentityHashMap<>();
     public static BlockState CABINET_TOP_DISGUISE = null;
@@ -139,6 +144,29 @@ public class Polymer {
 
     public static void init() {}
 
+    public static void initLateCache() {
+        for (Block block : BlockRegistry.SIMPLE_CANDLESTICK_FLOOR_VARIANTS) {
+            String id = BuiltInRegistries.BLOCK.getKey(block).getPath();
+            cacheCandlestickModels(block, id);
+        }
+        for (Block block : BlockRegistry.SIMPLE_CANDLESTICK_WALL_VARIANTS) {
+            String id = BuiltInRegistries.BLOCK.getKey(block).getPath();
+            cacheCandlestickModels(block, id);
+        }
+        for (Block[] blockSet : BlockRegistry.RUSTABLE_CANDLESTICK_FLOOR_VARIANTS) {
+            for (Block block : blockSet) {
+                String id = BuiltInRegistries.BLOCK.getKey(block).getPath();
+                cacheCandlestickModels(block, id);
+            }
+        }
+        for (Block[] blockSet : BlockRegistry.RUSTABLE_CANDLESTICK_WALL_VARIANTS) {
+            for (Block block : blockSet) {
+                String id = BuiltInRegistries.BLOCK.getKey(block).getPath();
+                cacheCandlestickModels(block, id);
+            }
+        }
+    }
+
 
     public static void requestPolymerModel(Item item, String name) {
         if (item instanceof PolymerItem polymerItem) {
@@ -208,7 +236,8 @@ public class Polymer {
 //        }
 //    }
     public static void setCachedBlockState(Block block, String name) {
-        if (ModConfig.polymerAllowOptimisedJackOLanterns && block instanceof PolymerTexturedBlock && !(block instanceof PureTexturedBlock)) {
+        // TODO: Make sure this caching caches only what it needs or weather it can replace other caches
+        if (ModConfig.polymerAllowOptimisedJackOLanterns && block instanceof PolymerTexturedBlock && !(block instanceof PureTexturedBlock || block instanceof Candlestick || block instanceof FloorCandlestick)) {
             for (BlockState state : block.getStateDefinition().getPossibleStates()) {
                 BlockState mappedState = PolymerBlockResourceUtils.requestBlock(
                         BlockModelType.FULL_BLOCK,
@@ -340,6 +369,73 @@ public class Polymer {
 
         LIGHT_STRIP_INNER_MODELS.put(customStrip, innerData);
         LIGHT_STRIP_OUTER_MODELS.put(customStrip, outerData);
+    }
+
+//    public static void cacheCandlestickModels(Block customCandlestick, String blockstateName) {
+//        Map<BlockState, PolymerModelData> stateMap = new IdentityHashMap<>();
+//
+//        Item disguiseItem = ((PolymerItem) customCandlestick.asItem()).getPolymerItem(customCandlestick.asItem().getDefaultInstance(), null);
+//
+//        for (BlockState state : customCandlestick.getStateDefinition().getPossibleStates()) {
+//            StringBuilder variantString = new StringBuilder();
+//
+//            if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+//                variantString.append("facing=").append(state.getValue(BlockStateProperties.HORIZONTAL_FACING).getSerializedName()).append(",");
+//            }
+//            if (state.hasProperty(ModProperties.WAXED)) {
+//                variantString.append("waxed=").append(state.getValue(ModProperties.WAXED)).append(",");
+//            }
+//
+//            variantString.append("candle_color=").append(state.getValue(ModProperties.CANDLE_COLOR).getSerializedName());
+//
+//            if (state.getValue(ModProperties.CANDLE_COLOR) != CandleColor.NONE) {
+//                variantString.append(",lit=").append(state.getValue(BlockStateProperties.LIT));
+//            }
+//
+//            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif modelId =
+//                    getRawModelIdFromBlockstateVariant(blockstateName, variantString.toString());
+//
+//            PolymerModelData modelData = PolymerResourcePackUtils.requestModel(disguiseItem, modelId);
+//            stateMap.put(state, modelData);
+//        }
+//
+//        CANDLESTICK_MODEL_CACHE.put(customCandlestick, stateMap);
+//    }
+    public static void cacheCandlestickModels(Block customCandlestick, String blockstateName) {
+        Map<BlockState, PolymerModelData> stateMap = new IdentityHashMap<>();
+
+        Item disguiseItem = ((PolymerItem) customCandlestick.asItem()).getPolymerItem(customCandlestick.asItem().getDefaultInstance(), null);
+
+        // Determine the material and type from the blockstate name (e.g., "candlestick_wall_iron")
+        boolean isWall = blockstateName.startsWith("candlestick_wall_");
+        String material = isWall ? blockstateName.substring(17) : blockstateName.substring(12);
+
+        for (BlockState state : customCandlestick.getStateDefinition().getPossibleStates()) {
+            // 1. Build the base path: block/candlestick/standing/iron/candlestick_iron
+            String path = "block/candlestick/" + (isWall ? "wall/" : "standing/") + material + "/" + blockstateName;
+
+            // 2. Append the color and lit states!
+            CandleColor color = state.getValue(ModProperties.CANDLE_COLOR);
+            if (color != CandleColor.NONE) {
+                String colorName = color.getSerializedName();
+                if (colorName.equals("plain")) {
+                    path += "_candle";
+                } else {
+                    path += "_" + colorName;
+                }
+
+                if (state.getValue(BlockStateProperties.LIT)) {
+                    path += "_lit";
+                }
+            }
+
+            // 3. Request the model using the dynamically generated path
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif modelId = getId(path);
+            PolymerModelData modelData = PolymerResourcePackUtils.requestModel(disguiseItem, modelId);
+            stateMap.put(state, modelData);
+        }
+
+        CANDLESTICK_MODEL_CACHE.put(customCandlestick, stateMap);
     }
 
     // TODO: Consider changing to PolymerSimpleBlock
@@ -520,6 +616,97 @@ public class Polymer {
                 this.attachment.destroy();
                 this.attachment = null;
             }
+        }
+    }
+
+    public static class CandlestickBlockEntity extends BlockEntity {
+        protected final ItemDisplayElement display = new ItemDisplayElement();
+
+        public CandlestickBlockEntity(BlockPos pos, BlockState state) {
+            super(BlockEntityRegistry.CANDLESTICK_BLOCK_ENTITY, pos, state);
+
+            this.holder.addElement(display);
+            this.updateVisualState(state);
+        }
+
+        protected final ElementHolder holder = new ElementHolder();
+        protected HolderAttachment attachment;
+
+        public void updateVisualState(BlockState state) {
+            final Item disguiseItem = ((PolymerItem) state.getBlock().asItem()).getPolymerItem(ItemStack.EMPTY, null);
+            final ItemStack stack = new ItemStack(disguiseItem);
+
+            PolymerModelData customData = null;
+            if (CANDLESTICK_MODEL_CACHE.containsKey(state.getBlock())) {
+                customData = Polymer.CANDLESTICK_MODEL_CACHE.get(state.getBlock()).get(state);
+            }
+
+            if (customData != null) {
+                #if MC_VERSION < 12005
+                stack.getOrCreateTag().putInt("CustomModelData", customData.value());
+                #else
+                stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(customData.value()));
+                #endif
+            }
+
+            display.setItem(stack);
+            display.setModelTransformation(ItemDisplayContext.FIXED);
+
+            if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+                final Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+                float angle = 0f;
+                float xOffset = 0f;
+                float zOffset = 0f;
+                float offsetAmount = 0.046875f;
+                switch (facing) {
+                    case NORTH -> {
+                        angle = 0f;  // 0 degrees
+                        zOffset = offsetAmount;
+                    }
+                    case WEST -> {
+                        angle = (float) (Math.PI / 2);  // 90 degrees
+                        xOffset = offsetAmount;
+                    }
+                    case SOUTH -> {
+                        angle = (float) Math.PI;  // 180 degrees
+                        zOffset = -offsetAmount;
+                    }
+                    case EAST -> {
+                        angle = (float) (Math.PI * 1.5);  // 270 degrees
+                        xOffset = -offsetAmount;
+                    }
+                }
+                display.setLeftRotation(new Quaternionf().rotateY(angle));
+                display.setTranslation(new Vector3f(xOffset, 0, zOffset));
+            } else {
+                display.setLeftRotation(new Quaternionf());
+                display.setTranslation(new Vector3f(0, -0.25f, 0.046875f));
+            }
+        }
+
+        @Override
+        public void clearRemoved() {
+            super.clearRemoved();
+            if (this.level instanceof ServerLevel serverLevel) {
+                final Vec3 offsetPos = Vec3.atCenterOf(this.worldPosition);
+                this.attachment = ChunkAttachment.ofTicking(this.holder, serverLevel, offsetPos);
+            }
+        }
+
+        @Override
+        public void setRemoved() {
+            super.setRemoved();
+            if (this.attachment != null) {
+                this.attachment.destroy();
+                this.attachment = null;
+            }
+        }
+
+        @SuppressWarnings("deprecation")
+        @Override
+        public void setBlockState(BlockState state) {
+            super.setBlockState(state);
+            this.updateVisualState(state);
         }
     }
 }
