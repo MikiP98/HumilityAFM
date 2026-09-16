@@ -180,7 +180,6 @@ public class ItemRegistry {
         if (item instanceof BlockItem blockItem) {
             blockItem.registerBlocks(Item.BY_BLOCK, item);
         }
-
         return (Item) Registry.register(BuiltInRegistries.ITEM, key, item);
     }
     #endif

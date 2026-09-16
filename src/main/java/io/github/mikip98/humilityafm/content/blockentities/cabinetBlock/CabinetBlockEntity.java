@@ -76,6 +76,7 @@ public class CabinetBlockEntity
     @Override
     protected void avlLoadAdditional(AVLDataInput in) {
         in.loadItems(this.items);
+        #if POLYMER storedItemDisplay.setItem(this.items.get(0)); #endif
     }
 
     @Override
@@ -116,23 +117,13 @@ public class CabinetBlockEntity
         return new Quaternionf().rotationY(angle);
     }
     protected void applyTranslations(BlockState state, ItemDisplayElement cabDisplay, ItemDisplayElement itemDisplay) {
-        Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+        final Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
 
-        float pushBack = 0.4525f;
-        float itemPushBack = 0.41f;
+        final float pushBack = 0.4525f;
+        final float itemPushBack = 0.41f;
 
-        Vector3f cabTrans = new Vector3f(facing.getStepX() * -pushBack, 0, facing.getStepZ() * -pushBack);
-        Vector3f itemTrans = new Vector3f(facing.getStepX() * -itemPushBack, 0, facing.getStepZ() * -itemPushBack);
-
-//        cabTrans.set();
-//        itemTrans.set();
-//
-//        switch (facing) {
-//            case NORTH -> { cabTrans.set(0, 0, pushBack); itemTrans.set(0, 0, itemPushBack); }
-//            case SOUTH -> { cabTrans.set(0, 0, -pushBack); itemTrans.set(0, 0, -itemPushBack); }
-//            case EAST -> { cabTrans.set(-pushBack, 0, 0); itemTrans.set(-itemPushBack, 0, 0); }
-//            case WEST -> { cabTrans.set(pushBack, 0, 0); itemTrans.set(itemPushBack, 0, 0); }
-//        }
+        final Vector3f cabTrans = new Vector3f(facing.getStepX() * -pushBack, 0, facing.getStepZ() * -pushBack);
+        final Vector3f itemTrans = new Vector3f(facing.getStepX() * -itemPushBack, 0, facing.getStepZ() * -itemPushBack);
 
         cabDisplay.setTranslation(cabTrans);
         itemDisplay.setTranslation(itemTrans);
@@ -148,14 +139,14 @@ public class CabinetBlockEntity
 
     @Override
     public @NotNull ItemStack removeItem(int slot, int count) {
-        ItemStack result = ImplementedInventory.super.removeItem(slot, count);
+        final ItemStack result = ImplementedInventory.super.removeItem(slot, count);
         if (slot == 0) this.storedItemDisplay.setItem(getItems().get(0));
         return result;
     }
 
     @Override
     public @NotNull ItemStack removeItemNoUpdate(int slot) {
-        ItemStack result = ImplementedInventory.super.removeItemNoUpdate(slot);
+        final ItemStack result = ImplementedInventory.super.removeItemNoUpdate(slot);
         if (slot == 0) this.storedItemDisplay.setItem(ItemStack.EMPTY);
         return result;
     }

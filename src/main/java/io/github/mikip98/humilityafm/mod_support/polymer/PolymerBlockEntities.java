@@ -8,6 +8,7 @@ import eu.pb4.polymer.virtualentity.api.attachment.HolderAttachment;
 import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
 import io.github.mikip98.humilityafm.registries.BlockEntityRegistry;
 import io.mikip98.humilityval.content.block.entity.AVLBlockEntity;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -22,7 +23,24 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 public class PolymerBlockEntities {
+    protected static final Queue<Runnable> ATTACHMENT_QUEUE = new ConcurrentLinkedQueue<>();
+
+    static {
+        ServerTickEvents.END_SERVER_TICK.register(server -> {
+            Runnable task;
+            int processed = 0;
+            // Process up to 500 attachments per tick to prevent server lag spikes
+            while (processed < 500 && (task = ATTACHMENT_QUEUE.poll()) != null) {
+                task.run();
+                processed++;
+            }
+        });
+    }
+
     public static abstract class PolymerBlockEntityBase extends AVLBlockEntity { // implements PolymerItem, PolymerModelData
         protected final ElementHolder holder = new ElementHolder();
         protected final ItemDisplayElement display = new ItemDisplayElement();
@@ -49,8 +67,15 @@ public class PolymerBlockEntities {
             if (this.level instanceof ServerLevel serverLevel) {
                 Vec3 offsetPos = Vec3.atCenterOf(this.worldPosition);
                 if (offset) offsetPos = offsetPos.add(0, 0.51, 0);
-                if (ticking) this.attachment = ChunkAttachment.ofTicking(this.holder, serverLevel, offsetPos);
-                else this.attachment = ChunkAttachment.of(this.holder, serverLevel, offsetPos);
+                final Vec3 finalOffsetPos = offsetPos;
+
+                ATTACHMENT_QUEUE.add(() -> {
+                    // TODO: Apparently prevents a memory leak from instantly destroyed block, but needs double checking
+                    if (this.isRemoved()) return;
+
+                    if (ticking) this.attachment = ChunkAttachment.ofTicking(this.holder, serverLevel, finalOffsetPos);
+                    else this.attachment = ChunkAttachment.of(this.holder, serverLevel, finalOffsetPos);
+                });
             }
         }
 

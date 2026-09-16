@@ -4,14 +4,12 @@ package io.github.mikip98.humilityafm.mod_support.polymer;
 import eu.pb4.polymer.blocks.api.BlockModelType;
 import eu.pb4.polymer.blocks.api.PolymerBlockModel;
 import eu.pb4.polymer.blocks.api.PolymerBlockResourceUtils;
-import eu.pb4.polymer.blocks.api.PolymerTexturedBlock;
 import eu.pb4.polymer.core.api.item.PolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.config.enums.PolymerCabinetFallback;
-import io.github.mikip98.humilityafm.content.blocks.candlestick.Candlestick;
-import io.github.mikip98.humilityafm.content.blocks.candlestick.FloorCandlestick;
+import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.JackOLantern;
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
 import io.github.mikip98.humilityafm.mod_support.SupportedMods;
@@ -20,7 +18,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -42,10 +39,11 @@ public class PolymerModelCache {
 
     public static void requestPolymerModel(Item item, String name) {
         if (item instanceof PolymerItem polymerItem) {
-            Item disguise = polymerItem.getPolymerItem(item.getDefaultInstance(), null);
+            Item disguise = polymerItem.getPolymerItem(PolymerItems.VIRTUAL_ITEM_BASE.getDefaultInstance(), null);
             var modelData = PolymerResourcePackUtils.requestModel(
                     disguise, getId("item/" + name)
             );
+            if (modelData == null) throw new RuntimeException("Failed to disguise item " + name);
             POLYMER_ITEM_MODEL_CACHE.put(item, modelData);
         } else throw new IllegalStateException("Item is not a PolymerItem");
     }
@@ -138,39 +136,50 @@ public class PolymerModelCache {
     }
 
     public static void initLateCache() {
+        // --- CANDLESTICKS ---
         cacheCandlestickBlockItemModels(BlockRegistry.SIMPLE_CANDLESTICK_FLOOR_VARIANTS);
         cacheCandlestickBlockItemModels(BlockRegistry.SIMPLE_CANDLESTICK_WALL_VARIANTS);
         for (Block[] blocks : BlockRegistry.RUSTABLE_CANDLESTICK_FLOOR_VARIANTS) cacheCandlestickBlockItemModels(blocks);
         for (Block[] blocks : BlockRegistry.RUSTABLE_CANDLESTICK_WALL_VARIANTS) cacheCandlestickBlockItemModels(blocks);
-        // TODO: Can't I do this for everything?
+
+        // --- CABINETS ---
+        cacheCabinetOpenModels(BlockRegistry.WALL_CABINET_BLOCK_VARIANTS);
+        cacheCabinetOpenModels(BlockRegistry.FLOOR_CABINET_BLOCK_VARIANTS);
+        cacheCabinetOpenModels(BlockRegistry.WALL_ILLUMINATED_CABINET_BLOCK_VARIANTS);
+        cacheCabinetOpenModels(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_VARIANTS);
+
+        // --- LIGHT STRIPS ---
+        if (BlockRegistry.LIGHT_STRIP_VARIANTS != null) {
+            for (Block block : BlockRegistry.LIGHT_STRIP_VARIANTS) {
+                cacheLightStripModels(block, BuiltInRegistries.BLOCK.getKey(block).getPath());
+            }
+        }
+
+        // ---- JACK O'LANTERNS ---
+        cachedJackOLanternBlockStates(BlockRegistry.JACK_O_LANTERN_REDSTONE);
+        cachedJackOLanternBlockStates(BlockRegistry.JACK_O_LANTERN_SOUL);
+        for (Block block : BlockRegistry.COLOURED_JACK_O_LANTERNS) cachedJackOLanternBlockStates(block);
+
+        // Note: Forced Corner Stairs are done in 'BlockGeneration' as they require material data
     }
 
     protected static void cacheCandlestickBlockItemModels(Block[] blocks) {
-        for (Block block : blocks) {
-            String id = BuiltInRegistries.BLOCK.getKey(block).getPath();
-            cacheCandlestickModels(block, id);
-        }
+        for (Block block : blocks) cacheCandlestickModels(block, BuiltInRegistries.BLOCK.getKey(block).getPath());
     }
 
-    public static void setCachedBlockState(Block block, String name) {
-        // TODO: Make sure this caching caches only what it needs or weather it can replace other caches
-        if (
-                ModConfig.polymerAllowOptimisedJackOLanterns &&
-                        block instanceof PolymerTexturedBlock
-                        && !(
-                        block instanceof PolymerBlocks.PureTexturedBlock ||
-                                block instanceof Candlestick ||
-                                block instanceof FloorCandlestick
-                )
-        ) {
+    protected static void cacheCabinetOpenModels(Block[] blocks) {
+        for (Block block : blocks) cacheOpenCabinetModel(block, BuiltInRegistries.BLOCK.getKey(block).getPath());
+    }
+
+    public static void cachedJackOLanternBlockStates(Block block) {
+        final String name = BuiltInRegistries.BLOCK.getKey(block).getPath();
+        if (ModConfig.polymerAllowOptimisedJackOLanterns && block instanceof JackOLantern) {
             for (BlockState state : block.getStateDefinition().getPossibleStates()) {
-                BlockState mappedState = PolymerBlockResourceUtils.requestBlock(
+                final BlockState mappedState = PolymerBlockResourceUtils.requestBlock(
                         BlockModelType.FULL_BLOCK,
                         PolymerUtil.getModelFromBlockstateVariant(name, state)
                 );
-                if (mappedState != null) {
-                    POLYMER_BLOCK_CACHE.put(state, mappedState);
-                }
+                if (mappedState != null) POLYMER_BLOCK_CACHE.put(state, mappedState);
             }
         }
     }
@@ -182,7 +191,7 @@ public class PolymerModelCache {
         } catch (IllegalStateException e) {
             openModelId = PolymerUtil.getRawModelIdFromBlockstateVariant(name, "facing=north,half=bottom,open=true");
         }
-        PolymerModelData data = PolymerResourcePackUtils.requestModel(PolymerItems.VIRTUAL_ITEM_BASE, openModelId);
+        final PolymerModelData data = PolymerResourcePackUtils.requestModel(PolymerItems.VIRTUAL_ITEM_BASE, openModelId);
         CABINET_OPEN_MODELS.put(block, data);
     }
 
@@ -197,9 +206,9 @@ public class PolymerModelCache {
     }
 
     public static void cacheLightStripModels(Block customStrip, String blockstateName) {
-        #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif innerId =
+        final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif innerId =
                 PolymerUtil.getRawModelIdFromBlockstateVariant(blockstateName, "facing=south,half=bottom,shape=inner_left");
-        #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif outerId =
+        final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif outerId =
                 PolymerUtil.getRawModelIdFromBlockstateVariant(blockstateName, "facing=south,half=bottom,shape=outer_left");
 
         final PolymerModelData innerData = PolymerResourcePackUtils.requestModel(PolymerItems.VIRTUAL_ITEM_BASE, innerId);
@@ -210,7 +219,7 @@ public class PolymerModelCache {
     }
 
     public static void cacheCandlestickModels(Block customCandlestick, String blockstateName) {
-        Map<BlockState, PolymerModelData> stateMap = new IdentityHashMap<>();
+        final Map<BlockState, PolymerModelData> stateMap = new IdentityHashMap<>();
 
         final Item disguiseItem = PolymerItems.VIRTUAL_ITEM_BASE;
 
@@ -222,9 +231,9 @@ public class PolymerModelCache {
             String path = "block/candlestick/" + (isWall ? "wall/" : "standing/") + material + "/" + blockstateName;
 
             // Append the colour and lit states
-            CandleColor color = state.getValue(ModProperties.CANDLE_COLOR);
+            final CandleColor color = state.getValue(ModProperties.CANDLE_COLOR);
             if (color != CandleColor.NONE) {
-                String colorName = color.getSerializedName();
+                final String colorName = color.getSerializedName();
                 if (colorName.equals("plain")) {
                     path += "_candle";
                 } else {
@@ -236,7 +245,7 @@ public class PolymerModelCache {
                 }
             }
 
-            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif modelId = getId(path);
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif modelId = getId(path);
             PolymerModelData modelData = PolymerResourcePackUtils.requestModel(disguiseItem, modelId);
             stateMap.put(state, modelData);
         }

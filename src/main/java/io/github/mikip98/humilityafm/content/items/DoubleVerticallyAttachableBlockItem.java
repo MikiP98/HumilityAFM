@@ -1,7 +1,7 @@
 package io.github.mikip98.humilityafm.content.items;
 
-#if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
 #if POLYMER import eu.pb4.polymer.core.api.item.PolymerItem; #endif
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerItems; #endif
 #if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
 import net.minecraft.core.Direction;
 #if POLYMER import net.minecraft.server.level.ServerPlayer; #endif
@@ -24,9 +24,8 @@ public class DoubleVerticallyAttachableBlockItem extends BlockItem #if POLYMER i
         this.wallBlock = wallBlock;
     }
 
-    @Nullable
     @Override
-    protected BlockState getPlacementState(BlockPlaceContext context) {
+    protected @Nullable BlockState getPlacementState(BlockPlaceContext context) {
         if (context.getNearestLookingDirection() == Direction.UP || context.getNearestLookingDirection() == Direction.DOWN) {
             return this.getBlock().getStateForPlacement(context);
         } else {
@@ -43,10 +42,7 @@ public class DoubleVerticallyAttachableBlockItem extends BlockItem #if POLYMER i
     #if POLYMER
     @Override
     public Item getPolymerItem(ItemStack itemStack, @Nullable ServerPlayer player) {
-        if (this.getBlock() instanceof PolymerBlock polymerBlock) {
-            return polymerBlock.getPolymerBlock(this.getBlock().defaultBlockState()).asItem();
-        }
-        throw new IllegalStateException("Block is not a PolymerBlock");
+        return PolymerItems.VIRTUAL_ITEM_BASE;
     }
 
     @Override

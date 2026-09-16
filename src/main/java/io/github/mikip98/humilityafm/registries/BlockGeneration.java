@@ -65,13 +65,6 @@ public abstract class BlockGeneration {
             final Block illuminatedCabinetBlock = register("wall_illuminated_cabinet_block_" + name, IlluminatedCabinetBlock::new, illuminatedSettingToUse);
             final Block floorIlluminatedCabinetBlock = register("illuminated_cabinet_block_" + name, FloorIlluminatedCabinetBlock::new, illuminatedSettingToUse);
 
-            #if POLYMER
-            PolymerModelCache.cacheOpenCabinetModel(cabinetBlock, "wall_cabinet_block_" + name);
-            PolymerModelCache.cacheOpenCabinetModel(floorCabinetBlock, "cabinet_block_" + name);
-            PolymerModelCache.cacheOpenCabinetModel(illuminatedCabinetBlock, "wall_illuminated_cabinet_block_" + name);
-            PolymerModelCache.cacheOpenCabinetModel(floorIlluminatedCabinetBlock, "illuminated_cabinet_block_" + name);
-            #endif
-
             wallCabinetVariants.add(cabinetBlock);
             floorCabinetVariants.add(floorCabinetBlock);
             wallIlluminatedCabinetVariants.add(illuminatedCabinetBlock);
@@ -304,22 +297,26 @@ public abstract class BlockGeneration {
             for (BlockMaterial material : ActiveGenerationData.colouredFeatureSetMaterials) {
                 final String name = material.getSafeName();
                 // Light Strip
-                final Block lightStrip = registerWithItem("light_strip_" + name, LightStripBlock::new, LightStripBlock.defaultSettings);
-                lightStripVariants.add(lightStrip);
-
-                #if POLYMER
-                PolymerModelCache.cacheLightStripModels(lightStrip, "light_strip_" + name);
-                #endif
+                lightStripVariants.add(
+                        registerWithItem("light_strip_" + name, LightStripBlock::new, LightStripBlock.defaultSettings)
+                );
 
                 // Coloured Torch
-                colouredTorchVariants.add(
-                        register("coloured_torch_" + name, (settings) -> new ColouredTorch(torchParticle, settings), ColouredTorch.defaultSettings)
-                );
-                colouredWallTorchVariants.add(
-                        register("coloured_wall_torch_" + name, (settings) -> new ColouredWallTorch(torchParticle, settings), ColouredWallTorch.defaultSettings)
-                );
+                colouredTorchVariants.add(register(
+                        "coloured_torch_" + name,
+                        (settings) -> new ColouredTorch(torchParticle, settings),
+                        ColouredTorch.defaultSettings
+                ));
+                colouredWallTorchVariants.add(register(
+                        "coloured_wall_torch_" + name,
+                        (settings) -> new ColouredWallTorch(torchParticle, settings),
+                        ColouredWallTorch.defaultSettings
+                ));
+
                 // Coloured Jack O'Lantern
-                colouredJackOLanterns.add(registerWithItem("coloured_jack_o_lantern_" + name, ColouredJackOLantern::new, ColouredJackOLantern.defaultSettings));
+                colouredJackOLanterns.add(registerWithItem(
+                        "coloured_jack_o_lantern_" + name, ColouredJackOLantern::new, ColouredJackOLantern.defaultSettings
+                ));
             }
             return new ColouredFeatureBlockSet(
                     lightStripVariants.toArray(Block[]::new),

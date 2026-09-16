@@ -1,7 +1,6 @@
 #if POLYMER
 package io.github.mikip98.humilityafm.mod_support.polymer;
 
-import eu.pb4.polymer.core.api.block.PolymerBlock;
 import eu.pb4.polymer.core.api.item.PolymerItem;
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import net.minecraft.server.level.ServerPlayer;
@@ -14,6 +13,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class PolymerItems {
     public static final Item VIRTUAL_ITEM_BASE = Items.GLOWSTONE_DUST;
+    // TODO: Add a config for item like items or block like items or dynamic
+    //  *Normal items have buggy block placement*
 
     public static class PolymerItemImpl extends SimplePolymerItem {
         public PolymerItemImpl(Properties properties) {
@@ -31,10 +32,7 @@ public class PolymerItems {
         }
         @Override
         public Item getPolymerItem(ItemStack itemStack, @Nullable ServerPlayer player) {
-            if (this.getBlock() instanceof PolymerBlock polymerBlock) {
-                return polymerBlock.getPolymerBlock(this.getBlock().defaultBlockState()).asItem();
-            }
-            throw new IllegalStateException("Block is not a PolymerBlock");
+            return VIRTUAL_ITEM_BASE;
         }
         @Override
         public int getPolymerCustomModelData(ItemStack itemStack, @Nullable ServerPlayer player) {

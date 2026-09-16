@@ -6,7 +6,6 @@ import io.github.mikip98.humilityafm.content.blocks.cabinet.FloorIlluminatedCabi
 import io.github.mikip98.humilityafm.content.blocks.cabinet.IlluminatedCabinetBlock;
 import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.JackOLanternRedStone;
 import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.JackOLanternSoul;
-#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
 #if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerUtil; #endif
 #if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerItems; #endif
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
@@ -125,9 +124,7 @@ public class BlockRegistry extends BlockGeneration {
 
     public static <T extends Block> T register(String name, Function<BlockBehaviour.Properties, T> blockFactory, BlockBehaviour.Properties settings) {
         #if MC_VERSION < 12104
-        final T block = blockFactory.apply(settings);
-        #if POLYMER PolymerModelCache.setCachedBlockState(block, name); #endif
-        return Registry.register(BuiltInRegistries.BLOCK, getId(name), block);
+        return Registry.register(BuiltInRegistries.BLOCK, getId(name), blockFactory.apply(settings));
         #else
         assert cache != null;
         if (cache.containsKey(settings)) {
@@ -135,8 +132,6 @@ public class BlockRegistry extends BlockGeneration {
         } else {
             final T block = registerRaw(name, blockFactory, settings);
             cache.put(settings, block);
-        }
-        #if POLYMER Polymer.requestPolymerBlock(block, name); #endif
         return block;
         #endif
     }
