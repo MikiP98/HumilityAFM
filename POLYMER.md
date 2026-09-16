@@ -7,10 +7,9 @@ If you want to know what HumilityAFM is, please see the original's mod descripti
 **IT IS RECOMMENDED THOUGH TO USE THE ORIGINAL NON-SERVER SIDE ONLY MOD WHEN POSSIBLE**
 
 Due to Polymer's mod limitation, this is quite a compromised experience compared to the full mod, which include:
-- Possible incorrect block lighting
+- Possible incorrect block lighting and shading
 - Incorrect hitboxes
 - Lower server and rendering performance
 - Missing or changed sounds
 - Buggy interactions
-
-Plus the downsides that come with using Polymer itself, that is VERY HIGH CHANCE OF WORLD CORRUPTION.
+- Chance of world deadlock
