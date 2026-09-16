@@ -1,6 +1,6 @@
 package io.github.mikip98.humilityafm.util.generation_data;
 
-import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
+import io.github.mikip98.humilityafm.mod_support.SupportedMods;
 import io.github.mikip98.humilityafm.util.simple_iterables.MultiArrayIterable;
 import io.github.mikip98.humilityafm.util.simple_iterables.MultiIterableIterable;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockStrength;
@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.Blocks;
 
 import java.util.*;
 
-import static io.github.mikip98.humilityafm.util.mod_support.SupportedMods.*;
+import static io.github.mikip98.humilityafm.mod_support.SupportedMods.*;
 
 // TODO: Make this stuff protected, so it can only be used in ActiveGenerationData
 public abstract class RawGenerationData {

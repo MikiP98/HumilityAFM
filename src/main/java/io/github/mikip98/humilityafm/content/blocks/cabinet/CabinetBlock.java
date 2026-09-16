@@ -6,7 +6,7 @@ import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.Implemen
 import io.github.mikip98.humilityafm.content.blocks.Waterloggable;
 import io.github.mikip98.humilityafm.content.blocks.templates.PlainHorizontalFacingBlock;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetBlockEntity;
-#if POLYMER import io.github.mikip98.humilityafm.registries.Polymer; #endif
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
 import io.github.mikip98.humilityafm.util.SoundUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -216,10 +216,10 @@ public class CabinetBlock extends PlainHorizontalFacingBlock implements Waterlog
     public BlockState getPolymerBlockState(BlockState state) {
         final Direction dir = state.getValue(FACING);
         return switch (dir) {
-            case NORTH -> Polymer.CABINET_NORTH_DISGUISE;
-            case EAST -> Polymer.CABINET_EAST_DISGUISE;
-            case SOUTH -> Polymer.CABINET_SOUTH_DISGUISE;
-            case WEST -> Polymer.CABINET_WEST_DISGUISE;
+            case NORTH -> PolymerModelCache.CABINET_NORTH_DISGUISE;
+            case EAST -> PolymerModelCache.CABINET_EAST_DISGUISE;
+            case SOUTH -> PolymerModelCache.CABINET_SOUTH_DISGUISE;
+            case WEST -> PolymerModelCache.CABINET_WEST_DISGUISE;
             default -> throw new IllegalStateException();
         };
     }

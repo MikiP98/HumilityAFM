@@ -2,7 +2,8 @@ package io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns;
 
 #if POLYMER import eu.pb4.polymer.blocks.api.PolymerTexturedBlock; #endif
 import io.github.mikip98.humilityafm.content.blocks.templates.PlainHorizontalFacingBlock;
-#if POLYMER import io.github.mikip98.humilityafm.registries.Polymer; #endif
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerBlockEntities; #endif
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
 #if POLYMER import net.minecraft.core.BlockPos; #endif
 #if POLYMER import net.minecraft.world.level.block.Block; #endif
 import net.minecraft.world.level.block.Blocks;
@@ -25,16 +26,14 @@ public abstract class JackOLantern extends PlainHorizontalFacingBlock #if POLYME
     #if POLYMER
     @Override
     public Block getPolymerBlock(BlockState state) {
-        BlockState mapped = Polymer.POLYMER_BLOCK_CACHE.get(state);
+        BlockState mapped = PolymerModelCache.POLYMER_BLOCK_CACHE.get(state);
         return mapped != null ? mapped.getBlock() : Blocks.JACK_O_LANTERN;
     }
 
     @Override
     public BlockState getPolymerBlockState(BlockState state) {
-        BlockState mapped = Polymer.POLYMER_BLOCK_CACHE.get(state);
-        if (mapped != null) {
-            return mapped;
-        }
+        BlockState mapped = PolymerModelCache.POLYMER_BLOCK_CACHE.get(state);
+        if (mapped != null) return mapped;
         return Blocks.JACK_O_LANTERN.defaultBlockState()
                 .setValue(BlockStateProperties.HORIZONTAL_FACING, state.getValue(FACING));
     }
@@ -42,8 +41,8 @@ public abstract class JackOLantern extends PlainHorizontalFacingBlock #if POLYME
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        if (Polymer.POLYMER_BLOCK_CACHE.get(state) == null) {
-            return new Polymer.FallbackBlockEntity(pos, state);
+        if (PolymerModelCache.POLYMER_BLOCK_CACHE.get(state) == null) {
+            return new PolymerBlockEntities.FallbackBlockEntity(pos, state);
         }
         return null;
     }

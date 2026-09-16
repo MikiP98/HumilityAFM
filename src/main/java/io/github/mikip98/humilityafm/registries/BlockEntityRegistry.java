@@ -7,6 +7,7 @@ import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetB
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorCabinetBlockEntity;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorIlluminatedCabinetBlockEntity;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.IlluminatedCabinetBlockEntity;
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerBlockEntities; #endif
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -31,9 +32,9 @@ public class BlockEntityRegistry {
     public static BlockEntityType<LightStripBlockEntity> LIGHT_STRIP_BLOCK_ENTITY;
 
     #if POLYMER
-    public static BlockEntityType<Polymer.FallbackBlockEntity> FALLBACK_BLOCK_ENTITY;
-    public static BlockEntityType<Polymer.ColouredTorchBlockEntity> COLOURED_TORCH_BLOCK_ENTITY;
-    public static BlockEntityType<Polymer.CandlestickBlockEntity> CANDLESTICK_BLOCK_ENTITY;
+    public static BlockEntityType<PolymerBlockEntities.FallbackBlockEntity> FALLBACK_BLOCK_ENTITY;
+    public static BlockEntityType<PolymerBlockEntities.ColouredTorchBlockEntity> COLOURED_TORCH_BLOCK_ENTITY;
+    public static BlockEntityType<PolymerBlockEntities.CandlestickBlockEntity> CANDLESTICK_BLOCK_ENTITY;
     #endif
 
     public static void register() {
@@ -74,17 +75,17 @@ public class BlockEntityRegistry {
         #if POLYMER
         FALLBACK_BLOCK_ENTITY = register(
                 "polymer_fallback_block_entity",
-                Polymer.FallbackBlockEntity::new,
+                PolymerBlockEntities.FallbackBlockEntity::new,
                 concat(BlockRegistry.WOODEN_MOSAIC_VARIANTS, BlockRegistry.TERRACOTTA_TILE_VARIANTS)
         );
         COLOURED_TORCH_BLOCK_ENTITY = register(
                 "polymer_coloured_torch_block_entity",
-                Polymer.ColouredTorchBlockEntity::new,
+                PolymerBlockEntities.ColouredTorchBlockEntity::new,
                 concat(BlockRegistry.COLOURED_TORCH_VARIANTS, BlockRegistry.COLOURED_WALL_TORCH_VARIANTS)
         );
         CANDLESTICK_BLOCK_ENTITY = register(
                 "polymer_candlestick_block_entity",
-                Polymer.CandlestickBlockEntity::new,
+                PolymerBlockEntities.CandlestickBlockEntity::new,
                 concat(
                         BlockRegistry.SIMPLE_CANDLESTICK_FLOOR_VARIANTS,
                         BlockRegistry.SIMPLE_CANDLESTICK_WALL_VARIANTS,

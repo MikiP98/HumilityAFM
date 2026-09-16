@@ -3,7 +3,7 @@ package io.github.mikip98.humilityafm.datagen;
 import io.github.mikip98.humilityafm.content.tags.ModBlockTags;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
-import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
+import io.github.mikip98.humilityafm.mod_support.SupportedMods;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.MaterialType;
 #if MC_VERSION < 260000

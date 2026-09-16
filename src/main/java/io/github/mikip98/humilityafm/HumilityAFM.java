@@ -2,10 +2,12 @@ package io.github.mikip98.humilityafm;
 
 #if POLYMER import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils; #endif
 import io.github.mikip98.humilityafm.config.ConfigJSON;
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerUtil; #endif
 import io.github.mikip98.humilityafm.registries.*;
 import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
-import io.github.mikip98.humilityafm.util.mod_support.ModSupportManager;
-import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
+import io.github.mikip98.humilityafm.mod_support.ModSupportManager;
+import io.github.mikip98.humilityafm.mod_support.SupportedMods;
 import net.fabricmc.api.ModInitializer;
 #if MC_VERSION < 12111
 import net.minecraft.resources.ResourceLocation;
@@ -37,7 +39,7 @@ public class HumilityAFM implements ModInitializer {
 		ActiveGenerationData.init();  // Initialize active generation data according to which of the supported mods are loaded
 
 		#if POLYMER
-		Polymer.init();
+		PolymerUtil.init();
 		PolymerResourcePackUtils.addModAssets(MOD_ID);
 		PolymerResourcePackUtils.markAsRequired();
 		#endif
@@ -58,7 +60,7 @@ public class HumilityAFM implements ModInitializer {
 		#endif
 
 		#if POLYMER
-		Polymer.initLateCache();
+        PolymerModelCache.initLateCache();
 		#endif
 
 

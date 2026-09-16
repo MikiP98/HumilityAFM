@@ -3,7 +3,7 @@ package io.github.mikip98.humilityafm.config;
 import io.github.mikip98.humilityafm.config.enums.CreativeItemGroupCategorization;
 import io.github.mikip98.humilityafm.config.enums.ModSupportState;
 #if POLYMER import io.github.mikip98.humilityafm.config.enums.PolymerCabinetFallback; #endif
-import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
+import io.github.mikip98.humilityafm.mod_support.SupportedMods;
 import lombok.Setter;
 
 import java.util.Map;

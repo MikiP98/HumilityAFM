@@ -1,13 +1,12 @@
 package io.github.mikip98.humilityafm.datagen;
 
 #if MC_VERSION < 12104
-import io.github.mikip98.humilityafm.datagen.AFMRecipeProvider;
 #endif
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
 import io.github.mikip98.humilityafm.util.generation_data.RawGenerationData;
-import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
+import io.github.mikip98.humilityafm.mod_support.SupportedMods;
 import io.github.mikip98.humilityafm.util.Pair;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.MaterialType;
@@ -31,8 +30,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 #else
 import net.minecraft.data.recipes.RecipeOutput;
 #endif
-import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.world.item.Item;
+        import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;

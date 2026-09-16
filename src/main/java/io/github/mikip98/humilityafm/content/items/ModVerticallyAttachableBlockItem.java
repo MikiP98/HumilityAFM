@@ -2,7 +2,7 @@ package io.github.mikip98.humilityafm.content.items;
 
 #if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
 #if POLYMER import eu.pb4.polymer.core.api.item.PolymerItem; #endif
-#if POLYMER import io.github.mikip98.humilityafm.registries.Polymer; #endif
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
 import net.minecraft.core.Direction;
 #if POLYMER import net.minecraft.server.level.ServerPlayer; #endif
 import net.minecraft.world.item.BlockItem;
@@ -56,7 +56,7 @@ public class ModVerticallyAttachableBlockItem extends BlockItem #if POLYMER impl
 
     @Override
     public int getPolymerCustomModelData(ItemStack itemStack, @Nullable ServerPlayer player) {
-        return Polymer.POLYMER_ITEM_MODEL_CACHE.get(this).value();
+        return PolymerModelCache.POLYMER_ITEM_MODEL_CACHE.get(this).value();
     }
     #endif
 }

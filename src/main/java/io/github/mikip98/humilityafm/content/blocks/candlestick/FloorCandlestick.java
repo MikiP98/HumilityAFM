@@ -6,7 +6,8 @@ import io.github.mikip98.humilityafm.content.blocks.Waterloggable;
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.SimpleCandlestickLogic;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
-#if POLYMER import io.github.mikip98.humilityafm.registries.Polymer; #endif
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerBlockEntities; #endif
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
 import net.minecraft.core.BlockPos;
 #if MC_VERSION >= 12105 import net.minecraft.server.level.ServerLevel; #endif
 import net.minecraft.util.RandomSource;
@@ -129,12 +130,12 @@ public class FloorCandlestick extends Block implements SimpleCandlestickLogic, W
 
     @Override
     public BlockState getPolymerBlockState(BlockState state) {
-        return Polymer.LIGHT_STRIP_BOTTOM_DISGUISE;
+        return PolymerModelCache.LIGHT_STRIP_BOTTOM_DISGUISE;
     }
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new Polymer.CandlestickBlockEntity(pos, state);
+        return new PolymerBlockEntities.CandlestickBlockEntity(pos, state);
     }
     #endif
 }

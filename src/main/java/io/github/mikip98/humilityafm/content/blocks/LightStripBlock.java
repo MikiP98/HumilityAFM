@@ -3,7 +3,7 @@ package io.github.mikip98.humilityafm.content.blocks;
 #if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
 #if POLYMER import eu.pb4.polymer.blocks.api.PolymerTexturedBlock; #endif
 import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntity;
-#if POLYMER import io.github.mikip98.humilityafm.registries.Polymer; #endif
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 #if POLYMER import net.minecraft.server.level.ServerLevel; #endif
@@ -236,7 +236,7 @@ public class LightStripBlock extends StairBlock implements EntityBlock #if POLYM
 
     @Override
     public BlockState getPolymerBlockState(BlockState state) {
-        return state.getValue(HALF) == Half.TOP ? Polymer.LIGHT_STRIP_TOP_DISGUISE : Polymer.LIGHT_STRIP_BOTTOM_DISGUISE;
+        return state.getValue(HALF) == Half.TOP ? PolymerModelCache.LIGHT_STRIP_TOP_DISGUISE : PolymerModelCache.LIGHT_STRIP_BOTTOM_DISGUISE;
     }
 
     @Override

@@ -3,7 +3,7 @@ package io.github.mikip98.humilityafm.config;
 import io.github.mikip98.humilityafm.config.enums.CreativeItemGroupCategorization;
 import io.github.mikip98.humilityafm.config.enums.ModSupportState;
 import io.github.mikip98.humilityafm.config.enums.PolymerCabinetFallback;
-import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
+import io.github.mikip98.humilityafm.mod_support.SupportedMods;
 
 import java.util.Arrays;
 import java.util.HashMap;

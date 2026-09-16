@@ -16,12 +16,13 @@ import io.github.mikip98.humilityafm.content.blocks.coloured_torch.ColouredWallT
 import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.ColouredJackOLantern;
 import io.github.mikip98.humilityafm.content.blocks.stairs.InnerStairs;
 import io.github.mikip98.humilityafm.content.blocks.stairs.OuterStairs;
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
 import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
 import io.github.mikip98.humilityafm.util.generation_data.RawGenerationData;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockStrength;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.MaterialType;
-import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
+import io.github.mikip98.humilityafm.mod_support.SupportedMods;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.world.level.block.Block;
@@ -65,10 +66,10 @@ public abstract class BlockGeneration {
             final Block floorIlluminatedCabinetBlock = register("illuminated_cabinet_block_" + name, FloorIlluminatedCabinetBlock::new, illuminatedSettingToUse);
 
             #if POLYMER
-            Polymer.cacheOpenCabinetModel(cabinetBlock, "wall_cabinet_block_" + name);
-            Polymer.cacheOpenCabinetModel(floorCabinetBlock, "cabinet_block_" + name);
-            Polymer.cacheOpenCabinetModel(illuminatedCabinetBlock, "wall_illuminated_cabinet_block_" + name);
-            Polymer.cacheOpenCabinetModel(floorIlluminatedCabinetBlock, "illuminated_cabinet_block_" + name);
+            PolymerModelCache.cacheOpenCabinetModel(cabinetBlock, "wall_cabinet_block_" + name);
+            PolymerModelCache.cacheOpenCabinetModel(floorCabinetBlock, "cabinet_block_" + name);
+            PolymerModelCache.cacheOpenCabinetModel(illuminatedCabinetBlock, "wall_illuminated_cabinet_block_" + name);
+            PolymerModelCache.cacheOpenCabinetModel(floorIlluminatedCabinetBlock, "illuminated_cabinet_block_" + name);
             #endif
 
             wallCabinetVariants.add(cabinetBlock);
@@ -138,12 +139,12 @@ public abstract class BlockGeneration {
             #if POLYMER
             innerStairsConstructor = (properties) -> {
                 final Block stairs = new InnerStairs(properties);
-                Polymer.cacheStairBase(stairs, sourceMod, variant.name());
+                PolymerModelCache.cacheStairBase(stairs, sourceMod, variant.name());
                 return stairs;
             };
             outerStairsConstructor = (properties) -> {
                 final Block stairs = new OuterStairs(properties);
-                Polymer.cacheStairBase(stairs, sourceMod, variant.name());
+                PolymerModelCache.cacheStairBase(stairs, sourceMod, variant.name());
                 return stairs;
             };
             #endif
@@ -307,7 +308,7 @@ public abstract class BlockGeneration {
                 lightStripVariants.add(lightStrip);
 
                 #if POLYMER
-                Polymer.cacheLightStripModels(lightStrip, "light_strip_" + name);
+                PolymerModelCache.cacheLightStripModels(lightStrip, "light_strip_" + name);
                 #endif
 
                 // Coloured Torch

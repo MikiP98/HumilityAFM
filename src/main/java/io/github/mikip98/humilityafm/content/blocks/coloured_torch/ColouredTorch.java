@@ -3,7 +3,7 @@ package io.github.mikip98.humilityafm.content.blocks.coloured_torch;
 #if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
 #if MC_VERSION >= 12003 import com.mojang.serialization.codecs.RecordCodecBuilder; #endif
 #if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
-#if POLYMER import io.github.mikip98.humilityafm.registries.Polymer; #endif
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerBlockEntities; #endif
 import io.github.mikip98.humilityafm.util.SoundUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -95,7 +95,7 @@ public class ColouredTorch extends TorchBlock #if POLYMER implements EntityBlock
     }
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new Polymer.ColouredTorchBlockEntity(pos, state);
+        return new PolymerBlockEntities.ColouredTorchBlockEntity(pos, state);
     }
     #endif
 }

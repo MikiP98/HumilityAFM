@@ -7,7 +7,8 @@ import io.github.mikip98.humilityafm.content.blocks.templates.PlainHorizontalFac
 import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.SimpleCandlestickLogic;
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
-#if POLYMER import io.github.mikip98.humilityafm.registries.Polymer; #endif
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerBlockEntities; #endif
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 #if MC_VERSION >= 12105 import net.minecraft.server.level.ServerLevel; #endif
@@ -191,7 +192,6 @@ public class Candlestick extends PlainHorizontalFacingBlock implements SimpleCan
                 case EAST -> candleWickX -= 0.15;
                 case WEST -> candleWickX += 0.15;
             }
-
             performRandomDisplayTick(level, candleWickX, candleWickY, candleWickZ, random);
         }
     }
@@ -248,17 +248,17 @@ public class Candlestick extends PlainHorizontalFacingBlock implements SimpleCan
     public BlockState getPolymerBlockState(BlockState state) {
         final Direction dir = state.getValue(FACING);
         return switch (dir) {
-            case NORTH -> Polymer.CABINET_NORTH_DISGUISE;
-            case EAST -> Polymer.CABINET_EAST_DISGUISE;
-            case SOUTH -> Polymer.CABINET_SOUTH_DISGUISE;
-            case WEST -> Polymer.CABINET_WEST_DISGUISE;
+            case NORTH -> PolymerModelCache.CABINET_NORTH_DISGUISE;
+            case EAST -> PolymerModelCache.CABINET_EAST_DISGUISE;
+            case SOUTH -> PolymerModelCache.CABINET_SOUTH_DISGUISE;
+            case WEST -> PolymerModelCache.CABINET_WEST_DISGUISE;
             default -> throw new IllegalStateException();
         };
     }
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new Polymer.CandlestickBlockEntity(pos, state);
+        return new PolymerBlockEntities.CandlestickBlockEntity(pos, state);
     }
     #endif
 }

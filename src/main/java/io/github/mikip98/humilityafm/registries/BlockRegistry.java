@@ -6,6 +6,9 @@ import io.github.mikip98.humilityafm.content.blocks.cabinet.FloorIlluminatedCabi
 import io.github.mikip98.humilityafm.content.blocks.cabinet.IlluminatedCabinetBlock;
 import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.JackOLanternRedStone;
 import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.JackOLanternSoul;
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerUtil; #endif
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerItems; #endif
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 #if MC_VERSION < 12104 import net.minecraft.core.Registry; #endif
 #if MC_VERSION < 12104 import net.minecraft.core.registries.BuiltInRegistries; #endif
@@ -96,7 +99,7 @@ public class BlockRegistry extends BlockGeneration {
     public static Block registerWithItem(String name, BlockBehaviour.Properties settings #if POLYMER, Block disguise #endif) {
         return registerWithItem(name,
                 #if POLYMER
-                (s) -> Polymer.createTexturedBlock(s, disguise, name)
+                (s) -> PolymerUtil.createTexturedBlock(s, disguise, name)
                 #else
                 Block::new
                 #endif,
@@ -107,7 +110,7 @@ public class BlockRegistry extends BlockGeneration {
     public static <T extends Block> T registerWithItem(String name, Function<BlockBehaviour.Properties, T> blockFactory, BlockBehaviour.Properties settings) {
         final T block = register(name, blockFactory, settings);
         ItemRegistry.register(
-                name, (itemSettings) -> new #if POLYMER Polymer.PolymerBlockItemImpl #else BlockItem #endif(block, itemSettings)
+                name, (itemSettings) -> new #if POLYMER PolymerItems.PolymerBlockItemImpl #else BlockItem #endif(block, itemSettings)
         );
         return block;
     }
@@ -123,7 +126,7 @@ public class BlockRegistry extends BlockGeneration {
     public static <T extends Block> T register(String name, Function<BlockBehaviour.Properties, T> blockFactory, BlockBehaviour.Properties settings) {
         #if MC_VERSION < 12104
         final T block = blockFactory.apply(settings);
-        #if POLYMER Polymer.setCachedBlockState(block, name); #endif
+        #if POLYMER PolymerModelCache.setCachedBlockState(block, name); #endif
         return Registry.register(BuiltInRegistries.BLOCK, getId(name), block);
         #else
         assert cache != null;

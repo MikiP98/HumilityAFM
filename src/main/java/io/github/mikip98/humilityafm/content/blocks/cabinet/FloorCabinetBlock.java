@@ -2,7 +2,7 @@ package io.github.mikip98.humilityafm.content.blocks.cabinet;
 
 #if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorCabinetBlockEntity;
-#if POLYMER import io.github.mikip98.humilityafm.registries.Polymer; #endif
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -70,7 +70,7 @@ public class FloorCabinetBlock extends CabinetBlock implements EntityBlock {
     #if POLYMER
     @Override
     public BlockState getPolymerBlockState(BlockState state) {
-        return state.getValue(HALF) == Half.BOTTOM ? Polymer.CABINET_BOTTOM_DISGUISE : Polymer.CABINET_TOP_DISGUISE;
+        return state.getValue(HALF) == Half.BOTTOM ? PolymerModelCache.CABINET_BOTTOM_DISGUISE : PolymerModelCache.CABINET_TOP_DISGUISE;
     }
     #endif
 }

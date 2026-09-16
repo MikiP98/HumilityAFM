@@ -3,6 +3,8 @@ package io.github.mikip98.humilityafm.registries;
 import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.content.items.DoubleVerticallyAttachableBlockItem;
 import io.github.mikip98.humilityafm.content.items.ModVerticallyAttachableBlockItem;
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerItems; #endif
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
 import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
 import io.github.mikip98.humilityafm.util.generation_data.RawGenerationData;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.SizedIterable;
@@ -153,7 +155,7 @@ public class ItemRegistry {
 
 
     public static Item register(String name) {
-        return register(name, #if POLYMER Polymer.PolymerItemImpl::new #else Item::new #endif);
+        return register(name, #if POLYMER PolymerItems.PolymerItemImpl::new #else Item::new #endif);
     }
     public static Item register(String name, Function<Item.Properties, Item> factory) {
         return register(name, factory, new Item.Properties());
@@ -161,7 +163,7 @@ public class ItemRegistry {
     #if MC_VERSION < 12104
     public static Item register(String name, Function<Item.Properties, Item> factory, Item.Properties settings) {
         final Item item = Registry.register(BuiltInRegistries.ITEM, getId(name), factory.apply(settings));
-        #if POLYMER Polymer.requestPolymerModel(item, name); #endif
+        #if POLYMER PolymerModelCache.requestPolymerModel(item, name); #endif
         return item;
     }
     #else
