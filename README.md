@@ -100,13 +100,16 @@ Lighten up your builds with unobtrusive light source
 - Double check everything is using SoundUtils and not raw world sounds
 - Consider making ParticleUtil for particle creation
 - Update the building instructions
-- Why floor and wall cabinets have separate models? Remove one!
 - Fix coloured torches not dropping and their dropped model size
 - Double check if the correct model (texture) is used for the non-lit candlesticks with candles
 - Check that the polymorph to suggested Gradle code is disabled on 1.20.1 and so
 - Fix light strip voxel shape
 - Add Unit tests
 - Check if Cabinets drop their item on destruction in 26.1+
+- Make the Polymer Block entity base into Humility VAL
+- Collect all the TODO comments and add them properly to the roadmap
+- Port to MC 26.3
+- Redo the config with Cloth Config Auto Config + extensions
 
 [//]: # (- Improve Cabinet PBR texture: Roughness of zero, f0/reflectance of like either 0.02 or 0.1)
 
@@ -186,9 +189,12 @@ Lighten up your builds with unobtrusive light source
 ### Done:
 
 - Moved to mojmap :(
-- Updated to Minecraft 26.1
+- Added support for Minecraft versions: 
+  - 26.1.2
+  - 26.2
 - Added Polymer support
 - Fixed all the codecs
+- Removed duplicated Cabinet model
 
 <br>
 
