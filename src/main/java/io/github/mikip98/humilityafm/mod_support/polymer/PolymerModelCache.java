@@ -26,9 +26,9 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.Half;
 
+import java.util.EnumMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.*;
 
@@ -54,56 +54,61 @@ public class PolymerModelCache {
     public static final Map<Block, Map<BlockState, PolymerModelData>> CANDLESTICK_MODEL_CACHE = new IdentityHashMap<>();
 
     public static final Map<Block, PolymerModelData> CABINET_OPEN_MODELS = new IdentityHashMap<>();
-    public static BlockState CABINET_TOP_DISGUISE = null;
-    public static BlockState CABINET_NORTH_DISGUISE = null;
-    public static BlockState CABINET_EAST_DISGUISE = null;
-    public static BlockState CABINET_SOUTH_DISGUISE = null;
-    public static BlockState CABINET_WEST_DISGUISE = null;
-    public static BlockState CABINET_BOTTOM_DISGUISE = null;
+    public static BlockState CABINET_TOP_DISGUISE;
+    public static BlockState CABINET_NORTH_DISGUISE;
+    public static BlockState CABINET_EAST_DISGUISE;
+    public static BlockState CABINET_SOUTH_DISGUISE;
+    public static BlockState CABINET_WEST_DISGUISE;
+    public static BlockState CABINET_BOTTOM_DISGUISE;
 
     public static final Map<Block, PolymerModelData> LIGHT_STRIP_INNER_MODELS = new IdentityHashMap<>();
     public static final Map<Block, PolymerModelData> LIGHT_STRIP_OUTER_MODELS = new IdentityHashMap<>();
-    public static BlockState LIGHT_STRIP_TOP_DISGUISE = null;
-    public static BlockState LIGHT_STRIP_BOTTOM_DISGUISE = null;
+    public static BlockState LIGHT_STRIP_TOP_DISGUISE;
+    public static BlockState LIGHT_STRIP_BOTTOM_DISGUISE;
+
+    protected static final PolymerBlockModel EMPTY_MODEL = PolymerBlockModel.of(getId("block/empty"));
+    protected static final Map<BlockModelType, BlockState> EMPTY_STATE_CACHE = new EnumMap<>(BlockModelType.class);
+
+    protected static BlockState getEmptyState(BlockModelType type) {
+        if (type == null) return null;
+        if (EMPTY_STATE_CACHE.containsKey(type)) return EMPTY_STATE_CACHE.get(type);
+        final BlockState state =
+                #if MC_VERSION < 12100
+                PolymerBlockResourceUtils.requestBlock(type, EMPTY_MODEL);
+                #else
+                PolymerBlockResourceUtils.requestEmpty(type, EMPTY_MODEL);
+                #endif
+        EMPTY_STATE_CACHE.put(type, state);
+        return state;
+    }
+
+    protected static BlockState resolveFallback(BlockState finalFallback, BlockModelType... fallbackTree) {
+        for (BlockModelType type : fallbackTree) {
+            final BlockState state = getEmptyState(type);
+            if (state != null) return state;
+        }
+        return finalFallback;
+    }
 
     static {
-        final PolymerBlockModel emptyModel = PolymerBlockModel.of(getId("block/empty"));
+        BlockState cabinetFinalFallbackTop;
+        BlockState cabinetFinalFallbackNorth;
+        BlockState cabinetFinalFallbackEast;
+        BlockState cabinetFinalFallbackSouth;
+        BlockState cabinetFinalFallbackWest;
+        BlockState cabinetFinalFallbackBottom;
 
-        // TODO: For all the below use .requestEmpty() instead of .requestBlock() when available
-        final Function<BlockModelType, BlockState> remapper =
-                (type) -> PolymerBlockResourceUtils.requestBlock(type, emptyModel);
-
-        // TODO: Try BlockModelType.{dir}_TRAPDOOR first when available
-        // TODO: Try BlockModelType.{dir}_DOOR first when available
-        if (ModConfig.polymerAllowSemiFunctionalCabinetStates) {
-            if (
-                    CABINET_TOP_DISGUISE == null ||
-                            CABINET_NORTH_DISGUISE == null ||
-                            CABINET_EAST_DISGUISE == null ||
-                            CABINET_SOUTH_DISGUISE == null ||
-                            CABINET_WEST_DISGUISE == null ||
-                            CABINET_BOTTOM_DISGUISE == null
-            ) {
-                final BlockState mappedState = remapper.apply(BlockModelType.TRANSPARENT_BLOCK);
-                if (CABINET_TOP_DISGUISE == null) CABINET_TOP_DISGUISE = mappedState;
-                if (CABINET_NORTH_DISGUISE == null) CABINET_NORTH_DISGUISE = mappedState;
-                if (CABINET_EAST_DISGUISE == null) CABINET_EAST_DISGUISE = mappedState;
-                if (CABINET_SOUTH_DISGUISE == null) CABINET_SOUTH_DISGUISE = mappedState;
-                if (CABINET_WEST_DISGUISE == null) CABINET_WEST_DISGUISE = mappedState;
-                if (CABINET_BOTTOM_DISGUISE == null) CABINET_BOTTOM_DISGUISE = mappedState;
-            }
-        }
         if (
                 ModConfig.polymerAllowSemiFunctionalCabinetStates &&
-                        ModConfig.polymerCabinetFinalFallback == PolymerCabinetFallback.GLASS
+                ModConfig.polymerCabinetFinalFallback == PolymerCabinetFallback.GLASS
         ) {
             final BlockState lastFallback = Blocks.GLASS.defaultBlockState();
-            if (CABINET_TOP_DISGUISE == null) CABINET_TOP_DISGUISE = lastFallback;
-            if (CABINET_NORTH_DISGUISE == null) CABINET_NORTH_DISGUISE = lastFallback;
-            if (CABINET_EAST_DISGUISE == null) CABINET_EAST_DISGUISE = lastFallback;
-            if (CABINET_SOUTH_DISGUISE == null) CABINET_SOUTH_DISGUISE = lastFallback;
-            if (CABINET_WEST_DISGUISE == null) CABINET_WEST_DISGUISE = lastFallback;
-            if (CABINET_BOTTOM_DISGUISE == null) CABINET_BOTTOM_DISGUISE = lastFallback;
+            cabinetFinalFallbackTop = lastFallback;
+            cabinetFinalFallbackNorth = lastFallback;
+            cabinetFinalFallbackEast = lastFallback;
+            cabinetFinalFallbackSouth = lastFallback;
+            cabinetFinalFallbackWest = lastFallback;
+            cabinetFinalFallbackBottom = lastFallback;
         } else {
             final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
             final EnumProperty<Half> HALF = BlockStateProperties.HALF;
@@ -111,28 +116,62 @@ public class PolymerModelCache {
             final BlockState lastFallbackBase = Blocks.OAK_TRAPDOOR.defaultBlockState()
                     .setValue(HALF, Half.BOTTOM)
                     .setValue(OPEN, false);
-            if (CABINET_TOP_DISGUISE == null) CABINET_TOP_DISGUISE = lastFallbackBase.setValue(HALF, Half.TOP).setValue(OPEN, true);
-            if (CABINET_NORTH_DISGUISE == null) CABINET_NORTH_DISGUISE = lastFallbackBase.setValue(FACING, Direction.NORTH);
-            if (CABINET_EAST_DISGUISE == null) CABINET_EAST_DISGUISE = lastFallbackBase.setValue(FACING, Direction.EAST);
-            if (CABINET_SOUTH_DISGUISE == null) CABINET_SOUTH_DISGUISE = lastFallbackBase.setValue(FACING, Direction.SOUTH);
-            if (CABINET_WEST_DISGUISE == null) CABINET_WEST_DISGUISE = lastFallbackBase.setValue(FACING, Direction.WEST);
-            if (CABINET_BOTTOM_DISGUISE == null) CABINET_BOTTOM_DISGUISE = lastFallbackBase.setValue(OPEN, true);
+
+            cabinetFinalFallbackTop = lastFallbackBase.setValue(HALF, Half.TOP).setValue(OPEN, true);
+            cabinetFinalFallbackNorth = lastFallbackBase.setValue(FACING, Direction.NORTH);
+            cabinetFinalFallbackEast = lastFallbackBase.setValue(FACING, Direction.EAST);
+            cabinetFinalFallbackSouth = lastFallbackBase.setValue(FACING, Direction.SOUTH);
+            cabinetFinalFallbackWest = lastFallbackBase.setValue(FACING, Direction.WEST);
+            cabinetFinalFallbackBottom = lastFallbackBase.setValue(OPEN, true);
         }
 
-        final boolean trapdoor = false; // TODO: #if the correct MC version
-        if (ModConfig.polymerPreferNonCollidingLightstrip || !trapdoor) {
-            final BlockState mappedState = remapper.apply(BlockModelType.VINES_BLOCK);
-            LIGHT_STRIP_TOP_DISGUISE = mappedState;
-            LIGHT_STRIP_BOTTOM_DISGUISE = mappedState;
-        }
-        // TODO: Trapdoor when available
-//        if (LIGHT_STRIP_TOP_DISGUISE == null) LIGHT_STRIP_TOP_DISGUISE = remapper.apply(BlockModelType.TOP_TRAPDOOR);
-//        if (LIGHT_STRIP_BOTTOM_DISGUISE == null) LIGHT_STRIP_BOTTOM_DISGUISE = remapper.apply(BlockModelType.BOTTOM_TRAPDOOR);
-        // TODO: Slab when available
-//        if (LIGHT_STRIP_TOP_DISGUISE == null) LIGHT_STRIP_TOP_DISGUISE = remapper.apply(BlockModelType.TOP_SLAB);
-//        if (LIGHT_STRIP_BOTTOM_DISGUISE == null) LIGHT_STRIP_BOTTOM_DISGUISE = remapper.apply(BlockModelType.BOTTOM_SLAB);
-        if (LIGHT_STRIP_TOP_DISGUISE == null) LIGHT_STRIP_TOP_DISGUISE = Blocks.GLASS.defaultBlockState();
-        if (LIGHT_STRIP_BOTTOM_DISGUISE == null) LIGHT_STRIP_BOTTOM_DISGUISE = Blocks.GLASS.defaultBlockState();
+        BlockModelType transparentCabinetFallback =
+                ModConfig.polymerAllowSemiFunctionalCabinetStates ? BlockModelType.TRANSPARENT_BLOCK : null;
+
+        CABINET_TOP_DISGUISE = resolveFallback(cabinetFinalFallbackTop,
+                #if MC_VERSION >= 12100 BlockModelType.TOP_TRAPDOOR, #endif
+                transparentCabinetFallback
+        );
+        CABINET_NORTH_DISGUISE = resolveFallback(cabinetFinalFallbackNorth,
+                #if MC_VERSION >= 12100 BlockModelType.NORTH_TRAPDOOR, #endif
+                #if MC_VERSION >= 12100 BlockModelType.NORTH_DOOR, #endif
+                transparentCabinetFallback
+        );
+        CABINET_EAST_DISGUISE = resolveFallback(cabinetFinalFallbackEast,
+                #if MC_VERSION >= 12100 BlockModelType.EAST_TRAPDOOR, #endif
+                #if MC_VERSION >= 12100 BlockModelType.EAST_DOOR, #endif
+                transparentCabinetFallback
+        );
+        CABINET_SOUTH_DISGUISE = resolveFallback(cabinetFinalFallbackSouth,
+                #if MC_VERSION >= 12100 BlockModelType.SOUTH_TRAPDOOR, #endif
+                #if MC_VERSION >= 12100 BlockModelType.SOUTH_DOOR, #endif
+                transparentCabinetFallback
+        );
+        CABINET_WEST_DISGUISE = resolveFallback(cabinetFinalFallbackWest,
+                #if MC_VERSION >= 12100 BlockModelType.WEST_TRAPDOOR, #endif
+                #if MC_VERSION >= 12100 BlockModelType.WEST_DOOR, #endif
+                transparentCabinetFallback
+        );
+        CABINET_BOTTOM_DISGUISE = resolveFallback(cabinetFinalFallbackBottom,
+                #if MC_VERSION >= 12100 BlockModelType.BOTTOM_TRAPDOOR, #endif
+                transparentCabinetFallback
+        );
+
+
+        BlockModelType vinesLightStripFallback =
+                ModConfig.polymerPreferNonCollidingLightstrip ? BlockModelType.VINES_BLOCK : null;
+
+        LIGHT_STRIP_TOP_DISGUISE = resolveFallback(Blocks.GLASS.defaultBlockState(),
+                vinesLightStripFallback
+                #if MC_VERSION >= 12100, BlockModelType.TOP_TRAPDOOR #endif
+                #if MC_VERSION >= 12100, BlockModelType.TOP_SLAB #endif
+
+        );
+        LIGHT_STRIP_BOTTOM_DISGUISE = resolveFallback(Blocks.GLASS.defaultBlockState(),
+                vinesLightStripFallback
+                #if MC_VERSION >= 12100, BlockModelType.BOTTOM_TRAPDOOR #endif
+                #if MC_VERSION >= 12100, BlockModelType.BOTTOM_SLAB #endif
+        );
     }
 
     public static void initLateCache() {
