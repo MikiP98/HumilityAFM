@@ -78,21 +78,25 @@ public class BlockEntityRegistry {
                 PolymerBlockEntities.FallbackBlockEntity::new,
                 concat(BlockRegistry.WOODEN_MOSAIC_VARIANTS, BlockRegistry.TERRACOTTA_TILE_VARIANTS)
         );
-        COLOURED_TORCH_BLOCK_ENTITY = register(
-                "polymer_coloured_torch_block_entity",
-                PolymerBlockEntities.ColouredTorchBlockEntity::new,
-                concat(BlockRegistry.COLOURED_TORCH_VARIANTS, BlockRegistry.COLOURED_WALL_TORCH_VARIANTS)
-        );
-        CANDLESTICK_BLOCK_ENTITY = register(
-                "polymer_candlestick_block_entity",
-                PolymerBlockEntities.CandlestickBlockEntity::new,
-                concat(
-                        BlockRegistry.SIMPLE_CANDLESTICK_FLOOR_VARIANTS,
-                        BlockRegistry.SIMPLE_CANDLESTICK_WALL_VARIANTS,
-                        flatten(BlockRegistry.RUSTABLE_CANDLESTICK_FLOOR_VARIANTS),
-                        flatten(BlockRegistry.RUSTABLE_CANDLESTICK_WALL_VARIANTS)
-                )
-        );
+        if (ModConfig.getEnableColouredFeatureSetBeta()) {
+            COLOURED_TORCH_BLOCK_ENTITY = register(
+                    "polymer_coloured_torch_block_entity",
+                    PolymerBlockEntities.ColouredTorchBlockEntity::new,
+                    concat(BlockRegistry.COLOURED_TORCH_VARIANTS, BlockRegistry.COLOURED_WALL_TORCH_VARIANTS)
+            );
+        }
+        if (ModConfig.getEnableCandlestickBeta()) {
+            CANDLESTICK_BLOCK_ENTITY = register(
+                    "polymer_candlestick_block_entity",
+                    PolymerBlockEntities.CandlestickBlockEntity::new,
+                    concat(
+                            BlockRegistry.SIMPLE_CANDLESTICK_FLOOR_VARIANTS,
+                            BlockRegistry.SIMPLE_CANDLESTICK_WALL_VARIANTS,
+                            flatten(BlockRegistry.RUSTABLE_CANDLESTICK_FLOOR_VARIANTS),
+                            flatten(BlockRegistry.RUSTABLE_CANDLESTICK_WALL_VARIANTS)
+                    )
+            );
+        }
         #endif
     }
 

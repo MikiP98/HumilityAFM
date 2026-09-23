@@ -156,6 +156,7 @@ Lighten up your builds with unobtrusive light source
 - Standardise block model rotations
 - Make sure Codecs are really obsolete in Minecraft 26.3+ (see Torches)
 - Look at Polymer forks for newer MC versions
+- Check the 'fixed' model sizes, and set all to 50%
 
 ### Low/unknown priority:
 
