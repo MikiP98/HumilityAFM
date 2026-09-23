@@ -1,39 +1,28 @@
 package io.github.mikip98.humilityafm.datagen;
 
+import io.github.mikip98.humilityafm.mod_support.SupportedMods;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.registries.ItemRegistry;
-import io.github.mikip98.humilityafm.mod_support.SupportedMods;
-#if MC_VERSION < 260000
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
-#else
-import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootSubProvider;
-#endif
-#if MC_VERSION < 12006
-import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
-#else
-import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
-import net.minecraft.core.HolderLookup;
-#endif
+#if MC_VERSION < 260000 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput; #endif
+#if MC_VERSION >= 260000 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput; #endif
+#if MC_VERSION >= 260000 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootSubProvider; #endif
+#if MC_VERSION < 260000 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider; #endif
+#if MC_VERSION < 12006 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions; #endif
+#if MC_VERSION >= 12006 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions; #endif
+#if MC_VERSION >= 12006 import net.minecraft.core.HolderLookup; #endif
 import net.minecraft.core.registries.BuiltInRegistries;
-#if MC_VERSION < 12006
-import net.minecraft.resources.ResourceLocation;
-#else
-import net.minecraft.resources.ResourceKey;
-#endif
+#if MC_VERSION >= 12006 import net.minecraft.resources.ResourceKey; #endif
+#if MC_VERSION < 12006 import net.minecraft.resources.ResourceLocation; #endif
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
+#if MC_VERSION >= 12101 import org.jetbrains.annotations.NotNull; #endif
 
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Set;
+#if MC_VERSION >= 12006 import java.util.concurrent.CompletableFuture; #endif
 import java.util.function.BiConsumer;
-
-#if MC_VERSION >= 12006
-import java.util.concurrent.CompletableFuture;
-#endif
 
 public class BlockLootTableGenerator extends #if MC_VERSION < 260000 FabricBlockLootTableProvider #else FabricBlockLootSubProvider #endif {
     #if MC_VERSION < 12006
