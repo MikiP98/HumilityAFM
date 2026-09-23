@@ -124,14 +124,15 @@ dependencies {
 		mappings loom.officialMojangMappings()
 	}
 
+	// Fabric base dependencies
 	add(implementationConfig, "net.fabricmc:fabric-loader:${project.loader_version}")
 	add(implementationConfig, "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
 
-	if (project.hasProperty("shadow_hval") && project.shadow_hval == 'true') {
-		add(implementationConfig, include("io.mikip98.humilityval:humility-val:${project.humility_val_version}+${project.minecraft_version}"))
-	} else {
-		add(implementationConfig, "io.mikip98.humilityval:humility-val:${project.humility_val_version}+${project.minecraft_version}")
-	}
+	var shadowHVAL = project.hasProperty("shadow_hval") && project.shadow_hval == 'true'
+	var humilityVAL = isPolymer ? "humility-val-polymer" : "humility-val"
+	var humilityVALDependency = "io.mikip98.humilityval:${humilityVAL}:${project.humility_val_version}+${project.minecraft_version}"
+	if (shadowHVAL) add(implementationConfig, include(humilityVALDependency))
+	else add(implementationConfig, humilityVALDependency)
 
 	add(apiConfig, "me.shedaniel.cloth:cloth-config-fabric:${project.config2_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
@@ -172,13 +173,19 @@ processResources {
 	def modId = "humility-afm"
 
 	def recipeDirName = (activeMcVersionNum >= 12100) ? "recipe" : "recipes"
+	def advancementDirName = (activeMcVersionNum >= 12100) ? "advancement" : "advancements"
 
 	exclude "data/${modId}/${recipeDirName}/datapack"
-	if (!isPolymer) exclude "assets/${modId}/models/block/empty.json"
+	exclude "data/${modId}/${advancementDirName}/recipes/misc/datapack"
 
 	from("src/main/generated/${activeVersion}/data/${modId}/${recipeDirName}/datapack") {
-		into "resourcepacks/alternate_wooden_mosaic_recipies/data/${modId}/${recipeDirName}"
+		into "resourcepacks/alternate_wooden_mosaic_recipies/data/${modId}/${recipeDirName}/datapack"
 	}
+	from("src/main/generated/${activeVersion}/data/${modId}/${advancementDirName}/recipes/misc/datapack") {
+		into "resourcepacks/alternate_wooden_mosaic_recipies/data/${modId}/${advancementDirName}/recipes/misc/datapack"
+	}
+
+	if (!isPolymer) exclude "assets/${modId}/models/block/empty.json"
 
 	doLast {
 //		// Skip when datagen
@@ -251,13 +258,11 @@ jar {
 		rename { "${it}_${inputs.properties.archivesName}"}
 	}
 	from("LICENSE-AGPL") {
-		rename { "${it}_$projectName"}
+		rename { "${it}_${inputs.properties.archivesName}"}
 	}
 
 	dependsOn('downloadManifoldLicense')
-	from(layout.buildDirectory.file("tmp/licenses/LICENSE_Manifold")) {
-		rename { "LICENSE_Manifold"}
-	}
+	from(layout.buildDirectory.file("tmp/licenses/LICENSE_Manifold"))
 }
 tasks.register('downloadManifoldLicense') {
 	def destFile = layout.buildDirectory.file("tmp/licenses/LICENSE_Manifold").get().asFile
@@ -298,7 +303,7 @@ tasks.register("recompressJars", Exec) {
 	// Ensure the jar is built before running advzip
 	dependsOn(tasks.named("jar"))
 
-	def jarFile = layout.buildDirectory.file("libs/${project.archives_base_name}-${project.version}.jar").get().asFile
+	def jarFile = layout.buildDirectory.file("libs/${baseArchivesName}-${project.version}.jar").get().asFile
 
 	workingDir projectDir
 	commandLine "./advzip", "-z", jarFile.absolutePath, "-3", "-i", "5"
