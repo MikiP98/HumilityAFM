@@ -25,6 +25,10 @@ import java.util.function.Function;
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
 
 public class BlockRegistry extends BlockGeneration {
+    #if MC_VERSION >= 12104
+    protected static Map<BlockBehaviour.Properties, Block> cache = new IdentityHashMap<>();
+    #endif
+
     // Cabinet blocks
     // Testing blocks (from petrified slabs)
     public static final Block CABINET_BLOCK = register("wall_cabinet_block", CabinetBlock::new, CabinetBlock.defaultSettings);
@@ -118,21 +122,18 @@ public class BlockRegistry extends BlockGeneration {
 //        return register(name, Block::new, settings);
 //    }
 
-    #if MC_VERSION >= 12104
-    protected static Map<BlockBehaviour.Properties, Block> cache = new IdentityHashMap<>();
-    #endif
-
     public static <T extends Block> T register(String name, Function<BlockBehaviour.Properties, T> blockFactory, BlockBehaviour.Properties settings) {
         #if MC_VERSION < 12104
         return Registry.register(BuiltInRegistries.BLOCK, getId(name), blockFactory.apply(settings));
         #else
         assert cache != null;
         if (cache.containsKey(settings)) {
-            final T block = registerRaw(name, blockFactory, BlockBehaviour.Properties.ofFullCopy(cache.get(settings)));
+            return registerRaw(name, blockFactory, BlockBehaviour.Properties.ofFullCopy(cache.get(settings)));
         } else {
             final T block = registerRaw(name, blockFactory, settings);
             cache.put(settings, block);
-        return block;
+            return block;
+        }
         #endif
     }
 
