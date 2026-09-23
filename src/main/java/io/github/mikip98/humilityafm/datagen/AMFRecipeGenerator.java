@@ -1,51 +1,36 @@
 package io.github.mikip98.humilityafm.datagen;
 
-#if MC_VERSION < 12104
-#endif
+import io.github.mikip98.humilityafm.mod_support.SupportedMods;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.registries.ItemRegistry;
+import io.github.mikip98.humilityafm.util.Pair;
 import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
 import io.github.mikip98.humilityafm.util.generation_data.RawGenerationData;
-import io.github.mikip98.humilityafm.mod_support.SupportedMods;
-import io.github.mikip98.humilityafm.util.Pair;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.MaterialType;
-#if MC_VERSION < 260000
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-#else
-import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
-#endif
-#if MC_VERSION < 12006
-import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
-#endif
-#if MC_VERSION >= 12104
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-#endif
+#if MC_VERSION < 260000 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput; #endif
+#if MC_VERSION >= 260000 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput; #endif
+#if MC_VERSION >= 12104 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider; #endif
+#if MC_VERSION < 12006 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions; #endif
+#if MC_VERSION >= 12006 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions; #endif
+#if MC_VERSION >= 260300 import net.minecraft.advancements.Advancement; #endif
+#if MC_VERSION >= 12006 import net.minecraft.core.HolderLookup; #endif
 import net.minecraft.core.registries.BuiltInRegistries;
-#if MC_VERSION >= 12104
-import net.minecraft.core.registries.Registries;
-#endif
-#if MC_VERSION < 12004
-import net.minecraft.data.recipes.FinishedRecipe;
-#else
-import net.minecraft.data.recipes.RecipeOutput;
-#endif
-        import net.minecraft.world.item.Item;
+#if MC_VERSION >= 12104 import net.minecraft.core.registries.Registries; #endif
+#if MC_VERSION < 12004 import net.minecraft.data.recipes.FinishedRecipe; #endif
+#if MC_VERSION >= 12004 import net.minecraft.data.recipes.RecipeOutput; #endif
+#if MC_VERSION >= 12104 import net.minecraft.data.recipes.RecipeProvider; #endif
+#if MC_VERSION >= 260300 import net.minecraft.data.worldgen.BootstrapContext; #endif
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+#if MC_VERSION >= 260300 import net.minecraft.world.item.crafting.Recipe; #endif
 import net.minecraft.world.level.ItemLike;
-#if MC_VERSION >= 12006
-import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
-import net.minecraft.core.HolderLookup;
-import org.jetbrains.annotations.NotNull;
-#endif
+#if MC_VERSION >= 12006 import org.jetbrains.annotations.NotNull; #endif
 
 import java.util.*;
-#if MC_VERSION < 12004
-import java.util.function.Consumer;
-#elif MC_VERSION >= 12006
-import java.util.concurrent.CompletableFuture;
-#endif
+#if MC_VERSION >= 12006 import java.util.concurrent.CompletableFuture; #endif
+#if MC_VERSION < 12004 import java.util.function.Consumer; #endif
 
 import static io.github.mikip98.humilityafm.HumilityAFM.*;
 
@@ -54,7 +39,6 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
     public AMFRecipeGenerator(FabricDataOutput output) {
         super(output);
     }
-    
     #else
     public AMFRecipeGenerator(
             #if MC_VERSION < 260000 FabricDataOutput #else FabricPackOutput #endif output,
@@ -69,10 +53,17 @@ public class AMFRecipeGenerator extends #if MC_VERSION < 12104 AFMRecipeProvider
     public void buildRecipes(
             #if MC_VERSION == 12001 Consumer<FinishedRecipe> #else RecipeOutput #endif output
     ) {
-    #else
+    #elif MC_VERSION < 260300
     @Override
     protected @NotNull RecipeProvider createRecipeProvider(HolderLookup.Provider registryLookup, RecipeOutput output) {
         return new AFMRecipeProvider(registryLookup, output) {
+            @Override
+            public void buildRecipes() {
+                HolderLookup.RegistryLookup<Item> itemLookup = registries.lookupOrThrow(Registries.ITEM);
+    #else
+    @Override
+    protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, BootstrapContext<Recipe<?>> recipes, BootstrapContext<Advancement> advancements) {
+        return new AFMRecipeProvider(recipes, advancements) {
             @Override
             public void buildRecipes() {
                 HolderLookup.RegistryLookup<Item> itemLookup = registries.lookupOrThrow(Registries.ITEM);
