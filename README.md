@@ -110,6 +110,7 @@ Lighten up your builds with unobtrusive light source
 - Collect all the TODO comments and add them properly to the roadmap
 - Port to MC 26.3
 - Redo the config with Cloth Config Auto Config + extensions
+- Make sure the optional datapack is working on all MC versions, especially 26.3
 
 [//]: # (- Improve Cabinet PBR texture: Roughness of zero, f0/reflectance of like either 0.02 or 0.1)
 
@@ -153,6 +154,8 @@ Lighten up your builds with unobtrusive light source
 - Consider making Polymorph an optional dependency, now with the alternative wooden mosaic recipie datapack it is no longer needed, that said people might still be confused if they didn't have either enabled/installed
 - Add proper translations for the Resource Packs
 - Standardise block model rotations
+- Make sure Codecs are really obsolete in Minecraft 26.3+ (see Torches)
+- Look at Polymer forks for newer MC versions
 
 ### Low/unknown priority:
 
@@ -185,6 +188,7 @@ Lighten up your builds with unobtrusive light source
 - Fix Polymer Candlesticks not emmiting particles:
   - option 1 -> Server-Side Ticker + serverLevel.sendParticles(...)
   - option 2 -> custom particle system from Polymer displays
+- Add a resourcepack patcher to improve compatibility (e.g if custom jack o'lantern variants are present remap the colours to mince coloured ones)
 
 ### Done:
 
