@@ -4,54 +4,35 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntity;
 import io.github.mikip98.humilityafm.content.blocks.LightStripBlock;
 import net.minecraft.client.Minecraft;
-#if MC_VERSION < 260200
-import net.minecraft.client.renderer.MultiBufferSource;
-#endif
-#if MC_VERSION < 12111
-import net.minecraft.client.renderer.RenderType;
-#endif
-#if MC_VERSION >= 12105
+#if MC_VERSION < 260200 import net.minecraft.client.renderer.MultiBufferSource; #endif
+#if MC_VERSION < 12111 import net.minecraft.client.renderer.RenderType; #endif
 #if MC_VERSION >= 12111 import net.minecraft.client.renderer.SubmitNodeCollector; #endif
-import net.minecraft.client.renderer.block.ModelBlockRenderer;
-#endif
-#if  MC_VERSION < 260000
-//import net.minecraft.client.renderer.block.model.BlockStateModel;
-#elif MC_VERSION >= 260000
-import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
-#endif
+#if MC_VERSION >= 12105 import net.minecraft.client.renderer.block.ModelBlockRenderer; #endif
+#if MC_VERSION >= 260000 import net.minecraft.client.renderer.block.dispatch.BlockStateModel; #endif
 #if MC_VERSION >= 260000 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart; #endif
+#if MC_VERSION >= 12108 && MC_VERSION < 260000 import net.minecraft.client.renderer.block.model.BlockStateModel; #endif
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-#if MC_VERSION >= 12111
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-#else
-import net.minecraft.client.resources.model.BakedModel; // There is some version that uses BlockStateModel instead
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
-#endif
+#if MC_VERSION >= 12111 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState; #endif
+#if MC_VERSION >= 12111 import net.minecraft.client.renderer.feature.ModelFeatureRenderer; #endif
+#if MC_VERSION >= 12111 import net.minecraft.client.renderer.rendertype.RenderTypes; #endif
+#if MC_VERSION >= 12111 && MC_VERSION < 260000 import net.minecraft.client.renderer.state.CameraRenderState; #endif
+#if MC_VERSION >= 260000 import net.minecraft.client.renderer.state.level.CameraRenderState; #endif
+#if MC_VERSION >= 12111 import net.minecraft.client.renderer.texture.OverlayTexture; #endif
+#if MC_VERSION < 12108 import net.minecraft.client.resources.model.BakedModel; #endif
 #if MC_VERSION >= 260000 import net.minecraft.client.resources.model.geometry.BakedQuad; #endif
+#if MC_VERSION < 12111 import net.minecraft.core.BlockPos; #endif
 #if MC_VERSION >= 260000 import net.minecraft.core.Direction; #endif
 #if MC_VERSION >= 260000 import net.minecraft.util.RandomSource; #endif
+#if MC_VERSION < 12111 import net.minecraft.world.level.Level; #endif
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Half;
-#if MC_VERSION >= 12105
-import net.minecraft.world.phys.Vec3;
-#endif
-#if MC_VERSION >= 12111
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-#if MC_VERSION < 260000
-import net.minecraft.client.renderer.state.CameraRenderState;
-#else
-import net.minecraft.client.renderer.state.level.CameraRenderState;
-#endif
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NonNull;
+#if MC_VERSION >= 12105 import net.minecraft.world.phys.Vec3; #endif
+#if MC_VERSION >= 12111 import org.jetbrains.annotations.Nullable; #endif
+#if MC_VERSION >= 12111 import org.jspecify.annotations.NonNull; #endif
 
-import java.util.List;
-#endif
+#if MC_VERSION >= 12111 import java.util.List; #endif
 
 public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightStripBlockEntity #if MC_VERSION >= 12111, LightStripBlockEntityRenderer.LightStripRenderState #endif> {
     protected static RenderFunction renderFunction = LightStripBlockEntityRenderer::fakeRunnable;
@@ -87,7 +68,7 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
         renderState.blockState = blockEntity.getBlockState();
         renderState.overlay = OverlayTexture.NO_OVERLAY;
         #if MC_VERSION < 260000
-        renderState.model = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState)
+        renderState.model = Minecraft.getInstance().getBlockRenderer().getBlockModel(renderState.blockState);
         #else
         renderState.model = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(renderState.blockState);
         #endif
@@ -118,8 +99,8 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
         if (level == null) return;
 
         final BlockState blockState = level.getBlockState(pos);
-        final BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
-//        final BlockStateModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
+        final #if MC_VERSION < 12108 BakedModel #else BlockStateModel #endif model =
+                Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
         renderBrighteningInternal(blockState, poseStack, bufferSource, packedOverlay, model);
     }
     #else
@@ -136,8 +117,7 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
             PoseStack poseStack,
             #if MC_VERSION < 260200 MultiBufferSource bufferSource,#endif
             int packedOverlay,
-            #if MC_VERSION < 260000 BakedModel #else BlockStateModel #endif model
-//            BlockStateModel model
+            #if MC_VERSION < 12108 BakedModel #else BlockStateModel #endif model
     ) {
         if (blockState == null || !(blockState.getBlock() instanceof LightStripBlock)) return;
 
@@ -312,8 +292,13 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
 //        });
         ModelBlockRenderer.renderModel(
                 poseStack.last(),
-//                bufferSource.getBuffer(RenderTypes.solidMovingBlock()),
-                bufferSource.getBuffer(RenderType.solid()),
+                bufferSource.getBuffer(
+                        #if MC_VERSION < 12111
+                        RenderType.solid()
+                        #else
+                        RenderTypes.solidMovingBlock()
+                        #endif
+                ),
                 model,
                 1.0f, 1.0f, 1.0f,
                 0xF000F0,

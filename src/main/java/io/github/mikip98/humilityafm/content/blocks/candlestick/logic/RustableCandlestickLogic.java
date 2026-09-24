@@ -6,13 +6,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.HoneycombItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -50,13 +48,14 @@ public non-sealed interface RustableCandlestickLogic extends BaseCandlestickLogi
             BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, ItemStack heldItemStack, Item heldItem,
             double x, double y, double z, double randomSpread
     ) {
-        if (heldItem instanceof AxeItem) {
+        boolean isAxe = #if MC_VERSION < 260300 heldItem instanceof AxeItem || #endif heldItemStack.is(ItemTags.AXES);
+        if (isAxe) {
             // De-wax
             if (state.getValue(ModProperties.WAXED)) {
                 world.setBlockAndUpdate(pos, state.setValue(ModProperties.WAXED, false));
                 damageItem(heldItemStack, player, hand);
                 emmitWaxOffParticles(world, x, y, z, randomSpread);
-                SoundUtils.playSound(world, player, x, y, z, SoundEvents.AXE_WAX_OFF);
+                SoundUtils.playSound(world, player, x, y, z, SoundEvents.AXE_WAX_OFF #if MC_VERSION >= 260300 .value() #endif);
                 return true;
             }
             // De-rust

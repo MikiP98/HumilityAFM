@@ -1,6 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.cabinet;
 
-#if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
+#if MC_VERSION >= 12003 && MC_VERSION < 260300 import com.mojang.serialization.MapCodec; #endif
 #if POLYMER import eu.pb4.polymer.blocks.api.PolymerTexturedBlock; #endif
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.ImplementedInventory;
 import io.github.mikip98.humilityafm.content.blocks.Waterloggable;
@@ -11,6 +11,7 @@ import io.github.mikip98.humilityafm.util.SoundUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
+#if MC_VERSION >= 260300 import net.minecraft.util.Prediction; #endif
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -50,7 +51,7 @@ public class CabinetBlock extends PlainHorizontalFacingBlock implements Waterlog
     protected static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     protected static final BooleanProperty OPEN = BlockStateProperties.OPEN;
 
-    #if MC_VERSION >= 12003
+    #if MC_VERSION >= 12003 && MC_VERSION < 260300
     protected static final MapCodec<CabinetBlock> CODEC = simpleCodec(CabinetBlock::new);
 
     @Override
@@ -112,7 +113,7 @@ public class CabinetBlock extends PlainHorizontalFacingBlock implements Waterlog
                     ItemStack newCabinetItemStack = playerItemStack.split(1);
 
                     if (!oldCabinetItemStack.isEmpty()) {
-                        player.getInventory().placeItemBackInInventory(oldCabinetItemStack);
+                        player.getInventory().placeItemBackInInventory(oldCabinetItemStack #if MC_VERSION >= 260300, Prediction.PREDICTED #endif);
                     }
 
                     cabinetBlockEntity.setItem(0, newCabinetItemStack);
@@ -120,7 +121,7 @@ public class CabinetBlock extends PlainHorizontalFacingBlock implements Waterlog
                 else return InteractionResult.FAIL;
             } else {
                 if (player.isShiftKeyDown()) {
-                    player.getInventory().placeItemBackInInventory(oldCabinetItemStack);
+                    player.getInventory().placeItemBackInInventory(oldCabinetItemStack #if MC_VERSION >= 260300, Prediction.PREDICTED #endif);
                     cabinetBlockEntity.clearContent();
                 }
                 world.setBlockAndUpdate(pos, state.setValue(OPEN, false));
@@ -207,11 +208,6 @@ public class CabinetBlock extends PlainHorizontalFacingBlock implements Waterlog
     }
 
     #if POLYMER
-    @Override
-    public Block getPolymerBlock(BlockState state) {
-        return getPolymerBlockState(state).getBlock();
-    }
-
     @Override
     public BlockState getPolymerBlockState(BlockState state) {
         final Direction dir = state.getValue(FACING);

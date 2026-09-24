@@ -6,11 +6,10 @@ import io.github.mikip98.humilityafm.util.SoundUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
+#if MC_VERSION >= 260300 import net.minecraft.util.Prediction; #endif
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-#if MC_VERSION >= 12006
-import net.minecraft.world.entity.EquipmentSlot;
-#endif
+#if MC_VERSION >= 12006 && MC_VERSION < 12111 import net.minecraft.world.entity.EquipmentSlot; #endif
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.FlintAndSteelItem;
@@ -30,7 +29,7 @@ public sealed interface BaseCandlestickLogic permits SimpleCandlestickLogic, Rus
                 if (candleColor != CandleColor.NONE) {
                     final Item candleItem = candleColor.asCandle();
                     if (heldItem == candleItem) return false;
-                    player.getInventory().placeItemBackInInventory(new ItemStack(candleItem));
+                    player.getInventory().placeItemBackInInventory(new ItemStack(candleItem) #if MC_VERSION >= 260300, Prediction.PREDICTED #endif);
                 }
                 world.setBlockAndUpdate(pos, state.setValue(ModProperties.CANDLE_COLOR, CandleColor.getColor(heldItem)));
                 if (!player.isCreative()) heldItemStack.shrink(1);
@@ -52,7 +51,7 @@ public sealed interface BaseCandlestickLogic permits SimpleCandlestickLogic, Rus
             else {
                 final CandleColor candleColour = state.getValue(ModProperties.CANDLE_COLOR);
                 if (candleColour != CandleColor.NONE) {
-                    player.getInventory().placeItemBackInInventory(new ItemStack(candleColour.asCandle()));
+                    player.getInventory().placeItemBackInInventory(new ItemStack(candleColour.asCandle()) #if MC_VERSION >= 260300, Prediction.PREDICTED #endif);
                     world.setBlockAndUpdate(pos, state.setValue(ModProperties.CANDLE_COLOR, CandleColor.NONE));
                     SoundUtils.playSoundAtBlockCenter(world, player, pos, SoundEvents.ITEM_FRAME_REMOVE_ITEM, 0.9f, 0.9f);
                     return true;

@@ -1,6 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.candlestick;
 
-#if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
+#if MC_VERSION >= 12003 && MC_VERSION < 260300 import com.mojang.serialization.MapCodec; #endif
 import io.github.mikip98.humilityafm.content.blocks.Waterloggable;
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.RustableCandlestickLogic;
@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 @Getter
 @Setter
 public class FloorRustableCandlestick extends FloorCandlestick implements Waterloggable, RustableCandlestickLogic {
-    #if MC_VERSION >= 12003
+    #if MC_VERSION >= 12003 && MC_VERSION < 260300
     protected static final MapCodec<FloorRustableCandlestick> CODEC = simpleCodec(FloorRustableCandlestick::new);
 
     @Override

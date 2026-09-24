@@ -1,6 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns;
 
-#if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
+#if MC_VERSION >= 12003 && MC_VERSION < 260300 import com.mojang.serialization.MapCodec; #endif
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 public class JackOLanternSoul extends JackOLantern {
-    #if MC_VERSION >= 12003
+    #if MC_VERSION >= 12003 && MC_VERSION < 260300
     protected static final MapCodec<JackOLanternSoul> CODEC = simpleCodec(JackOLanternSoul::new);
 
     @Override

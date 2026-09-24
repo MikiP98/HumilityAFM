@@ -1,10 +1,11 @@
 package io.github.mikip98.humilityafm.content.blocks.coloured_torch;
 
-#if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
-#if MC_VERSION >= 12003 import com.mojang.serialization.codecs.RecordCodecBuilder; #endif
+#if MC_VERSION >= 12003 && MC_VERSION < 260300 import com.mojang.serialization.MapCodec; #endif
+#if MC_VERSION >= 12003 && MC_VERSION < 260300 import com.mojang.serialization.codecs.RecordCodecBuilder; #endif
 #if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
 #if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerBlockEntities; #endif
 import io.github.mikip98.humilityafm.util.SoundUtils;
+#if MC_VERSION >= 260000 import net.fabricmc.fabric.api.networking.v1.context.PacketContext; #endif
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.sounds.SoundEvents;
@@ -23,9 +24,10 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
+#if MC_VERSION < 260000 import xyz.nucleoid.packettweaker.PacketContext; #endif
 
 public class ColouredWallTorch extends WallTorchBlock #if POLYMER implements EntityBlock, PolymerBlock #endif {
-    #if MC_VERSION >= 12003
+    #if MC_VERSION >= 12003 && MC_VERSION < 260300
     protected static final MapCodec<ColouredWallTorch> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
             PARTICLE_OPTIONS_FIELD.forGetter((torchBlock) -> torchBlock.flameParticle),
             propertiesCodec()
@@ -87,14 +89,16 @@ public class ColouredWallTorch extends WallTorchBlock #if POLYMER implements Ent
     }
 
     #if POLYMER
+    #if MC_VERSION < 12006
     @Override
     public Block getPolymerBlock(BlockState state) {
         return Blocks.WALL_TORCH;
     }
+    #endif
 
     @Override
-    public BlockState getPolymerBlockState(BlockState state) {
-        return getPolymerBlock(state).defaultBlockState()
+    public BlockState getPolymerBlockState(BlockState state #if MC_VERSION >= 12104, PacketContext context #endif) {
+        return Blocks.WALL_TORCH.defaultBlockState()
                 .setValue(WallTorchBlock.FACING, state.getValue(FACING));
     }
 

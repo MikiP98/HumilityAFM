@@ -1,11 +1,13 @@
 package io.github.mikip98.humilityafm.content.blockentities;
 
-#if POLYMER import eu.pb4.polymer.resourcepack.api.PolymerModelData; #endif
+#if POLYMER && MC_VERSION < 12104 import eu.pb4.polymer.resourcepack.api.PolymerModelData; #endif
 #if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerBlockEntities; #endif
 #if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
 import io.github.mikip98.humilityafm.registries.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
 #if POLYMER import net.minecraft.core.Direction; #endif
+#if MC_VERSION >= 12104 && MC_VERSION < 12111 import net.minecraft.resources.ResourceLocation; #endif
+#if MC_VERSION >= 12111 import net.minecraft.resources.Identifier; #endif
 #if POLYMER import net.minecraft.util.Brightness; #endif
 #if POLYMER import net.minecraft.world.item.ItemStack; #endif
 #if !POLYMER import net.minecraft.world.level.block.entity.BlockEntity; #endif
@@ -18,7 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class LightStripBlockEntity extends #if POLYMER PolymerBlockEntities.PolymerBlockEntityBase #else BlockEntity #endif {
     public LightStripBlockEntity(BlockPos pos, BlockState state) {
-        super(BlockEntityRegistry.LIGHT_STRIP_BLOCK_ENTITY, pos, state #if POLYMER, false, true #endif);
+        super(BlockEntityRegistry.LIGHT_STRIP_BLOCK_ENTITY, pos, state #if POLYMER, PolymerProperties.of().ticking() #endif);
 
         #if POLYMER
         display.setBrightness(new Brightness(15, 15));
@@ -30,7 +32,7 @@ public class LightStripBlockEntity extends #if POLYMER PolymerBlockEntities.Poly
     public void updateVisualState(BlockState state) {
         final StairsShape shape = state.getValue(BlockStateProperties.STAIRS_SHAPE);
 
-        PolymerModelData customData = null;
+        #if MC_VERSION < 12104 PolymerModelData #elif MC_VERSION < 12111 ResourceLocation #else Identifier #endif customData = null;
         if (shape == StairsShape.INNER_LEFT || shape == StairsShape.INNER_RIGHT) {
             customData = PolymerModelCache.LIGHT_STRIP_INNER_MODELS.get(state.getBlock());
         } else if (shape == StairsShape.OUTER_LEFT || shape == StairsShape.OUTER_RIGHT) {

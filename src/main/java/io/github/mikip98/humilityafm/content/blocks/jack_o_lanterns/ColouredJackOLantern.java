@@ -1,6 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns;
 
-#if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
+#if MC_VERSION >= 12003 && MC_VERSION < 260300 import com.mojang.serialization.MapCodec; #endif
 import io.github.mikip98.humilityafm.util.SoundUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
@@ -17,7 +17,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
 public class ColouredJackOLantern extends JackOLantern {
-    #if MC_VERSION >= 12003
+    #if MC_VERSION >= 12003 && MC_VERSION < 260300
     protected static final MapCodec<ColouredJackOLantern> CODEC = simpleCodec(ColouredJackOLantern::new);
 
     @Override
