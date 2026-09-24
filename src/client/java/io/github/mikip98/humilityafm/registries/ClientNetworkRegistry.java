@@ -2,13 +2,13 @@ package io.github.mikip98.humilityafm.registries;
 
 import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.config.enums.ModSupportState;
-import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
+import io.github.mikip98.humilityafm.mod_support.SupportedMods;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 #if MC_VERSION >= 12006
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 #endif
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -20,7 +20,7 @@ import static io.github.mikip98.humilityafm.HumilityAFM.LOGGER;
 public class ClientNetworkRegistry {
     public static void register() {
         #if MC_VERSION >= 12006
-        ClientPlayNetworking.registerGlobalReceiver(NetworkRegistry.ConfigSyncPayload.ID, (payload, context) -> {
+        ClientPlayNetworking.registerGlobalReceiver(NetworkRegistry.ConfigSyncPayload.TYPE, (payload, context) -> {
         #else
         ClientPlayNetworking.registerGlobalReceiver(NetworkRegistry.CONFIG_SYNC, (client, handler, buf, responseSender) -> {
             final NetworkRegistry.ConfigSyncPayload payload = new NetworkRegistry.ConfigSyncPayload(buf);
@@ -70,12 +70,12 @@ public class ClientNetworkRegistry {
             // Log the differences
             if (!differences.isEmpty()) {
                 #if MC_VERSION >= 12006
-                MinecraftClient client = context.client();
+                Minecraft client = context.client();
                 #endif
                 client.execute(() -> {
                     printDiffs(LOGGER::error, differences, new String[]{"","",""});
                     if (ModConfig.printInChatServerClientMissmatch) {
-                        PlayerEntity player = client.player;
+                        Player player = client.player;
                         assert player != null;
                         Consumer<String> message = (msg) -> sendMessage(player, msg);
                         printDiffs(message, differences, new String[]{"§e", "§7", "§c"});
@@ -95,8 +95,12 @@ public class ClientNetworkRegistry {
         printer.accept(c[1] + "As long as you can join the server, you can just ignore this message if you want");
     }
 
-    protected static void sendMessage(PlayerEntity player, String message) {
-        player.sendMessage(Text.literal(message) #if MC_VERSION >= 12104 , false #endif);
+    protected static void sendMessage(Player player, String message) {
+        #if MC_VERSION < 260000
+        player.displayClientMessage(Component.literal(message), false);
+        #else
+        player.sendSystemMessage(Component.literal(message));
+        #endif
     }
 
     protected static class DiffList extends ArrayList<String> {

@@ -11,7 +11,7 @@ plugins {
 	id 'systems.manifold.manifold-gradle-plugin' version "${manifold_plugin_version}"
 }
 
-// Load version-specific properties dynamically
+// Load version-specific properties
 def activeVersion = project.properties['active_mc_version']
 def versionPropsFile = file("versions/${activeVersion}.properties")
 if (versionPropsFile.exists()) {
@@ -22,29 +22,35 @@ if (versionPropsFile.exists()) {
 	throw new GradleException("Could not find property file for MC version: ${activeVersion}")
 }
 
+manifold {
+	manifoldVersion = project.manifold_version
+}
 
 def activeMcVersionNum = project.mc_version_number.toInteger()
+def isPolymer = project.hasProperty('polymer') && project.polymer == 'true'
 
-
-// Apply the correct Loom variant dynamically
+// Apply the correct Loom variant
 if (activeMcVersionNum < 260000) {
 	apply plugin: 'fabric-loom'
 } else {
 	apply plugin: 'net.fabricmc.fabric-loom'
 }
 
+def baseArchivesName = project.archives_base_name
+if (isPolymer) {
+	baseArchivesName += "-polymer"
+}
+
 version = "${project.mod_version}+${project.minecraft_version}"
 group = project.maven_group
 
-manifold {
-	manifoldVersion = project.manifold_version
-}
-
 // Auto-generate build.properties so the Manifold IDE plugin and compiler stay in sync
-file("build.properties").text = "MC_VERSION=${project.ext.mc_version_number}\n"
+def buildPropsContent = "MC_VERSION=${project.ext.mc_version_number}\n"
+if (isPolymer) buildPropsContent += "POLYMER=true\n"
+file("build.properties").text = buildPropsContent
 
 base {
-	archivesName = project.archives_base_name
+	archivesName = baseArchivesName
 }
 
 repositories {
@@ -53,9 +59,16 @@ repositories {
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
-	
+
+	// Humility VAL
+	mavenLocal()
+	// cloth-config
 	maven { url "https://maven.shedaniel.me/" }
+	// Mod Menu
 	maven { url "https://maven.terraformersmc.com/releases/" }
+
+	// Polymer
+	if (isPolymer) maven { url 'https://maven.nucleoid.xyz' }
 }
 
 loom {
@@ -99,30 +112,45 @@ dependencies {
 	annotationProcessor "systems.manifold:manifold-preprocessor:${project.manifold_version}"
 	compileOnly "systems.manifold:manifold-preprocessor:${project.manifold_version}"
 
+	// Manifold extensions
+	annotationProcessor "systems.manifold:manifold-ext:${project.manifold_version}"
+	compileOnly "systems.manifold:manifold-ext:${project.manifold_version}"
+
+//	compileOnly "systems.manifold:manifold-params:${project.manifold_version}"  // Crashes the compiler, report to Manifold
+
+	def loomGradle = activeMcVersionNum < 260000
+	String implementationConfig = loomGradle ? "modImplementation" : "implementation"
+	String apiConfig			= loomGradle ? "modApi"            : "api"
+	String compileOnlyConfig 	= loomGradle ? "modCompileOnly"    : "compileOnly"
+	String runtimeOnlyConfig 	= loomGradle ? "modRuntimeOnly"    : "runtimeOnly"
+
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	if (activeMcVersionNum < 260000) {
-		mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+		mappings loom.officialMojangMappings()
+	}
 
-		modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	// Fabric base dependencies
+	add(implementationConfig, "net.fabricmc:fabric-loader:${project.loader_version}")
+	add(implementationConfig, "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
 
-		// Fabric API. This is technically optional, but you probably want it anyway.
-		modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	var shadowHVAL = project.hasProperty("shadow_hval") && project.shadow_hval == 'true'
+	var humilityVAL = isPolymer ? "humility-val-polymer" : "humility-val"
+	var humilityVALDependency = "io.mikip98.humilityval:${humilityVAL}:${project.humility_val_version}+${project.minecraft_version}"
+	if (shadowHVAL) add(implementationConfig, include(humilityVALDependency))
+	else add(implementationConfig, humilityVALDependency)
 
-		modApi("me.shedaniel.cloth:cloth-config-fabric:${project.config2_version}") {
-			exclude(group: "net.fabricmc.fabric-api")
-		}
-		modApi "com.terraformersmc:modmenu:${project.modmenu_version}"
-	} else {
-		implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	add(apiConfig, "me.shedaniel.cloth:cloth-config-fabric:${project.config2_version}") {
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+	add(apiConfig, "com.terraformersmc:modmenu:${project.modmenu_version}")
 
-		// Fabric API. This is technically optional, but you probably want it anyway.
-		implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-		api("me.shedaniel.cloth:cloth-config-fabric:${project.config2_version}") {
-			exclude(group: "net.fabricmc.fabric-api")
-		}
-		api "com.terraformersmc:modmenu:${project.modmenu_version}"
+	if (isPolymer) {
+		add(implementationConfig, include("eu.pb4:polymer-core:${project.polymer_version}"))
+		add(implementationConfig, include("eu.pb4:polymer-blocks:${project.polymer_version}"))
+		add(implementationConfig, include("eu.pb4:polymer-resource-pack:${project.polymer_version}"))
+		add(implementationConfig, include("eu.pb4:polymer-virtual-entity:${project.polymer_version}"))
+		add(runtimeOnlyConfig, include("eu.pb4:polymer-autohost:${project.polymer_version}"))
 	}
 }
 
@@ -151,12 +179,19 @@ processResources {
 	def modId = "humility-afm"
 
 	def recipeDirName = (activeMcVersionNum >= 12100) ? "recipe" : "recipes"
+	def advancementDirName = (activeMcVersionNum >= 12100) ? "advancement" : "advancements"
 
 	exclude "data/${modId}/${recipeDirName}/datapack"
+	exclude "data/${modId}/${advancementDirName}/recipes/misc/datapack"
 
 	from("src/main/generated/${activeVersion}/data/${modId}/${recipeDirName}/datapack") {
-		into "resourcepacks/alternate_wooden_mosaic_recipies/data/${modId}/${recipeDirName}"
+		into "resourcepacks/alternate_wooden_mosaic_recipies/data/${modId}/${recipeDirName}/datapack"
 	}
+	from("src/main/generated/${activeVersion}/data/${modId}/${advancementDirName}/recipes/misc/datapack") {
+		into "resourcepacks/alternate_wooden_mosaic_recipies/data/${modId}/${advancementDirName}/recipes/misc/datapack"
+	}
+
+	if (!isPolymer) exclude "assets/${modId}/models/block/empty.json"
 
 	doLast {
 //		// Skip when datagen
@@ -223,10 +258,28 @@ java {
 jar {
 	inputs.property "archivesName", project.base.archivesName
 
-	entryCompression = ZipEntryCompression.STORED
+	entryCompression = ZipEntryCompression.DEFLATED
 
 	from("LICENSE") {
 		rename { "${it}_${inputs.properties.archivesName}"}
+	}
+	from("LICENSE-AGPL") {
+		rename { "${it}_${inputs.properties.archivesName}"}
+	}
+
+	dependsOn('downloadManifoldLicense')
+	from(layout.buildDirectory.file("tmp/licenses/LICENSE_Manifold"))
+}
+tasks.register('downloadManifoldLicense') {
+	def destFile = layout.buildDirectory.file("tmp/licenses/LICENSE_Manifold").get().asFile
+	outputs.file(destFile)
+
+	doLast {
+		destFile.parentFile.mkdirs()
+		ant.get(
+				src: 'https://raw.githubusercontent.com/manifold-systems/manifold/master/LICENSE',
+				dest: destFile
+		)
 	}
 }
 
@@ -234,7 +287,7 @@ jar {
 publishing {
 	publications {
 		create("mavenJava", MavenPublication) {
-			artifactId = project.archives_base_name
+			artifactId = base.archivesName.get()
 			from components.java
 		}
 	}
@@ -248,7 +301,7 @@ publishing {
 	}
 }
 
-// Additional task that recompresses the generated JARs using python-zopfli to reduce the file size
+// Additional task that recompresses the generated JARs using advzip to reduce the file size
 tasks.register("recompressJars", Exec) {
 	group = "build"
 	description = "Recompress the built JAR with advzip"
@@ -256,10 +309,8 @@ tasks.register("recompressJars", Exec) {
 	// Ensure the jar is built before running advzip
 	dependsOn(tasks.named("jar"))
 
-	// Build the jar name based on project properties
-	def jarFile = layout.buildDirectory.file("libs/${project.archives_base_name}-${project.version}.jar").get().asFile
+	def jarFile = layout.buildDirectory.file("libs/${baseArchivesName}-${project.version}.jar").get().asFile
 
-	// Configure the command
 	workingDir projectDir
 	commandLine "./advzip", "-z", jarFile.absolutePath, "-3", "-i", "5"
 
@@ -293,7 +344,7 @@ tasks.register('syncDatagenMods', Sync) {
 
 	from("local-mods/common/${activeVersion}")
 	from("local-mods/datagen/${activeVersion}")
-	into("build/datagen/mods")
+	into("run/datagen/mods")
 }
 
 tasks.named('runClient').configure {

@@ -3,34 +3,43 @@ package io.github.mikip98.humilityafm.datagen;
 import io.github.mikip98.humilityafm.content.tags.ModBlockTags;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
-import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
+import io.github.mikip98.humilityafm.mod_support.SupportedMods;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.MaterialType;
+#if MC_VERSION < 260000
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.minecraft.block.Block;
-#if MC_VERSION > 12105
-import net.minecraft.registry.Registries;
+#else
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 #endif
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
-#if MC_VERSION > 12105
-import net.minecraft.registry.tag.TagBuilder;
+import net.minecraft.core.HolderLookup;
+#if MC_VERSION >= 12105
+import net.minecraft.core.registries.BuiltInRegistries;
 #endif
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.core.registries.Registries;
+#if MC_VERSION >= 12105
+import net.minecraft.tags.TagBuilder;
+#endif
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
 
-public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
-    public BlockTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
+public class BlockTagGenerator
+        extends #if MC_VERSION < 260000 FabricTagProvider.BlockTagProvider #else FabricTagsProvider.BlockTagsProvider #endif
+{
+    public BlockTagGenerator(
+            #if MC_VERSION < 260000 FabricDataOutput #else FabricPackOutput #endif output,
+            CompletableFuture<HolderLookup.Provider> completableFuture
+    ) {
         super(output, completableFuture);
     }
 
-    @Override
-    protected void configure(RegistryWrapper.WrapperLookup arg) {
+    protected void addTags(HolderLookup.Provider arg) {
         // ------------ Custom Tags ------------
         // Cabinet Block Tags
         generateCabinetTags();
@@ -215,7 +224,7 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
     }
 
     public static TagKey<Block> getTagKey(String name) {
-        return TagKey.of(RegistryKeys.BLOCK, getId(name));
+        return TagKey.create(Registries.BLOCK, getId(name));
     }
 
     protected TagBuilderWrapper getCommonTagBuilder(TagKey<Block> tag) {
@@ -234,18 +243,18 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
         #else
         final protected TagBuilder builder;
         public TagBuilderWrapper(TagKey<Block> tag) {
-            this.builder = getTagBuilder(tag);
+            this.builder = getOrCreateRawBuilder(tag);
         }
         public TagBuilderWrapper add(Block... blocks) {
-            Arrays.stream(blocks).forEach((block) -> builder.add(Registries.BLOCK.getId(block)));
+            Arrays.stream(blocks).forEach((block) -> builder.addElement(BuiltInRegistries.BLOCK.getKey(block)));
             return this;
         }
         public TagBuilderWrapper addTag(TagKey<Block> tag) {
-            builder.addTag(tag.id());
+            builder.addTag(tag.location());
             return this;
         }
         public TagBuilderWrapper addOptionalTag(TagKey<Block> tag) {
-            builder.addOptionalTag(tag.id());
+            builder.addOptionalTag(tag.location());
             return this;
         }
         #endif

@@ -2,13 +2,16 @@ package io.github.mikip98.humilityafm.config;
 
 import io.github.mikip98.humilityafm.config.enums.CreativeItemGroupCategorization;
 import io.github.mikip98.humilityafm.config.enums.ModSupportState;
-import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
+#if POLYMER import io.github.mikip98.humilityafm.config.enums.PolymerCabinetFallback; #endif
+import io.github.mikip98.humilityafm.mod_support.SupportedMods;
 import lombok.Setter;
 
 import java.util.Map;
 
 public class ModConfig extends ModDefaultConfig {
+    #if MC_VERSION < 260000
     public static boolean transparentCabinetBlocks = defaultTransparentCabinetBlocks;
+    #endif
     public static boolean illuminatedCabinetBlockBrightening = defaultIlluminatedCabinetBlockBrightening;
     public static boolean enableLightStripBrightening = defaultEnableLightStripBrightening;
     public static boolean enableLightStripRadiusColorCompensation = defaultEnableLightStripRadiusColorCompensation;
@@ -32,5 +35,14 @@ public class ModConfig extends ModDefaultConfig {
     public static boolean printInChatServerClientMissmatch = defaultPrintInChatServerClientMissmatch;
 
     public static Map<SupportedMods, ModSupportState> modSupport = defaultModSupport;
+
+    #if POLYMER
+    public static boolean polymerAllowOptimisedMosaicsAndTiles = defaultPolymerAllowOptimisedMosaicsAndTiles;
+    public static boolean polymerAllowOptimisedJackOLanterns = defaultPolymerAllowOptimisedJackOLanterns;
+    public static boolean polymerAllowSemiFunctionalCabinetStates = defaultPolymerAllowSemiFunctionalCabinetStates;
+    public static PolymerCabinetFallback polymerCabinetFinalFallback = defaultPolymerCabinetFinalFallback;
+    public static boolean polymerPreferNonCollidingLightstrip = defaultPolymerPreferNonCollidingLightstrip;
+    // TODO: Config option 'polymerPreferVerticalLightstripHitbox' or maybe do lower half as vertical and top as horizontal
+    #endif
 }
 

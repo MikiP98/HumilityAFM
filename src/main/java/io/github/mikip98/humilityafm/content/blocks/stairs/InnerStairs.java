@@ -1,13 +1,17 @@
 package io.github.mikip98.humilityafm.content.blocks.stairs;
 
-import net.minecraft.block.*;
-import net.minecraft.block.enums.BlockHalf;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
+#if MC_VERSION >= 12003 && MC_VERSION < 260300 import com.mojang.serialization.MapCodec; #endif
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.BlockGetter;
+#if POLYMER import net.minecraft.world.level.block.StairBlock; #endif
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Half;
+#if POLYMER import net.minecraft.world.level.block.state.properties.StairsShape; #endif
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -22,37 +26,37 @@ public class InnerStairs extends OuterStairs {
     protected static final VoxelShape voxelShapeTopEast;
     protected static final VoxelShape voxelShapeTopWest;
 
-    protected static Map<Direction, VoxelShape> getVoxelShapeMapOfY ( double y){
-        VoxelShape base = VoxelShapes.cuboid(
-                0f, 0.5f - y, 0f,
-                1f, 1f - y, 1f
+    protected static Map<Direction, VoxelShape> getVoxelShapeMapOfY (double y) {
+        VoxelShape base = box(
+                0, 8 - y, 0,
+                16, 16 - y, 16
         );
         return Map.of(
-                Direction.NORTH, VoxelShapes.union(
+                Direction.NORTH, Shapes.or(
                         base,
-                        VoxelShapes.cuboid(0.5f, y, 0f, 1f, y + 0.5f, 1f),
-                        VoxelShapes.cuboid(0f, y, 0.5f, 0.5f, y + 0.5f, 1f)
+                        box(8, y, 0, 16, y + 8, 16),
+                        box(0, y, 8, 8, y + 8, 16)
                 ),  // original
-                Direction.SOUTH, VoxelShapes.union(
+                Direction.SOUTH, Shapes.or(
                         base,
-                        VoxelShapes.cuboid(0f, y, 0f, 0.5f, y + 0.5f, 1f),
-                        VoxelShapes.cuboid(0.5f, y, 0f, 1f, y + 0.5f, 0.5f)
+                        box(0, y, 0, 8, y + 8, 16),
+                        box(8, y, 0, 16, y + 8, 8)
                 ),  // reverse original
-                Direction.EAST, VoxelShapes.union(
+                Direction.EAST, Shapes.or(
                         base,
-                        VoxelShapes.cuboid(0f, y, 0.5f, 1f, y + 0.5f, 1f),
-                        VoxelShapes.cuboid(0f, y, 0f, 0.5f, y + 0.5f, 0.5f)
+                        box(0, y, 8, 16, y + 8, 16),
+                        box(0, y, 0, 8, y + 8, 8)
                 ),  // swap x <-> z + reverse
-                Direction.WEST, VoxelShapes.union(
+                Direction.WEST, Shapes.or(
                         base,
-                        VoxelShapes.cuboid(0f, y, 0f, 1f, y + 0.5f, 0.5f),
-                        VoxelShapes.cuboid(0.5f, y, 0.5f, 1f, y + 0.5f, 1f)
+                        box(0, y, 0, 16, y + 8, 8),
+                        box(8, y, 8, 16, y + 8, 16)
                 )   // swap x <-> z
         );
     }
     static {
-        final Map<Direction, VoxelShape> bottomVoxelShape = getVoxelShapeMapOfY(0.5f);
-        final Map<Direction, VoxelShape> topVoxelShape = getVoxelShapeMapOfY(0f);
+        final Map<Direction, VoxelShape> bottomVoxelShape = getVoxelShapeMapOfY(8);
+        final Map<Direction, VoxelShape> topVoxelShape = getVoxelShapeMapOfY(0);
 
         voxelShapeBottomNorth = bottomVoxelShape.get(Direction.NORTH);
         voxelShapeBottomSouth = bottomVoxelShape.get(Direction.SOUTH);
@@ -65,44 +69,45 @@ public class InnerStairs extends OuterStairs {
         voxelShapeTopWest = topVoxelShape.get(Direction.WEST);
     }
 
-    public InnerStairs(Settings settings) {
+    #if MC_VERSION >= 12004 && MC_VERSION < 260300
+    protected static final MapCodec<InnerStairs> CODEC = simpleCodec(InnerStairs::new);
+
+    @Override
+    protected @NotNull MapCodec<? extends InnerStairs> codec() {
+        return CODEC;
+    }
+    #endif
+
+    public InnerStairs(Properties settings) {
         super(settings);
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
-        Direction dir = state.get(FACING);
-        if (state.get(Properties.BLOCK_HALF) == BlockHalf.BOTTOM) {
+    public @NotNull VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        Direction dir = state.getValue(FACING);
+        if (state.getValue(HALF) == Half.BOTTOM) {
             switch (dir) {
-                case NORTH -> {
-                    return voxelShapeBottomNorth;
-                }
-                case SOUTH -> {
-                    return voxelShapeBottomSouth;
-                }
-                case EAST -> {
-                    return voxelShapeBottomEast;
-                }
-                case WEST -> {
-                    return voxelShapeBottomWest;
-                }
+                case NORTH: return voxelShapeBottomNorth;
+                case SOUTH: return voxelShapeBottomSouth;
+                case EAST: return voxelShapeBottomEast;
+                case WEST: return voxelShapeBottomWest;
             }
         } else {
             switch (dir) {
-                case NORTH -> {
-                    return voxelShapeTopNorth;
-                }
-                case SOUTH -> {
-                    return voxelShapeTopSouth;
-                }
-                case EAST -> {
-                    return voxelShapeTopEast;
-                }
-                case WEST -> {
-                    return voxelShapeTopWest;
-                }
+                case NORTH: return voxelShapeTopNorth;
+                case SOUTH: return voxelShapeTopSouth;
+                case EAST: return voxelShapeTopEast;
+                case WEST: return voxelShapeTopWest;
             }
         }
-        return VoxelShapes.fullCube();  // Fallback, should not happen
+        throw new IllegalStateException("It's not possible to get here...");
     }
+
+    #if POLYMER
+    @Override
+    public BlockState getPolymerBlockState(BlockState state) {
+        return super.getPolymerBlockState(state)
+                .setValue(StairBlock.SHAPE, StairsShape.INNER_LEFT);
+    }
+    #endif
 }

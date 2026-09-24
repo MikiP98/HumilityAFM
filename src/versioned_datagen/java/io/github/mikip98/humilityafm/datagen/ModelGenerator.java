@@ -1,5 +1,6 @@
 package io.github.mikip98.humilityafm.datagen;
 
+#if MC_VERSION >= 12105 import com.mojang.math.Quadrant; #endif
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
@@ -7,119 +8,138 @@ import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.Pair;
 import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
 import io.github.mikip98.humilityafm.util.generation_data.RawGenerationData;
-import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
+import io.github.mikip98.humilityafm.mod_support.SupportedMods;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.MaterialType;
-#if MC_VERSION >= 12104
-import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
-#endif
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+#if MC_VERSION >= 12104 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider; #endif
+#if MC_VERSION < 260000 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput; #endif
+#if MC_VERSION >= 260000 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput; #endif
 #if MC_VERSION < 12104
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
-#endif
-import net.minecraft.block.Block;
-import net.minecraft.block.enums.BlockHalf;
-import net.minecraft.block.enums.StairShape;
-#if MC_VERSION < 12104
-import net.minecraft.data.client.*;
 #else
-import net.minecraft.client.data.*;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.blockstates.*;
+import net.minecraft.client.data.models.model.*;
+    #if MC_VERSION < 12105
+    import net.minecraft.client.data.models.blockstates.Variant;
+    import net.minecraft.client.data.models.blockstates.Condition;
+    #endif
 #endif
 #if MC_VERSION >= 12105
-import net.minecraft.client.render.model.json.*;
+import net.minecraft.client.data.models.MultiVariant;
+    #if MC_VERSION < 260000
+    import net.minecraft.client.renderer.block.model.Variant;
+    import net.minecraft.client.renderer.block.model.multipart.Condition;
+    import net.minecraft.client.renderer.block.model.VariantMutator;
+    #else
+    import net.minecraft.client.renderer.block.dispatch.Variant;
+    import net.minecraft.client.renderer.block.dispatch.VariantMutator;
+    import net.minecraft.client.renderer.block.dispatch.multipart.Condition;
+    #endif
 #endif
-import net.minecraft.item.Item;
-import net.minecraft.state.property.*;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.Identifier;
-#if MC_VERSION >= 12105
-import net.minecraft.util.math.AxisRotation;
-#endif
-import net.minecraft.util.math.Direction;
+#if MC_VERSION >= 260000 import net.minecraft.client.resources.model.sprite.Material; #endif
+import net.minecraft.core.Direction;
+#if MC_VERSION < 12104 import net.minecraft.data.models.BlockModelGenerators; #endif
+#if MC_VERSION < 12104 import net.minecraft.data.models.ItemModelGenerators; #endif
+#if MC_VERSION < 12104 import net.minecraft.data.models.blockstates.*; #endif
+#if MC_VERSION < 12104 import net.minecraft.data.models.model.ModelTemplate; #endif
+#if MC_VERSION < 12104 import net.minecraft.data.models.model.ModelTemplates; #endif
+#if MC_VERSION < 12104 import net.minecraft.data.models.model.TextureMapping; #endif
+#if MC_VERSION < 12104 import net.minecraft.data.models.model.TextureSlot; #endif
+#if MC_VERSION < 12111 import net.minecraft.resources.ResourceLocation; #endif
+#if MC_VERSION >= 12111 import net.minecraft.resources.Identifier; #endif
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.Half;
+import net.minecraft.world.level.block.state.properties.StairsShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.*;
-#if MC_VERSION >= 12105
-import static net.minecraft.client.data.BlockStateModelGenerator.createWeightedVariant;
-#endif
+#if MC_VERSION >= 12105 import static net.minecraft.client.data.models.BlockModelGenerators.variant; #endif
 
 public class ModelGenerator extends FabricModelProvider {
     // Cabinet Models
-    protected static final Model CABINET_BLOCK_MODEL = getModel("block/cabinet_block");
-    protected static final Model CABINET_BLOCK_OPEN_MODEL = getModel("block/cabinet_block_open");
+    protected static final ModelTemplate CABINET_BLOCK_MODEL = getModel("block/cabinet_block");
+    protected static final ModelTemplate CABINET_BLOCK_OPEN_MODEL = getModel("block/cabinet_block_open");
     // Checker 2x2 Model
-    protected static final Model CHECKER_2X2_MODEL = getModel("block/checker_2x2");
+    protected static final ModelTemplate CHECKER_2X2_MODEL = getModel("block/checker_2x2");
     // Forced Corner Stairs Models
-    protected static final Model INNER_CORNER_STAIRS_MODEL = getModel("block/stairs_inner");
-    protected static final Model OUTER_CORNER_STAIRS_MODEL = getModel("block/stairs_outer");
+    protected static final ModelTemplate INNER_CORNER_STAIRS_MODEL = getModel("block/stairs_inner");
+    protected static final ModelTemplate OUTER_CORNER_STAIRS_MODEL = getModel("block/stairs_outer");
     // Coloured Torch Model
-    protected static final Model TORCH_TEMPLATE_MODEL = getModel("block/torch_template");
-    protected static final Model TORCH_WALL_TEMPLATE_MODEL = getModel("block/torch_wall_template");
+    protected static final ModelTemplate TORCH_TEMPLATE_MODEL = getModel("block/torch_template");
+    protected static final ModelTemplate TORCH_WALL_TEMPLATE_MODEL = getModel("block/torch_wall_template");
     // Candlestick Models
-    protected static final Model CANDLESTICK_STANDING_MODEL = getModel("block/candlestick");
-    protected static final Model CANDLESTICK_STANDING_WITH_CANDLE_MODEL = getModel("block/candlestick_candle");
-    protected static final Model CANDLESTICK_STANDING_WITH_CANDLE_LIT_MODEL = getModel("block/candlestick_candle_lit");
-    protected static final Model CANDLESTICK_WALL_MODEL = getModel("block/candlestick_wall");
-    protected static final Model CANDLESTICK_WALL_WITH_CANDLE_MODEL = getModel("block/candlestick_wall_candle");
-    protected static final Model CANDLESTICK_WALL_WITH_CANDLE_LIT_MODEL = getModel("block/candlestick_wall_candle_lit");
+    protected static final ModelTemplate CANDLESTICK_STANDING_MODEL = getModel("block/candlestick");
+    protected static final ModelTemplate CANDLESTICK_STANDING_WITH_CANDLE_MODEL = getModel("block/candlestick_candle");
+    protected static final ModelTemplate CANDLESTICK_STANDING_WITH_CANDLE_LIT_MODEL = getModel("block/candlestick_candle_lit");
+    protected static final ModelTemplate CANDLESTICK_WALL_MODEL = getModel("block/candlestick_wall");
+    protected static final ModelTemplate CANDLESTICK_WALL_WITH_CANDLE_MODEL = getModel("block/candlestick_wall_candle");
+    protected static final ModelTemplate CANDLESTICK_WALL_WITH_CANDLE_LIT_MODEL = getModel("block/candlestick_wall_candle_lit");
     // Light Strip Models
-    protected static final Model LIGHT_STRIP_STRAIGHT_MODEL = getModel("block/light_strip");
-    protected static final Model LIGHT_STRIP_INNER_MODEL = getModel("block/light_strip_inner");
-    protected static final Model LIGHT_STRIP_OUTER_MODEL = getModel("block/light_strip_outer");
+    protected static final ModelTemplate LIGHT_STRIP_STRAIGHT_MODEL = getModel("block/light_strip");
+    protected static final ModelTemplate LIGHT_STRIP_INNER_MODEL = getModel("block/light_strip_inner");
+    protected static final ModelTemplate LIGHT_STRIP_OUTER_MODEL = getModel("block/light_strip_outer");
     // Jack o'Lantern template model
-    protected static final Model JACK_O_LANTERN_TEMPLATE_MODEL = getModel("block/jack_o_lantern_template");
+    protected static final ModelTemplate JACK_O_LANTERN_TEMPLATE_MODEL = getModel("block/jack_o_lantern_template");
 
 
-    protected BlockStateModelGenerator blockStateModelGenerator;
+    protected BlockModelGenerators blockStateModelGenerator;
 
 
-    public ModelGenerator(FabricDataOutput output) {
+    public ModelGenerator(#if MC_VERSION < 260000 FabricDataOutput #else FabricPackOutput #endif output) {
         super(output);
     }
 
 
     @Override
-    public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
+    public void generateBlockStateModels(BlockModelGenerators blockStateModelGenerator) {
         this.blockStateModelGenerator = blockStateModelGenerator;
 
         // ............ TEST BLOCKS & BLOCK ITEMS ............
         // Cabinet Blocks
         registerItemModel(ItemRegistry.CABINET_ITEM, getId("block/cabinet_block"));
         registerItemModel(ItemRegistry.ILLUMINATED_CABINET_ITEM, getId("block/cabinet_block"));
-        blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(BlockRegistry.CABINET_BLOCK, getId("block/cabinet_block"), getId("block/cabinet_block_open")));
-        blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(BlockRegistry.ILLUMINATED_CABINET_BLOCK, getId("block/cabinet_block"), getId("block/cabinet_block_open")));
-        blockStateModelGenerator.blockStateCollector.accept(getFloorCabinetBlockstate(BlockRegistry.FLOOR_CABINET_BLOCK, getId("block/floor_cabinet_block"), getId("block/floor_cabinet_block_open")));
-        blockStateModelGenerator.blockStateCollector.accept(getFloorCabinetBlockstate(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK, getId("block/floor_cabinet_block"), getId("block/floor_cabinet_block_open")));
+        blockStateModelGenerator.blockStateOutput.accept(getCabinetBlockstate(BlockRegistry.CABINET_BLOCK, getId("block/cabinet_block"), getId("block/cabinet_block_open")));
+        blockStateModelGenerator.blockStateOutput.accept(getCabinetBlockstate(BlockRegistry.ILLUMINATED_CABINET_BLOCK, getId("block/cabinet_block"), getId("block/cabinet_block_open")));
+        blockStateModelGenerator.blockStateOutput.accept(getFloorCabinetBlockstate(BlockRegistry.FLOOR_CABINET_BLOCK, getId("block/floor_cabinet_block"), getId("block/floor_cabinet_block_open")));
+        blockStateModelGenerator.blockStateOutput.accept(getFloorCabinetBlockstate(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK, getId("block/floor_cabinet_block"), getId("block/floor_cabinet_block_open")));
 
         // ............ FINAL BLOCKS & BLOCK ITEMS ............
-        generateCabinetModelsAndBlockStates(blockStateModelGenerator);
-        generateWoodenMosaicModelsAndBlockStates(blockStateModelGenerator);
-        generateTerracottaTilesModelsAndBlockStates(blockStateModelGenerator);
-        generateForcedCornerStairsModelsAndBlockstates(blockStateModelGenerator);
+        generateCabinetModelsAndBlockStates();
+        generateWoodenMosaicModelsAndBlockStates();
+        generateTerracottaTilesModelsAndBlockStates();
+        generateForcedCornerStairsModelsAndBlockstates();
         // Optional blocks
-        generateCandlestickModelsAndBlockStates(blockStateModelGenerator);
-        generateColouredTorchModelsAndBlockStates(blockStateModelGenerator);
+        generateCandlestickModelsAndBlockStates();
+        generateColouredTorchModelsAndBlockStates();
         generateLightStripModelsAndBlockStates();
-        generateColouredJackOLanternModelsAndBlockStates(blockStateModelGenerator);
+        generateColouredJackOLanternModelsAndBlockStates();
     }
 
-    protected static void generateColouredJackOLanternModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
+    protected void generateColouredJackOLanternModelsAndBlockStates() {
         int i = 0;
         for (String color : RawGenerationData.vanillaColorPallet) {
-            final Identifier colouredJackOLanternTexture = getId("block/coloured_jack_o_lantern/coloured_jack_o_lantern_" + color);
-            final TextureMap textureMap = new TextureMap()
-                    .register(TextureKey.FRONT, colouredJackOLanternTexture);
+            final TextureMapping textureMap = new TextureMapping()
+                    .putForced(
+                            TextureSlot.FRONT,
+                            getTexture("block/coloured_jack_o_lantern/coloured_jack_o_lantern_" + color)
+                    );
 
-            final Identifier jackOLanternModelId = JACK_O_LANTERN_TEMPLATE_MODEL.upload(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif jackOLanternModelId = JACK_O_LANTERN_TEMPLATE_MODEL.create(
                     getId("block/coloured_jack_o_lantern/coloured_jack_o_lantern_" + color),
                     textureMap,
-                    blockStateModelGenerator.modelCollector
+                    blockStateModelGenerator.modelOutput
             );
-            blockStateModelGenerator.registerParentedItemModel(BlockRegistry.COLOURED_JACK_O_LANTERNS[i], jackOLanternModelId);
-            blockStateModelGenerator.blockStateCollector.accept(getOrientableBlockState(
+            registerItemModel(BlockRegistry.COLOURED_JACK_O_LANTERNS[i], jackOLanternModelId);
+            blockStateModelGenerator.blockStateOutput.accept(getOrientableBlockState(
                     BlockRegistry.COLOURED_JACK_O_LANTERNS[i],
                     jackOLanternModelId
             ));
@@ -127,80 +147,69 @@ public class ModelGenerator extends FabricModelProvider {
         }
     }
 
-    protected static #if MC_VERSION < 12105 VariantsBlockStateSupplier #else VariantsBlockModelDefinitionCreator #endif getOrientableBlockState(Block block, Identifier modelId) {
-        #if MC_VERSION < 12105
-        return VariantsBlockStateSupplier.create(block)
-                .coordinate(BlockStateVariantMap.create(Properties.HORIZONTAL_FACING)
-        #else
-        return VariantsBlockModelDefinitionCreator.of(block)
-                .with(BlockStateVariantMap.models(Properties.HORIZONTAL_FACING)
-        #endif
-                        .register(
+    protected static MultiVariantGenerator getOrientableBlockState(Block block, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif modelId) {
+        return createMultiVariantGenerator(block)
+                .with(PropertyDispatch #if MC_VERSION < 12105 .property #else .initial #endif (BlockStateProperties.HORIZONTAL_FACING)
+                        .select(
                                 Direction.NORTH,
                                 getVariant(modelId)
                         )
-                        .register(
+                        .select(
                                 Direction.SOUTH,
                                 getUVLockedVariantY(modelId, Rotation.R180)
                         )
-                        .register(
+                        .select(
                                 Direction.WEST,
                                 getUVLockedVariantY(modelId, Rotation.R270)
                         )
-                        .register(
+                        .select(
                                 Direction.EAST,
                                 getUVLockedVariantY(modelId, Rotation.R90)
                         )
                 );
     }
-    protected static #if MC_VERSION < 12105 VariantsBlockStateSupplier #else VariantsBlockModelDefinitionCreator #endif getTorchOrientableBlockState(Block block, Identifier modelId) {
-        #if MC_VERSION < 12105
-        return VariantsBlockStateSupplier.create(block)
-                .coordinate(BlockStateVariantMap.create(Properties.HORIZONTAL_FACING)
-        #else
-        return VariantsBlockModelDefinitionCreator.of(block)
-                .with(BlockStateVariantMap.models(Properties.HORIZONTAL_FACING)
-        #endif
-                        .register(
+    protected static MultiVariantGenerator getTorchOrientableBlockState(Block block, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif modelId) {
+        return createMultiVariantGenerator(block)
+                .with(PropertyDispatch #if MC_VERSION < 12105 .property #else .initial #endif (BlockStateProperties.HORIZONTAL_FACING)
+                        .select(
                                 Direction.NORTH,
                                 getVariantY(modelId, Rotation.R270)
                         )
-                        .register(
+                        .select(
                                 Direction.SOUTH,
                                 getVariantY(modelId, Rotation.R90)
                         )
-                        .register(
+                        .select(
                                 Direction.WEST,
                                 getVariantY(modelId, Rotation.R180)
                         )
-                        .register(
+                        .select(
                                 Direction.EAST,
                                 getVariant(modelId)
                         )
                 );
     }
 
-    protected void generateColouredTorchModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
+    protected void generateColouredTorchModelsAndBlockStates() {
         int i = 0;
         for (String color : RawGenerationData.vanillaColorPallet) {
-            final Identifier coloured_torch_texture = getId("block/coloured_torch/coloured_torch_" + color);
-            final TextureMap textureMap = new TextureMap()
-                    .register(TextureKey.TORCH, coloured_torch_texture);
+            final TextureMapping textureMap = new TextureMapping()
+                    .putForced(TextureSlot.TORCH, getTexture("block/coloured_torch/coloured_torch_" + color));
 
-            final Identifier torchModelId = TORCH_TEMPLATE_MODEL.upload(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif torchModelId = TORCH_TEMPLATE_MODEL.create(
                     getId("block/coloured_torch/coloured_torch_" + color),
                     textureMap,
-                    blockStateModelGenerator.modelCollector
+                    blockStateModelGenerator.modelOutput
             );
-            final Identifier wallTorchModelId = TORCH_WALL_TEMPLATE_MODEL.upload(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif wallTorchModelId = TORCH_WALL_TEMPLATE_MODEL.create(
                     getId("block/coloured_torch/coloured_torch_wall_" + color),
                     textureMap,
-                    blockStateModelGenerator.modelCollector
+                    blockStateModelGenerator.modelOutput
             );
 
             registerItemModel(ItemRegistry.COLOURED_TORCH_ITEM_VARIANTS[i], torchModelId);
-            blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(BlockRegistry.COLOURED_TORCH_VARIANTS[i], torchModelId));
-            blockStateModelGenerator.blockStateCollector.accept(getTorchOrientableBlockState(BlockRegistry.COLOURED_WALL_TORCH_VARIANTS[i], wallTorchModelId));
+            blockStateModelGenerator.blockStateOutput.accept(getDefaultBlockstate(BlockRegistry.COLOURED_TORCH_VARIANTS[i], torchModelId));
+            blockStateModelGenerator.blockStateOutput.accept(getTorchOrientableBlockState(BlockRegistry.COLOURED_WALL_TORCH_VARIANTS[i], wallTorchModelId));
             ++i;
         }
     }
@@ -210,28 +219,27 @@ public class ModelGenerator extends FabricModelProvider {
         for (BlockMaterial material : ActiveGenerationData.colouredFeatureSetMaterials) {
             final String color = material.layers()[0].name();
 
-            final Identifier coloured_concrete = getVanillaId("block/" + color + "_concrete");
-            final TextureMap textureMap = new TextureMap()
-                    .register(TextureKey.of("0"), coloured_concrete);
+            final TextureMapping textureMap = new TextureMapping()
+                    .putForced(TextureSlot.create("0"), getVanillaTexture("block/" + color + "_concrete"));
 
             final String pathPrefix = "block/light_strip/";
-            final Identifier lightStripStraightModelId = LIGHT_STRIP_STRAIGHT_MODEL.upload(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif lightStripStraightModelId = LIGHT_STRIP_STRAIGHT_MODEL.create(
                     getId(pathPrefix + "straight/light_strip_" + material.getSafeName()),
                     textureMap,
-                    blockStateModelGenerator.modelCollector
+                    blockStateModelGenerator.modelOutput
             );
-            final Identifier lightStripInnerModelId = LIGHT_STRIP_INNER_MODEL.upload(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif lightStripInnerModelId = LIGHT_STRIP_INNER_MODEL.create(
                     getId(pathPrefix + "inner/light_strip_inner_" + material.getSafeName()),
                     textureMap,
-                    blockStateModelGenerator.modelCollector
+                    blockStateModelGenerator.modelOutput
             );
-            final Identifier lightStripOuterModelId = LIGHT_STRIP_OUTER_MODEL.upload(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif lightStripOuterModelId = LIGHT_STRIP_OUTER_MODEL.create(
                     getId(pathPrefix + "outer/light_strip_outer_" + material.getSafeName()),
                     textureMap,
-                    blockStateModelGenerator.modelCollector
+                    blockStateModelGenerator.modelOutput
             );
-            blockStateModelGenerator.registerParentedItemModel(BlockRegistry.LIGHT_STRIP_VARIANTS[i], lightStripStraightModelId);
-            blockStateModelGenerator.blockStateCollector.accept(getLightStripBlockstate(
+            registerItemModel(BlockRegistry.LIGHT_STRIP_VARIANTS[i], lightStripStraightModelId);
+            blockStateModelGenerator.blockStateOutput.accept(getLightStripBlockstate(
                     BlockRegistry.LIGHT_STRIP_VARIANTS[i],
                     lightStripStraightModelId,
                     lightStripInnerModelId,
@@ -241,9 +249,8 @@ public class ModelGenerator extends FabricModelProvider {
         }
     }
 
-    protected void generateCandlestickModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
+    protected void generateCandlestickModelsAndBlockStates() {
         generateCandlestickModelsAndBlockstatesForMetals(
-                blockStateModelGenerator,
                 ActiveGenerationData.simpleCandlestickMaterials,
                 ItemRegistry.CANDLESTICK_ITEM_VARIANTS,
                 BlockRegistry.SIMPLE_CANDLESTICK_WALL_VARIANTS,
@@ -251,7 +258,6 @@ public class ModelGenerator extends FabricModelProvider {
         );
         for (int i = 0; i < ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS.length; ++i) {
             generateCandlestickModelsAndBlockstatesForMetals(
-                    blockStateModelGenerator,
                     ActiveGenerationData.rustingCandlestickMaterials[i],
                     ItemRegistry.RUSTABLE_CANDLESTICK_ITEM_VARIANTS[i],
                     BlockRegistry.RUSTABLE_CANDLESTICK_WALL_VARIANTS[i],
@@ -260,7 +266,6 @@ public class ModelGenerator extends FabricModelProvider {
         }
     }
     protected void generateCandlestickModelsAndBlockstatesForMetals(
-            BlockStateModelGenerator blockStateModelGenerator,
             Iterable<BlockMaterial> materials,
             Item[] items, Block[] wallBlocks, Block[] standingBlocks
     ) {
@@ -270,98 +275,98 @@ public class ModelGenerator extends FabricModelProvider {
             final String metal = material.layers()[0].name();
 
             final String suffix = block_suffix_metals.contains(metal) ? "_block" : "";
-            final TextureMap metalTextureMap = new TextureMap()
-                    .register(TextureKey.of("metal"), getVanillaId("block/" + metal + suffix));
+            final TextureMapping metalTextureMapping = new TextureMapping()
+                    .putForced(TextureSlot.create("metal"), getVanillaTexture("block/" + metal + suffix));
 
-            final Identifier candlestickStandingMetalModelId = CANDLESTICK_STANDING_MODEL.upload(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif candlestickStandingMetalModelId = CANDLESTICK_STANDING_MODEL.create(
                     getId("block/candlestick/standing/" + metal + "/candlestick_" + metal),
-                    metalTextureMap,
-                    blockStateModelGenerator.modelCollector
+                    metalTextureMapping,
+                    blockStateModelGenerator.modelOutput
             );
-            final Identifier candlestickWallMetalModelId = CANDLESTICK_WALL_MODEL.upload(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif candlestickWallMetalModelId = CANDLESTICK_WALL_MODEL.create(
                     getId("block/candlestick/wall/" + metal + "/candlestick_wall_" + metal),
-                    metalTextureMap,
-                    blockStateModelGenerator.modelCollector
+                    metalTextureMapping,
+                    blockStateModelGenerator.modelOutput
             );
 
-            final Identifier candlestickWithCandleStandingMetalModelId = CANDLESTICK_STANDING_WITH_CANDLE_MODEL.upload(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif candlestickWithCandleStandingMetalModelId = CANDLESTICK_STANDING_WITH_CANDLE_MODEL.create(
                     getId("block/candlestick/standing/" + metal + "/candlestick_" + metal + "_candle"),
-                    metalTextureMap,
-                    blockStateModelGenerator.modelCollector
+                    metalTextureMapping,
+                    blockStateModelGenerator.modelOutput
             );
-            final Identifier candlestickWithCandleLitStandingMetalModelId = CANDLESTICK_STANDING_WITH_CANDLE_LIT_MODEL.upload(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif candlestickWithCandleLitStandingMetalModelId = CANDLESTICK_STANDING_WITH_CANDLE_LIT_MODEL.create(
                     getId("block/candlestick/standing/" + metal + "/candlestick_" + metal + "_candle_lit"),
-                    metalTextureMap,
-                    blockStateModelGenerator.modelCollector
+                    metalTextureMapping,
+                    blockStateModelGenerator.modelOutput
             );
-            final Identifier candlestickWithCandleWallMetalModelId = CANDLESTICK_WALL_WITH_CANDLE_MODEL.upload(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif candlestickWithCandleWallMetalModelId = CANDLESTICK_WALL_WITH_CANDLE_MODEL.create(
                     getId("block/candlestick/wall/" + metal + "/candlestick_wall_" + metal + "_candle"),
-                    metalTextureMap,
-                    blockStateModelGenerator.modelCollector
+                    metalTextureMapping,
+                    blockStateModelGenerator.modelOutput
             );
-            final Identifier candlestickWithCandleLitWallMetalModelId = CANDLESTICK_WALL_WITH_CANDLE_LIT_MODEL.upload(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif candlestickWithCandleLitWallMetalModelId = CANDLESTICK_WALL_WITH_CANDLE_LIT_MODEL.create(
                     getId("block/candlestick/wall/" + metal + "/candlestick_wall_" + metal + "_candle_lit"),
-                    metalTextureMap,
-                    blockStateModelGenerator.modelCollector
+                    metalTextureMapping,
+                    blockStateModelGenerator.modelOutput
             );
 
-            final Model candlestickWithCandleStandingMetalModel = new Model(
+            final ModelTemplate candlestickWithCandleStandingMetalModel = new ModelTemplate(
                     Optional.of(candlestickWithCandleStandingMetalModelId),
                     Optional.empty()
             );
-            final Model candlestickWithCandleLitStandingMetalModel = new Model(
+            final ModelTemplate candlestickWithCandleLitStandingMetalModel = new ModelTemplate(
                     Optional.of(candlestickWithCandleLitStandingMetalModelId),
                     Optional.empty()
             );
-            final Model candlestickWithCandleWallMetalModel = new Model(
+            final ModelTemplate candlestickWithCandleWallMetalModel = new ModelTemplate(
                     Optional.of(candlestickWithCandleWallMetalModelId),
                     Optional.empty()
             );
-            final Model candlestickWithCandleLitWallMetalModel = new Model(
+            final ModelTemplate candlestickWithCandleLitWallMetalModel = new ModelTemplate(
                     Optional.of(candlestickWithCandleLitWallMetalModelId),
                     Optional.empty()
             );
 
-            Map<CandleColor, Identifier> wallCandleColorModelMap = new HashMap<>();
-            Map<CandleColor, Identifier> wallLitCandleColorModelMap = new HashMap<>();
-            Map<CandleColor, Identifier> standingCandleColorModelMap = new HashMap<>();
-            Map<CandleColor, Identifier> standingLitCandleColorModelMap = new HashMap<>();
+            Map<CandleColor, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif> wallCandleColorModelMap = new HashMap<>();
+            Map<CandleColor, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif> wallLitCandleColorModelMap = new HashMap<>();
+            Map<CandleColor, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif> standingCandleColorModelMap = new HashMap<>();
+            Map<CandleColor, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif> standingLitCandleColorModelMap = new HashMap<>();
             for (String color : RawGenerationData.vanillaColorPallet) {
                 final CandleColor candleColor = CandleColor.getColor(color);
-                final TextureMap candleColorTextureMap = new TextureMap()
-                        .register(TextureKey.of("candle"), getVanillaId("block/" + color + "_candle_lit"));
+                final TextureMapping candleColorTextureMapping = new TextureMapping()
+                        .putForced(TextureSlot.create("candle"), getVanillaTexture("block/" + color + "_candle_lit"));
 
                 String id = "block/candlestick/standing/" + metal + "/candlestick_" + metal + "_" + color;
-                final Identifier standingCandlestickColoredModelId = candlestickWithCandleStandingMetalModel.upload(
+                final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif standingCandlestickColoredModelId = candlestickWithCandleStandingMetalModel.create(
                         getId(id),
-                        candleColorTextureMap,
-                        blockStateModelGenerator.modelCollector
+                        candleColorTextureMapping,
+                        blockStateModelGenerator.modelOutput
                 );
                 standingCandleColorModelMap.put(candleColor, standingCandlestickColoredModelId);
-                final Identifier standingCandlestickLitColoredModelId = candlestickWithCandleLitStandingMetalModel.upload(
+                final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif standingCandlestickLitColoredModelId = candlestickWithCandleLitStandingMetalModel.create(
                         getId(id + "_lit"),
-                        candleColorTextureMap,
-                        blockStateModelGenerator.modelCollector
+                        candleColorTextureMapping,
+                        blockStateModelGenerator.modelOutput
                 );
                 standingLitCandleColorModelMap.put(candleColor, standingCandlestickLitColoredModelId);
 
                 id = "block/candlestick/wall/" + metal + "/candlestick_wall_" + metal + "_" + color;
-                final Identifier wallCandlestickColoredModelId = candlestickWithCandleWallMetalModel.upload(
+                final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif wallCandlestickColoredModelId = candlestickWithCandleWallMetalModel.create(
                         getId(id),
-                        candleColorTextureMap,
-                        blockStateModelGenerator.modelCollector
+                        candleColorTextureMapping,
+                        blockStateModelGenerator.modelOutput
                 );
                 wallCandleColorModelMap.put(candleColor, wallCandlestickColoredModelId);
-                final Identifier wallCandlestickLitColoredModelId = candlestickWithCandleLitWallMetalModel.upload(
+                final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif wallCandlestickLitColoredModelId = candlestickWithCandleLitWallMetalModel.create(
                         getId(id + "_lit"),
-                        candleColorTextureMap,
-                        blockStateModelGenerator.modelCollector
+                        candleColorTextureMapping,
+                        blockStateModelGenerator.modelOutput
                 );
                 wallLitCandleColorModelMap.put(candleColor, wallCandlestickLitColoredModelId);
             }
 
             registerItemModel(items[i], candlestickStandingMetalModelId);
-            blockStateModelGenerator.blockStateCollector.accept(getWallCandlestickBlockstate(
+            blockStateModelGenerator.blockStateOutput.accept(getWallCandlestickBlockstate(
                     wallBlocks[i],
                     candlestickWallMetalModelId,
                     candlestickWithCandleWallMetalModelId,
@@ -369,7 +374,7 @@ public class ModelGenerator extends FabricModelProvider {
                     wallCandleColorModelMap,
                     wallLitCandleColorModelMap
             ));
-            blockStateModelGenerator.blockStateCollector.accept(getStandingCandlestickBlockstate(
+            blockStateModelGenerator.blockStateOutput.accept(getStandingCandlestickBlockstate(
                     standingBlocks[i],
                     candlestickStandingMetalModelId,
                     candlestickWithCandleStandingMetalModelId,
@@ -381,7 +386,7 @@ public class ModelGenerator extends FabricModelProvider {
         }
     }
 
-    protected static void generateForcedCornerStairsModelsAndBlockstates(BlockStateModelGenerator blockStateModelGenerator) {
+    protected void generateForcedCornerStairsModelsAndBlockstates() {
         int i = 0;
         for (BlockMaterial stairMaterial : ActiveGenerationData.forcedCornerStairsVariantMaterials) {
             if (stairMaterial.layers().length != 1)
@@ -390,21 +395,21 @@ public class ModelGenerator extends FabricModelProvider {
             final BlockMaterial.Layer materialLayer = stairMaterial.layers()[0];
 
             final SupportedMods sourceMod = materialLayer.metadata().sourceMod();
-            final Function<String, Identifier> getBlockId = (name) -> getBlockId(sourceMod, name);
+            final Function<String, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif> getBlockId = (name) -> getBlockId(sourceMod, name);
 
             final MaterialType materialType = materialLayer.metadata().type();
             if (materialType == null)
                 throw new IllegalStateException("Material type is null for forced corner stairs material layer: " + materialLayer.name());
 
-            Identifier topTextureId;
-            Identifier sideTextureId;
-            Identifier bottomTextureId;
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif topTextureId;
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif sideTextureId;
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif bottomTextureId;
 
             String textureBlockName;
             switch (materialType) {
                 case BURNABLE_WOOD, FIREPROOF_WOOD -> {
                     textureBlockName = materialLayer.name() + "_planks";
-                    final Identifier textureId = getBlockId.apply(textureBlockName);
+                    final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif textureId = getBlockId.apply(textureBlockName);
                     topTextureId = textureId;
                     sideTextureId = textureId;
                     bottomTextureId = textureId;
@@ -457,33 +462,33 @@ public class ModelGenerator extends FabricModelProvider {
                 default -> throw new IllegalArgumentException("Unsupported material type for forced corner stairs: " + materialType);
             }
 
-            final Identifier innerStairsModelId = INNER_CORNER_STAIRS_MODEL.upload(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif innerStairsModelId = INNER_CORNER_STAIRS_MODEL.create(
                     getId("block/corner_stairs/inner_stairs/inner_stairs_" + stairMaterial.getSafeName()),
-                    new TextureMap()
-                            .register(TextureKey.TOP, topTextureId)
-                            .register(TextureKey.BOTTOM, bottomTextureId)
-                            .register(TextureKey.SIDE, sideTextureId),
-                    blockStateModelGenerator.modelCollector
+                    new TextureMapping()
+                            .putForced(TextureSlot.TOP, getTexture(topTextureId))
+                            .putForced(TextureSlot.BOTTOM, getTexture(bottomTextureId))
+                            .putForced(TextureSlot.SIDE, getTexture(sideTextureId)),
+                    blockStateModelGenerator.modelOutput
             );
-            final Identifier outerStairsModelId = OUTER_CORNER_STAIRS_MODEL.upload(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif outerStairsModelId = OUTER_CORNER_STAIRS_MODEL.create(
                     getId("block/corner_stairs/outer_stairs/outer_stairs_" + stairMaterial.getSafeName()),
-                    new TextureMap()
-                            .register(TextureKey.TOP, topTextureId)
-                            .register(TextureKey.BOTTOM, bottomTextureId)
-                            .register(TextureKey.SIDE, sideTextureId),
-                    blockStateModelGenerator.modelCollector
+                    new TextureMapping()
+                            .putForced(TextureSlot.TOP, getTexture(topTextureId))
+                            .putForced(TextureSlot.BOTTOM, getTexture(bottomTextureId))
+                            .putForced(TextureSlot.SIDE, getTexture(sideTextureId)),
+                    blockStateModelGenerator.modelOutput
             );
 
-            blockStateModelGenerator.registerParentedItemModel(BlockRegistry.INNER_STAIRS_BLOCK_VARIANTS[i], innerStairsModelId);
-            blockStateModelGenerator.registerParentedItemModel(BlockRegistry.OUTER_STAIRS_BLOCK_VARIANTS[i], outerStairsModelId);
-            blockStateModelGenerator.blockStateCollector.accept(getForcedCornerStairsBlockstate(BlockRegistry.INNER_STAIRS_BLOCK_VARIANTS[i], innerStairsModelId));
-            blockStateModelGenerator.blockStateCollector.accept(getForcedCornerStairsBlockstate(BlockRegistry.OUTER_STAIRS_BLOCK_VARIANTS[i], outerStairsModelId));
+            registerItemModel(BlockRegistry.INNER_STAIRS_BLOCK_VARIANTS[i], innerStairsModelId);
+            registerItemModel(BlockRegistry.OUTER_STAIRS_BLOCK_VARIANTS[i], outerStairsModelId);
+            blockStateModelGenerator.blockStateOutput.accept(getForcedCornerStairsBlockstate(BlockRegistry.INNER_STAIRS_BLOCK_VARIANTS[i], innerStairsModelId));
+            blockStateModelGenerator.blockStateOutput.accept(getForcedCornerStairsBlockstate(BlockRegistry.OUTER_STAIRS_BLOCK_VARIANTS[i], outerStairsModelId));
 
             ++i;
         }
     }
 
-    protected static void generateWoodenMosaicModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
+    protected void generateWoodenMosaicModelsAndBlockStates() {
         int i = 0;
         for (BlockMaterial variantMaterial : ActiveGenerationData.woodenMosaicVariantMaterials) {
             if (variantMaterial.layers().length != 2) {
@@ -494,8 +499,8 @@ public class ModelGenerator extends FabricModelProvider {
             final SupportedMods mod1 = layer1.metadata().sourceMod();
             final SupportedMods mod2 = layer2.metadata().sourceMod();
 
-            final Identifier planks1Id = getBlockId(mod1, layer1.name() + "_planks");
-            final Identifier planks2Id = getBlockId(mod2, layer2.name() + "_planks");
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif planks1Id = getBlockId(mod1, layer1.name() + "_planks");
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif planks2Id = getBlockId(mod2, layer2.name() + "_planks");
 
             String modFolders = "";
             if (mod1 != null) modFolders += mod1.modId;
@@ -504,105 +509,105 @@ public class ModelGenerator extends FabricModelProvider {
             if (!modFolders.isEmpty()) modFolders += '/';
 
             // TODO: Add the modFolders to other blocks
-            final Identifier modelLocationId = getId("block/wooden_mosaic/" + modFolders + "wooden_mosaic_" + variantMaterial.getSafeName());
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif modelLocationId = getId("block/wooden_mosaic/" + modFolders + "wooden_mosaic_" + variantMaterial.getSafeName());
 
-            final Identifier woodenMosaicModelId = CHECKER_2X2_MODEL.upload(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif woodenMosaicModelId = CHECKER_2X2_MODEL.create(
                     modelLocationId,
-                    new TextureMap()
-                            .register(TextureKey.of("1"), planks1Id)
-                            .register(TextureKey.of("2"), planks2Id),
-                    blockStateModelGenerator.modelCollector
+                    new TextureMapping()
+                            .putForced(TextureSlot.create("1"), getTexture(planks1Id))
+                            .putForced(TextureSlot.create("2"), getTexture(planks2Id)),
+                    blockStateModelGenerator.modelOutput
             );
-            blockStateModelGenerator.registerParentedItemModel(BlockRegistry.WOODEN_MOSAIC_VARIANTS[i], woodenMosaicModelId);
-            blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(BlockRegistry.WOODEN_MOSAIC_VARIANTS[i], woodenMosaicModelId));
+            registerItemModel(BlockRegistry.WOODEN_MOSAIC_VARIANTS[i], woodenMosaicModelId);
+            blockStateModelGenerator.blockStateOutput.accept(getDefaultBlockstate(BlockRegistry.WOODEN_MOSAIC_VARIANTS[i], woodenMosaicModelId));
             ++i;
         }
     }
-    protected static void generateTerracottaTilesModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
+    protected void generateTerracottaTilesModelsAndBlockStates() {
         int i = 0;
         for (String color : RawGenerationData.vanillaColorPallet) {
             for (String color2 : RawGenerationData.vanillaColorPallet) {
                 if (color.equals(color2)) continue;
 
-                final Identifier terracottaTileModelId = CHECKER_2X2_MODEL.upload(
+                final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif terracottaTileModelId = CHECKER_2X2_MODEL.create(
                         getId("block/terracotta_tiles/terracotta_tiles_" + color + "_" + color2),
-                        new TextureMap()
-                                .register(TextureKey.of("1"), getVanillaId("block/" + color + "_terracotta"))
-                                .register(TextureKey.of("2"), getVanillaId("block/" + color2 + "_terracotta")),
-                        blockStateModelGenerator.modelCollector
+                        new TextureMapping()
+                                .putForced(TextureSlot.create("1"), getVanillaTexture("block/" + color + "_terracotta"))
+                                .putForced(TextureSlot.create("2"), getVanillaTexture("block/" + color2 + "_terracotta")),
+                        blockStateModelGenerator.modelOutput
                 );
-                blockStateModelGenerator.registerParentedItemModel(BlockRegistry.TERRACOTTA_TILE_VARIANTS[i], terracottaTileModelId);
-                blockStateModelGenerator.blockStateCollector.accept(getDefaultBlockstate(BlockRegistry.TERRACOTTA_TILE_VARIANTS[i], terracottaTileModelId));
+                registerItemModel(BlockRegistry.TERRACOTTA_TILE_VARIANTS[i], terracottaTileModelId);
+                blockStateModelGenerator.blockStateOutput.accept(getDefaultBlockstate(BlockRegistry.TERRACOTTA_TILE_VARIANTS[i], terracottaTileModelId));
 
                 ++i;
             }
         }
     }
 
-    protected void generateCabinetModelsAndBlockStates(BlockStateModelGenerator blockStateModelGenerator) {
+    protected void generateCabinetModelsAndBlockStates() {
         Map<Pair<SupportedMods, String>, CabinetModelWoodSet> mod2baseWoodSet = new HashMap<>();
         int i = 0;
         for (BlockMaterial material : ActiveGenerationData.cabinetVariantMaterials) {
             if (material.layers().length != 2) throw new IllegalStateException("Cabinet material must have exactly two materialLayers, but found: " + material.layers().length);
             final BlockMaterial.Layer woodLayer = material.layers()[0];
             final Pair<SupportedMods, String> baseWoodSetKey = Pair.of(woodLayer.metadata().sourceMod(), woodLayer.name());
-            mod2baseWoodSet.computeIfAbsent(baseWoodSetKey, k -> generateCabinetWoodSet(woodLayer, blockStateModelGenerator));
+            mod2baseWoodSet.computeIfAbsent(baseWoodSetKey, k -> generateCabinetWoodSet(woodLayer));
             final CabinetModelWoodSet baseWoodSet = mod2baseWoodSet.get(baseWoodSetKey);
 
             final BlockMaterial.Layer colorLayer = material.layers()[1];
 
-            final TextureMap woolTextureMap = new TextureMap().register(
-                    TextureKey.of("wool"),
-                    getVanillaId("block/" + colorLayer.name() + "_wool")
+            final TextureMapping woolTextureMapping = new TextureMapping().putForced(
+                    TextureSlot.create("wool"),
+                    getVanillaTexture("block/" + colorLayer.name() + "_wool")
             );
 
-            final Identifier coloredCabinet = baseWoodSet.wallClosed.upload(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif coloredCabinet = baseWoodSet.wallClosed.create(
                     getCabinetCompleteModelId("wall", "closed", woodLayer, colorLayer),
-                    woolTextureMap,
-                    blockStateModelGenerator.modelCollector
+                    woolTextureMapping,
+                    blockStateModelGenerator.modelOutput
             );
-            final Identifier coloredCabinetOpen = baseWoodSet.wallOpen.upload(
+            final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif coloredCabinetOpen = baseWoodSet.wallOpen.create(
                     getCabinetCompleteModelId("wall", "open", woodLayer, colorLayer),
-                    woolTextureMap,
-                    blockStateModelGenerator.modelCollector
+                    woolTextureMapping,
+                    blockStateModelGenerator.modelOutput
             );
 
             registerItemModel(ItemRegistry.CABINET_ITEM_VARIANTS[i], coloredCabinet);
             registerItemModel(ItemRegistry.ILLUMINATED_CABINET_ITEM_VARIANTS[i], coloredCabinet);
-            blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(BlockRegistry.WALL_CABINET_BLOCK_VARIANTS[i], coloredCabinet, coloredCabinetOpen));
-            blockStateModelGenerator.blockStateCollector.accept(getCabinetBlockstate(BlockRegistry.WALL_ILLUMINATED_CABINET_BLOCK_VARIANTS[i], coloredCabinet, coloredCabinetOpen));
-            blockStateModelGenerator.blockStateCollector.accept(getFloorCabinetBlockstate(BlockRegistry.FLOOR_CABINET_BLOCK_VARIANTS[i], coloredCabinet, coloredCabinetOpen));
-            blockStateModelGenerator.blockStateCollector.accept(getFloorCabinetBlockstate(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_VARIANTS[i], coloredCabinet, coloredCabinetOpen));
+            blockStateModelGenerator.blockStateOutput.accept(getCabinetBlockstate(BlockRegistry.WALL_CABINET_BLOCK_VARIANTS[i], coloredCabinet, coloredCabinetOpen));
+            blockStateModelGenerator.blockStateOutput.accept(getCabinetBlockstate(BlockRegistry.WALL_ILLUMINATED_CABINET_BLOCK_VARIANTS[i], coloredCabinet, coloredCabinetOpen));
+            blockStateModelGenerator.blockStateOutput.accept(getFloorCabinetBlockstate(BlockRegistry.FLOOR_CABINET_BLOCK_VARIANTS[i], coloredCabinet, coloredCabinetOpen));
+            blockStateModelGenerator.blockStateOutput.accept(getFloorCabinetBlockstate(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_VARIANTS[i], coloredCabinet, coloredCabinetOpen));
             ++i;
         }
     }
-    protected static CabinetModelWoodSet generateCabinetWoodSet(BlockMaterial.Layer wood, BlockStateModelGenerator blockStateModelGenerator) {
+    protected CabinetModelWoodSet generateCabinetWoodSet(BlockMaterial.Layer wood) {
         final SupportedMods sourceMod = wood.metadata().sourceMod();
-        final TextureMap plankTextureMap = new TextureMap().register(
-                TextureKey.of("planks"),
-                getBlockId(sourceMod, wood.name() + "_planks")
+        final TextureMapping plankTextureMapping = new TextureMapping().putForced(
+                TextureSlot.create("planks"),
+                getTexture(getBlockId(sourceMod, wood.name() + "_planks"))
         );
 
-        final Identifier woodTypeCabinetId = CABINET_BLOCK_MODEL.upload(
+        final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif woodTypeCabinetId = CABINET_BLOCK_MODEL.create(
                 getCabinetBaseWoodModelId(sourceMod, "wall", "closed", wood.name()),
-                plankTextureMap,
-                blockStateModelGenerator.modelCollector
+                plankTextureMapping,
+                blockStateModelGenerator.modelOutput
         );
 
-        final Identifier woodTypeCabinetOpenId = CABINET_BLOCK_OPEN_MODEL.upload(
+        final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif woodTypeCabinetOpenId = CABINET_BLOCK_OPEN_MODEL.create(
                 getCabinetBaseWoodModelId(sourceMod, "wall", "open", wood.name()),
-                plankTextureMap,
-                blockStateModelGenerator.modelCollector
+                plankTextureMapping,
+                blockStateModelGenerator.modelOutput
         );
 
         return new CabinetModelWoodSet(getModel(woodTypeCabinetId), getModel(woodTypeCabinetOpenId));
     }
-    protected static Identifier getCabinetBaseWoodModelId(SupportedMods sourceMod, String wallFloor, String openClosed, String woodName) {
+    protected static #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif getCabinetBaseWoodModelId(SupportedMods sourceMod, String wallFloor, String openClosed, String woodName) {
         final String cabinetPath = "block/cabinet/" + (sourceMod != null ? sourceMod.modId : "vanilla") + "/" + wallFloor + "/" + openClosed;
         final String cabinetName = "cabinet_block_" + (sourceMod != null ? sourceMod.modId + "_" : "") + woodName;
         return getId(cabinetPath + "/" + cabinetName);
     }
-    protected static Identifier getCabinetCompleteModelId(String wallFloor, String openClosed, BlockMaterial.Layer woodLayer, BlockMaterial.Layer colorLayer) {
+    protected static #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif getCabinetCompleteModelId(String wallFloor, String openClosed, BlockMaterial.Layer woodLayer, BlockMaterial.Layer colorLayer) {
         final SupportedMods woodSourceMod = woodLayer.metadata().sourceMod();
         final String woodName = woodLayer.name();
         final String cabinetPath = "block/cabinet/" + (woodSourceMod != null ? woodSourceMod.modId : "vanilla") + "/" + wallFloor + "/" + openClosed + "/" + woodName;
@@ -610,220 +615,207 @@ public class ModelGenerator extends FabricModelProvider {
         return getId(cabinetPath + "/" + cabinetName);
     }
     protected record CabinetModelWoodSet(
-            Model wallClosed, Model wallOpen
+            ModelTemplate wallClosed, ModelTemplate wallOpen
     ) {}
 
 
-    protected static #if MC_VERSION < 12105 VariantsBlockStateSupplier #else VariantsBlockModelDefinitionCreator #endif getLightStripBlockstate(
+    protected static MultiVariantGenerator getLightStripBlockstate(
             Block block,
-            Identifier straightModel,
-            Identifier innerModel,
-            Identifier outerModel
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif straightModel,
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif innerModel,
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif outerModel
     ) {
-        EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
-        final EnumProperty<BlockHalf> HALF = Properties.BLOCK_HALF;
-        final EnumProperty<StairShape> SHAPE = Properties.STAIR_SHAPE;
+        EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
+        final EnumProperty<Half> HALF = BlockStateProperties.HALF;
+        final EnumProperty<StairsShape> SHAPE = BlockStateProperties.STAIRS_SHAPE;
 
-        #if MC_VERSION < 12105
-        return VariantsBlockStateSupplier.create(block)
-                .coordinate(BlockStateVariantMap.create(FACING, HALF, SHAPE)
-        #else
-        return VariantsBlockModelDefinitionCreator.of(block)
-                .with(BlockStateVariantMap.models(FACING, HALF, SHAPE)
-        #endif
+        return createMultiVariantGenerator(block)
+                .with(#if MC_VERSION < 12105 PropertyDispatch.properties #else PropertyDispatch.initial #endif (FACING, HALF, SHAPE)
                         // East Bottom
-                        .register(
-                                Direction.EAST, BlockHalf.BOTTOM, StairShape.INNER_LEFT,
+                        .select(
+                                Direction.EAST, Half.BOTTOM, StairsShape.INNER_LEFT,
                                 getUVLockedUpsideDownVariant(innerModel)
                         )
-                        .register(
-                                Direction.EAST, BlockHalf.BOTTOM, StairShape.INNER_RIGHT,
+                        .select(
+                                Direction.EAST, Half.BOTTOM, StairsShape.INNER_RIGHT,
                                 getUVLockedUpsideDownVariantY(innerModel, Rotation.R90)
                         )
-                        .register(
-                                Direction.EAST, BlockHalf.BOTTOM, StairShape.OUTER_LEFT,
+                        .select(
+                                Direction.EAST, Half.BOTTOM, StairsShape.OUTER_LEFT,
                                 getUVLockedUpsideDownVariant(outerModel)
                         )
-                        .register(
-                                Direction.EAST, BlockHalf.BOTTOM, StairShape.OUTER_RIGHT,
+                        .select(
+                                Direction.EAST, Half.BOTTOM, StairsShape.OUTER_RIGHT,
                                 getUVLockedUpsideDownVariantY(outerModel, Rotation.R90)
                         )
-                        .register(
-                                Direction.EAST, BlockHalf.BOTTOM, StairShape.STRAIGHT,
+                        .select(
+                                Direction.EAST, Half.BOTTOM, StairsShape.STRAIGHT,
                                 getUVLockedUpsideDownVariantY(straightModel, Rotation.R90)
                         )
                         // East Top
-                        .register(
-                                Direction.EAST, BlockHalf.TOP, StairShape.INNER_LEFT,
+                        .select(
+                                Direction.EAST, Half.TOP, StairsShape.INNER_LEFT,
                                 getUVLockedVariantY(innerModel, Rotation.R270)
                         )
-                        .register(
-                                Direction.EAST, BlockHalf.TOP, StairShape.INNER_RIGHT,
+                        .select(
+                                Direction.EAST, Half.TOP, StairsShape.INNER_RIGHT,
                                 getVariant(innerModel)
                         )
-                        .register(
-                                Direction.EAST, BlockHalf.TOP, StairShape.OUTER_LEFT,
+                        .select(
+                                Direction.EAST, Half.TOP, StairsShape.OUTER_LEFT,
                                 getUVLockedVariantY(outerModel, Rotation.R270)
                         )
-                        .register(
-                                Direction.EAST, BlockHalf.TOP, StairShape.OUTER_RIGHT,
+                        .select(
+                                Direction.EAST, Half.TOP, StairsShape.OUTER_RIGHT,
                                 getVariant(outerModel)
                         )
-                        .register(
-                                Direction.EAST, BlockHalf.TOP, StairShape.STRAIGHT,
+                        .select(
+                                Direction.EAST, Half.TOP, StairsShape.STRAIGHT,
                                 getUVLockedVariantY(straightModel, Rotation.R270)
                         )
                         // North Bottom
-                        .register(
-                                Direction.NORTH, BlockHalf.BOTTOM, StairShape.INNER_LEFT,
+                        .select(
+                                Direction.NORTH, Half.BOTTOM, StairsShape.INNER_LEFT,
                                 getUVLockedUpsideDownVariantY(innerModel, Rotation.R270)
                         )
-                        .register(
-                                Direction.NORTH, BlockHalf.BOTTOM, StairShape.INNER_RIGHT,
+                        .select(
+                                Direction.NORTH, Half.BOTTOM, StairsShape.INNER_RIGHT,
                                 getUVLockedUpsideDownVariant(innerModel)
                         )
-                        .register(
-                                Direction.NORTH, BlockHalf.BOTTOM, StairShape.OUTER_LEFT,
+                        .select(
+                                Direction.NORTH, Half.BOTTOM, StairsShape.OUTER_LEFT,
                                 getUVLockedUpsideDownVariantY(outerModel, Rotation.R270)
                         )
-                        .register(
-                                Direction.NORTH, BlockHalf.BOTTOM, StairShape.OUTER_RIGHT,
+                        .select(
+                                Direction.NORTH, Half.BOTTOM, StairsShape.OUTER_RIGHT,
                                 getUVLockedUpsideDownVariant(outerModel)
                         )
-                        .register(
-                                Direction.NORTH, BlockHalf.BOTTOM, StairShape.STRAIGHT,
+                        .select(
+                                Direction.NORTH, Half.BOTTOM, StairsShape.STRAIGHT,
                                 getUVLockedUpsideDownVariant(straightModel)
                         )
                         // North Top
-                        .register(
-                                Direction.NORTH, BlockHalf.TOP, StairShape.INNER_LEFT,
+                        .select(
+                                Direction.NORTH, Half.TOP, StairsShape.INNER_LEFT,
                                 getUVLockedVariantY(innerModel, Rotation.R180)
                         )
-                        .register(
-                                Direction.NORTH, BlockHalf.TOP, StairShape.INNER_RIGHT,
+                        .select(
+                                Direction.NORTH, Half.TOP, StairsShape.INNER_RIGHT,
                                 getUVLockedVariantY(innerModel, Rotation.R270)
                         )
-                        .register(
-                                Direction.NORTH, BlockHalf.TOP, StairShape.OUTER_LEFT,
+                        .select(
+                                Direction.NORTH, Half.TOP, StairsShape.OUTER_LEFT,
                                 getUVLockedVariantY(outerModel, Rotation.R180)
                         )
-                        .register(
-                                Direction.NORTH, BlockHalf.TOP, StairShape.OUTER_RIGHT,
+                        .select(
+                                Direction.NORTH, Half.TOP, StairsShape.OUTER_RIGHT,
                                 getUVLockedVariantY(outerModel, Rotation.R270)
                         )
-                        .register(
-                                Direction.NORTH, BlockHalf.TOP, StairShape.STRAIGHT,
+                        .select(
+                                Direction.NORTH, Half.TOP, StairsShape.STRAIGHT,
                                 getUVLockedVariantY(straightModel, Rotation.R180)
                         )
                         // South Bottom
-                        .register(
-                                Direction.SOUTH, BlockHalf.BOTTOM, StairShape.INNER_LEFT,
+                        .select(
+                                Direction.SOUTH, Half.BOTTOM, StairsShape.INNER_LEFT,
                                 getUVLockedUpsideDownVariantY(innerModel, Rotation.R90)
                         )
-                        .register(
-                                Direction.SOUTH, BlockHalf.BOTTOM, StairShape.INNER_RIGHT,
+                        .select(
+                                Direction.SOUTH, Half.BOTTOM, StairsShape.INNER_RIGHT,
                                 getUVLockedUpsideDownVariantY(innerModel, Rotation.R180)
                         )
-                        .register(
-                                Direction.SOUTH, BlockHalf.BOTTOM, StairShape.OUTER_LEFT,
+                        .select(
+                                Direction.SOUTH, Half.BOTTOM, StairsShape.OUTER_LEFT,
                                 getUVLockedUpsideDownVariantY(outerModel, Rotation.R90)
                         )
-                        .register(
-                                Direction.SOUTH, BlockHalf.BOTTOM, StairShape.OUTER_RIGHT,
+                        .select(
+                                Direction.SOUTH, Half.BOTTOM, StairsShape.OUTER_RIGHT,
                                 getUVLockedUpsideDownVariantY(outerModel, Rotation.R180)
                         )
-                        .register(
-                                Direction.SOUTH, BlockHalf.BOTTOM, StairShape.STRAIGHT,
+                        .select(
+                                Direction.SOUTH, Half.BOTTOM, StairsShape.STRAIGHT,
                                 getUVLockedUpsideDownVariantY(straightModel, Rotation.R180)
                         )
                         // South Top
-                        .register(
-                                Direction.SOUTH, BlockHalf.TOP, StairShape.INNER_LEFT,
+                        .select(
+                                Direction.SOUTH, Half.TOP, StairsShape.INNER_LEFT,
                                 getVariant(innerModel)
                         )
-                        .register(
-                                Direction.SOUTH, BlockHalf.TOP, StairShape.INNER_RIGHT,
+                        .select(
+                                Direction.SOUTH, Half.TOP, StairsShape.INNER_RIGHT,
                                 getUVLockedVariantY(innerModel, Rotation.R90)
                         )
-                        .register(
-                                Direction.SOUTH, BlockHalf.TOP, StairShape.OUTER_LEFT,
+                        .select(
+                                Direction.SOUTH, Half.TOP, StairsShape.OUTER_LEFT,
                                 getVariant(outerModel)
                         )
-                        .register(
-                                Direction.SOUTH, BlockHalf.TOP, StairShape.OUTER_RIGHT,
+                        .select(
+                                Direction.SOUTH, Half.TOP, StairsShape.OUTER_RIGHT,
                                 getUVLockedVariantY(outerModel, Rotation.R90)
                         )
-                        .register(
-                                Direction.SOUTH, BlockHalf.TOP, StairShape.STRAIGHT,
+                        .select(
+                                Direction.SOUTH, Half.TOP, StairsShape.STRAIGHT,
                                 getVariant(straightModel)
                         )
                         // West Bottom
-                        .register(
-                                Direction.WEST, BlockHalf.BOTTOM, StairShape.INNER_LEFT,
+                        .select(
+                                Direction.WEST, Half.BOTTOM, StairsShape.INNER_LEFT,
                                 getUVLockedUpsideDownVariantY(innerModel, Rotation.R180)
                         )
-                        .register(
-                                Direction.WEST, BlockHalf.BOTTOM, StairShape.INNER_RIGHT,
+                        .select(
+                                Direction.WEST, Half.BOTTOM, StairsShape.INNER_RIGHT,
                                 getUVLockedUpsideDownVariantY(innerModel, Rotation.R270)
                         )
-                        .register(
-                                Direction.WEST, BlockHalf.BOTTOM, StairShape.OUTER_LEFT,
+                        .select(
+                                Direction.WEST, Half.BOTTOM, StairsShape.OUTER_LEFT,
                                 getUVLockedUpsideDownVariantY(outerModel, Rotation.R180)
                         )
-                        .register(
-                                Direction.WEST, BlockHalf.BOTTOM, StairShape.OUTER_RIGHT,
+                        .select(
+                                Direction.WEST, Half.BOTTOM, StairsShape.OUTER_RIGHT,
                                 getUVLockedUpsideDownVariantY(outerModel, Rotation.R270)
                         )
-                        .register(
-                                Direction.WEST, BlockHalf.BOTTOM, StairShape.STRAIGHT,
+                        .select(
+                                Direction.WEST, Half.BOTTOM, StairsShape.STRAIGHT,
                                 getUVLockedUpsideDownVariantY(straightModel, Rotation.R270)
                         )
                         // West Top
-                        .register(
-                                Direction.WEST, BlockHalf.TOP, StairShape.INNER_LEFT,
+                        .select(
+                                Direction.WEST, Half.TOP, StairsShape.INNER_LEFT,
                                 getUVLockedVariantY(innerModel, Rotation.R90)
                         )
-                        .register(
-                                Direction.WEST, BlockHalf.TOP, StairShape.INNER_RIGHT,
+                        .select(
+                                Direction.WEST, Half.TOP, StairsShape.INNER_RIGHT,
                                 getUVLockedVariantY(innerModel, Rotation.R180)
                         )
-                        .register(
-                                Direction.WEST, BlockHalf.TOP, StairShape.OUTER_LEFT,
+                        .select(
+                                Direction.WEST, Half.TOP, StairsShape.OUTER_LEFT,
                                 getUVLockedVariantY(outerModel, Rotation.R90)
                         )
-                        .register(
-                                Direction.WEST, BlockHalf.TOP, StairShape.OUTER_RIGHT,
+                        .select(
+                                Direction.WEST, Half.TOP, StairsShape.OUTER_RIGHT,
                                 getUVLockedVariantY(outerModel, Rotation.R180)
                         )
-                        .register(
-                                Direction.WEST, BlockHalf.TOP, StairShape.STRAIGHT,
+                        .select(
+                                Direction.WEST, Half.TOP, StairsShape.STRAIGHT,
                                 getUVLockedVariantY(straightModel, Rotation.R90)
                         )
                 );
     }
 
-    protected static #if MC_VERSION < 12105 MultipartBlockStateSupplier #else MultipartBlockModelDefinitionCreator #endif getStandingCandlestickBlockstate(
+    protected static MultiPartGenerator getStandingCandlestickBlockstate(
             Block block,
-            Identifier emptyModel,
-            Identifier plainCandleModel,
-            Identifier litPlainCandleModel,
-            Map<CandleColor, Identifier> colouredCandleModels,
-            Map<CandleColor, Identifier> litColouredCandleModels
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif emptyModel,
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif plainCandleModel,
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif litPlainCandleModel,
+            Map<CandleColor, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif> colouredCandleModels,
+            Map<CandleColor, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif> litColouredCandleModels
     ) {
         final EnumProperty<CandleColor> CANDLE_COLOR = ModProperties.CANDLE_COLOR;
 
-        #if MC_VERSION < 12105
-        MultipartBlockStateSupplier multipart = MultipartBlockStateSupplier.create(block)
-        #else
-        MultipartBlockModelDefinitionCreator multipart = MultipartBlockModelDefinitionCreator.create(block)
-        #endif
+        MultiPartGenerator multipart = MultiPartGenerator.multiPart(block)
                 // NO CANDLE
                 .with(
-                        #if MC_VERSION < 12105
-                        When.create().set(CANDLE_COLOR, CandleColor.NONE),
-                        #else
-                        new MultipartModelConditionBuilder().put(CANDLE_COLOR, CandleColor.NONE),
-                        #endif
+                        #if MC_VERSION < 12105 Condition.condition() #else new ConditionBuilder() #endif.term(CANDLE_COLOR, CandleColor.NONE)#if MC_VERSION >= 12105 .build() #endif,
                         getVariant(emptyModel)
                 )
                 // PLAIN NON-LIT
@@ -853,38 +845,26 @@ public class ModelGenerator extends FabricModelProvider {
 
         return multipart;
     }
-    #if MC_VERSION < 12105
-    protected static When candlestickWhenState(CandleColor candleColor, boolean lit) {
-        return When.allOf(
-                When.create().set(ModProperties.CANDLE_COLOR, candleColor),
-                When.create().set(Properties.LIT, lit)
-        );
-    }
-    #else
-    protected static MultipartModelCombinedCondition candlestickWhenState(CandleColor candleColor, boolean lit) {
-        return new MultipartModelCombinedCondition(
-                MultipartModelCombinedCondition.LogicalOperator.AND,
-                List.of(
-                        new MultipartModelConditionBuilder().put(ModProperties.CANDLE_COLOR, candleColor).build(),
-                        new MultipartModelConditionBuilder().put(Properties.LIT, lit).build()
-                )
-        );
-    }
-    #endif
-
-    protected static #if MC_VERSION < 12105 MultipartBlockStateSupplier #else MultipartBlockModelDefinitionCreator #endif getWallCandlestickBlockstate(
-            Block block,
-            Identifier emptyModel,
-            Identifier plainCandleModel,
-            Identifier litPlainCandleModel,
-            Map<CandleColor, Identifier> colouredCandleModels,
-            Map<CandleColor, Identifier> litColouredCandleModels
-    ) {
+    protected static Condition candlestickWhenState(CandleColor candleColor, boolean lit) {
         #if MC_VERSION < 12105
-        MultipartBlockStateSupplier multipart = MultipartBlockStateSupplier.create(block)
+        return Condition.condition()
         #else
-        MultipartBlockModelDefinitionCreator multipart = MultipartBlockModelDefinitionCreator.create(block)
+        return new ConditionBuilder()
         #endif
+                .term(ModProperties.CANDLE_COLOR, candleColor)
+                .term(BlockStateProperties.LIT, lit)
+                #if MC_VERSION >= 12105 .build() #endif;
+    }
+
+    protected static MultiPartGenerator getWallCandlestickBlockstate(
+            Block block,
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif emptyModel,
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif plainCandleModel,
+            #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif litPlainCandleModel,
+            Map<CandleColor, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif> colouredCandleModels,
+            Map<CandleColor, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif> litColouredCandleModels
+    ) {
+        MultiPartGenerator multipart = MultiPartGenerator.multiPart(block)
                 // NO CANDLE
                 .with(
                         wallCandlestickNoCandleWhenState(Direction.NORTH),
@@ -976,205 +956,176 @@ public class ModelGenerator extends FabricModelProvider {
         }
         return multipart;
     }
-    #if MC_VERSION < 12105
-    protected static When wallCandlestickWhenState(CandleColor candleColor, boolean lit, Direction facing) {
-        return When.allOf(
-                When.create().set(ModProperties.CANDLE_COLOR, candleColor),
-                When.create().set(Properties.LIT, lit),
-                When.create().set(Properties.HORIZONTAL_FACING, facing)
-        );
-    }
-    protected static When wallCandlestickNoCandleWhenState(Direction facing) {
-        return When.allOf(
-                When.create().set(ModProperties.CANDLE_COLOR, CandleColor.NONE),
-                When.create().set(Properties.HORIZONTAL_FACING, facing)
-        );
-    }
-    #else
-    protected static MultipartModelCombinedCondition wallCandlestickWhenState(CandleColor candleColor, boolean lit, Direction facing) {
-        return new MultipartModelCombinedCondition(
-                MultipartModelCombinedCondition.LogicalOperator.AND,
-                List.of(
-                        new MultipartModelConditionBuilder().put(ModProperties.CANDLE_COLOR, candleColor).build(),
-                        new MultipartModelConditionBuilder().put(Properties.LIT, lit).build(),
-                        new MultipartModelConditionBuilder().put(Properties.HORIZONTAL_FACING, facing).build()
-                )
-        );
-    }
-    protected static MultipartModelCombinedCondition wallCandlestickNoCandleWhenState(Direction facing) {
-        return new MultipartModelCombinedCondition(
-                MultipartModelCombinedCondition.LogicalOperator.AND,
-                List.of(
-                        new MultipartModelConditionBuilder().put(ModProperties.CANDLE_COLOR, CandleColor.NONE).build(),
-                        new MultipartModelConditionBuilder().put(Properties.HORIZONTAL_FACING, facing).build()
-                )
-        );
-    }
-    #endif
-
-    protected static #if MC_VERSION < 12105 VariantsBlockStateSupplier #else VariantsBlockModelDefinitionCreator #endif getForcedCornerStairsBlockstate(Block block, Identifier modelId) {
+    protected static Condition wallCandlestickWhenState(CandleColor candleColor, boolean lit, Direction facing) {
         #if MC_VERSION < 12105
-        return VariantsBlockStateSupplier.create(block)
-                .coordinate(BlockStateVariantMap.create(Properties.HORIZONTAL_FACING, Properties.BLOCK_HALF)
+        return Condition.condition()
         #else
-        return VariantsBlockModelDefinitionCreator.of(block)
-                .with(BlockStateVariantMap.models(Properties.HORIZONTAL_FACING, Properties.BLOCK_HALF)
+        return new ConditionBuilder()
+                #endif
+                .term(ModProperties.CANDLE_COLOR, candleColor)
+                .term(BlockStateProperties.LIT, lit)
+                .term(BlockStateProperties.HORIZONTAL_FACING, facing)
+                #if MC_VERSION >= 12105 .build() #endif;
+    }
+    protected static Condition wallCandlestickNoCandleWhenState(Direction facing) {
+        #if MC_VERSION < 12105
+        return Condition.condition()
+        #else
+        return new ConditionBuilder()
         #endif
-                        .register(
-                                Direction.EAST, BlockHalf.BOTTOM,
+                .term(ModProperties.CANDLE_COLOR, CandleColor.NONE)
+                .term(BlockStateProperties.HORIZONTAL_FACING, facing)
+                #if MC_VERSION >= 12105 .build() #endif;
+    }
+
+    protected static MultiVariantGenerator getForcedCornerStairsBlockstate(Block block, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif modelId) {
+        return createMultiVariantGenerator(block)
+                .with(PropertyDispatch #if MC_VERSION < 12105 .properties #else .initial #endif (BlockStateProperties.HORIZONTAL_FACING, BlockStateProperties.HALF)
+                        .select(
+                                Direction.EAST, Half.BOTTOM,
                                 getUVLockedVariantY(modelId, Rotation.R90)
                         )
-                        .register(
-                                Direction.EAST, BlockHalf.TOP,
+                        .select(
+                                Direction.EAST, Half.TOP,
                                 getUVLockedUpsideDownVariantY(modelId, Rotation.R180)
                         )
-                        .register(
-                                Direction.NORTH, BlockHalf.BOTTOM,
+                        .select(
+                                Direction.NORTH, Half.BOTTOM,
                                 getVariant(modelId)
                         )
-                        .register(
-                                Direction.NORTH, BlockHalf.TOP,
+                        .select(
+                                Direction.NORTH, Half.TOP,
                                 getUVLockedUpsideDownVariantY(modelId, Rotation.R90)
                         )
-                        .register(
-                                Direction.SOUTH, BlockHalf.BOTTOM,
+                        .select(
+                                Direction.SOUTH, Half.BOTTOM,
                                 getUVLockedVariantY(modelId, Rotation.R180)
                         )
-                        .register(
-                                Direction.SOUTH, BlockHalf.TOP,
+                        .select(
+                                Direction.SOUTH, Half.TOP,
                                 getUVLockedUpsideDownVariantY(modelId, Rotation.R270)
                         )
-                        .register(
-                                Direction.WEST, BlockHalf.BOTTOM,
+                        .select(
+                                Direction.WEST, Half.BOTTOM,
                                 getUVLockedVariantY(modelId, Rotation.R270)
                         )
-                        .register(
-                                Direction.WEST, BlockHalf.TOP,
+                        .select(
+                                Direction.WEST, Half.TOP,
                                 getUVLockedUpsideDownVariant(modelId)
                         )
                 );
     }
 
-    protected static #if MC_VERSION < 12105 VariantsBlockStateSupplier #else VariantsBlockModelDefinitionCreator #endif getDefaultBlockstate(Block block, Identifier modelId) {
+    protected static MultiVariantGenerator getDefaultBlockstate(Block block, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif modelId) {
         #if MC_VERSION < 12105
-        return VariantsBlockStateSupplier.create(block, getVariant(modelId));
+        return MultiVariantGenerator.multiVariant(block, getVariant(modelId));
         #else
-        return VariantsBlockModelDefinitionCreator.of(block, createWeightedVariant(new ModelVariant(modelId)));
+        return MultiVariantGenerator.dispatch(block, getVariant(modelId));
         #endif
     }
 
-    protected static #if MC_VERSION < 12105 VariantsBlockStateSupplier #else VariantsBlockModelDefinitionCreator #endif getCabinetBlockstate(Block cabinetBlock, Identifier cabinetModel, Identifier cabinetOpenModel) {
-        #if MC_VERSION < 12105
-        return VariantsBlockStateSupplier.create(cabinetBlock)
-                .coordinate(BlockStateVariantMap.create(Properties.HORIZONTAL_FACING, Properties.OPEN)
-        #else
-        return VariantsBlockModelDefinitionCreator.of(cabinetBlock)
-                .with(BlockStateVariantMap.models(Properties.HORIZONTAL_FACING, Properties.OPEN)
-        #endif
-                        .register(
+    protected static MultiVariantGenerator getCabinetBlockstate(Block cabinetBlock, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif cabinetModel, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif cabinetOpenModel) {
+        return createMultiVariantGenerator(cabinetBlock)
+                .with(PropertyDispatch #if MC_VERSION < 12105 .properties #else .initial #endif (BlockStateProperties.HORIZONTAL_FACING, BlockStateProperties.OPEN)
+                        .select(
                                 Direction.NORTH, true,
                                 getVariantY(cabinetOpenModel, Rotation.R180)
                         )
-                        .register(
+                        .select(
                                 Direction.NORTH, false,
                                 getVariantY(cabinetModel, Rotation.R180)
                         )
-                        .register(
+                        .select(
                                 Direction.EAST, true,
                                 getVariantY(cabinetOpenModel, Rotation.R270)
                         )
-                        .register(
+                        .select(
                                 Direction.EAST, false,
                                 getVariantY(cabinetModel, Rotation.R270)
                         )
-                        .register(
+                        .select(
                                 Direction.SOUTH, true,
                                 getVariant(cabinetOpenModel)
                         )
-                        .register(
+                        .select(
                                 Direction.SOUTH, false,
                                 getVariant(cabinetModel)
                         )
-                        .register(
+                        .select(
                                 Direction.WEST, true,
                                 getVariantY(cabinetOpenModel, Rotation.R90)
                         )
-                        .register(
+                        .select(
                                 Direction.WEST, false,
                                 getVariantY(cabinetModel, Rotation.R90)
                         )
                 );
     }
-    protected static #if MC_VERSION < 12105 VariantsBlockStateSupplier #else VariantsBlockModelDefinitionCreator #endif getFloorCabinetBlockstate(Block cabinetBlock, Identifier cabinetModel, Identifier cabinetOpenModel) {
-        #if MC_VERSION < 12105
-        return VariantsBlockStateSupplier.create(cabinetBlock)
-                .coordinate(BlockStateVariantMap.create(Properties.BLOCK_HALF, Properties.HORIZONTAL_FACING, Properties.OPEN)
-        #else
-        return VariantsBlockModelDefinitionCreator.of(cabinetBlock)
-                .with(BlockStateVariantMap.models(Properties.BLOCK_HALF, Properties.HORIZONTAL_FACING, Properties.OPEN)
-        #endif
-                        .register(
-                                BlockHalf.BOTTOM, Direction.NORTH, true,
+    protected static MultiVariantGenerator getFloorCabinetBlockstate(Block cabinetBlock, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif cabinetModel, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif cabinetOpenModel) {
+        return createMultiVariantGenerator(cabinetBlock)
+                .with(PropertyDispatch #if MC_VERSION < 12105 .properties #else .initial #endif (BlockStateProperties.HALF, BlockStateProperties.HORIZONTAL_FACING, BlockStateProperties.OPEN)
+                        .select(
+                                Half.BOTTOM, Direction.NORTH, true,
                                 getVariant90XY(cabinetOpenModel, Rotation.R180)
                         )
-                        .register(
-                                BlockHalf.BOTTOM, Direction.NORTH, false,
+                        .select(
+                                Half.BOTTOM, Direction.NORTH, false,
                                 getVariant90XY(cabinetModel, Rotation.R180)
                         )
-                        .register(
-                                BlockHalf.BOTTOM, Direction.EAST, true,
+                        .select(
+                                Half.BOTTOM, Direction.EAST, true,
                                 getVariant90XY(cabinetOpenModel, Rotation.R270)
                         )
-                        .register(
-                                BlockHalf.BOTTOM, Direction.EAST, false,
+                        .select(
+                                Half.BOTTOM, Direction.EAST, false,
                                 getVariant90XY(cabinetModel, Rotation.R270)
                         )
-                        .register(
-                                BlockHalf.BOTTOM, Direction.SOUTH, true,
+                        .select(
+                                Half.BOTTOM, Direction.SOUTH, true,
                                 getVariant90X(cabinetOpenModel)
                         )
-                        .register(
-                                BlockHalf.BOTTOM, Direction.SOUTH, false,
+                        .select(
+                                Half.BOTTOM, Direction.SOUTH, false,
                                 getVariant90X(cabinetModel)
                         )
-                        .register(
-                                BlockHalf.BOTTOM, Direction.WEST, true,
+                        .select(
+                                Half.BOTTOM, Direction.WEST, true,
                                 getVariant90XY(cabinetOpenModel, Rotation.R90)
                         )
-                        .register(
-                                BlockHalf.BOTTOM, Direction.WEST, false,
+                        .select(
+                                Half.BOTTOM, Direction.WEST, false,
                                 getVariant90XY(cabinetModel, Rotation.R90)
                         )
-                        .register(
-                                BlockHalf.TOP, Direction.NORTH, true,
+                        .select(
+                                Half.TOP, Direction.NORTH, true,
                                 getVariant270XY(cabinetOpenModel, Rotation.R180)
                         )
-                        .register(
-                                BlockHalf.TOP, Direction.NORTH, false,
+                        .select(
+                                Half.TOP, Direction.NORTH, false,
                                 getVariant270XY(cabinetModel, Rotation.R180)
                         )
-                        .register(
-                                BlockHalf.TOP, Direction.EAST, true,
+                        .select(
+                                Half.TOP, Direction.EAST, true,
                                 getVariant270XY(cabinetOpenModel, Rotation.R270)
                         )
-                        .register(
-                                BlockHalf.TOP, Direction.EAST, false,
+                        .select(
+                                Half.TOP, Direction.EAST, false,
                                 getVariant270XY(cabinetModel, Rotation.R270)
                         )
-                        .register(
-                                BlockHalf.TOP, Direction.SOUTH, true,
+                        .select(
+                                Half.TOP, Direction.SOUTH, true,
                                 getVariant270X(cabinetOpenModel)
                         )
-                        .register(
-                                BlockHalf.TOP, Direction.SOUTH, false,
+                        .select(
+                                Half.TOP, Direction.SOUTH, false,
                                 getVariant270X(cabinetModel)
                         )
-                        .register(
-                                BlockHalf.TOP, Direction.WEST, true,
+                        .select(
+                                Half.TOP, Direction.WEST, true,
                                 getVariant270XY(cabinetOpenModel, Rotation.R90)
                         )
-                        .register(
-                                BlockHalf.TOP, Direction.WEST, false,
+                        .select(
+                                Half.TOP, Direction.WEST, false,
                                 getVariant270XY(cabinetModel, Rotation.R90)
                         )
                 );
@@ -1182,157 +1133,201 @@ public class ModelGenerator extends FabricModelProvider {
 
 
     #if MC_VERSION < 12105
-    protected static BlockStateVariant getUVLockedUpsideDownVariantY(Identifier model, Rotation rotationY) {
-        return getUVLockedUpsideDownVariant(model).put(VariantSettings.Y, rotationY.get());
+    protected static Variant getUVLockedUpsideDownVariantY(ResourceLocation model, Rotation rotationY) {
+        return getUVLockedUpsideDownVariant(model).with(VariantProperties.Y_ROT, rotationY.get());
     }
-    protected static BlockStateVariant getUVLockedUpsideDownVariant(Identifier model) {
-        return getUVLockedVariant(model).put(VariantSettings.X, Rotation.R180.get());
+    protected static Variant getUVLockedUpsideDownVariant(ResourceLocation model) {
+        return getUVLockedVariant(model).with(VariantProperties.X_ROT, Rotation.R180.get());
     }
-    protected static BlockStateVariant getUVLockedVariantY(Identifier model, Rotation rotationY) {
-        return getUVLockedVariant(model).put(VariantSettings.Y, rotationY.get());
+    protected static Variant getUVLockedVariantY(ResourceLocation model, Rotation rotationY) {
+        return getUVLockedVariant(model).with(VariantProperties.Y_ROT, rotationY.get());
     }
-    protected static BlockStateVariant getUVLockedVariant(Identifier model) {
-        return getVariant(model).put(VariantSettings.UVLOCK, true);
-    }
-
-    protected static BlockStateVariant getVariant90XY(Identifier model, Rotation rotationY) {
-        return getVariant90X(model).put(VariantSettings.Y, rotationY.get());
-    }
-    protected static BlockStateVariant getVariant270XY(Identifier model, Rotation rotationY) {
-        return getVariant270X(model).put(VariantSettings.Y, rotationY.get());
+    protected static Variant getUVLockedVariant(ResourceLocation model) {
+        return getVariant(model).with(VariantProperties.UV_LOCK, true);
     }
 
-    protected static BlockStateVariant getVariantY(Identifier model, Rotation rotationY) {
-        return getVariant(model).put(VariantSettings.Y, rotationY.get());
+    protected static Variant getVariant90XY(ResourceLocation model, Rotation rotationY) {
+        return getVariant90X(model).with(VariantProperties.Y_ROT, rotationY.get());
+    }
+    protected static Variant getVariant270XY(ResourceLocation model, Rotation rotationY) {
+        return getVariant270X(model).with(VariantProperties.Y_ROT, rotationY.get());
     }
 
-    protected static BlockStateVariant getVariant(Identifier model) {
-        return BlockStateVariant.create().put(VariantSettings.MODEL, model);
+    protected static Variant getVariantY(ResourceLocation model, Rotation rotationY) {
+        return getVariant(model).with(VariantProperties.Y_ROT, rotationY.get());
     }
 
-    protected static BlockStateVariant getVariant90X(Identifier model) {
+    protected static Variant getVariant(ResourceLocation model) {
+        return Variant.variant().with(VariantProperties.MODEL, model);
+    }
+
+    protected static Variant getVariant90X(ResourceLocation model) {
         return getVariantX(model, Rotation.R90);
     }
-    protected static BlockStateVariant getVariant270X(Identifier model) {
+    protected static Variant getVariant270X(ResourceLocation model) {
         return getVariantX(model, Rotation.R270);
     }
-    protected static BlockStateVariant getVariantX(Identifier model, Rotation rotation) {
-        return getVariant(model).put(VariantSettings.X, rotation.get());
+    protected static Variant getVariantX(ResourceLocation model, Rotation rotation) {
+        return getVariant(model).with(VariantProperties.X_ROT, rotation.get());
     }
     #else
-    protected static WeightedVariant getUVLockedUpsideDownVariantY(Identifier model, Rotation rotationY) {
-        return createWeightedVariant(new ModelVariant(model)
-                .with(ModelVariantOperator.UV_LOCK.withValue(true))
-                .with(ModelVariantOperator.ROTATION_X.withValue(AxisRotation.R180))
-                .with(ModelVariantOperator.ROTATION_Y.withValue(rotationY.get()))
+    protected static MultiVariant getUVLockedUpsideDownVariantY(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif model, Rotation rotationY) {
+        return variant(new Variant(model)
+                .with(VariantMutator.UV_LOCK.withValue(true))
+                .with(VariantMutator.X_ROT.withValue(Rotation.R180.get()))
+                .with(VariantMutator.Y_ROT.withValue(rotationY.get()))
         );
     }
-    protected static WeightedVariant getUVLockedUpsideDownVariant(Identifier model) {
-        return createWeightedVariant(new ModelVariant(model)
-                .with(ModelVariantOperator.UV_LOCK.withValue(true))
-                .with(ModelVariantOperator.ROTATION_X.withValue(AxisRotation.R180))
-        );
-    }
-
-    protected static WeightedVariant getUVLockedVariantY(Identifier model, Rotation rotationY) {
-        return createWeightedVariant(new ModelVariant(model)
-                .with(ModelVariantOperator.UV_LOCK.withValue(true))
-                .with(ModelVariantOperator.ROTATION_Y.withValue(rotationY.get()))
+    protected static MultiVariant getUVLockedUpsideDownVariant(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif model) {
+        return variant(new Variant(model)
+                .with(VariantMutator.UV_LOCK.withValue(true))
+                .with(VariantMutator.X_ROT.withValue(Rotation.R180.get()))
         );
     }
 
-    protected static WeightedVariant getVariant90XY(Identifier model, Rotation rotationY) {
-        return createWeightedVariant(new ModelVariant(model)
-                .with(ModelVariantOperator.ROTATION_X.withValue(AxisRotation.R90))
-                .with(ModelVariantOperator.ROTATION_Y.withValue(rotationY.get()))
-        );
-    }
-    protected static WeightedVariant getVariant270XY(Identifier model, Rotation rotationY) {
-        return createWeightedVariant(new ModelVariant(model)
-                .with(ModelVariantOperator.ROTATION_X.withValue(AxisRotation.R270))
-                .with(ModelVariantOperator.ROTATION_Y.withValue(rotationY.get()))
+    protected static MultiVariant getUVLockedVariantY(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif model, Rotation rotationY) {
+        return variant(new Variant(model)
+                .with(VariantMutator.UV_LOCK.withValue(true))
+                .with(VariantMutator.Y_ROT.withValue(rotationY.get()))
         );
     }
 
-    protected static WeightedVariant getVariantY(Identifier model, Rotation rotationY) {
-        return createWeightedVariant(new ModelVariant(model)
-                .with(ModelVariantOperator.ROTATION_Y.withValue(rotationY.get()))
+    protected static MultiVariant getVariant90XY(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif model, Rotation rotationY) {
+        return variant(new Variant(model)
+                .with(VariantMutator.X_ROT.withValue(Rotation.R90.get()))
+                .with(VariantMutator.Y_ROT.withValue(rotationY.get()))
+        );
+    }
+    protected static MultiVariant getVariant270XY(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif model, Rotation rotationY) {
+        return variant(new Variant(model)
+                .with(VariantMutator.X_ROT.withValue(Rotation.R270.get()))
+                .with(VariantMutator.Y_ROT.withValue(rotationY.get()))
         );
     }
 
-    protected static WeightedVariant getVariant(Identifier model) {
-        return createWeightedVariant(new ModelVariant(model));
+    protected static MultiVariant getVariantY(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif model, Rotation rotationY) {
+        return variant(new Variant(model)
+                .with(VariantMutator.Y_ROT.withValue(rotationY.get()))
+        );
     }
 
-    protected static WeightedVariant getVariant90X(Identifier model) {
+    protected static MultiVariant getVariant(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif model) {
+        return variant(new Variant(model));
+    }
+
+    protected static MultiVariant getVariant90X(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif model) {
         return getVariantX(model, Rotation.R90);
     }
-    protected static WeightedVariant getVariant270X(Identifier model) {
+    protected static MultiVariant getVariant270X(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif model) {
         return getVariantX(model, Rotation.R270);
     }
-    protected static WeightedVariant getVariantX(Identifier model, Rotation rotation) {
-        return createWeightedVariant(new ModelVariant(model)
-                .with(ModelVariantOperator.ROTATION_X.withValue(rotation.get()))
+    protected static MultiVariant getVariantX(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif model, Rotation rotation) {
+        return variant(new Variant(model)
+                .with(VariantMutator.X_ROT.withValue(rotation.get()))
         );
     }
     #endif
 
 
-    protected static Model getModel(String id) {
-        return new Model(Optional.of(getId(id)), Optional.empty());
+    protected static ModelTemplate getModel(String id) {
+        return new ModelTemplate(Optional.of(getId(id)), Optional.empty());
     }
-    protected static Model getModel(Identifier id) {
-        return new Model(Optional.of(id), Optional.empty());
+    protected static ModelTemplate getModel(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif id) {
+        return new ModelTemplate(Optional.of(id), Optional.empty());
     }
 
 
     @Override
-    public void generateItemModels(ItemModelGenerator itemModelGenerator) {
+    public void generateItemModels(ItemModelGenerators itemModelGenerator) {
         for (Item item : ItemRegistry.GLOWING_POWDER_VARIANTS) {
-            itemModelGenerator.register(item, Models.GENERATED);
+            itemModelGenerator.generateFlatItem(item, ModelTemplates.FLAT_ITEM);
         }
     }
 
-    protected void registerItemModel(Item item, Identifier modelId) {
+    protected void registerItemModel(ItemLike itemLike, #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif modelId) {
         #if MC_VERSION < 12104
-        blockStateModelGenerator.registerParentedItemModel(item, modelId);
+        blockStateModelGenerator.delegateItemModel(itemLike.asItem(), modelId);
         #else
-        blockStateModelGenerator.registerItemModel(item, modelId);
+        blockStateModelGenerator.itemModelOutput.accept(itemLike.asItem(), ItemModelUtils.plainModel(modelId));
         #endif
     }
 
-    protected static Identifier getBlockId(@Nullable SupportedMods mod, String name) {
+    protected static #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif getBlockId(@Nullable SupportedMods mod, String name) {
         return getVMId(mod, "block/" + name);
     }
 
 
-    #if MC_VERSION < 12105
     protected enum Rotation {
-        R0(VariantSettings.Rotation.R0),
-        R90(VariantSettings.Rotation.R90),
-        R180(VariantSettings.Rotation.R180),
-        R270(VariantSettings.Rotation.R270);
+        #if MC_VERSION < 12105
+        R0(VariantProperties.Rotation.R0),
+        R90(VariantProperties.Rotation.R90),
+        R180(VariantProperties.Rotation.R180),
+        R270(VariantProperties.Rotation.R270);
+
+        protected final VariantProperties.Rotation rotation;
+        public VariantProperties.Rotation get() { return rotation; }
+        Rotation(VariantProperties.Rotation rotation) { this.rotation = rotation; }
+    
+        #else
+        R0(Quadrant.R0),
+        R90(Quadrant.R90),
+        R180(Quadrant.R180),
+        R270(Quadrant.R270);
         
-        protected final VariantSettings.Rotation rotation;
-        public VariantSettings.Rotation get() { return rotation; }
-        
-        Rotation(VariantSettings.Rotation rotation) {
-            this.rotation = rotation;
-        }
+        protected final Quadrant rotation;
+        public Quadrant get() { return rotation; }
+        Rotation(Quadrant rotation) { this.rotation = rotation; }
+        #endif
     }
-    #else
-    protected enum Rotation {
-        R0(AxisRotation.R0),
-        R90(AxisRotation.R90),
-        R180(AxisRotation.R180),
-        R270(AxisRotation.R270);
-        
-        protected final AxisRotation rotation;
-        public AxisRotation get() { return rotation; }
-        
-        Rotation(AxisRotation rotation) {
-            this.rotation = rotation;
-        }
+
+
+    protected static #if MC_VERSION < 12105 MultiVariantGenerator #else MultiVariantGenerator.Empty #endif createMultiVariantGenerator(Block block) {
+        #if MC_VERSION < 12105
+        return MultiVariantGenerator.multiVariant(block);
+        #else
+        return MultiVariantGenerator.dispatch(block);
+        #endif
     }
-    #endif
+    // TODO: protected static PropertyDispatch createPropertyDispatch()
+
+
+    protected static
+        #if MC_VERSION < 12111 ResourceLocation #elif MC_VERSION < 260000 Identifier #else Material #endif
+    getVanillaTexture(String name) {
+        return getVanillaTexture(name, false);
+    }
+
+    protected static
+        #if MC_VERSION < 12111 ResourceLocation #elif MC_VERSION < 260000 Identifier #else Material #endif
+    getVanillaTexture(String name, boolean forceTranslucent) {
+        return getTexture(getVanillaId(name), forceTranslucent);
+    }
+
+    protected static
+        #if MC_VERSION < 12111 ResourceLocation #elif MC_VERSION < 260000 Identifier #else Material #endif
+    getTexture(String name) {
+        return getTexture(name, false);
+    }
+
+    protected static
+        #if MC_VERSION < 12111 ResourceLocation #elif MC_VERSION < 260000 Identifier #else Material #endif
+    getTexture(String name, boolean forceTranslucent) {
+        return getTexture(getId(name), forceTranslucent);
+    }
+
+    protected static
+        #if MC_VERSION < 12111 ResourceLocation #elif MC_VERSION < 260000 Identifier #else Material #endif
+    getTexture(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif id) {
+        return getTexture(id, false);
+    }
+
+    protected static
+        #if MC_VERSION < 12111 ResourceLocation #elif MC_VERSION < 260000 Identifier #else Material #endif
+    getTexture(#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif id, boolean forceTranslucent) {
+        #if MC_VERSION < 260000
+        return id;
+        #else
+        return new Material(id, forceTranslucent);
+        #endif
+    }
 }

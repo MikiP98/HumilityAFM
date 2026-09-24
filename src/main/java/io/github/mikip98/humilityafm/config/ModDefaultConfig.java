@@ -2,14 +2,17 @@ package io.github.mikip98.humilityafm.config;
 
 import io.github.mikip98.humilityafm.config.enums.CreativeItemGroupCategorization;
 import io.github.mikip98.humilityafm.config.enums.ModSupportState;
-import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
+import io.github.mikip98.humilityafm.config.enums.PolymerCabinetFallback;
+import io.github.mikip98.humilityafm.mod_support.SupportedMods;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ModDefaultConfig {
+    #if MC_VERSION < 260000
     public static final boolean defaultTransparentCabinetBlocks = true;
+    #endif
     public static final boolean defaultIlluminatedCabinetBlockBrightening = true;
     public static final boolean defaultEnableLightStripBrightening = true;
     public static final boolean defaultEnableLightStripRadiusColorCompensation = true;
@@ -31,4 +34,12 @@ public class ModDefaultConfig {
     public static final Map<SupportedMods, ModSupportState> defaultModSupport = Arrays.stream(SupportedMods.values()).map(
             mod -> Map.entry(mod, ModSupportState.AUTO)
     ).collect(HashMap::new, (map, entry) -> map.put(entry.getKey(), entry.getValue()), HashMap::putAll);
+
+    #if POLYMER
+    public static boolean defaultPolymerAllowOptimisedMosaicsAndTiles = true;
+    public static boolean defaultPolymerAllowOptimisedJackOLanterns = true;
+    public static boolean defaultPolymerAllowSemiFunctionalCabinetStates = true;
+    public static PolymerCabinetFallback defaultPolymerCabinetFinalFallback = PolymerCabinetFallback.GLASS;
+    public static boolean defaultPolymerPreferNonCollidingLightstrip = true;
+    #endif
 }

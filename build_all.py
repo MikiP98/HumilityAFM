@@ -14,7 +14,9 @@ VERSIONS = [
     "1.21.4",
     "1.21.1",
     "1.21.8",
-    "1.21.11"
+    "1.21.11",
+    "26.1.2",
+    "26.2"
 ]
 
 # The name of the property you change in gradle.properties to switch versions

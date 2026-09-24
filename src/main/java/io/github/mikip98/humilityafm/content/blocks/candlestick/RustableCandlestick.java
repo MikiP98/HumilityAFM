@@ -1,22 +1,23 @@
 package io.github.mikip98.humilityafm.content.blocks.candlestick;
 
+#if MC_VERSION >= 12003 && MC_VERSION < 260300 import com.mojang.serialization.MapCodec; #endif
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.RustableCandlestickLogic;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.block.*;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.state.StateManager;
-import net.minecraft.util.ActionResult;
-#if MC_VERSION < 12006
-import net.minecraft.util.Hand;
-#endif
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
@@ -24,55 +25,76 @@ import java.util.function.Supplier;
 @Getter
 @Setter
 public class RustableCandlestick extends Candlestick implements RustableCandlestickLogic {
-    public static final Supplier<Settings> defaultSettingsSupplier = () -> Candlestick.defaultSettingsSupplier.get()
-            .sounds(BlockSoundGroup.COPPER)
-            .ticksRandomly();
-    public static final Settings defaultSettings = defaultSettingsSupplier.get();
+    #if MC_VERSION >= 12003 && MC_VERSION < 260300
+    protected static final MapCodec<RustableCandlestick> CODEC = simpleCodec(RustableCandlestick::new);
+
+    @Override
+    protected @NotNull MapCodec<? extends RustableCandlestick> codec() {
+        return CODEC;
+    }
+    #endif
+
+    public static final Supplier<Properties> defaultSettingsSupplier = () -> Candlestick.defaultSettingsSupplier.get()
+            .sound(SoundType.COPPER)
+            .randomTicks();
+    public static final Properties defaultSettings = defaultSettingsSupplier.get();
 
     protected @Nullable BlockState rustPreviousLevel;
     protected @Nullable BlockState rustNextLevel;
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(ModProperties.WAXED);
     }
 
-    public RustableCandlestick(Settings settings) {
+    public RustableCandlestick(Properties settings) {
         this(settings, null, null);
     }
-    public RustableCandlestick(Settings settings, @Nullable BlockState rustPreviousLevel, @Nullable BlockState rustNextLevel) {
+    public RustableCandlestick(Properties settings, @Nullable BlockState rustPreviousLevel, @Nullable BlockState rustNextLevel) {
         super(settings);
         this.rustPreviousLevel = rustPreviousLevel;
         this.rustNextLevel = rustNextLevel;
-        setDefaultState(getDefaultState()
-                .with(ModProperties.WAXED, false)
-        );
+        registerDefaultState(defaultBlockState()
+                .setValue(ModProperties.WAXED, false));
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        if (random.nextDouble() >= 0.96) this.rust(state, world, pos);
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        if (random.nextDouble() >= 0.96) this.rust(state, level, pos);
     }
 
     @Override
-    public boolean hasRandomTicks(BlockState state) {
-        return !state.get(ModProperties.WAXED) && rustNextLevel != null;
+    public boolean isRandomlyTicking(BlockState state) {
+        return !state.getValue(ModProperties.WAXED) && rustNextLevel != null;
     }
 
     @Override
     #if MC_VERSION < 12006
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public @NotNull InteractionResult use(
+            BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit
+    ) {
+        if (onUseLogicInternal(state, level, pos, player, hand)) return InteractionResult.SUCCESS;
+        return super.use(state, level, pos, player, hand, hit);
+    }
     #else
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+    public @NotNull InteractionResult useWithoutItem(
+            @NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, Player player, @NotNull BlockHitResult hit
+    ) {
+        final InteractionHand hand = player.getUsedItemHand();
+        if (onUseLogicInternal(state, level, pos, player, hand)) return InteractionResult.SUCCESS;
+        return super.useWithoutItem(state, level, pos, player, hit);
+    }
     #endif
+
+    protected boolean onUseLogicInternal(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand) {
         double x = pos.getX() + 0.5;
         final double y = pos.getY() + 0.5;
         double z = pos.getZ() + 0.5;
 
         // Center of the candlestick, used for emitting particles and playing sounds
-        switch (state.get(FACING)) {
+        switch (state.getValue(FACING)) {
             case NORTH -> z += 0.15;
             case SOUTH -> z -= 0.15;
             case EAST -> x -= 0.15;
@@ -81,18 +103,12 @@ public class RustableCandlestick extends Candlestick implements RustableCandlest
 
         final double randomSpread = 2.0 / 3.0;
 
-        #if MC_VERSION < 12006
-        if (onUseRustableLogic(state, world, pos, player, hand, x, y, z, randomSpread)) return ActionResult.SUCCESS;
-        return super.onUse(state, world, pos, player, hand, hit);
-        #else
-        if (onUseRustableLogic(state, world, pos, player, x, y, z, randomSpread)) return ActionResult.SUCCESS;
-        return super.onUse(state, world, pos, player, hit);
-        #endif
+        return onUseRustableLogic(state, level, pos, player, hand, x, y, z, randomSpread);
     }
 
     @Override
     public BlockState getChangedBlockState(BlockState newBase, BlockState state) {
         return getChangedBlockStateUniversal(newBase, state)
-                .with(FACING, state.get(FACING));
+                .setValue(FACING, state.getValue(FACING));
     }
 }

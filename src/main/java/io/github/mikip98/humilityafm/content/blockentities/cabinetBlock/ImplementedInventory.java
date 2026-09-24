@@ -1,43 +1,46 @@
 package io.github.mikip98.humilityafm.content.blockentities.cabinetBlock;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventories;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+
 
 /**
  * A simple {@code Inventory} implementation with only default methods + an item list getter.
 
  * Originally by Juuz
  */
-public interface ImplementedInventory extends Inventory {
+public interface ImplementedInventory extends Container {
 
     /**
      * Retrieves the item list of this inventory.
      * Must return the same instance every time it's called.
      */
-    DefaultedList<ItemStack> getItems();
+    NonNullList<ItemStack> getItems();
     
-    /**
-     * Creates an inventory from the item list.
-     */
-    static ImplementedInventory of(DefaultedList<ItemStack> items) {
-        return () -> items;
-    }
+//    /**
+//     * Creates an inventory from the item list.
+//     */
+//    static ImplementedInventory of(NonNullList<ItemStack> items) {
+//        return () -> items;
+//    }
     
     /**
      * Creates a new inventory with the specified size.
      */
-    static ImplementedInventory ofSize(int size) {
-        return of(DefaultedList.ofSize(size, ItemStack.EMPTY));
-    }
+//    static ImplementedInventory ofSize(int size) {
+//        return of(NonNullList.withSize(size, ItemStack.EMPTY));
+//    }
     
     /**
      * Returns the inventory size.
      */
     @Override
-    default int size() {
+    default int getContainerSize() {
         return getItems().size();
     }
     
@@ -47,8 +50,8 @@ public interface ImplementedInventory extends Inventory {
      */
     @Override
     default boolean isEmpty() {
-        for (int i = 0; i < size(); i++) {
-            ItemStack stack = getStack(i);
+        for (int i = 0; i < getContainerSize(); i++) {
+            ItemStack stack = getItem(i);
             if (!stack.isEmpty()) {
                 return false;
             }
@@ -60,7 +63,7 @@ public interface ImplementedInventory extends Inventory {
      * Retrieves the item in the slot.
      */
     @Override
-    default ItemStack getStack(int slot) {
+    default @NotNull ItemStack getItem(int slot) {
         return getItems().get(slot);
     }
     
@@ -71,10 +74,11 @@ public interface ImplementedInventory extends Inventory {
      *              takes all items in that slot.
      */
     @Override
-    default ItemStack removeStack(int slot, int count) {
-        ItemStack result = Inventories.splitStack(getItems(), slot, count);
+    default @NotNull ItemStack removeItem(int slot, int count) {
+        // Inventories.splitStack is ContainerHelper.removeItem
+        ItemStack result = ContainerHelper.removeItem(getItems(), slot, count);
         if (!result.isEmpty()) {
-            markDirty();
+            setChanged();
         }
         return result;
     }
@@ -84,50 +88,46 @@ public interface ImplementedInventory extends Inventory {
      * @param slot The slot to remove from.
      */
     @Override
-    default ItemStack removeStack(int slot) {
-        return Inventories.removeStack(getItems(), slot);
+    default @NotNull ItemStack removeItemNoUpdate(int slot) {
+        // Inventories.removeStack is ContainerHelper.takeItem
+        return ContainerHelper.takeItem(getItems(), slot);
     }
     
     /**
      * Replaces the current stack in an inventory slot with the provided stack.
      * @param slot  The inventory slot of which to replace the itemstack.
      * @param stack The replacing itemstack. If the stack is too big for
-     *              this inventory ({@link Inventory#getMaxCountPerStack()}),
+//     *              this inventory ({@link Inventory#getMaxCountPerStack()}),
      *              it gets resized to this inventory's maximum amount.
      */
     @Override
-    default void setStack(int slot, ItemStack stack) {
+    default void setItem(int slot, ItemStack stack) {
         getItems().set(slot, stack);
-        // The below code was part of the template used
-        // but as Builderb0y noticed, I don't think this is a correct place for such check
-//        if (stack.getCount() > stack.getMaxCount()) {
-//            stack.setCount(stack.getMaxCount());
-//        }
     }
     
     /**
      * Clears the inventory.
      */
     @Override
-    default void clear() {
+    default void clearContent() {
         getItems().clear();
     }
     
-    /**
-     * Marks the state as dirty.
-     * Must be called after changes in the inventory, so that the game can properly save
-     * the inventory contents and notify neighboring blocks of inventory changes.
-     */ 
-    @Override
-    default void markDirty() {
-        // Override if you want behavior.
-    }
+//    /**
+//     * Marks the state as dirty.
+//     * Must be called after changes in the inventory, so that the game can properly save
+//     * the inventory contents and notify neighboring blocks of inventory changes.
+//     */
+//    @Override
+//    default void markDirty() {
+//        // Override if you want behavior.
+//    }
     
     /**
      * @return true if the player can use the inventory, false otherwise.
-     */ 
+     */
     @Override
-    default boolean canPlayerUse(PlayerEntity player) {
+    default boolean stillValid(Player player) {
         return true;
     }
 }

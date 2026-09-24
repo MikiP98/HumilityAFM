@@ -1,14 +1,16 @@
 package io.github.mikip98.humilityafm;
 
+#if POLYMER import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils; #endif
 import io.github.mikip98.humilityafm.config.ConfigJSON;
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerUtil; #endif
 import io.github.mikip98.humilityafm.registries.*;
 import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
-import io.github.mikip98.humilityafm.util.mod_support.ModSupportManager;
-import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
+import io.github.mikip98.humilityafm.mod_support.ModSupportManager;
+import io.github.mikip98.humilityafm.mod_support.SupportedMods;
 import net.fabricmc.api.ModInitializer;
-
-#if MC_VERSION < 260000
-import net.minecraft.util.Identifier;
+#if MC_VERSION < 12111
+import net.minecraft.resources.ResourceLocation;
 #else
 import net.minecraft.resources.Identifier;
 #endif
@@ -29,11 +31,18 @@ public class HumilityAFM implements ModInitializer {
 		// ------------------------------------ INITIALIZATION ------------------------------------
 		LOGGER.info(MOD_NAME + " is initializing! {}", getRandomFunSymbol());
 		if (Math.random() < 0.05) printPumpkin();
+
 		// Ensure correct loading order of the first crucial static classes
 		// Those 3 have to be loaded in this order before anything else
 		ConfigJSON.loadConfigFromFile();  // Load the config file
 		ModSupportManager.init();  // Check for supported mods (if datagen mode is enabled, all will be marked as preset)
 		ActiveGenerationData.init();  // Initialize active generation data according to which of the supported mods are loaded
+
+		#if POLYMER
+		PolymerUtil.init();
+		PolymerResourcePackUtils.addModAssets(MOD_ID);
+		PolymerResourcePackUtils.markAsRequired();
+		#endif
 
 
 		// ------------------------------------ REGISTRATION --------------------------------------
@@ -50,6 +59,10 @@ public class HumilityAFM implements ModInitializer {
 		NetworkRegistry.registerPayload();
 		#endif
 
+		#if POLYMER
+        PolymerModelCache.initLateCache();
+		#endif
+
 
 		// ------------------------------------ CLEANUP -------------------------------------------
 		ActiveGenerationData.clear();
@@ -58,29 +71,37 @@ public class HumilityAFM implements ModInitializer {
 	/**
 	 * Returns a new identifier for the given name, in 'humility-afm' namespace
 	 */
-	public static Identifier getId(String name) {
+	public static #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif getId(String name) {
 		return getId(MOD_ID, name);
 	}
 
 	/**
 	 * Returns a new identifier for the given name, in 'minecraft' namespace
 	 */
-	public static Identifier getVanillaId(String name) {
+	public static #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif getVanillaId(String name) {
 		return getId("minecraft", name);
 	}
 
 	/**
 	 * Returns a new identifier for the given name, in the given mod's namespace if not null, or 'minecraft' otherwise
 	 */
-	public static Identifier getVMId(@Nullable SupportedMods mod, String name) {
+	public static #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif getVMId(@Nullable SupportedMods mod, String name) {
 		return getId(mod != null ? mod.modId : "minecraft", name);
 	}
 
-	protected static Identifier getId(String namespace, String name) {
-		#if MC_VERSION < 260000
-		return Identifier.of(namespace, name);
+	public static #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif getIdRaw(String path) {
+		#if MC_VERSION < 12101
+		return new ResourceLocation(path);
+		#elif MC_VERSION < 12111
+		return ResourceLocation.tryParse(path);  // TODO: Check if this exists on older MC versions
 		#else
-		return Identifier.tryBuild(namespace, name);
+		return Identifier.tryParse(path);
 		#endif
+	}
+
+	protected static #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif getId(String namespace, String name) {
+		final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif id = #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif .tryBuild(namespace, name);
+		if (id == null) throw new IllegalArgumentException("Broken block id: " + namespace + ":" + name);
+		return id;
 	}
 }

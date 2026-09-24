@@ -6,15 +6,15 @@ import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.FloorCabinetBlockEntityRenderer;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.FloorIlluminatedCabinetBlockEntityRenderer;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.IlluminatedCabinetBlockEntityRenderer;
-import io.github.mikip98.humilityafm.util.mod_support.ModSupportManager;
-import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+import io.github.mikip98.humilityafm.mod_support.ModSupportManager;
+import io.github.mikip98.humilityafm.mod_support.SupportedMods;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 #if MC_VERSION >= 12111
-import net.minecraft.client.render.block.entity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 #endif
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class BlockEntityRendererRegistry {
     public static void register() {
@@ -36,10 +36,10 @@ public class BlockEntityRendererRegistry {
         }
     }
     #if MC_VERSION < 12111
-    protected static <T extends BlockEntity> void register(BlockEntityType<T> blockEntityType, BlockEntityRendererFactory<T> factory) {
+    protected static <T extends BlockEntity> void register(BlockEntityType<T> blockEntityType, BlockEntityRendererProvider<T> provider) {
     #else
-    protected static <T extends BlockEntity, Y extends BlockEntityRenderState> void register(BlockEntityType<T> blockEntityType, BlockEntityRendererFactory<T, Y> factory) {
+    protected static <T extends BlockEntity, Y extends BlockEntityRenderState> void register(BlockEntityType<T> blockEntityType, BlockEntityRendererProvider<T, Y> provider) {
     #endif
-        BlockEntityRendererFactories.register(blockEntityType, factory);
+        BlockEntityRenderers.register(blockEntityType, provider);
     }
 }

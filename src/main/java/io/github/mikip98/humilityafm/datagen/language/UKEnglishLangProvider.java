@@ -2,10 +2,14 @@ package io.github.mikip98.humilityafm.datagen.language;
 
 import io.github.mikip98.humilityafm.datagen.language.util.Translation;
 import io.github.mikip98.humilityafm.datagen.language.util.TranslationCategory;
+#if MC_VERSION < 260000
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+#else
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+#endif
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 #if MC_VERSION >= 12006
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.core.HolderLookup;
 #endif
 
 import java.util.Map;
@@ -19,7 +23,10 @@ public class UKEnglishLangProvider extends FabricLanguageProvider {
         super(dataOutput, "en_gb");
     }
     #else
-    public UKEnglishLangProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+    public UKEnglishLangProvider(
+            #if MC_VERSION < 260000 FabricDataOutput #else FabricPackOutput #endif dataOutput,
+            CompletableFuture<HolderLookup.Provider> registryLookup
+    ) {
         super(dataOutput, "en_gb", registryLookup);
     }
     #endif
@@ -27,9 +34,14 @@ public class UKEnglishLangProvider extends FabricLanguageProvider {
     @Override
     #if MC_VERSION < 12006
     public void generateTranslations(FabricLanguageProvider.TranslationBuilder translationBuilder) {
+        generateTranslationsInternal(translationBuilder);
+    }
     #else
-    public void generateTranslations(RegistryWrapper.WrapperLookup registryLookup, FabricLanguageProvider.TranslationBuilder translationBuilder) {
+    public void generateTranslations(HolderLookup.Provider registryLookup, FabricLanguageProvider.TranslationBuilder translationBuilder) {
+        generateTranslationsInternal(translationBuilder);
+    }
     #endif
+    protected void generateTranslationsInternal(FabricLanguageProvider.TranslationBuilder translationBuilder) {
         // Replace:
         // - "Gray" -> "Grey"
 

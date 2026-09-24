@@ -1,26 +1,29 @@
 package io.github.mikip98.humilityafm.content.blocks.stairs;
 
-#if MC_VERSION >= 12004
-import com.mojang.serialization.MapCodec;
-#endif
-import io.github.mikip98.humilityafm.content.blocks.cabinet.CabinetBlock;
-import net.minecraft.block.*;
-import net.minecraft.block.enums.BlockHalf;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
+#if MC_VERSION >= 12003 && MC_VERSION < 260300 import com.mojang.serialization.MapCodec; #endif
+#if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
+import io.github.mikip98.humilityafm.content.blocks.Waterloggable;
+import io.github.mikip98.humilityafm.content.blocks.templates.PlainHorizontalFacingBlock;
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+#if POLYMER import net.minecraft.world.level.block.StairBlock; #endif
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.*;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public class OuterStairs extends HorizontalFacingBlock implements Waterloggable {
+public class OuterStairs extends PlainHorizontalFacingBlock implements Waterloggable #if POLYMER, PolymerBlock #endif {
     protected static final VoxelShape voxelShapeBottomNorth;
     protected static final VoxelShape voxelShapeBottomSouth;
     protected static final VoxelShape voxelShapeBottomEast;
@@ -32,20 +35,20 @@ public class OuterStairs extends HorizontalFacingBlock implements Waterloggable 
     protected static final VoxelShape voxelShapeTopWest;
 
     protected static Map<Direction, VoxelShape> getVoxelShapeMapOfY(double y) {
-        VoxelShape base = VoxelShapes.cuboid(
-                0f, 0.5f - y, 0f,
-                1f, 1f - y, 1f
+        VoxelShape base = box(
+                0, 8 - y, 0,
+                16, 16 - y, 16
         );
         return Map.of(
-                Direction.NORTH, VoxelShapes.union(base, VoxelShapes.cuboid(0.5f, y, 0.5f, 1.0f, y+0.5f, 1.0f)),  // original
-                Direction.SOUTH, VoxelShapes.union(base, VoxelShapes.cuboid(0.0f, y, 0.0f, 0.5f, y+0.5f, 0.5f)),  // reverse original
-                Direction.EAST,  VoxelShapes.union(base, VoxelShapes.cuboid(0.0f, y, 0.5f, 0.5f, y+0.5f, 1.0f)),  // swap x <-> z + reverse
-                Direction.WEST,  VoxelShapes.union(base, VoxelShapes.cuboid(0.5f, y, 0.0f, 1.0f, y+0.5f, 0.5f))   // swap x <-> z
+                Direction.NORTH, Shapes.or(base, box(8, y, 8, 16, y+8, 16)),  // original
+                Direction.SOUTH, Shapes.or(base, box(0, y, 0, 8, y+8, 8)),  // reverse original
+                Direction.EAST,  Shapes.or(base, box(0, y, 8, 8, y+8, 16)),  // swap x <-> z + reverse
+                Direction.WEST,  Shapes.or(base, box(8, y, 0, 16, y+8, 8))   // swap x <-> z
         );
     }
     static {
-        final Map<Direction, VoxelShape> bottomVoxelShape = getVoxelShapeMapOfY(0.5f);
-        final Map<Direction, VoxelShape> topVoxelShape = getVoxelShapeMapOfY(0f);
+        final Map<Direction, VoxelShape> bottomVoxelShape = getVoxelShapeMapOfY(8);
+        final Map<Direction, VoxelShape> topVoxelShape = getVoxelShapeMapOfY(0);
 
         voxelShapeBottomNorth = bottomVoxelShape.get(Direction.NORTH);
         voxelShapeBottomSouth = bottomVoxelShape.get(Direction.SOUTH);
@@ -58,73 +61,84 @@ public class OuterStairs extends HorizontalFacingBlock implements Waterloggable 
         voxelShapeTopWest = topVoxelShape.get(Direction.WEST);
     }
 
-    public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    protected static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
 
-    #if MC_VERSION >= 12004
-    protected static final MapCodec<CabinetBlock> CODEC = createCodec(CabinetBlock::new);
+    #if MC_VERSION >= 12004 && MC_VERSION < 260300
+    protected static final MapCodec<OuterStairs> CODEC = simpleCodec(OuterStairs::new);
 
     @Override
-    protected MapCodec<? extends HorizontalFacingBlock> getCodec() {
+    protected @NotNull MapCodec<? extends OuterStairs> codec() {
         return CODEC;
     }
     #endif
 
-    public OuterStairs(Settings settings) {
+    public OuterStairs(Properties settings) {
         super(settings);
-        setDefaultState(getStateManager().getDefaultState()
-                .with(FACING, Direction.SOUTH)
-                .with(WATERLOGGED, false)
-                .with(Properties.BLOCK_HALF, BlockHalf.BOTTOM));
+        registerDefaultState(defaultBlockState()
+                .setValue(FACING, Direction.SOUTH)
+                .setValue(WATERLOGGED, false)
+                .setValue(BlockStateProperties.HALF, Half.BOTTOM));
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACING);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(WATERLOGGED);
-        builder.add(Properties.BLOCK_HALF);
+        builder.add(HALF);
     }
 
     @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return this.getDefaultState()
-                .with(FACING, ctx.getHorizontalPlayerFacing().getOpposite())
-                .with(WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER)
-                .with(Properties.BLOCK_HALF, ctx.getHitPos().y - ctx.getBlockPos().getY() > 0.5 ? BlockHalf.TOP : BlockHalf.BOTTOM);
+    public @NotNull BlockState getStateForPlacement(BlockPlaceContext ctx) {
+        final Direction direction = ctx.getNearestLookingDirection();
+        return super.getStateForPlacement(ctx)
+                .setValue(WATERLOGGED, isPlacedInWater(ctx))
+                .setValue(HALF,
+                        direction != Direction.DOWN && (
+                                direction == Direction.UP || !(ctx.getClickLocation().y - ctx.getClickedPos().getY() > 0.5)
+                        ) ? Half.BOTTOM : Half.TOP
+                );
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public FluidState getFluidState(BlockState state) {
-        return state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : Fluids.EMPTY.getDefaultState();
+    public @NotNull FluidState getFluidState(BlockState state) {
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : Fluids.EMPTY.defaultFluidState();
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
-        Direction dir = state.get(FACING);
-        if (state.get(Properties.BLOCK_HALF) == BlockHalf.BOTTOM) {
+    public @NotNull VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        final Direction dir = state.getValue(FACING);
+        if (state.getValue(HALF) == Half.BOTTOM) {
             switch (dir) {
-                case NORTH:
-                    return voxelShapeBottomNorth;
-                case SOUTH:
-                    return voxelShapeBottomSouth;
-                case EAST:
-                    return voxelShapeBottomEast;
-                case WEST:
-                    return voxelShapeBottomWest;
+                case NORTH: return voxelShapeBottomNorth;
+                case SOUTH: return voxelShapeBottomSouth;
+                case EAST: return voxelShapeBottomEast;
+                case WEST: return voxelShapeBottomWest;
             }
         } else {
             switch (dir) {
-                case NORTH:
-                    return voxelShapeTopNorth;
-                case SOUTH:
-                    return voxelShapeTopSouth;
-                case EAST:
-                    return voxelShapeTopEast;
-                case WEST:
-                    return voxelShapeTopWest;
+                case NORTH: return voxelShapeTopNorth;
+                case SOUTH: return voxelShapeTopSouth;
+                case EAST: return voxelShapeTopEast;
+                case WEST: return voxelShapeTopWest;
             }
         }
-        return VoxelShapes.fullCube();  // Fallback, should not happen
+        throw new IllegalStateException("It's not possible to get here...");
     }
+
+    #if POLYMER
+    @Override
+    public BlockState getPolymerBlockState(BlockState state) {
+        if (!PolymerModelCache.STAIR_BASE_CACHE.containsKey(this)) {
+            throw new RuntimeException("Block '" + state.getBlock() + "' has not been properly cached!");
+        }
+        return PolymerModelCache.STAIR_BASE_CACHE.get(this).defaultBlockState()
+                .setValue(StairBlock.FACING, state.getValue(FACING).getOpposite())
+                .setValue(StairBlock.HALF, state.getValue(HALF))
+                .setValue(StairBlock.WATERLOGGED, state.getValue(WATERLOGGED))
+                .setValue(StairBlock.SHAPE, StairsShape.OUTER_LEFT);
+    }
+    #endif
 }

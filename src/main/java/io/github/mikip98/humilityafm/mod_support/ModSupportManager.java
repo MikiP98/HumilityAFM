@@ -1,4 +1,4 @@
-package io.github.mikip98.humilityafm.util.mod_support;
+package io.github.mikip98.humilityafm.mod_support;
 
 import io.github.mikip98.humilityafm.config.ModConfig;
 import net.fabricmc.loader.api.FabricLoader;
@@ -42,7 +42,6 @@ public class ModSupportManager {
     protected static void checkForMod(SupportedMods mod) {
         final FabricLoader fabricLoader = FabricLoader.getInstance();
 
-        // Ask fabric if the mod is loaded
         if (fabricLoader.isModLoaded(mod.modId)) {
             loadedMods.add(mod);
             LOGGER.info("Supported mod '{}' ({}) has been found present {}", mod.modName, mod.modId, getRandomFunSymbol());

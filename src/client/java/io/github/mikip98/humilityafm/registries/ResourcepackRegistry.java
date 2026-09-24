@@ -4,7 +4,7 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.MOD_ID;
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
@@ -33,12 +33,14 @@ public class ResourcepackRegistry {
             register("coloured_jack_o_lanterns_labpbr_emission_smooth", container, "Coloured Jack o'Lanterns LabPBR Smooth", ResourcePackActivationType.NORMAL);
 
             // ......... DATA PACKS .........
-            register("alternate_wooden_mosaic_recipies", container, "Alternate Wooden Mosaic Recipies", ResourcePackActivationType.NORMAL);
+            register("alternate_wooden_mosaic_recipies", container, "Alternate Wooden Mosaic Recipies",
+                    #if MC_VERSION < 12104 ResourcePackActivationType.NORMAL #else ResourcePackActivationType.DEFAULT_ENABLED #endif
+            );
         });
     }
     // TODO: Consider making a RegistryHelper class to skip passing the 'container' every time
-    // TODO: Replace with Text.translatable();
+    // TODO: Replace with Component.translatable();
     protected static void register(String id, ModContainer container, String name, ResourcePackActivationType activationType) {
-        ResourceManagerHelper.registerBuiltinResourcePack(getId(id), container, Text.literal(name), activationType);
+        ResourceManagerHelper.registerBuiltinResourcePack(getId(id), container, Component.literal(name), activationType);
     }
 }

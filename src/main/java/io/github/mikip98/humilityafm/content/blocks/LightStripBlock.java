@@ -1,22 +1,29 @@
 package io.github.mikip98.humilityafm.content.blocks;
 
+#if MC_VERSION >= 12003 && MC_VERSION < 260300 import com.mojang.serialization.MapCodec; #endif
+#if POLYMER import eu.pb4.polymer.blocks.api.PolymerTexturedBlock; #endif
 import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntity;
-import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.enums.BlockHalf;
-import net.minecraft.block.enums.StairShape;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
-import org.jetbrains.annotations.Nullable;
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
+#if MC_VERSION >= 260000 import net.fabricmc.fabric.api.networking.v1.context.PacketContext; #endif
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+#if POLYMER import net.minecraft.server.level.ServerLevel; #endif
+#if POLYMER && MC_VERSION >= 12104 import net.minecraft.util.RandomSource; #endif
+import net.minecraft.world.level.*;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Half;
+import net.minecraft.world.level.block.state.properties.StairsShape;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
+#if MC_VERSION < 260000 import xyz.nucleoid.packettweaker.PacketContext; #endif
 
 import java.util.Map;
 
-public class LightStripBlock extends StairsBlock implements BlockEntityProvider {
+public class LightStripBlock extends StairBlock implements EntityBlock #if POLYMER, PolymerTexturedBlock #endif {
     // Straight
     protected static final VoxelShape voxelShapeBottomStraightNorth;
     protected static final VoxelShape voxelShapeBottomStraightSouth;
@@ -128,46 +135,50 @@ public class LightStripBlock extends StairsBlock implements BlockEntityProvider 
     }
     protected static Map<Direction, VoxelShape> getStraightVoxelShape(double y) {
         return Map.of(
-                Direction.NORTH, VoxelShapes.cuboid(0f, y, 0f, 1f, y + 0.0625d, 0.0625f),
-                Direction.SOUTH, VoxelShapes.cuboid(0f, y, 0.9375f, 1f, y + 0.0625d, 1f),
-                Direction.EAST,  VoxelShapes.cuboid(0.9375f, y, 0f, 1f, y + 0.0625d, 1f),
-                Direction.WEST,  VoxelShapes.cuboid(0f, y, 0f, 0.0625f, y + 0.0625d, 1f)
+                Direction.NORTH, box(0, y, 0, 16, y + 1, 1),
+                Direction.SOUTH, box(0, y, 15, 16, y + 1, 16),
+                Direction.EAST,  box(15, y, 0, 16, y + 1, 16),
+                Direction.WEST,  box(0, y, 0, 1, y + 1, 16)
         );
     }
     protected static Map<Direction, VoxelShape> getInnerLeftVoxelShape(Map<Direction, VoxelShape> base) {
         return Map.of(
-                Direction.NORTH, VoxelShapes.union(base.get(Direction.NORTH), base.get(Direction.WEST)),
-                Direction.SOUTH, VoxelShapes.union(base.get(Direction.SOUTH), base.get(Direction.EAST)),
-                Direction.EAST,  VoxelShapes.union(base.get(Direction.EAST), base.get(Direction.NORTH)),
-                Direction.WEST,  VoxelShapes.union(base.get(Direction.WEST), base.get(Direction.SOUTH))
+                Direction.NORTH, Shapes.or(base.get(Direction.NORTH), base.get(Direction.WEST)),
+                Direction.SOUTH, Shapes.or(base.get(Direction.SOUTH), base.get(Direction.EAST)),
+                Direction.EAST,  Shapes.or(base.get(Direction.EAST), base.get(Direction.NORTH)),
+                Direction.WEST,  Shapes.or(base.get(Direction.WEST), base.get(Direction.SOUTH))
         );
     }
     protected static Map<Direction, VoxelShape> getOuterLeftVoxelShape(double y) {
         return Map.of(
-                Direction.NORTH, VoxelShapes.cuboid(0f, y, 0, 0.0625f, y + 0.0625d, 0.0625f),
-                Direction.SOUTH, VoxelShapes.cuboid(0.9375f, y, 0.9375f, 1f, y + 0.0625d, 1f),
-                Direction.EAST,  VoxelShapes.cuboid(0.9375f, y, 0f, 1f, y + 0.0625d, 0.0625f),
-                Direction.WEST,  VoxelShapes.cuboid(0f, y, 0.9375f, 0.0625f, y + 0.0625d, 1f)
+                Direction.NORTH, box(0, y, 0, 1, y + 1, 1),
+                Direction.SOUTH, box(15, y, 15, 16, y + 1, 16),
+                Direction.EAST,  box(15, y, 0, 16, y + 1, 1),
+                Direction.WEST,  box(0, y, 15, 1, y + 1, 16)
         );
     }
 
+    #if MC_VERSION >= 12003 && MC_VERSION < 260300
+    protected static final MapCodec<LightStripBlock> CODEC = simpleCodec(LightStripBlock::new);
 
-    public static final Settings defaultSettings = Settings.create().strength(0.5f).sounds(BlockSoundGroup.GLASS).luminance((state) -> 9);
+    @Override
+    public @NotNull MapCodec<? extends LightStripBlock> codec() { return CODEC; }
+    #endif
 
-    public LightStripBlock() {
-        super(Blocks.GLASS.getDefaultState(), defaultSettings);
-    }
-    public LightStripBlock(Settings settings) {
-        super(Blocks.GLASS.getDefaultState(), settings);
+
+    public static final Properties defaultSettings = Properties.of().strength(0.5f).sound(SoundType.GLASS).lightLevel((state) -> 9);
+
+    public LightStripBlock(Properties settings) {
+        super(Blocks.GLASS.defaultBlockState(), settings);
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
-        Direction dir = state.get(FACING);
-        BlockHalf half = state.get(Properties.BLOCK_HALF);
-        StairShape shape = state.get(Properties.STAIR_SHAPE);
+    public @NotNull VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        final Direction dir = state.getValue(FACING);
+        final Half half = state.getValue(HALF);
+        final StairsShape shape = state.getValue(SHAPE);
 
-        if (half == BlockHalf.TOP) {
+        if (half == Half.TOP) {
             return getVoxelShape(
                     dir, shape,
                     voxelShapeTopStraightNorth, voxelShapeTopStraightSouth, voxelShapeTopStraightEast, voxelShapeTopStraightWest,
@@ -187,41 +198,82 @@ public class LightStripBlock extends StairsBlock implements BlockEntityProvider 
             );
         }
     }
-    protected static VoxelShape getVoxelShape(
-            Direction dir, StairShape shape,
+    protected static @NotNull VoxelShape getVoxelShape(
+            Direction dir, StairsShape shape,
             VoxelShape straightVoxelShapeNorth, VoxelShape straightVoxelShapeSouth, VoxelShape straightVoxelShapeEast, VoxelShape straightVoxelShapeWest,
             VoxelShape innerLeftVoxelShapeNorth, VoxelShape innerLeftVoxelShapeSouth, VoxelShape innerLeftVoxelShapeEast, VoxelShape innerLeftVoxelShapeWest,
             VoxelShape innerRightVoxelShapeNorth, VoxelShape innerRightVoxelShapeSouth, VoxelShape innerRightVoxelShapeEast, VoxelShape innerRightVoxelShapeWest,
             VoxelShape outerLeftVoxelShapeNorth, VoxelShape outerLeftVoxelShapeSouth, VoxelShape outerLeftVoxelShapeEast, VoxelShape outerLeftVoxelShapeWest,
             VoxelShape outerRightVoxelShapeNorth, VoxelShape outerRightVoxelShapeSouth, VoxelShape outerRightVoxelShapeEast, VoxelShape outerRightVoxelShapeWest
     ) {
-        switch (shape) {
-            case STRAIGHT:
-                return getVoxelShape(dir, straightVoxelShapeNorth, straightVoxelShapeSouth, straightVoxelShapeEast, straightVoxelShapeWest);
-            case INNER_LEFT:
-                return getVoxelShape(dir, innerLeftVoxelShapeNorth, innerLeftVoxelShapeSouth, innerLeftVoxelShapeEast, innerLeftVoxelShapeWest);
-            case INNER_RIGHT:
-                return getVoxelShape(dir, innerRightVoxelShapeNorth, innerRightVoxelShapeSouth, innerRightVoxelShapeEast, innerRightVoxelShapeWest);
-            case OUTER_LEFT:
-                return getVoxelShape(dir, outerLeftVoxelShapeNorth, outerLeftVoxelShapeSouth, outerLeftVoxelShapeEast, outerLeftVoxelShapeWest);
-            case OUTER_RIGHT:
-                return getVoxelShape(dir, outerRightVoxelShapeNorth, outerRightVoxelShapeSouth, outerRightVoxelShapeEast, outerRightVoxelShapeWest);
-        }
-        return null;
+        return switch (shape) {
+            case STRAIGHT -> getVoxelShape(dir, straightVoxelShapeNorth, straightVoxelShapeSouth, straightVoxelShapeEast, straightVoxelShapeWest);
+            case INNER_LEFT -> getVoxelShape(dir, innerLeftVoxelShapeNorth, innerLeftVoxelShapeSouth, innerLeftVoxelShapeEast, innerLeftVoxelShapeWest);
+            case INNER_RIGHT -> getVoxelShape(dir, innerRightVoxelShapeNorth, innerRightVoxelShapeSouth, innerRightVoxelShapeEast, innerRightVoxelShapeWest);
+            case OUTER_LEFT -> getVoxelShape(dir, outerLeftVoxelShapeNorth, outerLeftVoxelShapeSouth, outerLeftVoxelShapeEast, outerLeftVoxelShapeWest);
+            case OUTER_RIGHT -> getVoxelShape(dir, outerRightVoxelShapeNorth, outerRightVoxelShapeSouth, outerRightVoxelShapeEast, outerRightVoxelShapeWest);
+        };
     }
-    protected static VoxelShape getVoxelShape(Direction dir, VoxelShape north, VoxelShape south, VoxelShape east, VoxelShape west) {
+    protected static @NotNull VoxelShape getVoxelShape(Direction dir, VoxelShape north, VoxelShape south, VoxelShape east, VoxelShape west) {
         return switch (dir) {
             case NORTH -> north;
             case SOUTH -> south;
             case EAST -> east;
             case WEST -> west;
-            default -> null;
+            default -> throw new IllegalStateException("It's not possible to get here...");
         };
     }
 
-    @Nullable
     @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new LightStripBlockEntity(pos, state);
     }
+
+    #if POLYMER
+    #if MC_VERSION < 12006
+    @Override
+    public Block getPolymerBlock(BlockState state) {
+        return getPolymerBlockState(state).getBlock();
+    }
+    #endif
+
+    @Override
+    public BlockState getPolymerBlockState(BlockState state #if MC_VERSION >= 12104, PacketContext context #endif) {
+        return state.getValue(HALF) == Half.TOP ? PolymerModelCache.LIGHT_STRIP_TOP_DISGUISE : PolymerModelCache.LIGHT_STRIP_BOTTOM_DISGUISE;
+    }
+
+    @Override
+    #if MC_VERSION < 12104
+    public @NotNull BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        final BlockState newState = super.updateShape(state, direction, neighborState, level, pos, neighborPos);
+    #else
+    protected @NotNull BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+        final BlockState newState = super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random);
+        #endif
+        if (state != newState && level instanceof ServerLevel serverLevel) {
+            final BlockEntity blockEntity = serverLevel.getBlockEntity(pos);
+            if (blockEntity instanceof LightStripBlockEntity lightStripEntity) {
+                lightStripEntity.updateVisualState(newState);
+            }
+        }
+        return newState;
+    }
+
+    #if MC_VERSION < 12105
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!state.is(newState.getBlock())) {
+            level.removeBlockEntity(pos);
+        }
+        super.onRemove(state, level, pos, newState, isMoving);
+    }
+    #else
+    // TODO: Make sure this is necessary
+    @Override
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean isMoving) {
+        level.removeBlockEntity(pos);
+        super.affectNeighborsAfterRemoval(state, level, pos, isMoving);
+    }
+    #endif
+    #endif
 }

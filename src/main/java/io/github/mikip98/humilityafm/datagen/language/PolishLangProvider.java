@@ -2,10 +2,14 @@ package io.github.mikip98.humilityafm.datagen.language;
 
 import io.github.mikip98.humilityafm.datagen.language.util.Translation;
 import io.github.mikip98.humilityafm.datagen.language.util.TranslationCategory;
+#if MC_VERSION < 260000
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+#else
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+#endif
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 #if MC_VERSION >= 12006
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.core.HolderLookup;
 #endif
 
 import java.util.Hashtable;
@@ -20,7 +24,10 @@ public class PolishLangProvider extends FabricLanguageProvider {
         super(dataOutput, "pl_pl");
     }
     #else
-    public PolishLangProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+    public PolishLangProvider(
+            #if MC_VERSION < 260000 FabricDataOutput #else FabricPackOutput #endif dataOutput,
+            CompletableFuture<HolderLookup.Provider> registryLookup
+    ) {
         super(dataOutput, "pl_pl", registryLookup);
     }
     #endif
@@ -28,9 +35,14 @@ public class PolishLangProvider extends FabricLanguageProvider {
     @Override
     #if MC_VERSION < 12006
     public void generateTranslations(TranslationBuilder translationBuilder) {
+        generateTranslationsInternal(translationBuilder);
+    }
     #else
-    public void generateTranslations(RegistryWrapper.WrapperLookup registryLookup, TranslationBuilder translationBuilder) {
+    public void generateTranslations(HolderLookup.Provider registryLookup, TranslationBuilder translationBuilder) {
+        generateTranslationsInternal(translationBuilder);
+    }
     #endif
+    protected void generateTranslationsInternal(FabricLanguageProvider.TranslationBuilder translationBuilder) {
         for (Map.Entry<TranslationCategory, Map<String, String>> entry : generatePolishTranslations().entrySet()) {
             for (Map.Entry<String, String> subEntry : entry.getValue().entrySet()) {
                 translationBuilder.add(subEntry.getKey(), subEntry.getValue());

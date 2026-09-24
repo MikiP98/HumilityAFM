@@ -1,34 +1,38 @@
 package io.github.mikip98.humilityafm.content.block_entity_renderers;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntity;
 import io.github.mikip98.humilityafm.content.blocks.LightStripBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.StairsBlock;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.*;
-#if MC_VERSION >= 12105
-import net.minecraft.client.render.block.BlockModelRenderer;
-#endif
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-#if MC_VERSION >= 12111
-import net.minecraft.client.render.block.entity.state.BlockEntityRenderState;
-import net.minecraft.client.render.command.ModelCommandRenderer;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.state.CameraRenderState;
-#endif
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.math.BlockPos;
-#if MC_VERSION >= 12105
-import net.minecraft.util.math.Vec3d;
-#endif
-import net.minecraft.world.World;
-#if MC_VERSION >= 12111
-import org.jetbrains.annotations.Nullable;
-#endif
+import net.minecraft.client.Minecraft;
+#if MC_VERSION < 260200 import net.minecraft.client.renderer.MultiBufferSource; #endif
+#if MC_VERSION < 12111 import net.minecraft.client.renderer.RenderType; #endif
+#if MC_VERSION >= 12111 import net.minecraft.client.renderer.SubmitNodeCollector; #endif
+#if MC_VERSION >= 12105 import net.minecraft.client.renderer.block.ModelBlockRenderer; #endif
+#if MC_VERSION >= 260000 import net.minecraft.client.renderer.block.dispatch.BlockStateModel; #endif
+#if MC_VERSION >= 260000 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart; #endif
+#if MC_VERSION >= 12108 && MC_VERSION < 260000 import net.minecraft.client.renderer.block.model.BlockStateModel; #endif
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+#if MC_VERSION >= 12111 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState; #endif
+#if MC_VERSION >= 12111 import net.minecraft.client.renderer.feature.ModelFeatureRenderer; #endif
+#if MC_VERSION >= 12111 import net.minecraft.client.renderer.rendertype.RenderTypes; #endif
+#if MC_VERSION >= 12111 && MC_VERSION < 260000 import net.minecraft.client.renderer.state.CameraRenderState; #endif
+#if MC_VERSION >= 260000 import net.minecraft.client.renderer.state.level.CameraRenderState; #endif
+#if MC_VERSION >= 12111 import net.minecraft.client.renderer.texture.OverlayTexture; #endif
+#if MC_VERSION < 12108 import net.minecraft.client.resources.model.BakedModel; #endif
+#if MC_VERSION >= 260000 import net.minecraft.client.resources.model.geometry.BakedQuad; #endif
+#if MC_VERSION < 12111 import net.minecraft.core.BlockPos; #endif
+#if MC_VERSION >= 260000 import net.minecraft.core.Direction; #endif
+#if MC_VERSION >= 260000 import net.minecraft.util.RandomSource; #endif
+#if MC_VERSION < 12111 import net.minecraft.world.level.Level; #endif
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.Half;
+#if MC_VERSION >= 12105 import net.minecraft.world.phys.Vec3; #endif
+#if MC_VERSION >= 12111 import org.jetbrains.annotations.Nullable; #endif
+#if MC_VERSION >= 12111 import org.jspecify.annotations.NonNull; #endif
 
-import static net.minecraft.block.enums.BlockHalf.TOP;
+#if MC_VERSION >= 12111 import java.util.List; #endif
 
 public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightStripBlockEntity #if MC_VERSION >= 12111, LightStripBlockEntityRenderer.LightStripRenderState #endif> {
     protected static RenderFunction renderFunction = LightStripBlockEntityRenderer::fakeRunnable;
@@ -36,55 +40,88 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
     public static void disableBrightening() { renderFunction = LightStripBlockEntityRenderer::fakeRunnable; }
 
     @SuppressWarnings("unused")
-    public LightStripBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {}
+    public LightStripBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {}
 
     #if MC_VERSION < 12111
     @Override
-    public void render(LightStripBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay #if MC_VERSION >= 12105, Vec3d cameraPos #endif) {
-        renderFunction.execute(entity, matrices, vertexConsumers, overlay);
+    public void render(
+            LightStripBlockEntity blockEntity, float tickDelta,
+            PoseStack poseStack, MultiBufferSource bufferSource,
+            int light, int overlay #if MC_VERSION >= 12105, Vec3 cameraPos #endif
+    ) {
+        renderFunction.execute(blockEntity, poseStack, bufferSource, overlay);
     }
     #else
     @Override
-    public LightStripRenderState createRenderState() {
+    public @NonNull LightStripRenderState createRenderState() {
         return new LightStripRenderState();
     }
 
     @Override
-    public void updateRenderState(
-            LightStripBlockEntity blockEntity, LightStripRenderState renderState,
-            float tickDelta, Vec3d cameraPos,
-            @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlayCommand
+    public void extractRenderState(
+            @NonNull LightStripBlockEntity blockEntity,
+            @NonNull LightStripRenderState renderState,
+            float tickDelta, @NonNull Vec3 cameraPos,
+            @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay
     ) {
-        BlockEntityRenderer.super.updateRenderState(blockEntity, renderState, tickDelta, cameraPos, crumblingOverlayCommand);
-        renderState.blockState = blockEntity.getCachedState();
-        renderState.overlay = net.minecraft.client.render.OverlayTexture.DEFAULT_UV;
+        BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, tickDelta, cameraPos, crumblingOverlay);
+        renderState.blockState = blockEntity.getBlockState();
+        renderState.overlay = OverlayTexture.NO_OVERLAY;
+        #if MC_VERSION < 260000
+        renderState.model = Minecraft.getInstance().getBlockRenderer().getBlockModel(renderState.blockState);
+        #else
+        renderState.model = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(renderState.blockState);
+        #endif
     }
 
     @Override
-    public void render(LightStripRenderState state, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState cameraState) {
-        VertexConsumerProvider vertexConsumers = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
-        renderFunction.execute(state, matrices, queue, state.overlay);
+    public void submit(
+            @NonNull LightStripRenderState renderState,
+            @NonNull PoseStack poseStack,
+            @NonNull SubmitNodeCollector collector,
+            @NonNull CameraRenderState cameraState
+    ) {
+        renderFunction.execute(renderState, poseStack, collector, renderState.overlay);
     }
     #endif
 
-    #if MC_VERSION < 12111
-    protected static void fakeRunnable(LightStripBlockEntity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int overlay) {}
-    protected static void renderBrightening(LightStripBlockEntity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int overlay) {
-        World world = entity.getWorld();
-        BlockPos pos = entity.getPos();
-        if (world == null || pos == null) return;
 
-        BlockState blockState = world.getBlockState(pos);
-        #else
-    protected static void fakeRunnable(LightStripRenderState state, MatrixStack matrices, OrderedRenderCommandQueue queue, int overlay) {}
-    protected static void renderBrightening(LightStripRenderState state, MatrixStack matrices, OrderedRenderCommandQueue queue, int overlay) {
-        VertexConsumerProvider vertexConsumers = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
-        BlockState blockState = state.blockState;
+    #if MC_VERSION < 12111
+    protected static void fakeRunnable(LightStripBlockEntity entity, PoseStack poseStack, MultiBufferSource bufferSource, int overlay) {}
+    #else
+    protected static void fakeRunnable(LightStripRenderState state, PoseStack poseStack, SubmitNodeCollector collector, int overlay) {}
     #endif
 
+    #if MC_VERSION < 12111
+    protected static void renderBrightening(LightStripBlockEntity entity, PoseStack poseStack, MultiBufferSource bufferSource, int packedOverlay) {
+        final Level level = entity.getLevel();
+        final BlockPos pos = entity.getBlockPos();
+        if (level == null) return;
+
+        final BlockState blockState = level.getBlockState(pos);
+        final #if MC_VERSION < 12108 BakedModel #else BlockStateModel #endif model =
+                Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
+        renderBrighteningInternal(blockState, poseStack, bufferSource, packedOverlay, model);
+    }
+    #else
+    protected static void renderBrightening(LightStripRenderState state, PoseStack poseStack, SubmitNodeCollector collector, int packedOverlay) {
+        #if MC_VERSION < 260200
+        final MultiBufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+        #endif
+        final BlockState blockState = state.blockState;
+        renderBrighteningInternal(blockState, poseStack, #if MC_VERSION < 260200 bufferSource,#endif packedOverlay, state.model);
+    }
+    #endif
+    protected static void renderBrighteningInternal(
+            BlockState blockState,
+            PoseStack poseStack,
+            #if MC_VERSION < 260200 MultiBufferSource bufferSource,#endif
+            int packedOverlay,
+            #if MC_VERSION < 12108 BakedModel #else BlockStateModel #endif model
+    ) {
         if (blockState == null || !(blockState.getBlock() instanceof LightStripBlock)) return;
 
-        matrices.push();
+        poseStack.pushPose();
 
         // Scale of the brightened model
         final float scale = 1.01111f;
@@ -93,7 +130,7 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
         final float pixelShift = (1f/32f)*(1-scale);
 
         // Move the block up or down depending on the block's half, and centre it
-        final float deltaY = blockState.get(StairsBlock.HALF) == TOP ? (1-scale)-pixelShift : pixelShift;
+        final float deltaY = blockState.getValue(BlockStateProperties.HALF) == Half.TOP ? (1-scale)-pixelShift : pixelShift;
 
         // Move the rendered block half of the difference between the original and the scaled size
         final float deltaLongAxis = 0.5f*(1-scale);
@@ -101,9 +138,9 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
         // Calculate correct model offsets
         float deltaX = 0f;
         float deltaZ = 0f;
-        switch (blockState.get(Properties.STAIR_SHAPE)) {
+        switch (blockState.getValue(BlockStateProperties.STAIRS_SHAPE)) {
             case STRAIGHT:
-                switch (blockState.get(Properties.HORIZONTAL_FACING)) {
+                switch (blockState.getValue(BlockStateProperties.HORIZONTAL_FACING)) {
                     case NORTH:
                         deltaX = deltaLongAxis;
                         // Center the block on the Z axis
@@ -127,7 +164,7 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
                 }
                 break;
             case INNER_LEFT:
-                switch (blockState.get(Properties.HORIZONTAL_FACING)) {
+                switch (blockState.getValue(BlockStateProperties.HORIZONTAL_FACING)) {
                     case NORTH:
                         // Center the block on the X and Z axis
                         deltaX = pixelShift;
@@ -151,7 +188,7 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
                 }
                 break;
             case INNER_RIGHT:
-                switch (blockState.get(Properties.HORIZONTAL_FACING)) {
+                switch (blockState.getValue(BlockStateProperties.HORIZONTAL_FACING)) {
                     case NORTH:
                         // Center the block on the X and Z axis
                         deltaX = deltaLongAxis*2 - pixelShift;
@@ -175,7 +212,7 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
                 }
                 break;
             case OUTER_LEFT:
-                switch (blockState.get(Properties.HORIZONTAL_FACING)) {
+                switch (blockState.getValue(BlockStateProperties.HORIZONTAL_FACING)) {
                     case NORTH:
                         // Center the block on the X and Z axis
                         deltaX = pixelShift;
@@ -201,7 +238,7 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
                 }
                 break;
             case OUTER_RIGHT:
-                switch (blockState.get(Properties.HORIZONTAL_FACING)) {
+                switch (blockState.getValue(BlockStateProperties.HORIZONTAL_FACING)) {
                     case NORTH:
                         // Center the block on the X and Z axis
                         deltaX = 1.9375f * deltaLongAxis;
@@ -226,48 +263,86 @@ public class LightStripBlockEntityRenderer implements BlockEntityRenderer<LightS
                 break;
         }
 
-        matrices.translate(deltaX, deltaY, deltaZ);
-        matrices.scale(scale, scale, scale);
+        poseStack.translate(deltaX, deltaY, deltaZ);
+        poseStack.scale(scale, scale, scale);
 
         // Render the LED strip block with custom light value
         #if MC_VERSION < 12105
-        MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer().render(
-                matrices.peek(),
-                vertexConsumers.getBuffer(RenderLayer.getSolid()),
+        Minecraft.getInstance().getBlockRenderer().getModelRenderer().renderModel(
+                poseStack.last(),
+                bufferSource.getBuffer(RenderType.solid()),
                 blockState,
-                MinecraftClient.getInstance().getBlockRenderManager().getModel(blockState),
+                model,
                 1.0f, 1.0f, 1.0f,
                 0xF000F0,
-                overlay
+                packedOverlay
+        );
+        #elif MC_VERSION < 260000
+        // TODO: switch to this?
+//        collector.add(RenderTypes.solidMovingBlock(), (pose, vertexConsumer) -> {
+//            // This perfectly matches your 8-parameter signature!
+//            ModelBlockRenderer.renderModel(
+//                    pose,                   // The thread-safe pose passed from the lambda
+//                    vertexConsumer,         // The thread-safe buffer passed from the lambda
+//                    renderState.model,      // The model we safely extracted earlier
+//                    1.0f, 1.0f, 1.0f,       // Red, Green, Blue
+//                    0xF000F0,               // Your custom light value!
+//                    renderState.overlay     // Packed overlay
+//            );
+//        });
+        ModelBlockRenderer.renderModel(
+                poseStack.last(),
+                bufferSource.getBuffer(
+                        #if MC_VERSION < 12111
+                        RenderType.solid()
+                        #else
+                        RenderTypes.solidMovingBlock()
+                        #endif
+                ),
+                model,
+                1.0f, 1.0f, 1.0f,
+                0xF000F0,
+                packedOverlay
         );
         #else
-        BlockModelRenderer.render(
-                matrices.peek(),
-                vertexConsumers.getBuffer(#if MC_VERSION < 12111 RenderLayer.getSolid() #else RenderLayers.solid() #endif),
-                MinecraftClient.getInstance().getBlockRenderManager().getModel(blockState),
-                1.0f, 1.0f, 1.0f,
-                0xF000F0,
-                overlay
-        );
+        // TODO !!!
+//        List<BlockStateModelPart> parts = new List<BlockStateModelPart>();
+//        model.collectParts(RandomSource.create(42L), parts)
+//        for (BlockStateModelPart part : parts) {
+//
+//            // 1. Render Culled Faces (Directional)
+//            for (Direction direction : Direction.values()) {
+//                for (BakedQuad quad : part.getQuads(direction)) {
+//                    // putBulkData safely writes the geometry with your injected light!
+//                    vertexConsumer.putBulkData(pose, quad, r, g, b, 1.0f, customLight, overlay);
+//                }
+//            }
+//
+//            // 2. Render Unculled Faces (Null Direction)
+//            for (BakedQuad quad : part.getQuads(null)) {
+//                vertexConsumer.putBulkData(pose, quad, r, g, b, 1.0f, customLight, overlay);
+//            }
+//        }
         #endif
 
-        matrices.pop();
+        poseStack.popPose();
     }
 
     #if MC_VERSION < 12111
     @FunctionalInterface
     protected interface RenderFunction {
-        void execute(LightStripBlockEntity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int overlay);
+        void execute(LightStripBlockEntity entity, PoseStack poseStack, MultiBufferSource bufferSource, int overlay);
     }
     #else
     @FunctionalInterface
     protected interface RenderFunction {
-        void execute(LightStripRenderState state, MatrixStack matrices, OrderedRenderCommandQueue queue, int overlay);
+        void execute(LightStripRenderState state, PoseStack poseStack, SubmitNodeCollector collector, int overlay);
     }
 
     public static class LightStripRenderState extends BlockEntityRenderState {
         public BlockState blockState;
         public int overlay;
+        public BlockStateModel model;
     }
     #endif
 }

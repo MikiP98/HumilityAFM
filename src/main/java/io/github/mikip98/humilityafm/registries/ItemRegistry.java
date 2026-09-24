@@ -3,22 +3,30 @@ package io.github.mikip98.humilityafm.registries;
 import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.content.items.DoubleVerticallyAttachableBlockItem;
 import io.github.mikip98.humilityafm.content.items.ModVerticallyAttachableBlockItem;
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerItems; #endif
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
 import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
 import io.github.mikip98.humilityafm.util.generation_data.RawGenerationData;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.SizedIterable;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
+import net.minecraft.core.Direction;
 #if MC_VERSION < 12104
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 #else
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 #endif
-import net.minecraft.util.math.Direction;
+#if MC_VERSION > 260000 import net.minecraft.world.item.BlockItem; #endif
+import net.minecraft.world.item.Item;
+#if POLYMER import net.minecraft.world.level.block.Block; #endif
+#if MC_VERSION >= 12104 && MC_VERSION < 260000 import net.minecraft.world.item.Items; #endif
 
 import java.util.Arrays;
+#if POLYMER import java.util.IdentityHashMap; #endif
+#if POLYMER import java.util.Map; #endif
 import java.util.function.Function;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
@@ -44,6 +52,10 @@ public class ItemRegistry {
 
     public static Item[] COLOURED_TORCH_ITEM_VARIANTS;
 
+    #if POLYMER
+    public static final Map<Block, Item> OPEN_CABINET_ITEMS = new IdentityHashMap<>();
+    #endif
+
 
     public static void register() {
         int cabinetAmount = BlockRegistry.WALL_CABINET_BLOCK_VARIANTS.length;
@@ -68,6 +80,19 @@ public class ItemRegistry {
                             settings
                     )
             );
+
+            #if POLYMER
+            Item openWall = register("open_wall_cabinet_" + material.getSafeName());
+            Item openFloor = register("open_floor_cabinet_" + material.getSafeName());
+            Item openWallIllum = register("open_wall_illuminated_cabinet_" + material.getSafeName());
+            Item openFloorIllum = register("open_floor_illuminated_cabinet_" + material.getSafeName());
+
+            OPEN_CABINET_ITEMS.put(BlockRegistry.WALL_CABINET_BLOCK_VARIANTS[i], openWall);
+            OPEN_CABINET_ITEMS.put(BlockRegistry.FLOOR_CABINET_BLOCK_VARIANTS[i], openFloor);
+            OPEN_CABINET_ITEMS.put(BlockRegistry.WALL_ILLUMINATED_CABINET_BLOCK_VARIANTS[i], openWallIllum);
+            OPEN_CABINET_ITEMS.put(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_VARIANTS[i], openFloorIllum);
+            #endif
+
             ++i;
         }
 
@@ -131,19 +156,30 @@ public class ItemRegistry {
 
 
     public static Item register(String name) {
-        return register(name, Item::new);
+        return register(name, #if POLYMER PolymerItems.PolymerItemImpl::new #else Item::new #endif);
     }
-    public static Item register(String name, Function<Item.Settings, Item> factory) {
-        return register(name, factory, new Item.Settings());
+    public static Item register(String name, Function<Item.Properties, Item> factory) {
+        return register(name, factory, new Item.Properties());
     }
-    #if MC_VERSION < 12104
-    public static Item register(String name, Function<Item.Settings, Item> factory, Item.Settings settings) {
-        return Registry.register(Registries.ITEM, getId(name), factory.apply(settings));
+
+    public static Item register(String name, Function<Item.Properties, Item> factory, Item.Properties settings) {
+        #if MC_VERSION < 12104
+        final Item item = Registry.register(BuiltInRegistries.ITEM, getId(name), factory.apply(settings));
+        #else
+        final ResourceKey<Item> registryKey = ResourceKey.create(Registries.ITEM, getId(name));
+        final Item item = #if MC_VERSION < 260000 Items. #endif registerItem(registryKey, factory, settings);
+        #endif
+
+        #if POLYMER PolymerModelCache.requestPolymerModel(item, name); #endif
+        return item;
     }
-    #else
-    public static Item register(String name, Function<Item.Settings, Item> factory, Item.Settings settings) {
-        final RegistryKey<Item> registryKey = RegistryKey.of(RegistryKeys.ITEM, getId(name));
-        return Items.register(registryKey, factory, settings);
+    #if MC_VERSION > 260000
+    protected static Item registerItem(final ResourceKey<Item> key, final Function<Item.Properties, Item> itemFactory, final Item.Properties properties) {
+        Item item = itemFactory.apply(properties.setId(key));
+        if (item instanceof BlockItem blockItem) {
+            blockItem.registerBlocks(Item.BY_BLOCK, item);
+        }
+        return Registry.register(BuiltInRegistries.ITEM, key, item);
     }
     #endif
 }
