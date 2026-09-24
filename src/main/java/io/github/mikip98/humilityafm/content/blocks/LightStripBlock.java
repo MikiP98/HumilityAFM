@@ -1,15 +1,15 @@
 package io.github.mikip98.humilityafm.content.blocks;
 
-#if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
+#if MC_VERSION >= 12003 && MC_VERSION < 260300 import com.mojang.serialization.MapCodec; #endif
 #if POLYMER import eu.pb4.polymer.blocks.api.PolymerTexturedBlock; #endif
 import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntity;
 #if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
+#if MC_VERSION >= 260000 import net.fabricmc.fabric.api.networking.v1.context.PacketContext; #endif
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 #if POLYMER import net.minecraft.server.level.ServerLevel; #endif
-import net.minecraft.world.level.BlockGetter;
-#if POLYMER import net.minecraft.world.level.Level; #endif
-#if POLYMER import net.minecraft.world.level.LevelAccessor; #endif
+#if POLYMER && MC_VERSION >= 12104 import net.minecraft.util.RandomSource; #endif
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -19,6 +19,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+#if MC_VERSION < 260000 import xyz.nucleoid.packettweaker.PacketContext; #endif
 
 import java.util.Map;
 
@@ -157,7 +158,7 @@ public class LightStripBlock extends StairBlock implements EntityBlock #if POLYM
         );
     }
 
-    #if MC_VERSION >= 12003
+    #if MC_VERSION >= 12003 && MC_VERSION < 260300
     protected static final MapCodec<LightStripBlock> CODEC = simpleCodec(LightStripBlock::new);
 
     @Override
@@ -229,19 +230,26 @@ public class LightStripBlock extends StairBlock implements EntityBlock #if POLYM
     }
 
     #if POLYMER
+    #if MC_VERSION < 12006
     @Override
     public Block getPolymerBlock(BlockState state) {
         return getPolymerBlockState(state).getBlock();
     }
+    #endif
 
     @Override
-    public BlockState getPolymerBlockState(BlockState state) {
+    public BlockState getPolymerBlockState(BlockState state #if MC_VERSION >= 12104, PacketContext context #endif) {
         return state.getValue(HALF) == Half.TOP ? PolymerModelCache.LIGHT_STRIP_TOP_DISGUISE : PolymerModelCache.LIGHT_STRIP_BOTTOM_DISGUISE;
     }
 
     @Override
+    #if MC_VERSION < 12104
     public @NotNull BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
         final BlockState newState = super.updateShape(state, direction, neighborState, level, pos, neighborPos);
+    #else
+    protected @NotNull BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+        final BlockState newState = super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random);
+        #endif
         if (state != newState && level instanceof ServerLevel serverLevel) {
             final BlockEntity blockEntity = serverLevel.getBlockEntity(pos);
             if (blockEntity instanceof LightStripBlockEntity lightStripEntity) {

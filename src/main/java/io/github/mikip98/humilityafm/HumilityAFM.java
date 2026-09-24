@@ -90,10 +90,12 @@ public class HumilityAFM implements ModInitializer {
 	}
 
 	public static #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif getIdRaw(String path) {
-		#if MC_VERSION < 12111
+		#if MC_VERSION < 12101
 		return new ResourceLocation(path);
+		#elif MC_VERSION < 12111
+		return ResourceLocation.tryParse(path);  // TODO: Check if this exists on older MC versions
 		#else
-		return Identifier.of(path);
+		return Identifier.tryParse(path);
 		#endif
 	}
 

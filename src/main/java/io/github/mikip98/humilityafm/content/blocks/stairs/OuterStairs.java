@@ -1,6 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.stairs;
 
-#if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
+#if MC_VERSION >= 12003 && MC_VERSION < 260300 import com.mojang.serialization.MapCodec; #endif
 #if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
 import io.github.mikip98.humilityafm.content.blocks.Waterloggable;
 import io.github.mikip98.humilityafm.content.blocks.templates.PlainHorizontalFacingBlock;
@@ -64,7 +64,7 @@ public class OuterStairs extends PlainHorizontalFacingBlock implements Waterlogg
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     protected static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
 
-    #if MC_VERSION >= 12004
+    #if MC_VERSION >= 12004 && MC_VERSION < 260300
     protected static final MapCodec<OuterStairs> CODEC = simpleCodec(OuterStairs::new);
 
     @Override
@@ -130,15 +130,11 @@ public class OuterStairs extends PlainHorizontalFacingBlock implements Waterlogg
 
     #if POLYMER
     @Override
-    public Block getPolymerBlock(BlockState state) {
-        if (!PolymerModelCache.STAIR_BASE_CACHE.containsKey(this))
-            throw new IllegalStateException("Block '" + state.getBlock() + "' has not been properly cached!");
-        return PolymerModelCache.STAIR_BASE_CACHE.get(this);
-    }
-
-    @Override
     public BlockState getPolymerBlockState(BlockState state) {
-        return getPolymerBlock(state).defaultBlockState()
+        if (!PolymerModelCache.STAIR_BASE_CACHE.containsKey(this)) {
+            throw new RuntimeException("Block '" + state.getBlock() + "' has not been properly cached!");
+        }
+        return PolymerModelCache.STAIR_BASE_CACHE.get(this).defaultBlockState()
                 .setValue(StairBlock.FACING, state.getValue(FACING).getOpposite())
                 .setValue(StairBlock.HALF, state.getValue(HALF))
                 .setValue(StairBlock.WATERLOGGED, state.getValue(WATERLOGGED))

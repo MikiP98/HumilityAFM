@@ -1,26 +1,28 @@
 package io.github.mikip98.humilityafm.content.blockentities.cabinetBlock;
 
-#if POLYMER import eu.pb4.polymer.resourcepack.api.PolymerModelData; #endif
+#if POLYMER && MC_VERSION < 12104 import eu.pb4.polymer.resourcepack.api.PolymerModelData; #endif
 #if POLYMER import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement; #endif
 #if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerBlockEntities; #endif
 #if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
 import io.github.mikip98.humilityafm.registries.BlockEntityRegistry;
+#if !POLYMER import io.mikip98.humilityval.content.block.entity.AVLBlockEntity; #endif
 import io.mikip98.humilityval.content.block.entity.AVLDataInput;
 import io.mikip98.humilityval.content.block.entity.AVLDataOutput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+#if MC_VERSION >= 12006 import net.minecraft.core.HolderLookup; #endif
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+#if MC_VERSION >= 12111 import net.minecraft.resources.Identifier; #endif
+#if MC_VERSION >= 12104 && MC_VERSION < 12111 import net.minecraft.resources.ResourceLocation; #endif
 import net.minecraft.world.WorldlyContainer;
 #if POLYMER import net.minecraft.world.item.ItemDisplayContext; #endif
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-#if MC_VERSION >= 12105 import net.minecraft.world.level.storage.ValueInput; #endif
-#if MC_VERSION >= 12105 import net.minecraft.world.level.storage.ValueOutput; #endif
 #if POLYMER import net.minecraft.world.level.block.state.properties.BlockStateProperties; #endif
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,12 +41,12 @@ public class CabinetBlockEntity
     #endif
 
     public CabinetBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(type, pos, state #if POLYMER, false, true #endif);
+        super(type, pos, state #if POLYMER , PolymerProperties.of().ticking() #endif);
 
         #if POLYMER
         cabinetDisplay.setScale(new Vector3f(1.0045f));
 
-        storedItemDisplay.setModelTransformation(ItemDisplayContext.FIXED);
+        storedItemDisplay.setItemDisplayContext(ItemDisplayContext.FIXED);
         storedItemDisplay.setScale(new Vector3f(0.59375f));
 
         cabinetDisplay.setLeftRotation(getCabinetRotation(state));
@@ -159,7 +161,8 @@ public class CabinetBlockEntity
 
     public void updateVisualState(boolean isOpen) {
         if (isOpen) {
-            final PolymerModelData openData = PolymerModelCache.CABINET_OPEN_MODELS.get(this.getBlockState().getBlock());
+            final #if MC_VERSION < 12104 PolymerModelData #elif MC_VERSION < 12111 ResourceLocation #else Identifier #endif openData =
+                    PolymerModelCache.CABINET_OPEN_MODELS.get(this.getBlockState().getBlock());
             final ItemStack openStack = disguiseItem(openData);
             this.cabinetDisplay.setItem(openStack);
         } else {

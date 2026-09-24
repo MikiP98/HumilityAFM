@@ -1,6 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns;
 
-#if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
+#if MC_VERSION >= 12003 && MC_VERSION < 260300 import com.mojang.serialization.MapCodec; #endif
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -13,11 +13,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+#if MC_VERSION >= 12104 import net.minecraft.world.level.redstone.Orientation; #endif
 import org.jetbrains.annotations.NotNull;
 #if MC_VERSION >= 12104 || POLYMER import org.jetbrains.annotations.Nullable; #endif
 
 public class JackOLanternRedStone extends JackOLantern {
-    #if MC_VERSION >= 12003
+    #if MC_VERSION >= 12003 && MC_VERSION < 260300
     protected static final MapCodec<JackOLanternRedStone> CODEC = simpleCodec(JackOLanternRedStone::new);
 
     @Override
@@ -35,7 +36,8 @@ public class JackOLanternRedStone extends JackOLantern {
     }
 
     // Luminance of Redstone Torch boosted by 1 as it was too dark
-    public static final Properties defaultSettings = defaultSettingsSupplier.get().lightLevel((state) -> state.getValue(LIT) ? 7+1 : 0);
+    public static final Properties defaultSettings = defaultSettingsSupplier.get()
+            .lightLevel((state) -> state.getValue(LIT) ? 7+1 : 0);
 
     public JackOLanternRedStone(Properties settings) {
         super(settings);
@@ -82,6 +84,7 @@ public class JackOLanternRedStone extends JackOLantern {
     }
 
     #if POLYMER
+    #if MC_VERSION < 12108  // Why is this not needed on 1.21.8+ ?
     @SuppressWarnings("deprecation")
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
@@ -90,13 +93,10 @@ public class JackOLanternRedStone extends JackOLantern {
         }
         super.onRemove(state, level, pos, newState, isMoving);
     }
-    @Override
-    public Block getPolymerBlock(BlockState state) {
-        return state.getValue(LIT) ? super.getPolymerBlock(state) : Blocks.CARVED_PUMPKIN;
-    }
+    #endif
     @Override
     public BlockState getPolymerBlockState(BlockState state) {
-        return state.getValue(LIT) ? super.getPolymerBlockState(state) : getPolymerBlock(state).defaultBlockState()
+        return state.getValue(LIT) ? super.getPolymerBlockState(state) : Blocks.CARVED_PUMPKIN.defaultBlockState()
                 .setValue(BlockStateProperties.HORIZONTAL_FACING, state.getValue(FACING));
     }
     @Nullable

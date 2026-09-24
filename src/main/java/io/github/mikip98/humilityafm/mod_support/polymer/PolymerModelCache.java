@@ -4,8 +4,8 @@ package io.github.mikip98.humilityafm.mod_support.polymer;
 import eu.pb4.polymer.blocks.api.BlockModelType;
 import eu.pb4.polymer.blocks.api.PolymerBlockModel;
 import eu.pb4.polymer.blocks.api.PolymerBlockResourceUtils;
-import eu.pb4.polymer.core.api.item.PolymerItem;
-import eu.pb4.polymer.resourcepack.api.PolymerModelData;
+#if MC_VERSION < 12104 import eu.pb4.polymer.core.api.item.PolymerItem; #endif
+#if MC_VERSION < 12104 import eu.pb4.polymer.resourcepack.api.PolymerModelData; #endif
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.config.enums.PolymerCabinetFallback;
@@ -16,7 +16,8 @@ import io.github.mikip98.humilityafm.mod_support.SupportedMods;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+#if MC_VERSION < 12111 import net.minecraft.resources.ResourceLocation; #endif
+#if MC_VERSION >= 12111 import net.minecraft.resources.Identifier; #endif
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -26,34 +27,59 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.Half;
 
-import java.util.EnumMap;
-import java.util.IdentityHashMap;
-import java.util.Map;
+import java.util.*;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.*;
 
 public class PolymerModelCache {
-    public static void init() {}
+    #if MC_VERSION >= 12104
+    private static final Set<#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif> VIRTUAL_ITEM_MODELS_TO_GENERATE = new HashSet<>();
+    #endif
 
-    public static final Map<Item, PolymerModelData> POLYMER_ITEM_MODEL_CACHE = new IdentityHashMap<>();
+    public static void init() {
+        #if MC_VERSION >= 12104
+        PolymerResourcePackUtils.RESOURCE_PACK_CREATION_EVENT.register(builder -> {
+            for (#if MC_VERSION < 12111 ResourceLocation #else Identifier #endif modelId : VIRTUAL_ITEM_MODELS_TO_GENERATE) {
+                String json = """
+                        {
+                            "model": {
+                                "type": "minecraft:model",
+                                "model": "%s"
+                            }
+                        }
+                        """.formatted(modelId.toString());
+
+                String path = "assets/" + modelId.getNamespace() + "/items/" + modelId.getPath() + ".json";
+                builder.addStringData(path, json);
+            }
+        });
+        #endif
+    }
+
+    public static final Map<Item, #if MC_VERSION < 12104 PolymerModelData #elif MC_VERSION < 12111 ResourceLocation #else Identifier #endif> POLYMER_ITEM_MODEL_CACHE = new IdentityHashMap<>();
 
     public static void requestPolymerModel(Item item, String name) {
+        #if MC_VERSION < 12104
         if (item instanceof PolymerItem polymerItem) {
             Item disguise = polymerItem.getPolymerItem(PolymerItems.VIRTUAL_ITEM_BASE.getDefaultInstance(), null);
+            // TODO: Consider getting rid of the 'var'
             var modelData = PolymerResourcePackUtils.requestModel(
                     disguise, getId("item/" + name)
             );
             if (modelData == null) throw new RuntimeException("Failed to disguise item " + name);
             POLYMER_ITEM_MODEL_CACHE.put(item, modelData);
         } else throw new IllegalStateException("Item is not a PolymerItem");
+        #else
+        POLYMER_ITEM_MODEL_CACHE.put(item, getId(name));
+        #endif
     }
 
 
     public static final Map<BlockState, BlockState> POLYMER_BLOCK_CACHE = new IdentityHashMap<>();
     public static final Map<Block, Block> STAIR_BASE_CACHE = new IdentityHashMap<>();
-    public static final Map<Block, Map<BlockState, PolymerModelData>> CANDLESTICK_MODEL_CACHE = new IdentityHashMap<>();
+    public static final Map<Block, Map<BlockState, #if MC_VERSION < 12104 PolymerModelData #elif MC_VERSION < 12111 ResourceLocation #else Identifier #endif>> CANDLESTICK_MODEL_CACHE = new IdentityHashMap<>();
 
-    public static final Map<Block, PolymerModelData> CABINET_OPEN_MODELS = new IdentityHashMap<>();
+    public static final Map<Block, #if MC_VERSION < 12104 PolymerModelData #elif MC_VERSION < 12111 ResourceLocation #else Identifier #endif> CABINET_OPEN_MODELS = new IdentityHashMap<>();
     public static BlockState CABINET_TOP_DISGUISE;
     public static BlockState CABINET_NORTH_DISGUISE;
     public static BlockState CABINET_EAST_DISGUISE;
@@ -61,8 +87,8 @@ public class PolymerModelCache {
     public static BlockState CABINET_WEST_DISGUISE;
     public static BlockState CABINET_BOTTOM_DISGUISE;
 
-    public static final Map<Block, PolymerModelData> LIGHT_STRIP_INNER_MODELS = new IdentityHashMap<>();
-    public static final Map<Block, PolymerModelData> LIGHT_STRIP_OUTER_MODELS = new IdentityHashMap<>();
+    public static final Map<Block, #if MC_VERSION < 12104 PolymerModelData #elif MC_VERSION < 12111 ResourceLocation #else Identifier #endif> LIGHT_STRIP_INNER_MODELS = new IdentityHashMap<>();
+    public static final Map<Block, #if MC_VERSION < 12104 PolymerModelData #elif MC_VERSION < 12111 ResourceLocation #else Identifier #endif > LIGHT_STRIP_OUTER_MODELS = new IdentityHashMap<>();
     public static BlockState LIGHT_STRIP_TOP_DISGUISE;
     public static BlockState LIGHT_STRIP_BOTTOM_DISGUISE;
 
@@ -76,7 +102,7 @@ public class PolymerModelCache {
                 #if MC_VERSION < 12100
                 PolymerBlockResourceUtils.requestBlock(type, EMPTY_MODEL);
                 #else
-                PolymerBlockResourceUtils.requestEmpty(type, EMPTY_MODEL);
+                PolymerBlockResourceUtils.requestEmpty(type);
                 #endif
         EMPTY_STATE_CACHE.put(type, state);
         return state;
@@ -126,60 +152,62 @@ public class PolymerModelCache {
         }
 
         BlockModelType transparentCabinetFallback =
-                ModConfig.polymerAllowSemiFunctionalCabinetStates ? BlockModelType.TRANSPARENT_BLOCK : null;
+                ModConfig.polymerAllowSemiFunctionalCabinetStates ? PolymerNullableBlockModelTypes.LEAVES : null;
 
         CABINET_TOP_DISGUISE = resolveFallback(cabinetFinalFallbackTop,
-                #if MC_VERSION >= 12100 BlockModelType.TOP_TRAPDOOR, #endif
+                PolymerNullableBlockModelTypes.TRAPDOOR_TOP,
                 transparentCabinetFallback
         );
         CABINET_NORTH_DISGUISE = resolveFallback(cabinetFinalFallbackNorth,
-                #if MC_VERSION >= 12100 BlockModelType.NORTH_TRAPDOOR, #endif
-                #if MC_VERSION >= 12100 BlockModelType.NORTH_DOOR, #endif
+                PolymerNullableBlockModelTypes.TRAPDOOR_NORTH,
+                PolymerNullableBlockModelTypes.DOOR_NORTH,
                 transparentCabinetFallback
         );
         CABINET_EAST_DISGUISE = resolveFallback(cabinetFinalFallbackEast,
-                #if MC_VERSION >= 12100 BlockModelType.EAST_TRAPDOOR, #endif
-                #if MC_VERSION >= 12100 BlockModelType.EAST_DOOR, #endif
+                PolymerNullableBlockModelTypes.TRAPDOOR_EAST,
+                PolymerNullableBlockModelTypes.DOOR_EAST,
                 transparentCabinetFallback
         );
         CABINET_SOUTH_DISGUISE = resolveFallback(cabinetFinalFallbackSouth,
-                #if MC_VERSION >= 12100 BlockModelType.SOUTH_TRAPDOOR, #endif
-                #if MC_VERSION >= 12100 BlockModelType.SOUTH_DOOR, #endif
+                PolymerNullableBlockModelTypes.TRAPDOOR_SOUTH,
+                PolymerNullableBlockModelTypes.DOOR_SOUTH,
                 transparentCabinetFallback
         );
         CABINET_WEST_DISGUISE = resolveFallback(cabinetFinalFallbackWest,
-                #if MC_VERSION >= 12100 BlockModelType.WEST_TRAPDOOR, #endif
-                #if MC_VERSION >= 12100 BlockModelType.WEST_DOOR, #endif
+                PolymerNullableBlockModelTypes.TRAPDOOR_WEST,
+                PolymerNullableBlockModelTypes.DOOR_WEST,
                 transparentCabinetFallback
         );
         CABINET_BOTTOM_DISGUISE = resolveFallback(cabinetFinalFallbackBottom,
-                #if MC_VERSION >= 12100 BlockModelType.BOTTOM_TRAPDOOR, #endif
+                PolymerNullableBlockModelTypes.TRAPDOOR_BOTTOM,
                 transparentCabinetFallback
         );
 
 
         BlockModelType vinesLightStripFallback =
-                ModConfig.polymerPreferNonCollidingLightstrip ? BlockModelType.VINES_BLOCK : null;
+                ModConfig.polymerPreferNonCollidingLightstrip ? PolymerNullableBlockModelTypes.VINES : null;
 
         LIGHT_STRIP_TOP_DISGUISE = resolveFallback(Blocks.GLASS.defaultBlockState(),
-                vinesLightStripFallback
-                #if MC_VERSION >= 12100, BlockModelType.TOP_TRAPDOOR #endif
-                #if MC_VERSION >= 12100, BlockModelType.TOP_SLAB #endif
+                vinesLightStripFallback,
+                PolymerNullableBlockModelTypes.TRAPDOOR_TOP,
+                PolymerNullableBlockModelTypes.SLAB_TOP
 
         );
         LIGHT_STRIP_BOTTOM_DISGUISE = resolveFallback(Blocks.GLASS.defaultBlockState(),
-                vinesLightStripFallback
-                #if MC_VERSION >= 12100, BlockModelType.BOTTOM_TRAPDOOR #endif
-                #if MC_VERSION >= 12100, BlockModelType.BOTTOM_SLAB #endif
+                vinesLightStripFallback,
+                PolymerNullableBlockModelTypes.TRAPDOOR_BOTTOM,
+                PolymerNullableBlockModelTypes.SLAB_BOTTOM
         );
     }
 
     public static void initLateCache() {
         // --- CANDLESTICKS ---
-        cacheCandlestickBlockItemModels(BlockRegistry.SIMPLE_CANDLESTICK_FLOOR_VARIANTS);
-        cacheCandlestickBlockItemModels(BlockRegistry.SIMPLE_CANDLESTICK_WALL_VARIANTS);
-        for (Block[] blocks : BlockRegistry.RUSTABLE_CANDLESTICK_FLOOR_VARIANTS) cacheCandlestickBlockItemModels(blocks);
-        for (Block[] blocks : BlockRegistry.RUSTABLE_CANDLESTICK_WALL_VARIANTS) cacheCandlestickBlockItemModels(blocks);
+        if (ModConfig.getEnableCandlestickBeta()) {
+            cacheCandlestickBlockItemModels(BlockRegistry.SIMPLE_CANDLESTICK_FLOOR_VARIANTS);
+            cacheCandlestickBlockItemModels(BlockRegistry.SIMPLE_CANDLESTICK_WALL_VARIANTS);
+            for (Block[] blocks : BlockRegistry.RUSTABLE_CANDLESTICK_FLOOR_VARIANTS) cacheCandlestickBlockItemModels(blocks);
+            for (Block[] blocks : BlockRegistry.RUSTABLE_CANDLESTICK_WALL_VARIANTS) cacheCandlestickBlockItemModels(blocks);
+        }
 
         // --- CABINETS ---
         cacheCabinetOpenModels(BlockRegistry.WALL_CABINET_BLOCK_VARIANTS);
@@ -188,16 +216,20 @@ public class PolymerModelCache {
         cacheCabinetOpenModels(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_VARIANTS);
 
         // --- LIGHT STRIPS ---
-        if (BlockRegistry.LIGHT_STRIP_VARIANTS != null) {
-            for (Block block : BlockRegistry.LIGHT_STRIP_VARIANTS) {
-                cacheLightStripModels(block, BuiltInRegistries.BLOCK.getKey(block).getPath());
+        if (ModConfig.getEnableColouredFeatureSetBeta()) {
+            if (BlockRegistry.LIGHT_STRIP_VARIANTS != null) {
+                for (Block block : BlockRegistry.LIGHT_STRIP_VARIANTS) {
+                    cacheLightStripModels(block, BuiltInRegistries.BLOCK.getKey(block).getPath());
+                }
             }
         }
 
         // ---- JACK O'LANTERNS ---
         cachedJackOLanternBlockStates(BlockRegistry.JACK_O_LANTERN_REDSTONE);
         cachedJackOLanternBlockStates(BlockRegistry.JACK_O_LANTERN_SOUL);
-        for (Block block : BlockRegistry.COLOURED_JACK_O_LANTERNS) cachedJackOLanternBlockStates(block);
+        if (ModConfig.getEnableColouredFeatureSetBeta()) {
+            for (Block block : BlockRegistry.COLOURED_JACK_O_LANTERNS) cachedJackOLanternBlockStates(block);
+        }
 
         // Note: Forced Corner Stairs are done in 'BlockGeneration' as they require material data
     }
@@ -230,14 +262,19 @@ public class PolymerModelCache {
         } catch (IllegalStateException e) {
             openModelId = PolymerUtil.getRawModelIdFromBlockstateVariant(name, "facing=north,half=bottom,open=true");
         }
+        #if MC_VERSION < 12104
         final PolymerModelData data = PolymerResourcePackUtils.requestModel(PolymerItems.VIRTUAL_ITEM_BASE, openModelId);
         CABINET_OPEN_MODELS.put(block, data);
+        #else
+        VIRTUAL_ITEM_MODELS_TO_GENERATE.add(openModelId);
+        CABINET_OPEN_MODELS.put(block, openModelId);
+        #endif
     }
 
     public static void cacheStairBase(Block customStair, SupportedMods mod, String material) {
         if (material.endsWith("bricks")) material = material.substring(0, material.length() - 1);
         final String stairPath = material + "_stairs";
-        final Block base = BuiltInRegistries.BLOCK.get(getVMId(mod, stairPath));
+        final Block base = BuiltInRegistries.BLOCK.get(getVMId(mod, stairPath)) #if MC_VERSION >= 12104 .get().value() #endif;  // TODO: Consider adding an util method in HumilityVAL
         if (base == Blocks.AIR) throw new IllegalArgumentException(
                 "Custom stair block is not found -> " + (mod == null ? "minecraft" : mod.modId) + ":" + stairPath
         );
@@ -250,15 +287,23 @@ public class PolymerModelCache {
         final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif outerId =
                 PolymerUtil.getRawModelIdFromBlockstateVariant(blockstateName, "facing=south,half=bottom,shape=outer_left");
 
+        #if MC_VERSION < 12104
         final PolymerModelData innerData = PolymerResourcePackUtils.requestModel(PolymerItems.VIRTUAL_ITEM_BASE, innerId);
         final PolymerModelData outerData = PolymerResourcePackUtils.requestModel(PolymerItems.VIRTUAL_ITEM_BASE, outerId);
 
         LIGHT_STRIP_INNER_MODELS.put(customStrip, innerData);
         LIGHT_STRIP_OUTER_MODELS.put(customStrip, outerData);
+        #else
+        VIRTUAL_ITEM_MODELS_TO_GENERATE.add(innerId);
+        VIRTUAL_ITEM_MODELS_TO_GENERATE.add(outerId);
+
+        LIGHT_STRIP_INNER_MODELS.put(customStrip, innerId);
+        LIGHT_STRIP_OUTER_MODELS.put(customStrip, outerId);
+        #endif
     }
 
     public static void cacheCandlestickModels(Block customCandlestick, String blockstateName) {
-        final Map<BlockState, PolymerModelData> stateMap = new IdentityHashMap<>();
+        final Map<BlockState, #if MC_VERSION < 12104 PolymerModelData #elif MC_VERSION < 12111 ResourceLocation #else Identifier #endif> stateMap = new IdentityHashMap<>();
 
         final Item disguiseItem = PolymerItems.VIRTUAL_ITEM_BASE;
 
@@ -285,8 +330,13 @@ public class PolymerModelCache {
             }
 
             final #if MC_VERSION < 12111 ResourceLocation #else Identifier #endif modelId = getId(path);
+            #if MC_VERSION < 12104
             PolymerModelData modelData = PolymerResourcePackUtils.requestModel(disguiseItem, modelId);
             stateMap.put(state, modelData);
+            #else
+            VIRTUAL_ITEM_MODELS_TO_GENERATE.add(modelId);
+            stateMap.put(state, modelId);
+            #endif
         }
 
         CANDLESTICK_MODEL_CACHE.put(customCandlestick, stateMap);

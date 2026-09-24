@@ -1,91 +1,30 @@
 #if POLYMER
 package io.github.mikip98.humilityafm.mod_support.polymer;
 
-import eu.pb4.polymer.resourcepack.api.PolymerModelData;
-import eu.pb4.polymer.virtualentity.api.ElementHolder;
-import eu.pb4.polymer.virtualentity.api.attachment.ChunkAttachment;
-import eu.pb4.polymer.virtualentity.api.attachment.HolderAttachment;
-import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
+#if MC_VERSION < 12104 import eu.pb4.polymer.resourcepack.api.PolymerModelData; #endif
 import io.github.mikip98.humilityafm.registries.BlockEntityRegistry;
 import io.mikip98.humilityval.content.block.entity.AVLBlockEntity;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import io.mikip98.humilityval.content.block.entity.polymer.PolymerBlockEntityUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
+#if MC_VERSION >= 12005 import net.minecraft.core.component.DataComponents; #endif
+#if MC_VERSION >= 12104 && MC_VERSION < 12111 import net.minecraft.resources.ResourceLocation; #endif
+#if MC_VERSION >= 12111 import net.minecraft.resources.Identifier; #endif
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.WallTorchBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 public class PolymerBlockEntities {
-    protected static final Queue<Runnable> ATTACHMENT_QUEUE = new ConcurrentLinkedQueue<>();
-
-    static {
-        ServerTickEvents.END_SERVER_TICK.register(server -> {
-            Runnable task;
-            int processed = 0;
-            // Process up to 500 attachments per tick to prevent server lag spikes
-            while (processed < 500 && (task = ATTACHMENT_QUEUE.poll()) != null) {
-                task.run();
-                processed++;
-            }
-        });
-    }
-
-    public static abstract class PolymerBlockEntityBase extends AVLBlockEntity { // implements PolymerItem, PolymerModelData
-        protected final ElementHolder holder = new ElementHolder();
-        protected final ItemDisplayElement display = new ItemDisplayElement();
-        protected HolderAttachment attachment;
-        protected final boolean offset;
-        protected final boolean ticking;
-
+    public static abstract class PolymerBlockEntityBase extends AVLBlockEntity {
         public PolymerBlockEntityBase(
-                BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState, boolean offset, boolean ticking
+                BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState, PolymerProperties polymerProperties
         ) {
-            super(blockEntityType, blockPos, blockState);
-            this.offset = offset;
-            this.ticking = ticking;
-
-            this.holder.addElement(display);
-            display.setModelTransformation(ItemDisplayContext.FIXED);
-            display.setItem(blockState.getBlock().asItem().getDefaultInstance());
-            if (offset) display.setTranslation(new Vector3f(0f, -0.51f, 0f));
-        }
-
-        @Override
-        public void clearRemoved() {
-            super.clearRemoved();
-            if (this.level instanceof ServerLevel serverLevel) {
-                Vec3 offsetPos = Vec3.atCenterOf(this.worldPosition);
-                if (offset) offsetPos = offsetPos.add(0, 0.51, 0);
-                final Vec3 finalOffsetPos = offsetPos;
-
-                ATTACHMENT_QUEUE.add(() -> {
-                    // TODO: Apparently prevents a memory leak from instantly destroyed block, but needs double checking
-                    if (this.isRemoved()) return;
-
-                    if (ticking) this.attachment = ChunkAttachment.ofTicking(this.holder, serverLevel, finalOffsetPos);
-                    else this.attachment = ChunkAttachment.of(this.holder, serverLevel, finalOffsetPos);
-                });
-            }
-        }
-
-        @Override
-        public void setRemoved() {
-            super.setRemoved();
-            if (this.attachment != null) {
-                this.attachment.destroy();
-                this.attachment = null;
-            }
+            super(blockEntityType, blockPos, blockState, polymerProperties);
         }
 
         protected static float getRotation(BlockState state) {
@@ -121,25 +60,15 @@ public class PolymerBlockEntities {
             };
         }
 
-        protected static ItemStack disguiseItem(PolymerModelData customModelData) {
-            final Item disguiseItem = PolymerItems.VIRTUAL_ITEM_BASE;
-            final ItemStack disguisedStack = new ItemStack(disguiseItem);
-
-            if (customModelData != null) {
-                #if MC_VERSION < 12005
-                disguisedStack.getOrCreateTag().putInt("CustomModelData", customModelData.value());
-                #else
-                disguisedStack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(customModelData.value()));
-                #endif
-            }
-
-            return disguisedStack;
+        protected static ItemStack disguiseItem(#if MC_VERSION < 12104 PolymerModelData #elif MC_VERSION < 12111 ResourceLocation #else Identifier #endif customModel) {
+            final Item baseItem = PolymerItems.VIRTUAL_ITEM_BASE;
+            return PolymerBlockEntityUtil.disguiseItem(baseItem, customModel);
         }
     }
 
     public static class FallbackBlockEntity extends PolymerBlockEntityBase {
         public FallbackBlockEntity(BlockPos pos, BlockState state) {
-            super(BlockEntityRegistry.FALLBACK_BLOCK_ENTITY, pos, state, true, false);
+            super(BlockEntityRegistry.FALLBACK_BLOCK_ENTITY, pos, state, PolymerProperties.of().offset());
 
             display.setScale(new Vector3f(2.0015f));  // TODO: Make the scale into a config
 
@@ -151,7 +80,7 @@ public class PolymerBlockEntities {
 
     public static class ColouredTorchBlockEntity extends PolymerBlockEntityBase {
         public ColouredTorchBlockEntity(BlockPos pos, BlockState state) {
-            super(BlockEntityRegistry.COLOURED_TORCH_BLOCK_ENTITY, pos, state, false, false);
+            super(BlockEntityRegistry.COLOURED_TORCH_BLOCK_ENTITY, pos, state, PolymerProperties.of());
 
             display.setScale(new Vector3f(1.005f));  // TODO: Make the scale into a config
 
@@ -177,12 +106,12 @@ public class PolymerBlockEntities {
 
     public static class CandlestickBlockEntity extends PolymerBlockEntityBase {
         public CandlestickBlockEntity(BlockPos pos, BlockState state) {
-            super(BlockEntityRegistry.CANDLESTICK_BLOCK_ENTITY, pos, state, false, true);
+            super(BlockEntityRegistry.CANDLESTICK_BLOCK_ENTITY, pos, state, PolymerProperties.of().ticking());
             this.updateVisualState(state);
         }
 
         public void updateVisualState(BlockState state) {
-            PolymerModelData customData = null;
+            #if MC_VERSION < 12104 PolymerModelData #elif MC_VERSION < 12111 ResourceLocation #else Identifier #endif customData = null;
             if (PolymerModelCache.CANDLESTICK_MODEL_CACHE.containsKey(state.getBlock())) {
                 customData = PolymerModelCache.CANDLESTICK_MODEL_CACHE.get(state.getBlock()).get(state);
             }

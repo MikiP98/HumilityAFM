@@ -5,7 +5,6 @@ import io.github.mikip98.humilityafm.content.blocks.templates.PlainHorizontalFac
 #if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerBlockEntities; #endif
 #if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
 #if POLYMER import net.minecraft.core.BlockPos; #endif
-#if POLYMER import net.minecraft.world.level.block.Block; #endif
 import net.minecraft.world.level.block.Blocks;
 #if POLYMER import net.minecraft.world.level.block.EntityBlock; #endif
 #if POLYMER import net.minecraft.world.level.block.entity.BlockEntity; #endif
@@ -16,20 +15,13 @@ import net.minecraft.world.level.block.Blocks;
 import java.util.function.Supplier;
 
 public abstract class JackOLantern extends PlainHorizontalFacingBlock #if POLYMER implements PolymerTexturedBlock, EntityBlock #endif {
-    public static final Supplier<Properties> defaultSettingsSupplier =
-            () -> Properties.#if MC_VERSION < 12004 copy #else ofFullCopy #endif(Blocks.JACK_O_LANTERN);
+    public static final Supplier<Properties> defaultSettingsSupplier = () -> Properties.ofFullCopy(Blocks.JACK_O_LANTERN);
     public static final Properties defaultSettings = defaultSettingsSupplier.get();
     public JackOLantern(Properties settings) {
         super(settings);
     }
 
     #if POLYMER
-    @Override
-    public Block getPolymerBlock(BlockState state) {
-        BlockState mapped = PolymerModelCache.POLYMER_BLOCK_CACHE.get(state);
-        return mapped != null ? mapped.getBlock() : Blocks.JACK_O_LANTERN;
-    }
-
     @Override
     public BlockState getPolymerBlockState(BlockState state) {
         BlockState mapped = PolymerModelCache.POLYMER_BLOCK_CACHE.get(state);

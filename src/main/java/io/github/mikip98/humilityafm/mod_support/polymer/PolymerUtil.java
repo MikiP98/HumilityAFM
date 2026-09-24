@@ -9,7 +9,8 @@ import eu.pb4.polymer.blocks.api.BlockModelType;
 import eu.pb4.polymer.blocks.api.PolymerBlockModel;
 import eu.pb4.polymer.blocks.api.PolymerBlockResourceUtils;
 import io.github.mikip98.humilityafm.config.ModConfig;
-import net.minecraft.resources.ResourceLocation;
+#if MC_VERSION >= 12111 import net.minecraft.resources.Identifier; #endif
+#if MC_VERSION < 12111 import net.minecraft.resources.ResourceLocation; #endif
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;

@@ -1,10 +1,11 @@
 package io.github.mikip98.humilityafm.content.blocks.coloured_torch;
 
-#if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
-#if MC_VERSION >= 12003 import com.mojang.serialization.codecs.RecordCodecBuilder; #endif
+#if MC_VERSION >= 12003 && MC_VERSION < 260300 import com.mojang.serialization.MapCodec; #endif
+#if MC_VERSION >= 12003 && MC_VERSION < 260300 import com.mojang.serialization.codecs.RecordCodecBuilder; #endif
 #if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
 #if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerBlockEntities; #endif
 import io.github.mikip98.humilityafm.util.SoundUtils;
+#if POLYMER && MC_VERSION >= 260000 import net.fabricmc.fabric.api.networking.v1.context.PacketContext; #endif
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.sounds.SoundEvents;
@@ -23,9 +24,10 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
+#if POLYMER && MC_VERSION >= 12104 && MC_VERSION < 260000 import xyz.nucleoid.packettweaker.PacketContext; #endif
 
 public class ColouredTorch extends TorchBlock #if POLYMER implements EntityBlock, PolymerBlock #endif {
-    #if MC_VERSION >= 12003
+    #if MC_VERSION >= 12003 && MC_VERSION < 260300
     protected static final MapCodec<ColouredTorch> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
             PARTICLE_OPTIONS_FIELD.forGetter((torchBlock) -> torchBlock.flameParticle),
             propertiesCodec()
@@ -39,11 +41,12 @@ public class ColouredTorch extends TorchBlock #if POLYMER implements EntityBlock
 
     public static final IntegerProperty POWER = BlockStateProperties.POWER;
 
-    public static final Properties defaultSettings =
-            Properties.#if MC_VERSION < 12004 copy #else ofFullCopy #endif(Blocks.TORCH).lightLevel((state) -> state.getValue(POWER));
+    public static final Properties defaultSettings = Properties.ofFullCopy(Blocks.TORCH)
+            .lightLevel((state) -> state.getValue(POWER));
 
 
     public ColouredTorch(SimpleParticleType particleType, Properties properties) {
+        // super(particleOptions: particleType, properties: properties);  // Crashes the compiler, report to Manifold
         #if MC_VERSION < 12004
         super(properties, particleType);
         #else
@@ -77,6 +80,7 @@ public class ColouredTorch extends TorchBlock #if POLYMER implements EntityBlock
         return super.useWithoutItem(state, level, pos, player, hit);
     }
     #endif
+    // TODO: Maybe an interface in HumilityAFM that will take over the use() method and run it's own useWithItem and useWithoutItem?
 
     protected static boolean onUseLogicInternal(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand) {
         final int currentPower = state.getValue(POWER);
@@ -89,9 +93,15 @@ public class ColouredTorch extends TorchBlock #if POLYMER implements EntityBlock
     }
 
     #if POLYMER
+    #if MC_VERSION < 12006
     @Override
     public Block getPolymerBlock(BlockState state) {
         return Blocks.TORCH;
+    }
+    #endif
+    @Override
+    public BlockState getPolymerBlockState(BlockState state #if MC_VERSION >= 12104, PacketContext context #endif) {
+        return Blocks.TORCH.defaultBlockState();
     }
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {

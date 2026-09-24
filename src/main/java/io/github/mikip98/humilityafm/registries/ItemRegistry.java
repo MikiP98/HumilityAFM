@@ -19,9 +19,10 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 #endif
+#if MC_VERSION > 260000 import net.minecraft.world.item.BlockItem; #endif
 import net.minecraft.world.item.Item;
 #if POLYMER import net.minecraft.world.level.block.Block; #endif
-#if MC_VERSION >= 12104 import net.minecraft.world.item.Items; #endif
+#if MC_VERSION >= 12104 && MC_VERSION < 260000 import net.minecraft.world.item.Items; #endif
 
 import java.util.Arrays;
 #if POLYMER import java.util.IdentityHashMap; #endif
@@ -160,27 +161,25 @@ public class ItemRegistry {
     public static Item register(String name, Function<Item.Properties, Item> factory) {
         return register(name, factory, new Item.Properties());
     }
-    #if MC_VERSION < 12104
+
     public static Item register(String name, Function<Item.Properties, Item> factory, Item.Properties settings) {
+        #if MC_VERSION < 12104
         final Item item = Registry.register(BuiltInRegistries.ITEM, getId(name), factory.apply(settings));
+        #else
+        final ResourceKey<Item> registryKey = ResourceKey.create(Registries.ITEM, getId(name));
+        final Item item = #if MC_VERSION < 260000 Items. #endif registerItem(registryKey, factory, settings);
+        #endif
+
         #if POLYMER PolymerModelCache.requestPolymerModel(item, name); #endif
         return item;
     }
-    #else
-    public static Item register(String name, Function<Item.Properties, Item> factory, Item.Properties settings) {
-        final ResourceKey<Item> registryKey = ResourceKey.create(Registries.ITEM, getId(name));
-        final Item item = #if MC_VERSION < 260000 Items. #endif registerItem(registryKey, factory, settings);
-        #if POLYMER Polymer.requestPolymerModel(item, name); #endif
-        return item;
-    }
-    #endif
     #if MC_VERSION > 260000
     protected static Item registerItem(final ResourceKey<Item> key, final Function<Item.Properties, Item> itemFactory, final Item.Properties properties) {
-        Item item = (Item) itemFactory.apply(properties.setId(key));
+        Item item = itemFactory.apply(properties.setId(key));
         if (item instanceof BlockItem blockItem) {
             blockItem.registerBlocks(Item.BY_BLOCK, item);
         }
-        return (Item) Registry.register(BuiltInRegistries.ITEM, key, item);
+        return Registry.register(BuiltInRegistries.ITEM, key, item);
     }
     #endif
 }

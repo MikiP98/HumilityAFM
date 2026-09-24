@@ -1,6 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.candlestick;
 
-#if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
+#if MC_VERSION >= 12003 && MC_VERSION < 260300 import com.mojang.serialization.MapCodec; #endif
 #if POLYMER import eu.pb4.polymer.blocks.api.PolymerTexturedBlock; #endif
 import io.github.mikip98.humilityafm.content.blocks.Waterloggable;
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
@@ -8,6 +8,7 @@ import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.SimpleCand
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
 #if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerBlockEntities; #endif
 #if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
+#if POLYMER && MC_VERSION >= 260000 import net.fabricmc.fabric.api.networking.v1.context.PacketContext; #endif
 import net.minecraft.core.BlockPos;
 #if MC_VERSION >= 12105 import net.minecraft.server.level.ServerLevel; #endif
 import net.minecraft.util.RandomSource;
@@ -31,9 +32,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+#if POLYMER && MC_VERSION >= 12104 && MC_VERSION < 260000 import xyz.nucleoid.packettweaker.PacketContext; #endif
 
 public class FloorCandlestick extends Block implements SimpleCandlestickLogic, Waterloggable #if POLYMER, EntityBlock, PolymerTexturedBlock #endif {
-    #if MC_VERSION >= 12003
+    #if MC_VERSION >= 12003 && MC_VERSION < 260300
     protected static final MapCodec<FloorCandlestick> CODEC = simpleCodec(FloorCandlestick::new);
 
     @Override
@@ -123,13 +125,15 @@ public class FloorCandlestick extends Block implements SimpleCandlestickLogic, W
     }
 
     #if POLYMER
+    #if MC_VERSION < 12006
     @Override
     public Block getPolymerBlock(BlockState state) {
         return getPolymerBlockState(state).getBlock();
     }
+    #endif
 
     @Override
-    public BlockState getPolymerBlockState(BlockState state) {
+    public BlockState getPolymerBlockState(BlockState state #if MC_VERSION >= 12104 , PacketContext context #endif) {
         return PolymerModelCache.LIGHT_STRIP_BOTTOM_DISGUISE;
     }
 

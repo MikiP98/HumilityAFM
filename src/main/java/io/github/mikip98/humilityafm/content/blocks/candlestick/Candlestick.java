@@ -1,6 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.candlestick;
 
-#if MC_VERSION >= 12003 import com.mojang.serialization.MapCodec; #endif
+#if MC_VERSION >= 12003 && MC_VERSION < 260300 import com.mojang.serialization.MapCodec; #endif
 #if POLYMER import eu.pb4.polymer.blocks.api.PolymerTexturedBlock; #endif
 import io.github.mikip98.humilityafm.content.blocks.Waterloggable;
 import io.github.mikip98.humilityafm.content.blocks.templates.PlainHorizontalFacingBlock;
@@ -132,7 +132,7 @@ public class Candlestick extends PlainHorizontalFacingBlock implements SimpleCan
     protected static final EnumProperty<CandleColor> CANDLE_COLOR = ModProperties.CANDLE_COLOR;
     protected static final BooleanProperty LIT = BlockStateProperties.LIT;
 
-    #if MC_VERSION >= 12003
+    #if MC_VERSION >= 12003 && MC_VERSION < 260300
     protected static final MapCodec<Candlestick> CODEC = simpleCodec(Candlestick::new);
 
     @Override
@@ -239,11 +239,6 @@ public class Candlestick extends PlainHorizontalFacingBlock implements SimpleCan
     }
 
     #if POLYMER
-    @Override
-    public Block getPolymerBlock(BlockState state) {
-        return getPolymerBlockState(state).getBlock();
-    }
-
     @Override
     public BlockState getPolymerBlockState(BlockState state) {
         final Direction dir = state.getValue(FACING);
