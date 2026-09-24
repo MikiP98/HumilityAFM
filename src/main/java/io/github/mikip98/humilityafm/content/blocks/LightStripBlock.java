@@ -19,7 +19,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-#if MC_VERSION < 260000 import xyz.nucleoid.packettweaker.PacketContext; #endif
+#if POLYMER && MC_VERSION < 260000 import xyz.nucleoid.packettweaker.PacketContext; #endif
 
 import java.util.Map;
 

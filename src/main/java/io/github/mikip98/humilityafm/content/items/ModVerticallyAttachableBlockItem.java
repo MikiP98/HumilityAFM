@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-#if MC_VERSION < 260000 import xyz.nucleoid.packettweaker.PacketContext; #endif
+#if POLYMER && MC_VERSION < 260000 import xyz.nucleoid.packettweaker.PacketContext; #endif
 
 import java.util.Map;
 

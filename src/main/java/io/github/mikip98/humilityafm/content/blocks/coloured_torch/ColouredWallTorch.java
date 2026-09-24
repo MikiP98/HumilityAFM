@@ -24,7 +24,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
-#if MC_VERSION < 260000 import xyz.nucleoid.packettweaker.PacketContext; #endif
+#if POLYMER && MC_VERSION < 260000 import xyz.nucleoid.packettweaker.PacketContext; #endif
 
 public class ColouredWallTorch extends WallTorchBlock #if POLYMER implements EntityBlock, PolymerBlock #endif {
     #if MC_VERSION >= 12003 && MC_VERSION < 260300
