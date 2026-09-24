@@ -33,7 +33,9 @@ public class ResourcepackRegistry {
             register("coloured_jack_o_lanterns_labpbr_emission_smooth", container, "Coloured Jack o'Lanterns LabPBR Smooth", ResourcePackActivationType.NORMAL);
 
             // ......... DATA PACKS .........
-            register("alternate_wooden_mosaic_recipies", container, "Alternate Wooden Mosaic Recipies", ResourcePackActivationType.NORMAL);
+            register("alternate_wooden_mosaic_recipies", container, "Alternate Wooden Mosaic Recipies",
+                    #if MC_VERSION < 12104 ResourcePackActivationType.NORMAL #else ResourcePackActivationType.DEFAULT_ENABLED #endif
+            );
         });
     }
     // TODO: Consider making a RegistryHelper class to skip passing the 'container' every time
