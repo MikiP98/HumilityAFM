@@ -1,5 +1,6 @@
 package io.github.mikip98.humilityafm.content.blocks.candlestick;
 
+#if MC_VERSION >= 12003 && MC_VERSION < 260300 import com.mojang.serialization.MapCodec; #endif
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.RustableCandlestickLogic;
 import lombok.Getter;
@@ -24,6 +25,15 @@ import java.util.function.Supplier;
 @Getter
 @Setter
 public class RustableCandlestick extends Candlestick implements RustableCandlestickLogic {
+    #if MC_VERSION >= 12003 && MC_VERSION < 260300
+    protected static final MapCodec<RustableCandlestick> CODEC = simpleCodec(RustableCandlestick::new);
+
+    @Override
+    protected @NotNull MapCodec<? extends RustableCandlestick> codec() {
+        return CODEC;
+    }
+    #endif
+
     public static final Supplier<Properties> defaultSettingsSupplier = () -> Candlestick.defaultSettingsSupplier.get()
             .sound(SoundType.COPPER)
             .randomTicks();

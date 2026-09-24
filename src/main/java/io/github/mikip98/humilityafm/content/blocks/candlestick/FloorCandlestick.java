@@ -1,23 +1,26 @@
 package io.github.mikip98.humilityafm.content.blocks.candlestick;
 
+#if MC_VERSION >= 12003 && MC_VERSION < 260300 import com.mojang.serialization.MapCodec; #endif
+#if POLYMER import eu.pb4.polymer.blocks.api.PolymerTexturedBlock; #endif
 import io.github.mikip98.humilityafm.content.blocks.Waterloggable;
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.SimpleCandlestickLogic;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerBlockEntities; #endif
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
+#if POLYMER && MC_VERSION >= 260000 import net.fabricmc.fabric.api.networking.v1.context.PacketContext; #endif
 import net.minecraft.core.BlockPos;
-#if MC_VERSION >= 12105
-import net.minecraft.server.level.ServerLevel;
-#endif
+#if MC_VERSION >= 12105 import net.minecraft.server.level.ServerLevel; #endif
 import net.minecraft.util.RandomSource;
-#if MC_VERSION < 12006
-import net.minecraft.world.InteractionHand;
-#endif
+#if MC_VERSION < 12006 import net.minecraft.world.InteractionHand; #endif
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+#if POLYMER import net.minecraft.world.level.block.EntityBlock; #endif
+#if POLYMER import net.minecraft.world.level.block.entity.BlockEntity; #endif
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -29,8 +32,18 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+#if POLYMER && MC_VERSION >= 12104 && MC_VERSION < 260000 import xyz.nucleoid.packettweaker.PacketContext; #endif
 
-public class FloorCandlestick extends Block implements SimpleCandlestickLogic, Waterloggable {
+public class FloorCandlestick extends Block implements SimpleCandlestickLogic, Waterloggable #if POLYMER, EntityBlock, PolymerTexturedBlock #endif {
+    #if MC_VERSION >= 12003 && MC_VERSION < 260300
+    protected static final MapCodec<FloorCandlestick> CODEC = simpleCodec(FloorCandlestick::new);
+
+    @Override
+    protected @NotNull MapCodec<? extends FloorCandlestick> codec() {
+        return CODEC;
+    }
+    #endif
+
     protected static final VoxelShape voxelShape = Block.box(6, 0, 6, 10, 6, 10);
     protected static final VoxelShape voxelShapeCandle = Block.box(6, 0, 6, 10, 10, 10);
 
@@ -110,4 +123,23 @@ public class FloorCandlestick extends Block implements SimpleCandlestickLogic, W
     public @NotNull FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : Fluids.EMPTY.defaultFluidState();
     }
+
+    #if POLYMER
+    #if MC_VERSION < 12006
+    @Override
+    public Block getPolymerBlock(BlockState state) {
+        return getPolymerBlockState(state).getBlock();
+    }
+    #endif
+
+    @Override
+    public BlockState getPolymerBlockState(BlockState state #if MC_VERSION >= 12104 , PacketContext context #endif) {
+        return PolymerModelCache.LIGHT_STRIP_BOTTOM_DISGUISE;
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new PolymerBlockEntities.CandlestickBlockEntity(pos, state);
+    }
+    #endif
 }

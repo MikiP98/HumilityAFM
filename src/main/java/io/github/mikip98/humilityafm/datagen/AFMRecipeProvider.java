@@ -1,36 +1,25 @@
 package io.github.mikip98.humilityafm.datagen;
 
-#if MC_VERSION < 12104
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.minecraft.core.HolderLookup;
-#endif
-import net.minecraft.core.HolderLookup;
+#if MC_VERSION < 12104 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput; #endif
+#if MC_VERSION < 12104 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider; #endif
+#if MC_VERSION >= 260300 import net.minecraft.advancements.Advancement; #endif
+#if MC_VERSION >= 12006 import net.minecraft.core.HolderLookup; #endif
 import net.minecraft.core.registries.BuiltInRegistries;
-#if MC_VERSION < 12004
-import net.minecraft.data.recipes.FinishedRecipe;
-#endif
 import net.minecraft.data.recipes.*;
-#if MC_VERSION < 12111
-import net.minecraft.resources.ResourceLocation;
-#else
-import net.minecraft.resources.Identifier;
-#endif
-#if MC_VERSION >= 12104
-import net.minecraft.world.item.Item;
-#endif
+#if MC_VERSION < 12004 import net.minecraft.data.recipes.FinishedRecipe; #endif
+#if MC_VERSION >= 12111 import net.minecraft.data.worldgen.BootstrapContext; #endif
+#if MC_VERSION >= 12111 import net.minecraft.resources.Identifier; #endif
+#if MC_VERSION < 12111 import net.minecraft.resources.ResourceLocation; #endif
+#if MC_VERSION >= 12104 import net.minecraft.world.item.Item; #endif
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+#if MC_VERSION >= 260300 import net.minecraft.world.item.crafting.Recipe; #endif
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
 
-#if MC_VERSION < 12004
-import java.util.function.Consumer;
-#endif
-#if MC_VERSION >= 12006 && MC_VERSION < 12104
-import java.util.concurrent.CompletableFuture;
-#endif
+#if MC_VERSION >= 12006 && MC_VERSION < 12104 import java.util.concurrent.CompletableFuture; #endif
+#if MC_VERSION < 12004 import java.util.function.Consumer; #endif
 
 import static io.github.mikip98.humilityafm.HumilityAFM.MOD_ID;
 
@@ -41,9 +30,13 @@ public abstract class AFMRecipeProvider extends #if MC_VERSION < 12104 FabricRec
     public AFMRecipeProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
     }
-    #else
+    #elif MC_VERSION < 260300
     protected AFMRecipeProvider(HolderLookup.Provider registryLookup, RecipeOutput exporter) {
         super(registryLookup, exporter);
+    }
+    #else
+    protected AFMRecipeProvider(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
+        super(recipeOutput, advancementOutput);
     }
     #endif
 

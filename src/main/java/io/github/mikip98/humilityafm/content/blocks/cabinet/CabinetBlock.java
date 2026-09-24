@@ -1,16 +1,17 @@
 package io.github.mikip98.humilityafm.content.blocks.cabinet;
 
-#if MC_VERSION >= 12004
-import com.mojang.serialization.MapCodec;
-#endif
+#if MC_VERSION >= 12003 && MC_VERSION < 260300 import com.mojang.serialization.MapCodec; #endif
+#if POLYMER import eu.pb4.polymer.blocks.api.PolymerTexturedBlock; #endif
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.ImplementedInventory;
 import io.github.mikip98.humilityafm.content.blocks.Waterloggable;
 import io.github.mikip98.humilityafm.content.blocks.templates.PlainHorizontalFacingBlock;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetBlockEntity;
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
 import io.github.mikip98.humilityafm.util.SoundUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
+#if MC_VERSION >= 260300 import net.minecraft.util.Prediction; #endif
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -36,7 +37,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
-public class CabinetBlock extends PlainHorizontalFacingBlock implements Waterloggable, EntityBlock {
+public class CabinetBlock extends PlainHorizontalFacingBlock implements Waterloggable, EntityBlock #if POLYMER, PolymerTexturedBlock #endif {
     protected static final VoxelShape voxelShapeOpenNorth = Block.box(1, 1, 13.00032, 15, 15, 16);  //open, reverse original
     protected static final VoxelShape voxelShapeOpenSouth = Block.box(1, 1, 0, 15, 15, 2.99968);  //open, original
     protected static final VoxelShape voxelShapeOpenEast = Block.box(0, 1, 1, 2.99968, 15, 15);  //open, swap z <-> x
@@ -50,7 +51,7 @@ public class CabinetBlock extends PlainHorizontalFacingBlock implements Waterlog
     protected static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     protected static final BooleanProperty OPEN = BlockStateProperties.OPEN;
 
-    #if MC_VERSION >= 12004
+    #if MC_VERSION >= 12003 && MC_VERSION < 260300
     protected static final MapCodec<CabinetBlock> CODEC = simpleCodec(CabinetBlock::new);
 
     @Override
@@ -109,27 +110,36 @@ public class CabinetBlock extends PlainHorizontalFacingBlock implements Waterlog
             final boolean playerHoldsItem = !playerItemStack.isEmpty();
             if (playerHoldsItem) {
                 if (playerItemStack.getItem() != oldCabinetItemStack.getItem()) {
-                    // Take from the player the new ItemStack to insert into the Cabinet
                     ItemStack newCabinetItemStack = playerItemStack.split(1);
 
-                    // If the Cabinet already holds an item, give it to the player
-                    if (!oldCabinetItemStack.isEmpty())
-                        player.getInventory().placeItemBackInInventory(oldCabinetItemStack);
+                    if (!oldCabinetItemStack.isEmpty()) {
+                        player.getInventory().placeItemBackInInventory(oldCabinetItemStack #if MC_VERSION >= 260300, Prediction.PREDICTED #endif);
+                    }
 
-                    // Put the new ItemStack inside the Cabinet
                     cabinetBlockEntity.setItem(0, newCabinetItemStack);
                 }
                 else return InteractionResult.FAIL;
             } else {
                 if (player.isShiftKeyDown()) {
-                    // Give the player the stack from the Cabinet inventory
-                    player.getInventory().placeItemBackInInventory(oldCabinetItemStack);
-                    // Remove the stack from Cabinet the inventory
+                    player.getInventory().placeItemBackInInventory(oldCabinetItemStack #if MC_VERSION >= 260300, Prediction.PREDICTED #endif);
                     cabinetBlockEntity.clearContent();
                 }
                 world.setBlockAndUpdate(pos, state.setValue(OPEN, false));
+                #if POLYMER
+                if (cabinetBlockEntity instanceof CabinetBlockEntity entity) {
+                    entity.updateVisualState(false);
+                }
+                #endif
             }
-        } else world.setBlockAndUpdate(pos, state.setValue(OPEN, true));
+        } else {
+            world.setBlockAndUpdate(pos, state.setValue(OPEN, true));
+            #if POLYMER
+            final BlockEntity blockEntity = world.getBlockEntity(pos);
+            if (blockEntity instanceof CabinetBlockEntity entity) {
+                entity.updateVisualState(true);
+            }
+            #endif
+        }
 
         playCabinetSound(world, pos, player);
         return InteractionResult.SUCCESS;
@@ -196,4 +206,18 @@ public class CabinetBlock extends PlainHorizontalFacingBlock implements Waterlog
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new CabinetBlockEntity(pos, state);
     }
+
+    #if POLYMER
+    @Override
+    public BlockState getPolymerBlockState(BlockState state) {
+        final Direction dir = state.getValue(FACING);
+        return switch (dir) {
+            case NORTH -> PolymerModelCache.CABINET_NORTH_DISGUISE;
+            case EAST -> PolymerModelCache.CABINET_EAST_DISGUISE;
+            case SOUTH -> PolymerModelCache.CABINET_SOUTH_DISGUISE;
+            case WEST -> PolymerModelCache.CABINET_WEST_DISGUISE;
+            default -> throw new IllegalStateException();
+        };
+    }
+    #endif
 }

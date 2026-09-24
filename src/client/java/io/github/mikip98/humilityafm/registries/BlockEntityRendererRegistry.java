@@ -6,8 +6,8 @@ import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.FloorCabinetBlockEntityRenderer;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.FloorIlluminatedCabinetBlockEntityRenderer;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.IlluminatedCabinetBlockEntityRenderer;
-import io.github.mikip98.humilityafm.util.mod_support.ModSupportManager;
-import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
+import io.github.mikip98.humilityafm.mod_support.ModSupportManager;
+import io.github.mikip98.humilityafm.mod_support.SupportedMods;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 #if MC_VERSION >= 12111

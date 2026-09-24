@@ -1,7 +1,7 @@
 package io.github.mikip98.humilityafm.registries;
 
 import io.github.mikip98.humilityafm.config.ModConfig;
-import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
+import io.github.mikip98.humilityafm.mod_support.SupportedMods;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 #if MC_VERSION < 12006 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs; #endif

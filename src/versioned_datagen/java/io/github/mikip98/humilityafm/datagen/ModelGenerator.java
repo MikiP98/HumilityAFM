@@ -1,8 +1,6 @@
 package io.github.mikip98.humilityafm.datagen;
 
-#if MC_VERSION >= 12105
-import com.mojang.math.Quadrant;
-#endif
+#if MC_VERSION >= 12105 import com.mojang.math.Quadrant; #endif
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
 import io.github.mikip98.humilityafm.registries.BlockRegistry;
@@ -10,17 +8,12 @@ import io.github.mikip98.humilityafm.registries.ItemRegistry;
 import io.github.mikip98.humilityafm.util.Pair;
 import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
 import io.github.mikip98.humilityafm.util.generation_data.RawGenerationData;
-import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
+import io.github.mikip98.humilityafm.mod_support.SupportedMods;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.MaterialType;
-#if MC_VERSION >= 12104
-import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
-#endif
-#if MC_VERSION < 260000
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-#else
-import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
-#endif
+#if MC_VERSION >= 12104 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider; #endif
+#if MC_VERSION < 260000 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput; #endif
+#if MC_VERSION >= 260000 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput; #endif
 #if MC_VERSION < 12104
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 #else
@@ -28,38 +21,34 @@ import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.blockstates.*;
 import net.minecraft.client.data.models.model.*;
-#if MC_VERSION < 12105
-import net.minecraft.client.data.models.blockstates.Variant;
-import net.minecraft.client.data.models.blockstates.Condition;
-#endif
+    #if MC_VERSION < 12105
+    import net.minecraft.client.data.models.blockstates.Variant;
+    import net.minecraft.client.data.models.blockstates.Condition;
+    #endif
 #endif
 #if MC_VERSION >= 12105
 import net.minecraft.client.data.models.MultiVariant;
-#if MC_VERSION < 260000
-import net.minecraft.client.renderer.block.model.Variant;
-import net.minecraft.client.renderer.block.model.multipart.Condition;
-import net.minecraft.client.renderer.block.model.VariantMutator;
-#else
-import net.minecraft.client.renderer.block.dispatch.Variant;
-import net.minecraft.client.renderer.block.dispatch.VariantMutator;
-import net.minecraft.client.renderer.block.dispatch.multipart.Condition;
+    #if MC_VERSION < 260000
+    import net.minecraft.client.renderer.block.model.Variant;
+    import net.minecraft.client.renderer.block.model.multipart.Condition;
+    import net.minecraft.client.renderer.block.model.VariantMutator;
+    #else
+    import net.minecraft.client.renderer.block.dispatch.Variant;
+    import net.minecraft.client.renderer.block.dispatch.VariantMutator;
+    import net.minecraft.client.renderer.block.dispatch.multipart.Condition;
+    #endif
 #endif
-#endif
+#if MC_VERSION >= 260000 import net.minecraft.client.resources.model.sprite.Material; #endif
 import net.minecraft.core.Direction;
-#if MC_VERSION < 12104
-import net.minecraft.data.models.BlockModelGenerators;
-import net.minecraft.data.models.ItemModelGenerators;
-import net.minecraft.data.models.blockstates.*;
-import net.minecraft.data.models.model.ModelTemplate;
-import net.minecraft.data.models.model.ModelTemplates;
-import net.minecraft.data.models.model.TextureMapping;
-import net.minecraft.data.models.model.TextureSlot;
-#endif
-#if MC_VERSION < 12111
-import net.minecraft.resources.ResourceLocation;
-#else
-import net.minecraft.resources.Identifier;
-#endif
+#if MC_VERSION < 12104 import net.minecraft.data.models.BlockModelGenerators; #endif
+#if MC_VERSION < 12104 import net.minecraft.data.models.ItemModelGenerators; #endif
+#if MC_VERSION < 12104 import net.minecraft.data.models.blockstates.*; #endif
+#if MC_VERSION < 12104 import net.minecraft.data.models.model.ModelTemplate; #endif
+#if MC_VERSION < 12104 import net.minecraft.data.models.model.ModelTemplates; #endif
+#if MC_VERSION < 12104 import net.minecraft.data.models.model.TextureMapping; #endif
+#if MC_VERSION < 12104 import net.minecraft.data.models.model.TextureSlot; #endif
+#if MC_VERSION < 12111 import net.minecraft.resources.ResourceLocation; #endif
+#if MC_VERSION >= 12111 import net.minecraft.resources.Identifier; #endif
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -73,9 +62,7 @@ import java.util.*;
 import java.util.function.Function;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.*;
-#if MC_VERSION >= 12105
-import static net.minecraft.client.data.models.BlockModelGenerators.variant;
-#endif
+#if MC_VERSION >= 12105 import static net.minecraft.client.data.models.BlockModelGenerators.variant; #endif
 
 public class ModelGenerator extends FabricModelProvider {
     // Cabinet Models

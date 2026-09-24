@@ -1,12 +1,23 @@
 package io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns;
 
+#if MC_VERSION >= 12003 && MC_VERSION < 260300 import com.mojang.serialization.MapCodec; #endif
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class JackOLanternSoul extends JackOLantern {
+    #if MC_VERSION >= 12003 && MC_VERSION < 260300
+    protected static final MapCodec<JackOLanternSoul> CODEC = simpleCodec(JackOLanternSoul::new);
+
+    @Override
+    protected @NotNull MapCodec<? extends JackOLanternSoul> codec() {
+        return CODEC;
+    }
+    #endif
+
     // Luminance of Soul Torch boosted by 1 as it was too dark
     public static final Properties defaultSettings = defaultSettingsSupplier.get().lightLevel((ignored) -> 8+1);
 

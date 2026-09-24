@@ -5,7 +5,7 @@ import io.github.mikip98.humilityafm.config.enums.ModSupportState;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.LightStripBlockEntityRenderer;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.FloorIlluminatedCabinetBlockEntityRenderer;
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.IlluminatedCabinetBlockEntityRenderer;
-import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
+import io.github.mikip98.humilityafm.mod_support.SupportedMods;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -137,6 +137,29 @@ public class ModConfigScreen {
                     .build()
             );
         }
+
+        #if POLYMER
+        modSupportCategory.addEntry(ConfigEntryBuilder.create()
+                .startBooleanToggle(
+                        Component.literal("Polymer Allow Optimised Mosaics & Tiles"),
+                        ModConfig.polymerAllowOptimisedMosaicsAndTiles
+                )
+                .setDefaultValue(ModConfig.defaultPolymerAllowOptimisedMosaicsAndTiles)
+                .setTooltip(Component.literal("")) // TODO
+                .setSaveConsumer(value -> ModConfig.polymerAllowOptimisedMosaicsAndTiles = value)
+                .build()
+        );
+        modSupportCategory.addEntry(ConfigEntryBuilder.create()
+                .startBooleanToggle(
+                        Component.literal("Polymer Allow Optimised Jack O'Lanterns"),
+                        ModConfig.polymerAllowOptimisedJackOLanterns
+                )
+                .setDefaultValue(ModConfig.defaultPolymerAllowOptimisedJackOLanterns)
+                .setTooltip(Component.literal("")) // TODO
+                .setSaveConsumer(value -> ModConfig.polymerAllowOptimisedJackOLanterns = value)
+                .build()
+        );
+        #endif
 
         ConfigCategory customizationCategory = builder.getOrCreateCategory(Component.literal("Blocks Customization"));
 

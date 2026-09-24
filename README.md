@@ -100,13 +100,17 @@ Lighten up your builds with unobtrusive light source
 - Double check everything is using SoundUtils and not raw world sounds
 - Consider making ParticleUtil for particle creation
 - Update the building instructions
-- Why floor and wall cabinets have separate models? Remove one!
 - Fix coloured torches not dropping and their dropped model size
 - Double check if the correct model (texture) is used for the non-lit candlesticks with candles
 - Check that the polymorph to suggested Gradle code is disabled on 1.20.1 and so
 - Fix light strip voxel shape
 - Add Unit tests
 - Check if Cabinets drop their item on destruction in 26.1+
+- Make the Polymer Block entity base into Humility VAL
+- Collect all the TODO comments and add them properly to the roadmap
+- Port to MC 26.3
+- Redo the config with Cloth Config Auto Config + extensions
+- Make sure the optional datapack is working on all MC versions, especially 26.3
 
 [//]: # (- Improve Cabinet PBR texture: Roughness of zero, f0/reflectance of like either 0.02 or 0.1)
 
@@ -149,6 +153,10 @@ Lighten up your builds with unobtrusive light source
 - Convert the config from JSON to TOML
 - Consider making Polymorph an optional dependency, now with the alternative wooden mosaic recipie datapack it is no longer needed, that said people might still be confused if they didn't have either enabled/installed
 - Add proper translations for the Resource Packs
+- Standardise block model rotations
+- Make sure Codecs are really obsolete in Minecraft 26.3+ (see Torches)
+- Look at Polymer forks for newer MC versions
+- Check the 'fixed' model sizes, and set all to 50%
 
 ### Low/unknown priority:
 
@@ -176,11 +184,22 @@ Lighten up your builds with unobtrusive light source
   - [Message on Fabric DC server](https://discord.com/channels/507304429255393322/507982478276034570/1414634100610044004)
 - Runtime resourcepack generation? (datapacks)
 - Add all the coloured blocks to Fabric's `DYED` tag categories
+- Add waterlogging support to Polymer port
+- Add separate configurable Polymer fallback tree for Candlesticks
+- Fix Polymer Candlesticks not emmiting particles:
+  - option 1 -> Server-Side Ticker + serverLevel.sendParticles(...)
+  - option 2 -> custom particle system from Polymer displays
+- Add a resourcepack patcher to improve compatibility (e.g if custom jack o'lantern variants are present remap the colours to mince coloured ones)
 
 ### Done:
 
 - Moved to mojmap :(
-- Updated to Minecraft 26.1
+- Added support for Minecraft versions: 
+  - 26.1.2
+  - 26.2
+- Added Polymer support
+- Fixed all the codecs
+- Removed duplicated Cabinet model
 
 <br>
 

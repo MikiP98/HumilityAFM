@@ -1,11 +1,13 @@
 package io.github.mikip98.humilityafm.registries;
 
+#if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlockUtils; #endif
 import io.github.mikip98.humilityafm.config.ModConfig;
 import io.github.mikip98.humilityafm.content.blockentities.LightStripBlockEntity;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.CabinetBlockEntity;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorCabinetBlockEntity;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.FloorIlluminatedCabinetBlockEntity;
 import io.github.mikip98.humilityafm.content.blockentities.cabinetBlock.IlluminatedCabinetBlockEntity;
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerBlockEntities; #endif
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -13,7 +15,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
+#if POLYMER import java.util.ArrayList; #endif
 import java.util.Arrays;
+#if POLYMER import java.util.List; #endif
 import java.util.stream.Stream;
 
 import static io.github.mikip98.humilityafm.HumilityAFM.getId;
@@ -26,6 +30,12 @@ public class BlockEntityRegistry {
     public static BlockEntityType<FloorIlluminatedCabinetBlockEntity> FLOOR_ILLUMINATED_CABINET_BLOCK_ENTITY;
     // Light strip block entity
     public static BlockEntityType<LightStripBlockEntity> LIGHT_STRIP_BLOCK_ENTITY;
+
+    #if POLYMER
+    public static BlockEntityType<PolymerBlockEntities.FallbackBlockEntity> FALLBACK_BLOCK_ENTITY;
+    public static BlockEntityType<PolymerBlockEntities.ColouredTorchBlockEntity> COLOURED_TORCH_BLOCK_ENTITY;
+    public static BlockEntityType<PolymerBlockEntities.CandlestickBlockEntity> CANDLESTICK_BLOCK_ENTITY;
+    #endif
 
     public static void register() {
         //Register cabinet block entity
@@ -61,23 +71,71 @@ public class BlockEntityRegistry {
                     BlockRegistry.LIGHT_STRIP_VARIANTS
             );
         }
+
+        #if POLYMER
+        FALLBACK_BLOCK_ENTITY = register(
+                "polymer_fallback_block_entity",
+                PolymerBlockEntities.FallbackBlockEntity::new,
+                concat(BlockRegistry.WOODEN_MOSAIC_VARIANTS, BlockRegistry.TERRACOTTA_TILE_VARIANTS)
+        );
+        if (ModConfig.getEnableColouredFeatureSetBeta()) {
+            COLOURED_TORCH_BLOCK_ENTITY = register(
+                    "polymer_coloured_torch_block_entity",
+                    PolymerBlockEntities.ColouredTorchBlockEntity::new,
+                    concat(BlockRegistry.COLOURED_TORCH_VARIANTS, BlockRegistry.COLOURED_WALL_TORCH_VARIANTS)
+            );
+        }
+        if (ModConfig.getEnableCandlestickBeta()) {
+            CANDLESTICK_BLOCK_ENTITY = register(
+                    "polymer_candlestick_block_entity",
+                    PolymerBlockEntities.CandlestickBlockEntity::new,
+                    concat(
+                            BlockRegistry.SIMPLE_CANDLESTICK_FLOOR_VARIANTS,
+                            BlockRegistry.SIMPLE_CANDLESTICK_WALL_VARIANTS,
+                            flatten(BlockRegistry.RUSTABLE_CANDLESTICK_FLOOR_VARIANTS),
+                            flatten(BlockRegistry.RUSTABLE_CANDLESTICK_WALL_VARIANTS)
+                    )
+            );
+        }
+        #endif
     }
 
+    // TODO: Check if the below can be simplified/combined
     protected static Block[] concat(Block block, Block... blocks) {
         return Stream.concat(
                 Stream.of(block),
                 Arrays.stream(blocks)
         ).toArray(Block[]::new);
     }
+    protected static Block[] concat(Block[] blocks1, Block... blocks2) {
+        return Stream.concat(
+                Arrays.stream(blocks1),
+                Arrays.stream(blocks2)
+        ).toArray(Block[]::new);
+    }
+    #if POLYMER
+    protected static Block[] concat(Block[] blocks1, Block[]... blocks2) {
+        List<Block> blockList = new ArrayList<>(List.of(blocks1));
+        for (Block[] blocks : blocks2) blockList.addAll(Arrays.asList(blocks));
+        return blockList.toArray(new Block[0]);
+    }
+    protected static Block[] flatten(Block[][] blocks) {
+        List<Block> blockList = new ArrayList<>();
+        for (Block[] blockSet : blocks) blockList.addAll(Arrays.asList(blockSet));
+        return blockList.toArray(new Block[0]);
+    }
+    #endif
 
     protected static <T extends BlockEntity> BlockEntityType<T> register(
             String name,
             FabricBlockEntityTypeBuilder.Factory<? extends T> entityFactory,
             Block... blocks
     ) {
-        return Registry.register(
+        final BlockEntityType<T> type = Registry.register(
                 BuiltInRegistries.BLOCK_ENTITY_TYPE, getId(name),
                 FabricBlockEntityTypeBuilder.<T>create(entityFactory, blocks).build()
         );
+        #if POLYMER PolymerBlockUtils.registerBlockEntity(type); #endif
+        return type;
     }
 }

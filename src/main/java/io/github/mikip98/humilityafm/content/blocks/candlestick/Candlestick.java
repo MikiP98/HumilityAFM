@@ -1,29 +1,28 @@
 package io.github.mikip98.humilityafm.content.blocks.candlestick;
 
-#if MC_VERSION >= 12004
-import com.mojang.serialization.MapCodec;
-#endif
+#if MC_VERSION >= 12003 && MC_VERSION < 260300 import com.mojang.serialization.MapCodec; #endif
+#if POLYMER import eu.pb4.polymer.blocks.api.PolymerTexturedBlock; #endif
 import io.github.mikip98.humilityafm.content.blocks.Waterloggable;
 import io.github.mikip98.humilityafm.content.blocks.templates.PlainHorizontalFacingBlock;
 import io.github.mikip98.humilityafm.content.blocks.candlestick.logic.SimpleCandlestickLogic;
 import io.github.mikip98.humilityafm.content.properties.ModProperties;
 import io.github.mikip98.humilityafm.content.properties.enums.CandleColor;
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerBlockEntities; #endif
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-#if MC_VERSION >= 12105
-import net.minecraft.server.level.ServerLevel;
-#endif
+#if MC_VERSION >= 12105 import net.minecraft.server.level.ServerLevel; #endif
 import net.minecraft.util.RandomSource;
-#if MC_VERSION < 12006
-import net.minecraft.world.InteractionHand;
-#endif
+#if MC_VERSION < 12006 import net.minecraft.world.InteractionHand; #endif
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+#if POLYMER import net.minecraft.world.level.block.EntityBlock; #endif
 import net.minecraft.world.level.block.SoundType;
+#if POLYMER import net.minecraft.world.level.block.entity.BlockEntity; #endif
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -39,7 +38,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
-public class Candlestick extends PlainHorizontalFacingBlock implements SimpleCandlestickLogic, Waterloggable {
+public class Candlestick extends PlainHorizontalFacingBlock implements SimpleCandlestickLogic, Waterloggable #if POLYMER, EntityBlock, PolymerTexturedBlock #endif {
     public static final Supplier<Properties> defaultSettingsSupplier = () -> Properties.of()
             .strength(0.5f)
             .requiresCorrectToolForDrops()
@@ -133,7 +132,7 @@ public class Candlestick extends PlainHorizontalFacingBlock implements SimpleCan
     protected static final EnumProperty<CandleColor> CANDLE_COLOR = ModProperties.CANDLE_COLOR;
     protected static final BooleanProperty LIT = BlockStateProperties.LIT;
 
-    #if MC_VERSION >= 12004
+    #if MC_VERSION >= 12003 && MC_VERSION < 260300
     protected static final MapCodec<Candlestick> CODEC = simpleCodec(Candlestick::new);
 
     @Override
@@ -193,7 +192,6 @@ public class Candlestick extends PlainHorizontalFacingBlock implements SimpleCan
                 case EAST -> candleWickX -= 0.15;
                 case WEST -> candleWickX += 0.15;
             }
-
             performRandomDisplayTick(level, candleWickX, candleWickY, candleWickZ, random);
         }
     }
@@ -239,4 +237,23 @@ public class Candlestick extends PlainHorizontalFacingBlock implements SimpleCan
     public @NotNull FluidState getFluidState(BlockState state) {
         return state.getValue(BlockStateProperties.WATERLOGGED) ? Fluids.WATER.getSource(false) : Fluids.EMPTY.defaultFluidState();
     }
+
+    #if POLYMER
+    @Override
+    public BlockState getPolymerBlockState(BlockState state) {
+        final Direction dir = state.getValue(FACING);
+        return switch (dir) {
+            case NORTH -> PolymerModelCache.CABINET_NORTH_DISGUISE;
+            case EAST -> PolymerModelCache.CABINET_EAST_DISGUISE;
+            case SOUTH -> PolymerModelCache.CABINET_SOUTH_DISGUISE;
+            case WEST -> PolymerModelCache.CABINET_WEST_DISGUISE;
+            default -> throw new IllegalStateException();
+        };
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new PolymerBlockEntities.CandlestickBlockEntity(pos, state);
+    }
+    #endif
 }

@@ -1,15 +1,13 @@
-package io.github.mikip98.humilityafm.util.mod_support;
+package io.github.mikip98.humilityafm.mod_support;
 
 import org.jetbrains.annotations.NotNull;
 
 public enum SupportedMods {
-    #if MC_VERSION != 12006 && MC_VERSION < 12104
+    #if MC_VERSION != 12006 && MC_VERSION != 12104 && MC_VERSION != 12111 && MC_VERSION != 260300
     BETTER_NETHER("Better Nether", "betternether"),
     BETTER_END("Better End", "betterend"),
     #endif
-    #if MC_VERSION != 260200
     BIOMES_O_PLENTY("Biomes o' Plenty", "biomesoplenty"),
-    #endif
 
     SHIMMER("Shimmer", "shimmer");
 

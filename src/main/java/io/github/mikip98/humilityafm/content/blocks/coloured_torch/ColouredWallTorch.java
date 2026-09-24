@@ -1,6 +1,11 @@
 package io.github.mikip98.humilityafm.content.blocks.coloured_torch;
 
+#if MC_VERSION >= 12003 && MC_VERSION < 260300 import com.mojang.serialization.MapCodec; #endif
+#if MC_VERSION >= 12003 && MC_VERSION < 260300 import com.mojang.serialization.codecs.RecordCodecBuilder; #endif
+#if POLYMER import eu.pb4.polymer.core.api.block.PolymerBlock; #endif
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerBlockEntities; #endif
 import io.github.mikip98.humilityafm.util.SoundUtils;
+#if MC_VERSION >= 260000 import net.fabricmc.fabric.api.networking.v1.context.PacketContext; #endif
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.sounds.SoundEvents;
@@ -9,15 +14,32 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+#if POLYMER import net.minecraft.world.level.block.Blocks; #endif
+#if POLYMER import net.minecraft.world.level.block.EntityBlock; #endif
 import net.minecraft.world.level.block.WallTorchBlock;
+#if POLYMER import net.minecraft.world.level.block.entity.BlockEntity; #endif
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
+#if MC_VERSION < 260000 import xyz.nucleoid.packettweaker.PacketContext; #endif
 
-public class ColouredWallTorch extends WallTorchBlock {
+public class ColouredWallTorch extends WallTorchBlock #if POLYMER implements EntityBlock, PolymerBlock #endif {
+    #if MC_VERSION >= 12003 && MC_VERSION < 260300
+    protected static final MapCodec<ColouredWallTorch> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
+            PARTICLE_OPTIONS_FIELD.forGetter((torchBlock) -> torchBlock.flameParticle),
+            propertiesCodec()
+    ).apply(instance, ColouredWallTorch::new));
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @Override
+    public @NotNull MapCodec<WallTorchBlock> codec() {
+        return (MapCodec) CODEC;
+    }
+    #endif
+
     public static final IntegerProperty POWER = BlockStateProperties.POWER;
 
     public static final Properties defaultSettings = ColouredTorch.defaultSettings;
@@ -56,7 +78,7 @@ public class ColouredWallTorch extends WallTorchBlock {
     }
     #endif
 
-    protected boolean onUseLogicInternal(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand) {
+    protected static boolean onUseLogicInternal(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand) {
         final int currentPower = state.getValue(POWER);
         if (player.isShiftKeyDown() && player.getItemInHand(hand).isEmpty() && currentPower > 3) {
             SoundUtils.playSoundAtBlockCenter(level, player, pos, SoundEvents.CANDLE_EXTINGUISH, 1.2f, 0.75f);
@@ -65,4 +87,24 @@ public class ColouredWallTorch extends WallTorchBlock {
         }
         return false;
     }
+
+    #if POLYMER
+    #if MC_VERSION < 12006
+    @Override
+    public Block getPolymerBlock(BlockState state) {
+        return Blocks.WALL_TORCH;
+    }
+    #endif
+
+    @Override
+    public BlockState getPolymerBlockState(BlockState state #if MC_VERSION >= 12104, PacketContext context #endif) {
+        return Blocks.WALL_TORCH.defaultBlockState()
+                .setValue(WallTorchBlock.FACING, state.getValue(FACING));
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new PolymerBlockEntities.ColouredTorchBlockEntity(pos, state);
+    }
+    #endif
 }

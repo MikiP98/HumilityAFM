@@ -16,21 +16,24 @@ import io.github.mikip98.humilityafm.content.blocks.coloured_torch.ColouredWallT
 import io.github.mikip98.humilityafm.content.blocks.jack_o_lanterns.ColouredJackOLantern;
 import io.github.mikip98.humilityafm.content.blocks.stairs.InnerStairs;
 import io.github.mikip98.humilityafm.content.blocks.stairs.OuterStairs;
+#if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
 import io.github.mikip98.humilityafm.util.generation_data.ActiveGenerationData;
 import io.github.mikip98.humilityafm.util.generation_data.RawGenerationData;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockMaterial;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.BlockStrength;
 import io.github.mikip98.humilityafm.util.generation_data.material_management.material.MaterialType;
-import io.github.mikip98.humilityafm.util.mod_support.SupportedMods;
+import io.github.mikip98.humilityafm.mod_support.SupportedMods;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.world.level.block.Block;
+#if POLYMER import net.minecraft.world.level.block.Blocks; #endif
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static io.github.mikip98.humilityafm.registries.BlockRegistry.*;
@@ -123,8 +126,27 @@ public abstract class BlockGeneration {
             SupportedMods sourceMod = materialMetadata.sourceMod();
             if (sourceMod != null) variantName = sourceMod.modId + "_" + variantName;
 
-            innerStairs.add(registerWithItem("inner_stairs_" + variantName, InnerStairs::new, settingsToUse));
-            outerStairs.add(registerWithItem("outer_stairs_" + variantName, OuterStairs::new, woodStairsBlockSettings));
+            Function<BlockBehaviour.Properties, Block> innerStairsConstructor = InnerStairs::new;
+            Function<BlockBehaviour.Properties, Block> outerStairsConstructor = OuterStairs::new;
+
+            #if POLYMER
+            innerStairsConstructor = (properties) -> {
+                final Block stairs = new InnerStairs(properties);
+                PolymerModelCache.cacheStairBase(stairs, sourceMod, variant.name());
+                return stairs;
+            };
+            outerStairsConstructor = (properties) -> {
+                final Block stairs = new OuterStairs(properties);
+                PolymerModelCache.cacheStairBase(stairs, sourceMod, variant.name());
+                return stairs;
+            };
+            #endif
+
+            final Block innerStair = registerWithItem("inner_stairs_" + variantName, innerStairsConstructor, settingsToUse);
+            final Block outerStair = registerWithItem("outer_stairs_" + variantName, outerStairsConstructor, settingsToUse);
+
+            innerStairs.add(innerStair);
+            outerStairs.add(outerStair);
         }
         return new ForcedCornerStairsBlockSet(innerStairs.toArray(Block[]::new), outerStairs.toArray(Block[]::new));
     }
@@ -156,9 +178,13 @@ public abstract class BlockGeneration {
 
             Block block;
             if (isFirstWoodFireproof && isSecondWoodFireproof) {
-                block = registerWithItem("wooden_mosaic_" + variantName, fireproofWoodenMosaicSettings);
+                block = registerWithItem(
+                        "wooden_mosaic_" + variantName, fireproofWoodenMosaicSettings #if POLYMER, Blocks.WARPED_PLANKS #endif
+                );
             } else {
-                block = registerWithItem("wooden_mosaic_" + variantName, burnableWoodenMosaicSettings);
+                block = registerWithItem(
+                        "wooden_mosaic_" + variantName, burnableWoodenMosaicSettings #if POLYMER, Blocks.OAK_PLANKS #endif
+                );
                 if (isFirstWoodFireproof || isSecondWoodFireproof) {
                     registerFlammable(block, burn * 4, spread / 4);
                 } else {
@@ -181,7 +207,9 @@ public abstract class BlockGeneration {
         List<Block> terracottaTilesVariants = new ArrayList<>();
         for (BlockMaterial material : ActiveGenerationData.terracottaTilesMaterials) {
             terracottaTilesVariants.add(
-                    registerWithItem("terracotta_tiles_" + material.getSafeName(), terracottaTilesSettings)
+                    registerWithItem(
+                            "terracotta_tiles_" + material.getSafeName(), terracottaTilesSettings #if POLYMER, Blocks.TERRACOTTA #endif
+                    )
             );
         }
         return terracottaTilesVariants.toArray(Block[]::new);
@@ -199,7 +227,6 @@ public abstract class BlockGeneration {
             for (BlockMaterial material : ActiveGenerationData.simpleCandlestickMaterials) {
                 simpleCandlestickWallVariants.add(register("candlestick_wall_" + material.getSafeName(), Candlestick::new, Candlestick.defaultSettings));
                 simpleCandlestickFloorVariants.add(register("candlestick_" + material.getSafeName(), FloorCandlestick::new, Candlestick.defaultSettings));
-                // FloorCandlestick does not have its own default settings
             }
 
             // Rustable Candlesticks
@@ -270,16 +297,26 @@ public abstract class BlockGeneration {
             for (BlockMaterial material : ActiveGenerationData.colouredFeatureSetMaterials) {
                 final String name = material.getSafeName();
                 // Light Strip
-                lightStripVariants.add(registerWithItem("light_strip_" + name, LightStripBlock::new, LightStripBlock.defaultSettings));
+                lightStripVariants.add(
+                        registerWithItem("light_strip_" + name, LightStripBlock::new, LightStripBlock.defaultSettings)
+                );
+
                 // Coloured Torch
-                colouredTorchVariants.add(
-                        register("coloured_torch_" + name, (settings) -> new ColouredTorch(torchParticle, settings), ColouredTorch.defaultSettings)
-                );
-                colouredWallTorchVariants.add(
-                        register("coloured_wall_torch_" + name, (settings) -> new ColouredWallTorch(torchParticle, settings), ColouredWallTorch.defaultSettings)
-                );
+                colouredTorchVariants.add(register(
+                        "coloured_torch_" + name,
+                        (settings) -> new ColouredTorch(torchParticle, settings),
+                        ColouredTorch.defaultSettings
+                ));
+                colouredWallTorchVariants.add(register(
+                        "coloured_wall_torch_" + name,
+                        (settings) -> new ColouredWallTorch(torchParticle, settings),
+                        ColouredWallTorch.defaultSettings
+                ));
+
                 // Coloured Jack O'Lantern
-                colouredJackOLanterns.add(registerWithItem("coloured_jack_o_lantern_" + name, ColouredJackOLantern::new, ColouredJackOLantern.defaultSettings));
+                colouredJackOLanterns.add(registerWithItem(
+                        "coloured_jack_o_lantern_" + name, ColouredJackOLantern::new, ColouredJackOLantern.defaultSettings
+                ));
             }
             return new ColouredFeatureBlockSet(
                     lightStripVariants.toArray(Block[]::new),
