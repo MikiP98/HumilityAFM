@@ -24,116 +24,59 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 public class LightStripBlock extends StairBlock implements EntityBlock #if POLYMER, PolymerTexturedBlock #endif {
-    // Straight
-    protected static final VoxelShape voxelShapeBottomStraightNorth;
-    protected static final VoxelShape voxelShapeBottomStraightSouth;
-    protected static final VoxelShape voxelShapeBottomStraightEast;
-    protected static final VoxelShape voxelShapeBottomStraightWest;
+    protected static final VoxelShape[] SHAPE_LOOKUP = new VoxelShape[40];
 
-    protected static final VoxelShape voxelShapeTopStraightNorth;
-    protected static final VoxelShape voxelShapeTopStraightSouth;
-    protected static final VoxelShape voxelShapeTopStraightEast;
-    protected static final VoxelShape voxelShapeTopStraightWest;
+    protected static int getIndex(Half half, StairsShape shape, Direction dir) {
+        return (half.ordinal() * 20) + (shape.ordinal() * 4) + (dir.ordinal() - 2);
+    }
 
-    // Inner Left
-    protected static final VoxelShape voxelShapeBottomInnerLeftNorth;
-    protected static final VoxelShape voxelShapeBottomInnerLeftSouth;
-    protected static final VoxelShape voxelShapeBottomInnerLeftEast;
-    protected static final VoxelShape voxelShapeBottomInnerLeftWest;
-
-    protected static final VoxelShape voxelShapeTopInnerLeftNorth;
-    protected static final VoxelShape voxelShapeTopInnerLeftSouth;
-    protected static final VoxelShape voxelShapeTopInnerLeftEast;
-    protected static final VoxelShape voxelShapeTopInnerLeftWest;
-
-    // Inner Right
-    protected static final VoxelShape voxelShapeBottomInnerRightNorth;
-    protected static final VoxelShape voxelShapeBottomInnerRightSouth;
-    protected static final VoxelShape voxelShapeBottomInnerRightEast;
-    protected static final VoxelShape voxelShapeBottomInnerRightWest;
-
-    protected static final VoxelShape voxelShapeTopInnerRightNorth;
-    protected static final VoxelShape voxelShapeTopInnerRightSouth;
-    protected static final VoxelShape voxelShapeTopInnerRightEast;
-    protected static final VoxelShape voxelShapeTopInnerRightWest;
-
-    // Outer Left
-    protected static final VoxelShape voxelShapeBottomOuterLeftNorth;
-    protected static final VoxelShape voxelShapeBottomOuterLeftSouth;
-    protected static final VoxelShape voxelShapeBottomOuterLeftEast;
-    protected static final VoxelShape voxelShapeBottomOuterLeftWest;
-
-    protected static final VoxelShape voxelShapeTopOuterLeftNorth;
-    protected static final VoxelShape voxelShapeTopOuterLeftSouth;
-    protected static final VoxelShape voxelShapeTopOuterLeftEast;
-    protected static final VoxelShape voxelShapeTopOuterLeftWest;
-
-    // Outer Right
-    protected static final VoxelShape voxelShapeBottomOuterRightNorth;
-    protected static final VoxelShape voxelShapeBottomOuterRightSouth;
-    protected static final VoxelShape voxelShapeBottomOuterRightEast;
-    protected static final VoxelShape voxelShapeBottomOuterRightWest;
-
-    protected static final VoxelShape voxelShapeTopOuterRightNorth;
-    protected static final VoxelShape voxelShapeTopOuterRightSouth;
-    protected static final VoxelShape voxelShapeTopOuterRightEast;
-    protected static final VoxelShape voxelShapeTopOuterRightWest;
+    protected static void inputShape(Half half, StairsShape shape, Direction dir, VoxelShape voxelShape) {
+        SHAPE_LOOKUP[getIndex(half, shape, dir)] = voxelShape;
+    }
 
     static {
-        final Map<Direction, VoxelShape> voxelShapeBottomStraight = getStraightVoxelShape(0);
-        voxelShapeBottomStraightNorth = voxelShapeBottomStraight.get(Direction.NORTH);
-        voxelShapeBottomStraightSouth = voxelShapeBottomStraight.get(Direction.SOUTH);
-        voxelShapeBottomStraightEast = voxelShapeBottomStraight.get(Direction.EAST);
-        voxelShapeBottomStraightWest = voxelShapeBottomStraight.get(Direction.WEST);
-        final Map<Direction, VoxelShape> topStraightVoxelShape = getStraightVoxelShape(0.9375d);
-        voxelShapeTopStraightNorth = topStraightVoxelShape.get(Direction.NORTH);
-        voxelShapeTopStraightSouth = topStraightVoxelShape.get(Direction.SOUTH);
-        voxelShapeTopStraightEast = topStraightVoxelShape.get(Direction.EAST);
-        voxelShapeTopStraightWest = topStraightVoxelShape.get(Direction.WEST);
+        final Map<Direction, VoxelShape> bottomStraight = getStraightVoxelShape(0);
+        final Map<Direction, VoxelShape> topStraight = getStraightVoxelShape(15);
 
-        final Map<Direction, VoxelShape> bottomInnerLeftVoxelShape = getInnerLeftVoxelShape(voxelShapeBottomStraight);
-        voxelShapeBottomInnerLeftNorth = bottomInnerLeftVoxelShape.get(Direction.NORTH);
-        voxelShapeBottomInnerLeftSouth = bottomInnerLeftVoxelShape.get(Direction.SOUTH);
-        voxelShapeBottomInnerLeftEast = bottomInnerLeftVoxelShape.get(Direction.EAST);
-        voxelShapeBottomInnerLeftWest = bottomInnerLeftVoxelShape.get(Direction.WEST);
-        final Map<Direction, VoxelShape> topInnerLeftVoxelShape = getInnerLeftVoxelShape(topStraightVoxelShape);
-        voxelShapeTopInnerLeftNorth = topInnerLeftVoxelShape.get(Direction.NORTH);
-        voxelShapeTopInnerLeftSouth = topInnerLeftVoxelShape.get(Direction.SOUTH);
-        voxelShapeTopInnerLeftEast = topInnerLeftVoxelShape.get(Direction.EAST);
-        voxelShapeTopInnerLeftWest = topInnerLeftVoxelShape.get(Direction.WEST);
+        final Map<Direction, VoxelShape> bottomInnerLeft = getInnerLeftVoxelShape(bottomStraight);
+        final Map<Direction, VoxelShape> topInnerLeft = getInnerLeftVoxelShape(topStraight);
 
-        final Map<Direction, VoxelShape> bottomOuterLeftVoxelShape = getOuterLeftVoxelShape(0);
-        voxelShapeBottomOuterLeftNorth = bottomOuterLeftVoxelShape.get(Direction.NORTH);
-        voxelShapeBottomOuterLeftSouth = bottomOuterLeftVoxelShape.get(Direction.SOUTH);
-        voxelShapeBottomOuterLeftEast = bottomOuterLeftVoxelShape.get(Direction.EAST);
-        voxelShapeBottomOuterLeftWest = bottomOuterLeftVoxelShape.get(Direction.WEST);
-        final Map<Direction, VoxelShape> topOuterLeftVoxelShape = getOuterLeftVoxelShape(0.9375d);
-        voxelShapeTopOuterLeftNorth = topOuterLeftVoxelShape.get(Direction.NORTH);
-        voxelShapeTopOuterLeftSouth = topOuterLeftVoxelShape.get(Direction.SOUTH);
-        voxelShapeTopOuterLeftEast = topOuterLeftVoxelShape.get(Direction.EAST);
-        voxelShapeTopOuterLeftWest = topOuterLeftVoxelShape.get(Direction.WEST);
+        final Map<Direction, VoxelShape> bottomOuterLeft = getOuterLeftVoxelShape(0);
+        final Map<Direction, VoxelShape> topOuterLeft = getOuterLeftVoxelShape(15);
 
-        voxelShapeBottomInnerRightNorth = voxelShapeBottomInnerLeftEast;
-        voxelShapeBottomInnerRightSouth = voxelShapeBottomInnerLeftWest;
-        voxelShapeBottomInnerRightEast = voxelShapeBottomInnerLeftSouth;
-        voxelShapeBottomInnerRightWest = voxelShapeBottomInnerLeftNorth;
+        final Direction[] horizontalDirections = {Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
 
-        voxelShapeTopInnerRightNorth = voxelShapeTopInnerLeftEast;
-        voxelShapeTopInnerRightSouth = voxelShapeTopInnerLeftWest;
-        voxelShapeTopInnerRightEast = voxelShapeTopInnerLeftSouth;
-        voxelShapeTopInnerRightWest = voxelShapeTopInnerLeftNorth;
+        for (Direction direction : horizontalDirections) {
+            // STRAIGHT
+            inputShape(Half.BOTTOM, StairsShape.STRAIGHT, direction, bottomStraight.get(direction));
+            inputShape(Half.TOP,    StairsShape.STRAIGHT, direction, topStraight.get(direction));
 
-        voxelShapeBottomOuterRightNorth = voxelShapeBottomOuterLeftEast;
-        voxelShapeBottomOuterRightSouth = voxelShapeBottomOuterLeftWest;
-        voxelShapeBottomOuterRightEast = voxelShapeBottomOuterLeftSouth;
-        voxelShapeBottomOuterRightWest = voxelShapeBottomOuterLeftNorth;
+            // INNER_LEFT
+            inputShape(Half.BOTTOM, StairsShape.INNER_LEFT, direction, bottomInnerLeft.get(direction));
+            inputShape(Half.TOP,    StairsShape.INNER_LEFT, direction, topInnerLeft.get(direction));
 
-        voxelShapeTopOuterRightNorth = voxelShapeTopOuterLeftEast;
-        voxelShapeTopOuterRightSouth = voxelShapeTopOuterLeftWest;
-        voxelShapeTopOuterRightEast = voxelShapeTopOuterLeftSouth;
-        voxelShapeTopOuterRightWest = voxelShapeTopOuterLeftNorth;
+            // OUTER_LEFT
+            inputShape(Half.BOTTOM, StairsShape.OUTER_LEFT, direction, bottomOuterLeft.get(direction));
+            inputShape(Half.TOP,    StairsShape.OUTER_LEFT, direction, topOuterLeft.get(direction));
+
+            final Direction rotatedDirection = switch (direction) {
+                case NORTH -> Direction.EAST;
+                case SOUTH -> Direction.WEST;
+                case EAST  -> Direction.SOUTH;
+                case WEST  -> Direction.NORTH;
+                default -> throw new IllegalStateException();
+            };
+
+            // INNER_RIGHT
+            inputShape(Half.BOTTOM, StairsShape.INNER_RIGHT, direction, bottomInnerLeft.get(rotatedDirection));
+            inputShape(Half.TOP,    StairsShape.INNER_RIGHT, direction, topInnerLeft.get(rotatedDirection));
+
+            // OUTER_RIGHT
+            inputShape(Half.BOTTOM, StairsShape.OUTER_RIGHT, direction, bottomOuterLeft.get(rotatedDirection));
+            inputShape(Half.TOP,    StairsShape.OUTER_RIGHT, direction, topOuterLeft.get(rotatedDirection));
+        }
     }
-    protected static Map<Direction, VoxelShape> getStraightVoxelShape(double y) {
+    protected static Map<Direction, VoxelShape> getStraightVoxelShape(int y) {
         return Map.of(
                 Direction.NORTH, box(0, y, 0, 16, y + 1, 1),
                 Direction.SOUTH, box(0, y, 15, 16, y + 1, 16),
@@ -149,7 +92,7 @@ public class LightStripBlock extends StairBlock implements EntityBlock #if POLYM
                 Direction.WEST,  Shapes.or(base.get(Direction.WEST), base.get(Direction.SOUTH))
         );
     }
-    protected static Map<Direction, VoxelShape> getOuterLeftVoxelShape(double y) {
+    protected static Map<Direction, VoxelShape> getOuterLeftVoxelShape(int y) {
         return Map.of(
                 Direction.NORTH, box(0, y, 0, 1, y + 1, 1),
                 Direction.SOUTH, box(15, y, 15, 16, y + 1, 16),
@@ -174,54 +117,7 @@ public class LightStripBlock extends StairBlock implements EntityBlock #if POLYM
 
     @Override
     public @NotNull VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        final Direction dir = state.getValue(FACING);
-        final Half half = state.getValue(HALF);
-        final StairsShape shape = state.getValue(SHAPE);
-
-        if (half == Half.TOP) {
-            return getVoxelShape(
-                    dir, shape,
-                    voxelShapeTopStraightNorth, voxelShapeTopStraightSouth, voxelShapeTopStraightEast, voxelShapeTopStraightWest,
-                    voxelShapeTopInnerLeftNorth, voxelShapeTopInnerLeftSouth, voxelShapeTopInnerLeftEast, voxelShapeTopInnerLeftWest,
-                    voxelShapeTopInnerRightNorth, voxelShapeTopInnerRightSouth, voxelShapeTopInnerRightEast, voxelShapeTopInnerRightWest,
-                    voxelShapeTopOuterLeftNorth, voxelShapeTopOuterLeftSouth, voxelShapeTopOuterLeftEast, voxelShapeTopOuterLeftWest,
-                    voxelShapeTopOuterRightNorth, voxelShapeTopOuterRightSouth, voxelShapeTopOuterRightEast, voxelShapeTopOuterRightWest
-            );
-        } else {
-            return getVoxelShape(
-                    dir, shape,
-                    voxelShapeBottomStraightNorth, voxelShapeBottomStraightSouth, voxelShapeBottomStraightEast, voxelShapeBottomStraightWest,
-                    voxelShapeBottomInnerLeftNorth, voxelShapeBottomInnerLeftSouth, voxelShapeBottomInnerLeftEast, voxelShapeBottomInnerLeftWest,
-                    voxelShapeBottomInnerRightNorth, voxelShapeBottomInnerRightSouth, voxelShapeBottomInnerRightEast, voxelShapeBottomInnerRightWest,
-                    voxelShapeBottomOuterLeftNorth, voxelShapeBottomOuterLeftSouth, voxelShapeBottomOuterLeftEast, voxelShapeBottomOuterLeftWest,
-                    voxelShapeBottomOuterRightNorth, voxelShapeBottomOuterRightSouth, voxelShapeBottomOuterRightEast, voxelShapeBottomOuterRightWest
-            );
-        }
-    }
-    protected static @NotNull VoxelShape getVoxelShape(
-            Direction dir, StairsShape shape,
-            VoxelShape straightVoxelShapeNorth, VoxelShape straightVoxelShapeSouth, VoxelShape straightVoxelShapeEast, VoxelShape straightVoxelShapeWest,
-            VoxelShape innerLeftVoxelShapeNorth, VoxelShape innerLeftVoxelShapeSouth, VoxelShape innerLeftVoxelShapeEast, VoxelShape innerLeftVoxelShapeWest,
-            VoxelShape innerRightVoxelShapeNorth, VoxelShape innerRightVoxelShapeSouth, VoxelShape innerRightVoxelShapeEast, VoxelShape innerRightVoxelShapeWest,
-            VoxelShape outerLeftVoxelShapeNorth, VoxelShape outerLeftVoxelShapeSouth, VoxelShape outerLeftVoxelShapeEast, VoxelShape outerLeftVoxelShapeWest,
-            VoxelShape outerRightVoxelShapeNorth, VoxelShape outerRightVoxelShapeSouth, VoxelShape outerRightVoxelShapeEast, VoxelShape outerRightVoxelShapeWest
-    ) {
-        return switch (shape) {
-            case STRAIGHT -> getVoxelShape(dir, straightVoxelShapeNorth, straightVoxelShapeSouth, straightVoxelShapeEast, straightVoxelShapeWest);
-            case INNER_LEFT -> getVoxelShape(dir, innerLeftVoxelShapeNorth, innerLeftVoxelShapeSouth, innerLeftVoxelShapeEast, innerLeftVoxelShapeWest);
-            case INNER_RIGHT -> getVoxelShape(dir, innerRightVoxelShapeNorth, innerRightVoxelShapeSouth, innerRightVoxelShapeEast, innerRightVoxelShapeWest);
-            case OUTER_LEFT -> getVoxelShape(dir, outerLeftVoxelShapeNorth, outerLeftVoxelShapeSouth, outerLeftVoxelShapeEast, outerLeftVoxelShapeWest);
-            case OUTER_RIGHT -> getVoxelShape(dir, outerRightVoxelShapeNorth, outerRightVoxelShapeSouth, outerRightVoxelShapeEast, outerRightVoxelShapeWest);
-        };
-    }
-    protected static @NotNull VoxelShape getVoxelShape(Direction dir, VoxelShape north, VoxelShape south, VoxelShape east, VoxelShape west) {
-        return switch (dir) {
-            case NORTH -> north;
-            case SOUTH -> south;
-            case EAST -> east;
-            case WEST -> west;
-            default -> throw new IllegalStateException("It's not possible to get here...");
-        };
+        return SHAPE_LOOKUP[getIndex(state.getValue(HALF), state.getValue(SHAPE), state.getValue(FACING))];
     }
 
     @Override
