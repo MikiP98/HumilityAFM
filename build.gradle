@@ -112,6 +112,12 @@ dependencies {
 	annotationProcessor "systems.manifold:manifold-preprocessor:${project.manifold_version}"
 	compileOnly "systems.manifold:manifold-preprocessor:${project.manifold_version}"
 
+	// Manifold extensions
+	annotationProcessor "systems.manifold:manifold-ext:${project.manifold_version}"
+	compileOnly "systems.manifold:manifold-ext:${project.manifold_version}"
+
+//	compileOnly "systems.manifold:manifold-params:${project.manifold_version}"  // Crashes the compiler, report to Manifold
+
 	def loomGradle = activeMcVersionNum < 260000
 	String implementationConfig = loomGradle ? "modImplementation" : "implementation"
 	String apiConfig			= loomGradle ? "modApi"            : "api"
