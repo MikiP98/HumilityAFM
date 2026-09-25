@@ -29,9 +29,9 @@ public interface ImplementedInventory extends Container {
 //        return () -> items;
 //    }
     
-    /**
-     * Creates a new inventory with the specified size.
-     */
+//    /**
+//     * Creates a new inventory with the specified size.
+//     */
 //    static ImplementedInventory ofSize(int size) {
 //        return of(NonNullList.withSize(size, ItemStack.EMPTY));
 //    }
