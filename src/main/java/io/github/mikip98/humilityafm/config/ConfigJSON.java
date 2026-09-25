@@ -26,7 +26,7 @@ public class ConfigJSON {
         // Create a JSON object to store the configuration
         JsonObject configJson = new JsonObject();
         #if MC_VERSION < 260000
-        configJson.addProperty("transparentCabinetBlocks", ModConfig.transparentCabinetBlocks);
+        configJson.addProperty("transparentCabinetBlocks", ModConfig.translucentCabinetBlocks);
         #endif
         configJson.addProperty("illuminatedCabinetBlockBrightening", ModConfig.illuminatedCabinetBlockBrightening);
         configJson.addProperty("enableLightStripBrightening", ModConfig.enableLightStripBrightening);

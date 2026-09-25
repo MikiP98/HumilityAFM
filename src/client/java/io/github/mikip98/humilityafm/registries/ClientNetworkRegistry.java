@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 #if MC_VERSION >= 12006
 import net.minecraft.client.Minecraft;
 #endif
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
@@ -77,8 +76,8 @@ public class ClientNetworkRegistry {
                     if (ModConfig.printInChatServerClientMissmatch) {
                         Player player = client.player;
                         assert player != null;
-                        Consumer<String> message = (msg) -> sendMessage(player, msg);
-                        printDiffs(message, differences, new String[]{"§e", "§7", "§c"});
+                        // Manifold crashes with method reference, TODO: Report
+                        printDiffs((msg) -> player.avlSendServerMessage(msg), differences, new String[]{"§e", "§7", "§c"});
                     }
                 });
             }
@@ -93,14 +92,6 @@ public class ClientNetworkRegistry {
         differences.forEach((msg) -> printer.accept(c[1] + "  - " + msg));
         printer.accept(c[2] + "BE CAREFUL TO NOT BREAK YOUR SINGLE PLAYER WORLDS BY JOINING THEM WITH BLOCKS THAT WERE PREVIOUSLY ENABLED, NOW DISABLED!!!");
         printer.accept(c[1] + "As long as you can join the server, you can just ignore this message if you want");
-    }
-
-    protected static void sendMessage(Player player, String message) {
-        #if MC_VERSION < 260000
-        player.displayClientMessage(Component.literal(message), false);
-        #else
-        player.sendSystemMessage(Component.literal(message));
-        #endif
     }
 
     protected static class DiffList extends ArrayList<String> {

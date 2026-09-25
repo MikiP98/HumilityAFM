@@ -29,12 +29,12 @@ public class ModConfigScreen {
 
         #if MC_VERSION < 260000
         rootCategory.addEntry(ConfigEntryBuilder.create()
-                .startBooleanToggle(Component.literal("Transparent Cabinet Blocks"), ModConfig.transparentCabinetBlocks)
+                .startBooleanToggle(Component.literal("Transparent Cabinet Blocks"), ModConfig.translucentCabinetBlocks)
                 .setDefaultValue(ModConfig.defaultTransparentCabinetBlocks)
                 .setTooltip(Component.literal("Makes the cabinet blocks transparent.\n(Don't use with vanilla compat rp! It will look weird!)"))
                 .setSaveConsumer(value -> {
                     // Save the value to your mod's configuration
-                    ModConfig.transparentCabinetBlocks = value;
+                    ModConfig.translucentCabinetBlocks = value;
                 })
                 .build()
         );

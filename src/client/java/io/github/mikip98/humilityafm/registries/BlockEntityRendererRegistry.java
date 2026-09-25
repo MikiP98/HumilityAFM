@@ -8,15 +8,9 @@ import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock
 import io.github.mikip98.humilityafm.content.block_entity_renderers.cabinetBlock.IlluminatedCabinetBlockEntityRenderer;
 import io.github.mikip98.humilityafm.mod_support.ModSupportManager;
 import io.github.mikip98.humilityafm.mod_support.SupportedMods;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-#if MC_VERSION >= 12111
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-#endif
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import io.mikip98.humilityval.client.registries.BlockEntityRendererRegistryUtil;
 
-public class BlockEntityRendererRegistry {
+public class BlockEntityRendererRegistry extends BlockEntityRendererRegistryUtil {
     public static void register() {
         register(BlockEntityRegistry.CABINET_BLOCK_ENTITY, CabinetBlockEntityRenderer::new);
         register(BlockEntityRegistry.ILLUMINATED_CABINET_BLOCK_ENTITY, IlluminatedCabinetBlockEntityRenderer::new);
@@ -31,15 +25,9 @@ public class BlockEntityRendererRegistry {
         if (ModConfig.getEnableColouredFeatureSetBeta()) {
             register(BlockEntityRegistry.LIGHT_STRIP_BLOCK_ENTITY, LightStripBlockEntityRenderer::new);
 
-            if (ModConfig.enableLightStripBrightening && !ModSupportManager.isModLoaded(SupportedMods.SHIMMER))
+            if (ModConfig.enableLightStripBrightening && !ModSupportManager.isModLoaded(SupportedMods.SHIMMER)) {
                 LightStripBlockEntityRenderer.enableBrightening();
+            }
         }
-    }
-    #if MC_VERSION < 12111
-    protected static <T extends BlockEntity> void register(BlockEntityType<T> blockEntityType, BlockEntityRendererProvider<T> provider) {
-    #else
-    protected static <T extends BlockEntity, Y extends BlockEntityRenderState> void register(BlockEntityType<T> blockEntityType, BlockEntityRendererProvider<T, Y> provider) {
-    #endif
-        BlockEntityRenderers.register(blockEntityType, provider);
     }
 }

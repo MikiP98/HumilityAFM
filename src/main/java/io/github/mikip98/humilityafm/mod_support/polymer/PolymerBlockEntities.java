@@ -3,8 +3,8 @@ package io.github.mikip98.humilityafm.mod_support.polymer;
 
 #if MC_VERSION < 12104 import eu.pb4.polymer.resourcepack.api.PolymerModelData; #endif
 import io.github.mikip98.humilityafm.registries.BlockEntityRegistry;
-import io.mikip98.humilityval.content.block.entity.AVLBlockEntity;
-import io.mikip98.humilityval.content.block.entity.polymer.PolymerBlockEntityUtil;
+import io.mikip98.humilityval.content.blockentity.AVLBlockEntity;
+import io.mikip98.humilityval.content.blockentity.polymer.PolymerBlockEntityUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 #if MC_VERSION >= 12005 import net.minecraft.core.component.DataComponents; #endif

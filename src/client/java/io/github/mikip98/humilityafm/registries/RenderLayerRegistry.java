@@ -1,25 +1,13 @@
-#if MC_VERSION < 260000
 package io.github.mikip98.humilityafm.registries;
 
 import io.github.mikip98.humilityafm.config.ModConfig;
-#if MC_VERSION < 12105
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.minecraft.client.renderer.RenderType;
-#else
-import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-#endif
+import io.mikip98.humilityval.client.registries.BlockRenderLayerRegistryUtil;
 import net.minecraft.world.level.block.Block;
 
-public class RenderLayerRegistry {
-    #if MC_VERSION < 12106
-    protected static final RenderType cabinetRenderLayer =
-            ModConfig.transparentCabinetBlocks ? RenderType.translucent() : RenderType.cutoutMipped();
-    #else
-    protected static final ChunkSectionLayer cabinetRenderLayer =
-            ModConfig.transparentCabinetBlocks ?
-                    ChunkSectionLayer.TRANSLUCENT : #if MC_VERSION < 12111 ChunkSectionLayer.CUTOUT_MIPPED #else ChunkSectionLayer.CUTOUT #endif;
-    #endif
+public class RenderLayerRegistry extends BlockRenderLayerRegistryUtil {
+    protected static final BlockConsumer putBlocksIntoCabinetRenderLayer = ModConfig.translucentCabinetBlocks ?
+            BlockRenderLayerRegistryUtil::putBlocksInTranslucent : BlockRenderLayerRegistryUtil::putBlocksInCutoutMipped;
+
     public static void register() {
         applyCabinetRenderLayer(BlockRegistry.CABINET_BLOCK);
         applyCabinetRenderLayer(BlockRegistry.ILLUMINATED_CABINET_BLOCK);
@@ -31,16 +19,6 @@ public class RenderLayerRegistry {
         applyCabinetRenderLayer(BlockRegistry.FLOOR_ILLUMINATED_CABINET_BLOCK_VARIANTS);
     }
     protected static void applyCabinetRenderLayer(Block... blocks) {
-        applyRenderLayer(cabinetRenderLayer, blocks);
+        putBlocksIntoCabinetRenderLayer.accept(blocks);
     }
-    #if MC_VERSION < 12106
-    protected static void applyRenderLayer(RenderType renderLayer, Block... blocks) {
-        BlockRenderLayerMap.INSTANCE.putBlocks(renderLayer, blocks);
-    }
-    #else
-    protected static void applyRenderLayer(ChunkSectionLayer renderLayer, Block... blocks) {
-        BlockRenderLayerMap.putBlocks(renderLayer, blocks);
-    }
-    #endif
 }
-#endif

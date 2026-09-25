@@ -5,9 +5,9 @@ package io.github.mikip98.humilityafm.content.blockentities.cabinetBlock;
 #if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerBlockEntities; #endif
 #if POLYMER import io.github.mikip98.humilityafm.mod_support.polymer.PolymerModelCache; #endif
 import io.github.mikip98.humilityafm.registries.BlockEntityRegistry;
-#if !POLYMER import io.mikip98.humilityval.content.block.entity.AVLBlockEntity; #endif
-import io.mikip98.humilityval.content.block.entity.AVLDataInput;
-import io.mikip98.humilityval.content.block.entity.AVLDataOutput;
+#if !POLYMER import io.mikip98.humilityval.content.blockentity.AVLBlockEntity; #endif
+import io.mikip98.humilityval.content.blockentity.AVLDataInput;
+import io.mikip98.humilityval.content.blockentity.AVLDataOutput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 #if MC_VERSION >= 12006 import net.minecraft.core.HolderLookup; #endif
